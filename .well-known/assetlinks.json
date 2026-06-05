@@ -1,1 +1,8 @@
-
+[{
+         "relation": ["delegate_permission/common.handle_all_urls"],
+         "target": {
+           "namespace": "android_app",
+           "package_name": "io.github.mark_robots.twa",
+           "sha256_cert_fingerprints": ["F3:BE:8A:1D:91:59:61:C5:F2:22:CF:83:7C:4A:16:76:8C:D9:37:07:45:F5:61:3F:5E:D6:F0:D6:53:B5:68:9E"]
+         }
+       }]
