@@ -1,0 +1,2821 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Megatrend Sentinel Azioni · Report Cliente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  /* Palette Earnings 3.0 — Editorial Paper Warm */
+  --bg-primary: #f4ede0;           /* paper warm crema */
+  --bg-card: #fbf7ef;              /* cream card */
+  --bg-card-2: #ece4d3;             /* paper tint subtle */
+  --bg-card-3: #ddd3be;             /* rule line */
+  --text-primary: #14161d;          /* deep ink */
+  --text-secondary: #555d6e;        /* secondary ink */
+  --text-muted: #8a8f9b;            /* tertiary ink */
+  /* Accent: navy elegante invece di blu acceso */
+  --accent-gold: #1b365d;           /* navy primario */
+  --accent-gold-dim: #a88530;       /* gold metallico per dettagli */
+  --accent-lead: #1f5b3f;           /* forest green */
+  --accent-lag: #8b2e28;            /* terracotta */
+  --accent-world: #1b365d;          /* navy benchmark */
+  --accent-cash: #8a8f9b;
+  --border: rgba(20,22,29,0.08);
+  --border-soft: rgba(20,22,29,0.14);
+  /* JetBrains Mono per tutto, DM Sans solo come fallback */
+  --mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+  --sans: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+  --display: 'JetBrains Mono', 'SF Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 32px 28px 80px 28px;
+}
+
+/* ============================================================ HEADER ============================================================ */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.header-left h1 {
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--accent-gold);
+  margin-bottom: 0;
+  line-height: 1;
+}
+.header-left h1 .accent { color: var(--accent-gold-dim); font-weight: 700; }
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-img {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  display: block;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.header-right .update-block {
+  text-align: right;
+}
+.header-right .update-info {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.header-right .update-date {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent-gold);
+}
+.header-right .header-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: stretch;
+  margin-top: 0;
+}
+.header-right .tech-link {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font: 400 9px/1.4 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.header-right .tech-link:hover {
+  color: var(--accent-gold);
+  border-color: var(--accent-gold-dim);
+}
+
+/* Pulsante prominente "Passa a..." per cambiare sistema */
+.header-right .tech-link.cross-system {
+  background: linear-gradient(135deg, #1b365d, #284772);
+  color: #fbf7ef;
+  border: 1px solid #1b365d;
+  font-weight: 600;
+  font-size: 10px;
+  padding: 6px 12px;
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 6px rgba(27,54,93,0.18);
+}
+.header-right .tech-link.cross-system:hover {
+  background: linear-gradient(135deg, #c79a49, #b58730);
+  color: #fbf7ef;
+  border-color: #c79a49;
+  box-shadow: 0 3px 10px rgba(199,154,73,0.35);
+  transform: translateY(-1px);
+}
+
+/* Modalità Balanced/Aggressive — la SELEZIONATA è colorata, l'altra è neutra */
+.preset-btn[data-mode="balanced"],
+.preset-btn[data-mode="aggressive"] {
+  background: transparent;
+  border-color: var(--border-soft);
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+}
+.preset-btn[data-mode="balanced"]:hover {
+  border-color: #1b365d;
+  color: #1b365d;
+}
+.preset-btn[data-mode="aggressive"]:hover {
+  border-color: #b58730;
+  color: #b58730;
+}
+.preset-btn[data-mode="balanced"].active {
+  background: linear-gradient(135deg, #1b365d, #284772);
+  border-color: #1b365d;
+  color: #fbf7ef;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(27,54,93,0.3);
+}
+.preset-btn[data-mode="aggressive"].active {
+  background: linear-gradient(135deg, #c79a49, #b58730);
+  border-color: #b58730;
+  color: #fbf7ef;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(199,154,73,0.4);
+}
+
+/* ============================================================ HOW IT WORKS ============================================================ */
+.how-it-works {
+  background: linear-gradient(135deg, rgba(27,54,93,0.05), rgba(27,54,93,0.04));
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 10px;
+  padding: 22px 26px;
+  margin-bottom: 28px;
+}
+.how-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.how-icon { font-size: 22px; }
+.how-intro {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+.how-intro b { color: var(--text-primary); }
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 22px;
+  margin-bottom: 16px;
+}
+.how-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.how-step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(27,54,93,0.15);
+  color: var(--accent-gold);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(27,54,93,0.4);
+}
+.how-step-body { flex: 1; }
+.how-step-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+.how-step-text {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.how-step-text b { color: var(--text-primary); }
+.how-footer {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  padding-top: 14px;
+  border-top: 1px solid var(--border-soft);
+  margin-bottom: 0;
+}
+.how-footer b { color: var(--text-secondary); }
+
+/* ============================================================ SECTIONS ============================================================ */
+
+.section {
+  margin-bottom: 56px;
+}
+.section + .section {
+  margin-top: 8px;
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.section-title .icon {
+  font-size: 20px;
+}
+.window-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding: 3px 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  background: rgba(27,54,93,0.08);
+  border: 1px solid rgba(27,54,93,0.25);
+  border-radius: 4px;
+  font-weight: 500;
+}
+.window-badge::before {
+  content: '📅';
+  font-size: 11px;
+}
+.section-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ============================================================ KPI BAR (Earnings dense header) ============================================================ */
+.kpi-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 22px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 28px;
+  box-shadow: 0 1px 2px rgba(20,22,29,0.04);
+}
+.kpi-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 24px;
+  min-width: 0;
+}
+.kpi-block:first-child { padding-left: 0; }
+.kpi-block:last-child { padding-right: 0; }
+.kpi-divider {
+  width: 1px;
+  background: var(--border-soft);
+  margin: 4px 0;
+}
+.kpi-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.kpi-value {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--accent-gold);
+  line-height: 1;
+}
+.kpi-value.world { color: var(--accent-world); }
+.kpi-value.gold { color: var(--accent-gold-dim); }
+.kpi-meta {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+.kpi-meta .pos { color: var(--accent-lead); }
+.kpi-meta .neg { color: var(--accent-lag); }
+
+/* ============================================================ CONTROLS BAR ============================================================ */
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-card-2);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.controls-bar .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.controls-bar .field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: var(--mono);
+}
+.controls-bar input[type="date"],
+.controls-bar input[type="number"] {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--bg-card-3);
+  color: var(--text-primary);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 5px 8px;
+  color-scheme: dark;
+}
+.controls-bar input[type="number"] { width: 60px; text-align: right; }
+.preset-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  background: var(--bg-card-3);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.preset-btn:hover, .preset-btn.active {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.range-info {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent-gold-dim);
+}
+
+/* ============================================================ QUOTE MODAL (TradingView) ============================================================ */
+.quote-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,22,29,0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 9500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  animation: storicoFadeIn 0.18s ease;
+}
+.quote-modal-overlay.open { display: flex; }
+.quote-modal {
+  background: #ffffff;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 720px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgba(20,22,29,0.25);
+  overflow: hidden;
+  animation: storicoSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.quote-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.quote-modal-title {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.quote-modal-title .qm-sub {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  margin-left: 6px;
+}
+.quote-modal-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.quote-modal-close:hover { background: var(--bg-card-2); color: var(--text-primary); border-color: var(--text-muted); }
+.quote-modal-body { padding: 18px 24px 22px; overflow-y: auto; }
+.qm-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  margin-top: 18px;
+}
+.qm-label:first-child { margin-top: 0; }
+.qm-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: var(--bg-card-2);
+  border-radius: 6px;
+}
+.tv-mini-wrap { width: 100%; height: 220px; }
+
+/* Righe ETF cliccabili in tabella posizioni */
+#open-positions-table tbody tr[data-ticker] { cursor: pointer; transition: background 0.12s; }
+#open-positions-table tbody tr[data-ticker]:hover { background: rgba(20,22,29,0.04); }
+#open-positions-table tbody tr[data-ticker] td:first-child::after {
+  content: '↗';
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: 6px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+#open-positions-table tbody tr[data-ticker]:hover td:first-child::after { opacity: 1; }
+.chart-container {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  position: relative;
+}
+.equity-chart-container { height: 380px; }
+.cash-chart-container {
+  height: 150px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.cash-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.cash-chart-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.cash-chart-info {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-cash);
+}
+
+/* ============================================================ EQUITY SUMMARY ============================================================ */
+.equity-summary {
+  margin-top: 56px;
+  padding: 18px 22px;
+  background: rgba(27,54,93,0.05);
+  border: 1px solid rgba(27,54,93,0.18);
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+/* ============================================================ WEEKLY MOVES ============================================================ */
+.weekly-moves {
+  margin-bottom: 28px;
+  padding: 20px 24px;
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 8px;
+}
+.wm-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.wm-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+.wm-date {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.wm-body { font-size: 13px; line-height: 1.7; }
+.wm-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 8px 0;
+}
+.wm-section { margin-bottom: 14px; }
+.wm-section:last-child { margin-bottom: 0; }
+.wm-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.wm-section-title.buy { color: var(--accent-lead); }
+.wm-section-title.sell { color: var(--accent-lag); }
+.wm-trade {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background: rgba(20,22,29,0.03);
+  border-radius: 6px;
+  border: 1px solid var(--border-soft);
+}
+.wm-trade:last-child { margin-bottom: 0; }
+.wm-trade-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.wm-trade-ticker {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+.wm-trade-name {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.wm-trade-details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+.wm-trade-details .lbl { color: var(--text-muted); }
+.wm-trade-details .val { color: var(--text-secondary); }
+.wm-perf {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+.wm-perf.pos { background: rgba(31,91,63,0.12); color: var(--accent-lead); border: 1px solid rgba(31,91,63,0.3); }
+.wm-perf.neg { background: rgba(139,46,40,0.12); color: var(--accent-lag); border: 1px solid rgba(139,46,40,0.3); }
+.wm-fallback {
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-muted);
+  background: rgba(27,54,93,0.05);
+  border-radius: 4px;
+  border-left: 2px solid var(--accent-gold);
+  line-height: 1.5;
+}
+.px-fb {
+  color: var(--accent-gold);
+  font-weight: bold;
+  margin-left: 2px;
+  cursor: help;
+}
+
+/* ============================================================ MARKET COMMENTARY ============================================================ */
+.market-commentary {
+  margin-top: 22px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(27,54,93,0.04), rgba(27,54,93,0.03));
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+}
+.market-commentary-section {
+  margin-bottom: 28px;
+}
+.market-commentary-section .market-commentary {
+  margin-top: 0;
+}
+.mc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.mc-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+.mc-date {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.mc-body {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+.mc-body p { margin-bottom: 10px; }
+.mc-body p:last-child { margin-bottom: 0; }
+.mc-body b { color: var(--text-primary); }
+.mc-body .mc-positive { color: var(--accent-lead); font-weight: 500; }
+.mc-body .mc-negative { color: var(--accent-lag); font-weight: 500; }
+.mc-body .mc-neutral { color: var(--accent-gold); font-weight: 500; }
+.mc-body .mc-prospect {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 5px 12px 5px 10px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.mc-prospect-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mc-body .mc-prospect-pos .mc-prospect-dot { background: var(--accent-lead); }
+.mc-body .mc-prospect-neu .mc-prospect-dot { background: var(--accent-gold); }
+.mc-body .mc-prospect-neg .mc-prospect-dot { background: var(--accent-lag); }
+.mc-body .mc-prospect-pos { background: rgba(31,91,63,0.10); color: var(--accent-lead); border: 1px solid rgba(31,91,63,0.3); }
+.mc-body .mc-prospect-neu { background: rgba(27,54,93,0.10); color: var(--accent-gold); border: 1px solid rgba(27,54,93,0.3); }
+.mc-body .mc-prospect-neg { background: rgba(139,46,40,0.10); color: var(--accent-lag); border: 1px solid rgba(139,46,40,0.3); }
+.equity-summary b { color: var(--text-primary); }
+.es-row {
+  display: grid;
+  grid-template-columns: minmax(220px, auto) repeat(4, minmax(140px, 1fr));
+  gap: 6px 14px;
+  align-items: center;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.es-row + .es-row {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(27,54,93,0.18);
+}
+.es-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.es-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(20,22,29,0.04);
+  border: 1px solid var(--border-soft);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.es-chip .es-chip-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.es-chip .es-chip-val { font-weight: 600; }
+
+/* ============================================================ COMPOSITION GRID ============================================================ */
+.composition-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.6fr;
+  gap: 16px;
+}
+.composition-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.composition-right-col .weekly-moves {
+  margin-bottom: 0;
+}
+/* Riga divisoria interna alla tabella unificata: separa posizioni aperte da movimenti settimana */
+.unified-positions tr.section-divider td {
+  padding: 14px 12px 8px 12px;
+  background: var(--bg-card-2);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  text-align: left;
+}
+.unified-positions tr.section-divider td b {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.unified-positions tr.section-divider.buy td b { color: var(--accent-lead); }
+.unified-positions tr.section-divider.sell td b { color: var(--accent-lag); }
+.unified-positions tr.section-divider td .sd-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.unified-positions tr.section-divider td .sd-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.unified-positions tr.section-divider.buy td { color: var(--accent-lead); }
+.unified-positions tr.section-divider.sell td { color: var(--accent-lag); }
+.unified-positions tr.section-divider td .sd-date {
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+/* Righe operative dentro la tabella unificata */
+.unified-positions tr.op-empty td {
+  padding: 14px 12px;
+  text-align: center;
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+/* Sotto-testo per data/prezzo uscita nelle righe vendita (allinea con colonne posizioni aperte) */
+.unified-positions .op-sub {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.pie-container {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+.pie-header {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.pie-header-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pie-mode-label {
+  margin-right: 4px;
+}
+.pie-mode-btn {
+  text-transform: none;
+  letter-spacing: 0.06em;
+  font-size: 10.5px;
+  padding: 3px 10px;
+}
+.pie-canvas-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pie-canvas-wrapper canvas {
+  max-height: 280px !important;
+  max-width: 280px !important;
+}
+.pie-meta {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+.pie-meta b { color: var(--text-primary); }
+
+/* ============================================================ TABLES ============================================================ */
+.table-container {
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  overflow: hidden;
+}
+.table-header {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.table-header .table-count {
+  color: var(--accent-gold);
+  font-size: 12px;
+}
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 380px;
+}
+/* La tabella unificata posizioni+movimenti deve mostrare tutto senza scroll verticale */
+.composition-right-col .table-scroll {
+  max-height: none;
+  overflow-y: visible;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-card-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 10px 10px 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  white-space: nowrap;
+}
+/* Colonna ETF (descrizione) sempre a sinistra — posizione varia per tabella */
+#open-positions-table thead th:first-child,
+#open-positions-table tbody td:first-child,
+#closed-ops-table thead th:nth-child(2),
+#closed-ops-table tbody td:nth-child(2) { text-align: left; }
+/* Compensa indent dello span col-etf (border-left 3px + padding-left 8px) */
+#open-positions-table thead th:first-child,
+#closed-ops-table thead th:nth-child(2) { padding-left: 21px; }
+.data-table tbody td {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  text-align: center;
+}
+.data-table tbody tr:hover { background: rgba(255,255,255,0.015); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table .col-etf {
+  font-family: var(--mono);
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+.data-table .col-desc {
+  color: var(--text-secondary);
+  font-size: 11.5px;
+}
+.data-table .col-num {
+  font-family: var(--mono);
+  text-align: center;
+  white-space: nowrap;
+}
+.data-table .pos { color: var(--accent-lead); }
+.data-table .neg { color: var(--accent-lag); }
+.data-table .col-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.data-table .col-isin {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Signal chips */
+.chip {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.chip-in {
+  background: rgba(31,91,63,0.12);
+  color: var(--accent-lead);
+  border: 1px solid rgba(31,91,63,0.3);
+}
+.chip-out {
+  background: rgba(139,46,40,0.12);
+  color: var(--accent-lag);
+  border: 1px solid rgba(139,46,40,0.3);
+}
+.chip-leader { background: rgba(31,91,63,0.12); color: var(--accent-lead); }
+.chip-emerging { background: rgba(27,54,93,0.12); color: var(--accent-gold); }
+.chip-weakening { background: rgba(251,146,60,0.12); color: #fb923c; }
+.chip-weak { background: rgba(139,46,40,0.12); color: var(--accent-lag); }
+.chip-stage1 { background: rgba(96,165,250,0.12); color: #60a5fa; }
+.chip-stage2 { background: rgba(31,91,63,0.12); color: var(--accent-lead); }
+.chip-stage3 { background: rgba(251,146,60,0.12); color: #fb923c; }
+.chip-stage4 { background: rgba(139,46,40,0.12); color: var(--accent-lag); }
+
+/* ============================================================ TRADING STATS ============================================================ */
+.stats-overview {
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+}
+.stats-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px 28px;
+}
+.stat-block {
+  display: flex;
+  flex-direction: column;
+}
+.stat-block-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.stat-block-value {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.stat-block-value.pos { color: var(--accent-lead); }
+.stat-block-value.neg { color: var(--accent-lag); }
+.stat-block-meta {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.stats-wl-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-soft);
+}
+.stats-wl-row .wl-win { color: var(--accent-lead); }
+.stats-wl-row .wl-loss { color: var(--accent-lag); }
+.stats-wl-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+  background: var(--bg-card-3);
+}
+.stats-wl-bar .seg-win { background: var(--accent-lead); }
+.stats-wl-bar .seg-loss { background: var(--accent-lag); }
+
+/* ============================================================ PERFORMANCE SPLIT (chart sx + stats dx) ============================================================ */
+.perf-split-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.perf-left { display: flex; flex-direction: column; }
+.perf-right { display: flex; flex-direction: column; }
+.perf-split-grid .equity-chart-container { height: auto; min-height: 380px; flex: 1 1 auto; }
+.perf-split-grid .equity-summary { margin-top: 14px; }
+.perf-split-grid .stats-overview {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.perf-split-grid .stats-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  flex: 1 1 auto;
+}
+.perf-split-grid .stats-col {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.perf-split-grid .stats-col-header {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.perf-split-grid .stat-block-label { font-size: 11px; letter-spacing: 0.10em; margin-bottom: 8px; }
+.perf-split-grid .stat-block-value { font-size: 28px; }
+.perf-split-grid .stat-block-meta { font-size: 10.5px; margin-top: 5px; }
+
+/* ============================================================ STORICO TRIGGER BUTTON + MODAL ============================================================ */
+.storico-trigger-section {
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: center;
+}
+.storico-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.storico-trigger:hover {
+  background: var(--bg-card-2);
+  border-color: var(--accent-gold);
+}
+.storico-trigger-content {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.storico-trigger-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+.storico-trigger-meta {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.storico-trigger-icon {
+  font-size: 14px;
+  color: var(--accent-gold);
+  font-weight: 600;
+  transition: transform 0.18s ease;
+}
+.storico-trigger:hover .storico-trigger-icon {
+  transform: translateX(3px);
+}
+
+/* Modal overlay */
+.storico-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,22,29,0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  animation: storicoFadeIn 0.18s ease;
+}
+.storico-modal-overlay.open {
+  display: flex;
+}
+@keyframes storicoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.storico-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgba(20,22,29,0.25);
+  overflow: hidden;
+  animation: storicoSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes storicoSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.storico-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.storico-modal-title {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+.storico-modal-subtitle {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 880px;
+}
+.storico-modal-close {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card-2);
+  color: var(--text-secondary);
+  font-size: 22px;
+  font-family: var(--mono);
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.storico-modal-close:hover {
+  background: var(--accent-lag);
+  color: #fff;
+  border-color: var(--accent-lag);
+}
+.storico-modal-body {
+  padding: 20px 28px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Body lock quando modal aperto */
+body.modal-open { overflow: hidden; }
+
+/* ============================================================ FOOTER ============================================================ */
+.footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.footer .disclaimer {
+  width: 100%;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+.footer .disclaimer b { color: var(--text-secondary); }
+.footer .footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.footer .official-badge {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--border-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.footer .official-badge .badge-logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* ============================================================ LOADING / EMPTY STATES ============================================================ */
+.loading, .empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+/* ============================================================ RESPONSIVE ============================================================ */
+@media (max-width: 1200px) {
+  .stats-overview-grid { grid-template-columns: repeat(3, 1fr); }
+  .perf-split-grid { grid-template-columns: 1fr; gap: 16px; }
+  .perf-split-grid .stats-overview-grid { grid-template-columns: repeat(3, 1fr); }
+  .perf-split-grid .stat-block-value { font-size: 24px; }
+}
+
+/* Tablet e smartphone landscape (≤900px) */
+@media (max-width: 900px) {
+  .container { padding: 20px 16px 60px 16px; }
+  
+  .header { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .header-right { text-align: left; width: 100%; }
+  .header-right .tech-link { margin-top: 6px; }
+  .header-left h1 { font-size: 30px; }
+  
+  .kpi-bar { flex-direction: column; padding: 18px 20px; gap: 0; }
+  .kpi-block { padding: 14px 0; }
+  .kpi-block:first-child { padding-top: 0; }
+  .kpi-block:last-child { padding-bottom: 0; }
+  .kpi-divider { width: 100%; height: 1px; margin: 0; }
+  .kpi-value { font-size: 26px; }
+  
+  .controls-bar { gap: 10px 12px; padding: 10px 12px; }
+  .controls-bar .field { font-size: 10.5px; }
+  .controls-bar input[type="date"],
+  .controls-bar input[type="number"] { font-size: 10.5px; padding: 4px 6px; }
+  .preset-btn { font-size: 9.5px; padding: 4px 8px; }
+  .range-info { width: 100%; text-align: right; margin-left: 0; }
+  
+  .equity-chart-container { height: 280px; padding: 14px; }
+  .cash-chart-container { height: 130px; padding: 12px; }
+  
+  .composition-grid { grid-template-columns: 1fr; gap: 14px; }
+  .pie-container { height: 380px; padding: 14px; }
+  
+  .table-container { padding: 12px 14px; }
+  .table-scroll { max-height: 320px; }
+  .composition-right-col .table-scroll { max-height: none; }
+  .data-table { font-size: 11px; }
+  .data-table thead th { font-size: 9.5px; padding: 8px 6px; }
+  .data-table tbody td { padding: 9px 6px; }
+  .data-table .col-isin { font-size: 9px; }
+  
+  .stats-overview { padding: 18px 18px; }
+  .stats-overview-grid { grid-template-columns: repeat(2, 1fr); gap: 18px 20px; }
+  .stat-block-value { font-size: 21px; }
+  .perf-split-grid .stats-overview-grid { grid-template-columns: 1fr; }
+  
+  .how-steps { grid-template-columns: 1fr; gap: 14px; }
+  .how-it-works { padding: 18px 18px; }
+  .how-title { font-size: 14px; }
+  
+  .section-title { font-size: 15px; flex-wrap: wrap; }
+  .window-badge { font-size: 9px; padding: 3px 8px; }
+  
+  .footer .disclaimer { font-size: 11px; line-height: 1.6; }
+  .footer .footer-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+/* Smartphone verticale (≤600px) */
+@media (max-width: 600px) {
+  .container { padding: 16px 12px 50px 12px; }
+  
+  .header-left h1 { font-size: 24px; }
+  .header-brand { gap: 10px; }
+  .logo-img { width: 56px; height: 56px; }
+  
+  .kpi-bar { padding: 14px 16px; }
+  .kpi-block { padding: 12px 0; }
+  .kpi-value { font-size: 22px; }
+  .kpi-label { font-size: 9px; }
+  .kpi-meta { font-size: 10px; }
+  
+  /* Modal storico su mobile */
+  .storico-modal-overlay { padding: 0; }
+  .storico-modal { max-height: 100vh; max-width: 100%; border-radius: 0; border: none; }
+  .storico-modal-header { padding: 16px 18px 14px; }
+  .storico-modal-title { font-size: 15px; }
+  .storico-modal-subtitle { font-size: 11px; }
+  .storico-modal-body { padding: 14px 18px 18px; }
+  .storico-trigger { padding: 16px 18px; }
+  .storico-trigger-label { font-size: 13px; }
+  .storico-trigger-meta { font-size: 10.5px; }
+  
+  .controls-bar { padding: 10px; }
+  .controls-bar .label { width: 100%; font-size: 9.5px; }
+  .controls-bar .field { font-size: 10px; }
+  
+  .equity-chart-container { height: 240px; padding: 10px; }
+  .cash-chart-container { height: 110px; padding: 8px; }
+  
+  .es-row { grid-template-columns: 1fr; font-size: 12px; gap: 4px; }
+  .es-chip { padding: 2px 6px; font-size: 11px; }
+  .es-chip .es-chip-label { font-size: 10px; }
+  
+  .pie-container { height: 320px; padding: 12px; }
+  
+  .data-table thead th { font-size: 9px; padding: 7px 5px; }
+  .data-table tbody td { padding: 8px 5px; font-size: 10.5px; }
+  
+  .stats-overview-grid { grid-template-columns: 1fr; gap: 16px; }
+  .stat-block-value { font-size: 24px; }
+  
+  .section-title { font-size: 14px; }
+  .section-title .icon { font-size: 17px; }
+  .section-subtitle { font-size: 11.5px; }
+  
+  .how-step { gap: 10px; }
+  .how-step-num { width: 24px; height: 24px; font-size: 11px; }
+  .how-step-title { font-size: 12px; }
+  .how-step-text { font-size: 11.5px; }
+  .how-intro { font-size: 12px; }
+  
+  .footer .disclaimer { font-size: 10.5px; line-height: 1.6; }
+}
+</style>
+  <!-- PWA · MarkRobots App -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1b365d">
+  <meta name="background-color" content="#fbf7ef">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MGTR Azioni">
+  <meta name="mobile-web-app-capable" content="yes">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('[PWA] SW registered:', reg.scope))
+          .catch(err => console.warn('[PWA] SW failed:', err));
+      });
+    }
+  </script>
+
+</head>
+<body>
+<div class="container">
+
+  <!-- =========================== HEADER =========================== -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-brand">
+        <svg class="logo-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Megatrend Sentinel">
+          <!-- 3 esagoni pointy-top concentrici -->
+          <g fill="none" stroke-linejoin="round" stroke-linecap="round">
+            <polygon points="100,15 173.6,57.5 173.6,142.5 100,185 26.4,142.5 26.4,57.5" stroke="#cfd5de" stroke-width="1.6"/>
+            <polygon points="100,35 156.3,67.5 156.3,132.5 100,165 43.7,132.5 43.7,67.5" stroke="#b1bac6" stroke-width="1.6"/>
+            <polygon points="100,55 139,77.5 139,122.5 100,145 61,122.5 61,77.5" fill="#eaeef3" stroke="#5a6e8c" stroke-width="2.4"/>
+          </g>
+          <!-- Mirino: croce navy -->
+          <g stroke="#3d4f6b" stroke-width="2.4" stroke-linecap="round">
+            <line x1="70" y1="100" x2="86" y2="100"/>
+            <line x1="114" y1="100" x2="130" y2="100"/>
+            <line x1="100" y1="70" x2="100" y2="86"/>
+            <line x1="100" y1="114" x2="100" y2="130"/>
+          </g>
+          <!-- Mirino: cerchio esterno azzurro + punto centrale navy -->
+          <circle cx="100" cy="100" r="13" fill="none" stroke="#6e9ed1" stroke-width="2.2"/>
+          <circle cx="100" cy="100" r="5" fill="#2d3a52"/>
+        </svg>
+        <h1>Megatrend Sentinel <span class="accent">Azioni</span></h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="update-block">
+        <div class="update-info">Ultimo aggiornamento</div>
+        <div class="update-date" id="last-update">—</div>
+      </div>
+      <div class="header-actions">
+        <a class="tech-link" role="button" tabindex="0" id="open-funzionamento-btn">Funzionamento</a>
+        <a href="cliente.html" class="tech-link cross-system">↻ Passa a Megatrend Sentinel ETF</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================== MODAL FUNZIONAMENTO =========================== -->
+  <div class="storico-modal-overlay" id="funzionamento-modal-overlay" aria-hidden="true">
+    <div class="storico-modal" role="dialog" aria-modal="true" aria-labelledby="funzionamento-modal-title">
+      <div class="storico-modal-header">
+        <div>
+          <div class="storico-modal-title" id="funzionamento-modal-title">Come funziona il sistema Megatrend Sentinel Azioni</div>
+          <div class="storico-modal-subtitle">
+            Spiegazione completa della logica: timing settoriale ereditato, selezione automatica della migliore azione del settore, doppia modalità Balanced/Aggressive.
+          </div>
+        </div>
+        <button class="storico-modal-close" id="close-funzionamento-btn" type="button" aria-label="Chiudi">×</button>
+      </div>
+      <div class="storico-modal-body">
+        <p class="how-intro">
+          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing dei <b>9 settori operativi</b> del sistema Megatrend Sentinel ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
+        </p>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="how-step-num">1</div>
+            <div class="how-step-body">
+              <div class="how-step-title">Timing settoriale ereditato dal sistema ETF</div>
+              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend Sentinel ETF sui 9 settori operativi: 7 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLP Consumi essenziali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">2</div>
+            <div class="how-step-body">
+              <div class="how-step-title">Selezione dell'azione al momento del segnale IN</div>
+              <div class="how-step-text">Per ogni settore in IN, il sistema sceglie <b>la migliore azione</b> tra ~10 candidate del settore, basandosi su due metriche di momentum: <b>ROC</b> (Rate of Change su 4, 13 o 52 settimane) e <b>tag</b> (top_momentum, value_momentum, premium_ok). I tag negativi (value_trap, expensive_flat, stagnant) escludono il candidato.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">3</div>
+            <div class="how-step-body">
+              <div class="how-step-title">Doppia modalità Balanced / Aggressive</div>
+              <div class="how-step-text">Tutti gli indicatori sono calcolati su <b>candela settimanale</b> (chiusura del venerdì). <b style="color:var(--accent-lead);">Balanced</b> (default): score = ROC13w×0.6 + ROC52w×0.4 → premia il trend trimestrale + annuale, sceglie large cap consolidate. <b style="color:var(--accent-lag);">Aggressive</b>: score = ROC4w×0.7 + ROC13w×0.3 → premia il momentum mensile, caccia i rally più freschi (selezioni più volatili ma con CAGR storicamente più alto). Cambia la modalità nel riquadro Allocazione sopra al pie chart per confrontare i due scenari.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">4</div>
+            <div class="how-step-body">
+              <div class="how-step-title">Ripartizione del capitale</div>
+              <div class="how-step-text">Ogni posizione pesa <b>1/9 = 11.1%</b> del capitale (peso fisso). Quando solo N settori su 9 sono in posizione, la quota investita è N/9 e la differenza resta in <b>cash</b> al tasso impostato (configurabile). Esempio: 6 settori IN = 67% investito + 33% cash. Niente leva, niente concentrazione, ribilanciamento automatico.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">5</div>
+            <div class="how-step-body">
+              <div class="how-step-title">Aggiornamento settimanale automatico</div>
+              <div class="how-step-text">Ogni <b>venerdì alle 16:00</b> (mercato USA aperto da 30 minuti), il sistema scarica i dati settimanali, ricalcola RS-Ratio/Stage/ROC per tutti i ticker, e aggiorna le posizioni in caso di rotazioni settoriali. Le date di entrata/uscita sono sempre il <b>venerdì</b> (o l'ultimo giorno effettivo di trading in caso di festività).</div>
+            </div>
+          </div>
+        </div>
+        <p class="how-footer">
+          Le decisioni sono <b>meccaniche e replicabili</b>: il timing viene dal sistema settoriale, la scelta della singola azione è basata su metriche quantitative. Nessun intervento discrezionale, nessuna emotività, nessuna previsione. Il sistema reagisce al mercato, non lo predice.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPOSITION (con movimenti integrati) -->
+  <div class="section">
+    <div class="composition-grid">
+      <div class="pie-container">
+        <div class="pie-header pie-header-mode">
+          <span class="pie-mode-label">Modalità portafoglio</span>
+          <button class="preset-btn active pie-mode-btn" data-mode="balanced">Balanced</button>
+          <button class="preset-btn pie-mode-btn" data-mode="aggressive">Aggressive</button>
+        </div>
+        <div class="pie-canvas-wrapper">
+          <canvas id="pie-chart"></canvas>
+        </div>
+        <div class="pie-meta" id="pie-meta">—</div>
+      </div>
+      <div class="composition-right-col">
+        <div class="table-container">
+          <div class="table-scroll">
+            <table class="data-table unified-positions" id="open-positions-table">
+              <thead>
+                <tr>
+                  <th>Azione · Settore</th>
+                  <th>Tag entry</th>
+                  <th>In posizione da</th>
+                  <th class="col-num">Prezzo acquisto</th>
+                  <th>Settimane</th>
+                  <th class="col-num">Peso</th>
+                  <th class="col-num">Performance</th>
+                </tr>
+              </thead>
+              <tbody id="open-positions-header-tbody">
+                <!-- divider "POSIZIONI APERTE" iniettato da JS con count -->
+              </tbody>
+              <tbody id="open-positions-body">
+                <tr><td colspan="7" class="loading">Caricamento…</td></tr>
+              </tbody>
+              <tbody id="weekly-moves-tbody">
+                <!-- divider acquisti/vendite + righe iniettate da JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI BAR (nascosta - dati ridondanti, già presenti nella sezione Andamento+Statistiche) -->
+  <div class="kpi-bar" style="display:none;">
+    <div class="kpi-block">
+      <div class="kpi-label">SISTEMA · VALORE FINALE</div>
+      <div class="kpi-value" id="stat-sys-value">—</div>
+      <div class="kpi-meta">
+        <span id="stat-sys-cagr">—</span> CAGR · MDD <span id="stat-sys-dd">—</span>
+      </div>
+    </div>
+    <div class="kpi-divider"></div>
+    <div class="kpi-block">
+      <div class="kpi-label">MSCI WORLD · BENCHMARK</div>
+      <div class="kpi-value world" id="stat-world-value">—</div>
+      <div class="kpi-meta">
+        <span id="stat-world-cagr">—</span> CAGR · MDD <span id="stat-world-dd">—</span>
+      </div>
+    </div>
+    <div class="kpi-divider"></div>
+    <div class="kpi-block">
+      <div class="kpi-label">OUTPERFORMANCE vs MSCI</div>
+      <div class="kpi-value gold" id="stat-out-perf">—</div>
+      <div class="kpi-meta">
+        Drawdown <span id="stat-dd-improvement">—</span> · Investito <span id="stat-time-invested">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKET COMMENTARY (sezione autonoma) -->
+  <div class="market-commentary-section">
+    <div class="market-commentary" id="market-commentary">
+      <div class="mc-body" id="mc-body">—</div>
+    </div>
+  </div>
+
+  <!-- =========================== ANDAMENTO + STATISTICHE (SPLIT) =========================== -->
+  <div class="section">
+    <div class="section-title">
+      Andamento e statistiche del sistema
+      <span class="window-badge" id="equity-window-badge"></span>
+    </div>
+    <div class="section-subtitle">
+      Simulazione su capitale iniziale di <b>100</b>. Ogni settore in segnale apre una posizione del <b>11.1% (1/9)</b> con la migliore azione del settore. La quota dei settori fuori segnale viene <b>parcheggiata in cash</b> al tasso annuo impostato qui sotto. La <b>modalità portafoglio</b> (Balanced/Aggressive) determina quale azione viene scelta all'interno di ciascun settore in segnale. Confronto con <b style="color:var(--accent-world);">MSCI World</b>. Tutti gli indicatori (Sharpe, Max Drawdown, Win Rate, ecc.) sono <b>aggiornati in base alla finestra temporale selezionata</b>.
+    </div>
+
+    <div class="controls-bar">
+      <span class="label">Finestra</span>
+      <label class="field">Dal <input type="date" id="date-start"></label>
+      <label class="field">Al <input type="date" id="date-end"></label>
+      <button class="preset-btn" data-preset="ytd">YTD</button>
+      <button class="preset-btn" data-preset="1y">1A</button>
+      <button class="preset-btn" data-preset="3y">3A</button>
+      <button class="preset-btn" data-preset="5y">5A</button>
+      <button class="preset-btn" data-preset="10y">10A</button>
+      <button class="preset-btn" data-preset="all">MAX</button>
+      <span style="border-left:1px solid var(--border-soft); height:22px; margin: 0 4px;"></span>
+      <label class="field" title="Rendimento annuo lordo applicato al cash durante i periodi OUT. Esempi: 0% backtest puro · 2% media storica · 3% XEON €STR oggi · 3.5% BTP 12 mesi">
+        Rendimento annuale cash <input type="number" id="cash-rate" min="0" max="10" step="0.1" value="0">
+      </label>
+      <span class="range-info" id="range-info"></span>
+    </div>
+
+    <div class="perf-split-grid">
+      <div class="perf-left">
+        <div class="chart-container equity-chart-container">
+          <canvas id="equity-chart"></canvas>
+        </div>
+
+        <div class="chart-container cash-chart-container">
+          <div class="cash-chart-header">
+            <span class="cash-chart-title">% capitale in cash nel tempo</span>
+            <span class="cash-chart-info" id="cash-avg-info">—</span>
+          </div>
+          <div style="flex:1; min-height:0; position:relative;">
+            <canvas id="cash-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="equity-summary" id="equity-summary">—</div>
+      </div>
+
+      <div class="perf-right">
+        <div class="stats-overview">
+          <div class="stats-overview-grid">
+            <div class="stats-col">
+              <div class="stats-col-header">Performance</div>
+              <div class="stat-block">
+                <div class="stat-block-label">Performance · ultima settimana</div>
+                <div class="stat-block-value" id="trd-perf-1w">—</div>
+                <div class="stat-block-meta">variazione ultimi 7 giorni</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Performance · ultimo mese</div>
+                <div class="stat-block-value" id="trd-perf-1m">—</div>
+                <div class="stat-block-meta">variazione ultimi 30 giorni</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Performance totale del periodo</div>
+                <div class="stat-block-value" id="trd-perf-total">—</div>
+                <div class="stat-block-meta">rendimento cumulato nella finestra</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">CAGR</div>
+                <div class="stat-block-value" id="trd-cagr">—</div>
+                <div class="stat-block-meta">rendimento medio annuo composto</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Avg PnL per trade</div>
+                <div class="stat-block-value pos" id="trd-avgpnl">—</div>
+                <div class="stat-block-meta">guadagno medio per operazione</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stats-col-header">Indicatori di redditività</div>
+              <div class="stat-block">
+                <div class="stat-block-label">Sharpe Ratio</div>
+                <div class="stat-block-value" id="trd-sharpe">—</div>
+                <div class="stat-block-meta">rendimento / volatilità (annualizzato)</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Max Drawdown</div>
+                <div class="stat-block-value neg" id="trd-mdd">—</div>
+                <div class="stat-block-meta">peggior perdita dal picco</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Win Rate</div>
+                <div class="stat-block-value pos" id="trd-winrate">—</div>
+                <div class="stat-block-meta">operazioni chiuse in profitto</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Profit / Loss ratio</div>
+                <div class="stat-block-value" id="trd-plratio">—</div>
+                <div class="stat-block-meta">vincita media / perdita media</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-block-label">Operazioni totali</div>
+                <div class="stat-block-value" id="trd-total">—</div>
+                <div class="stat-block-meta">trade chiusi nel periodo</div>
+              </div>
+            </div>
+          </div>
+          <div class="stats-wl-row">
+            <span class="wl-win" id="trd-wins">— vincenti</span>
+            <span class="wl-loss" id="trd-losses">— perdenti</span>
+          </div>
+          <div class="stats-wl-bar">
+            <div class="seg-win" id="trd-bar-win" style="width:0%;"></div>
+            <div class="seg-loss" id="trd-bar-loss" style="width:0%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================== CLOSED OPERATIONS (modal trigger) =========================== -->
+  <div class="section storico-trigger-section">
+    <button class="storico-trigger" id="open-storico-btn" type="button">
+      <span class="storico-trigger-content">
+        <span class="storico-trigger-label">Storico operazioni completate</span>
+        <span class="storico-trigger-meta" id="storico-trigger-meta">— operazioni nel periodo</span>
+      </span>
+      <span class="storico-trigger-icon">→</span>
+    </button>
+  </div>
+
+  <!-- Modal storico operazioni -->
+  <div class="storico-modal-overlay" id="storico-modal-overlay" aria-hidden="true">
+    <div class="storico-modal" role="dialog" aria-modal="true" aria-labelledby="storico-modal-title">
+      <div class="storico-modal-header">
+        <div>
+          <div class="storico-modal-title" id="storico-modal-title">Storico operazioni completate</div>
+          <div class="storico-modal-subtitle">
+            Operazioni del sistema azioni <b>nella finestra temporale selezionata</b>, ordinate dalla più recente. Ogni operazione corrisponde a un periodo IN del settore: l'azione viene scelta all'apertura del segnale e mantenuta fino alla sua chiusura.
+          </div>
+        </div>
+        <button class="storico-modal-close" id="close-storico-btn" type="button" aria-label="Chiudi storico">×</button>
+      </div>
+      <div class="storico-modal-body">
+        <div class="table-container">
+          <div class="table-header">
+            <span>Cronologia trade chiusi <span class="window-badge" id="ops-window-badge"></span></span>
+            <span class="table-count" id="closed-count">—</span>
+          </div>
+          <div class="table-scroll" style="max-height: calc(80vh - 200px);">
+            <table class="data-table" id="closed-ops-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Settore · Azione</th>
+                  <th>Tag</th>
+                  <th>Entrata</th>
+                  <th class="col-num">Prezzo entry</th>
+                  <th>Uscita</th>
+                  <th class="col-num">Prezzo exit</th>
+                  <th>Settimane</th>
+                  <th class="col-num">Performance</th>
+                </tr>
+              </thead>
+              <tbody id="closed-ops-body">
+                <tr><td colspan="9" class="loading">Caricamento…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================== QUOTE MODAL (TradingView) =========================== -->
+  <div class="quote-modal-overlay" id="quote-modal-overlay" aria-hidden="true">
+    <div class="quote-modal">
+      <div class="quote-modal-header">
+        <div class="quote-modal-title" id="quote-modal-title">—</div>
+        <button class="quote-modal-close" id="quote-modal-close" aria-label="Chiudi">×</button>
+      </div>
+      <div class="quote-modal-body">
+        <div class="qm-label">Quotazione · TradingView</div>
+        <div id="quote-modal-symbol-info"></div>
+        <div class="qm-label">Andamento · 1 mese</div>
+        <div class="tv-mini-wrap" id="quote-modal-mini-chart"></div>
+        <div class="qm-note">
+          Dati forniti da TradingView. Prezzo con ritardo di ~15 minuti sui mercati europei (LSE, Xetra). Variazione del giorno calcolata sulla chiusura precedente.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================== FOOTER =========================== -->
+  <div class="footer">
+    <div class="disclaimer">
+      <b>Disclaimer.</b> Le informazioni contenute in questa dashboard hanno natura puramente illustrativa e tecnico-quantitativa: <b>non costituiscono consulenza finanziaria personalizzata</b>, sollecitazione all'investimento, né raccomandazione di acquisto o vendita di strumenti finanziari ai sensi della normativa MiFID II / Regolamento Consob. I dati storici e le simulazioni mostrate non garantiscono risultati futuri. Le performance del backtest sono <b>al lordo di commissioni e tassazione</b> e assumono un cash al rendimento impostato durante i periodi di disinvestimento. Ogni decisione di investimento è di esclusiva responsabilità del cliente, che deve valutare attentamente il proprio profilo di rischio, l'orizzonte temporale e gli obiettivi finanziari prima di operare sui mercati. Le scelte di portafoglio e le configurazioni mostrate riflettono il sistema personale di supporto operativo del consulente.
+    </div>
+    <div class="footer-meta">
+      <span>Megatrend Sentinel Azioni · © MarkRobots</span>
+      <span>Dashboard aggiornata automaticamente · dati Yahoo Finance</span>
+    </div>
+    <div class="official-badge">
+      <span>An official MarkRobots product</span>
+      <img src="logo.jpg" alt="MarkRobots" class="badge-logo-img">
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// MEGATREND SENTINEL AZIONI · Client dashboard
+// Replica della grafica cliente.html ETF, adattata a stocks_data.json
+// ============================================================
+let DATA = null;          // Root JSON completo (modes.balanced + modes.aggressive)
+let DATA_VIEW = null;     // Vista corrente: punta a DATA.modes[CURRENT_MODE]
+let CURRENT_MODE = 'balanced';
+let DATE_RANGE = { start_idx: null, end_idx: null, preset: 'all' };
+let equityChartInstance = null;
+let cashChartInstance = null;
+
+function applyMode(mode) {
+  if (!DATA || !DATA.modes || !DATA.modes[mode]) {
+    console.warn('Mode non disponibile:', mode);
+    return;
+  }
+  CURRENT_MODE = mode;
+  DATA_VIEW = DATA.modes[mode];
+  document.querySelectorAll('.preset-btn[data-mode]').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  // Re-init range mantenendo il preset corrente (o MAX se non setto)
+  const eq = DATA_VIEW.equity_curve || [];
+  if (eq.length > 0) {
+    DATE_RANGE.start_idx = 0;
+    DATE_RANGE.end_idx = eq.length - 1;
+    document.getElementById('date-start').value = eq[0].date;
+    document.getElementById('date-end').value = eq[eq.length-1].date;
+  }
+  renderKPIBar();
+  renderOpenPositions();
+  renderRange();
+}
+
+const SHARPE_RF = 0.0034;
+const MAX_POSITIONS = 9;  // n. settori operativi (SECTORS_SYSTEM)
+
+// Restituisce il nome esteso di un'azione dal ticker. Fallback al ticker se non in mappa.
+function stockName(ticker) {
+  if (!ticker) return '—';
+  const names = (DATA && DATA.stock_names) || {};
+  return names[ticker] || ticker;
+}
+
+const SECTOR_LABELS = {
+  'XLK':'Tecnologia USA','SOXX':'Semiconduttori','XLF':'Finanziari USA','XLV':'Sanità USA',
+  'XLI':'Industriali USA','XLP':'Consumi essenziali','XLE':'Energia USA',
+  'EXV1.DE':'Banche EU','EXH5.DE':'Assicurazioni',
+};
+const TAG_LABELS = {
+  'top_momentum':   { label:'Top momentum',  cls:'badge-top' },
+  'value_momentum': { label:'Value momentum',cls:'badge-value' },
+  'premium_ok':     { label:'Premium ok',    cls:'badge-premium' },
+};
+const STATE_LABELS = {
+  'Leader': { label:'Leader', cls:'badge-leader' },
+  'Emergente': { label:'Emergente', cls:'badge-emergente' },
+  'In rallentamento': { label:'In rall.', cls:'badge-ral' },
+  'Debole': { label:'Debole', cls:'badge-debole' },
+};
+
+function fmtDate(s) {
+  if (!s) return '—';
+  const p = String(s).substring(0,10).split('-');
+  if (p.length !== 3) return s;
+  return `${p[2]}/${p[1]}/${p[0]}`;
+}
+function fmtPerc(v, decimals=2) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  const n = Number(v);
+  const sign = n > 0 ? '+' : '';
+  return sign + n.toFixed(decimals) + '%';
+}
+function fmtNum(v, decimals=2) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return Number(v).toFixed(decimals);
+}
+function regionFlag(r) { return r === 'US' ? '🇺🇸' : '🇮🇹'; }
+function sectorLabel(sec) { return SECTOR_LABELS[sec] || sec; }
+
+function setText(id, text, sign) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove('pos', 'neg');
+  if (sign !== undefined && sign !== null) {
+    if (sign > 0) el.classList.add('pos');
+    else if (sign < 0) el.classList.add('neg');
+  }
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadData() {
+  try {
+    const r = await fetch('data/stocks_data.json?_=' + Date.now());
+    DATA = await r.json();
+    // Compatibilità: se il JSON ha struttura modes.{balanced,aggressive}, usala. Altrimenti fallback.
+    if (DATA.modes && DATA.modes.balanced) {
+      DATA_VIEW = DATA.modes[CURRENT_MODE] || DATA.modes.balanced;
+    } else {
+      DATA_VIEW = DATA;
+      // Nascondi il selettore Modalità se i dati sono in formato legacy
+      document.querySelectorAll('.preset-btn[data-mode]').forEach(b => b.style.display = 'none');
+    }
+    if (!DATA_VIEW.equity_curve || DATA_VIEW.equity_curve.length === 0) {
+      console.error('Nessun dato equity_curve nel JSON');
+      return;
+    }
+    document.getElementById('last-update').textContent = fmtDate(DATA.last_data_date);
+    initDateRange();
+    initCashRateInput();
+    setupHandlers();
+    renderKPIBar();
+    renderOpenPositions();
+    applyPreset('all');
+  } catch (err) {
+    console.error('Errore caricamento dati:', err);
+    document.getElementById('open-positions-body').innerHTML =
+      `<tr><td colspan="7" class="loading" style="color:#8b2e28;">Errore: ${err.message}</td></tr>`;
+  }
+}
+
+// ============================================================
+// DATE RANGE & PRESETS
+// ============================================================
+function initDateRange() {
+  const eq = DATA_VIEW.equity_curve;
+  document.getElementById('date-start').value = eq[0].date;
+  document.getElementById('date-end').value = eq[eq.length-1].date;
+  DATE_RANGE.start_idx = 0;
+  DATE_RANGE.end_idx = eq.length - 1;
+}
+
+function findIdxByDate(dateStr) {
+  const eq = DATA_VIEW.equity_curve;
+  for (let i = 0; i < eq.length; i++) {
+    if (eq[i].date >= dateStr) return i;
+  }
+  return eq.length - 1;
+}
+
+function applyPreset(preset) {
+  const eq = DATA_VIEW.equity_curve;
+  const lastDate = eq[eq.length - 1].date;
+  let startIdx, endIdx = eq.length - 1;
+
+  if (preset === 'all') {
+    startIdx = 0;
+  } else if (preset === 'ytd') {
+    const year = lastDate.substring(0, 4);
+    startIdx = eq.findIndex(e => e.date >= year + '-01-01');
+    if (startIdx === -1) startIdx = 0;
+  } else {
+    const yearsMap = { '1y': 1, '3y': 3, '5y': 5, '10y': 10 };
+    const years = yearsMap[preset] || 1;
+    const target = new Date(lastDate);
+    target.setFullYear(target.getFullYear() - years);
+    const targetStr = target.toISOString().substring(0, 10);
+    startIdx = eq.findIndex(e => e.date >= targetStr);
+    if (startIdx === -1) startIdx = 0;
+  }
+
+  DATE_RANGE.start_idx = startIdx;
+  DATE_RANGE.end_idx = endIdx;
+  DATE_RANGE.preset = preset;
+  document.getElementById('date-start').value = eq[startIdx].date;
+  document.getElementById('date-end').value = eq[endIdx].date;
+
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.preset-btn[data-preset="${preset}"]`);
+  if (btn) btn.classList.add('active');
+
+  renderRange();
+}
+
+function onDateInputChange() {
+  const eq = DATA_VIEW.equity_curve;
+  const dStart = document.getElementById('date-start').value;
+  const dEnd = document.getElementById('date-end').value;
+  let startIdx = findIdxByDate(dStart);
+  let endIdx = findIdxByDate(dEnd);
+  if (startIdx === -1) startIdx = 0;
+  if (endIdx === -1) endIdx = eq.length - 1;
+  if (endIdx < startIdx) endIdx = startIdx;
+  DATE_RANGE.start_idx = startIdx;
+  DATE_RANGE.end_idx = endIdx;
+  DATE_RANGE.preset = null;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  renderRange();
+}
+
+// Cash rate annuale custom (default 0%). Configura il rendimento del cash quando un settore esce dal segnale.
+let CASH_ANNUAL_RATE = 0;
+
+function initCashRateInput() {
+  const inp = document.getElementById('cash-rate');
+  if (inp) {
+    inp.value = String(CASH_ANNUAL_RATE);
+    inp.disabled = false;
+    inp.style.opacity = '1';
+    inp.title = 'Rendimento annuale del cash (%) applicato alla quota non investita. Modificalo per simulare diverse condizioni di mercato monetario.';
+    inp.addEventListener('change', onCashRateChange);
+    inp.addEventListener('input', onCashRateChange);
+  }
+}
+
+function onCashRateChange() {
+  const inp = document.getElementById('cash-rate');
+  const val = parseFloat(inp.value);
+  if (!isNaN(val) && val >= -5 && val <= 50) {
+    CASH_ANNUAL_RATE = val;
+    renderRange();  // ricalcola tutto con il nuovo cash rate
+  }
+}
+
+// ============================================================
+// COMPUTE STATS ON RANGE
+// ============================================================
+function computeRangeStats() {
+  const eq = DATA_VIEW.equity_curve;
+  const startIdx = DATE_RANGE.start_idx || 0;
+  const endIdx = DATE_RANGE.end_idx || eq.length - 1;
+  const slice = eq.slice(startIdx, endIdx + 1);
+  if (slice.length < 2) return null;
+
+  // Ricostruzione equity SYSTEM on-the-fly con cash_rate custom.
+  // Per ogni settimana: portfolio_ret = (pos_ret_sum / N_MAX) + cash_ret_week × (N_MAX - n_active) / N_MAX
+  const cashWeeklyRet = Math.pow(1 + CASH_ANNUAL_RATE / 100, 1 / 52) - 1;
+  let port = 100.0;
+  const sysSliceRecomputed = [100.0];
+  for (let i = 1; i < slice.length; i++) {
+    const e = slice[i];
+    const posSum = e.pos_ret_sum || 0;
+    const nAct = e.n_active_for_ret !== undefined ? e.n_active_for_ret : (e.n_positions || 0);
+    const weekRet = (posSum / MAX_POSITIONS) + cashWeeklyRet * (MAX_POSITIONS - nAct) / MAX_POSITIONS;
+    port *= (1 + weekRet);
+    sysSliceRecomputed.push(port);
+  }
+
+  const sysSlice = sysSliceRecomputed;
+  const worldSlice = slice.map(e => e.world);
+  const cashSlice = slice.map(e => e.cash);
+  const nWeeks = slice.length;
+  const nYears = nWeeks / 52;
+
+  const sysStart = sysSlice[0], sysEnd = sysSlice[sysSlice.length-1];
+  const wStart = worldSlice[0], wEnd = worldSlice[worldSlice.length-1];
+
+  const totalPct = (sysEnd / sysStart - 1) * 100;
+  const worldPct = (wEnd / wStart - 1) * 100;
+  const cashPct = (cashSlice[cashSlice.length-1] / cashSlice[0] - 1) * 100;
+
+  let perf1w = null, perf1m = null;
+  if (sysSlice.length >= 2) perf1w = (sysSlice[sysSlice.length-1] / sysSlice[sysSlice.length-2] - 1) * 100;
+  if (sysSlice.length >= 5) perf1m = (sysSlice[sysSlice.length-1] / sysSlice[sysSlice.length-5] - 1) * 100;
+
+  const cagr = nYears > 0 ? ((sysEnd / sysStart) ** (1/nYears) - 1) * 100 : 0;
+  const worldCagr = nYears > 0 ? ((wEnd / wStart) ** (1/nYears) - 1) * 100 : 0;
+
+  let peak = sysSlice[0], maxDD = 0;
+  for (const v of sysSlice) {
+    if (v > peak) peak = v;
+    const dd = (v / peak - 1) * 100;
+    if (dd < maxDD) maxDD = dd;
+  }
+
+  let wPeak = worldSlice[0], wMaxDD = 0;
+  for (const v of worldSlice) {
+    if (v > wPeak) wPeak = v;
+    const dd = (v / wPeak - 1) * 100;
+    if (dd < wMaxDD) wMaxDD = dd;
+  }
+
+  const rets = [];
+  for (let i = 1; i < sysSlice.length; i++) rets.push(sysSlice[i] / sysSlice[i-1] - 1);
+  const meanRet = rets.reduce((a,b)=>a+b, 0) / rets.length;
+  const variance = rets.reduce((a,b)=> a + (b - meanRet)**2, 0) / Math.max(1, rets.length-1);
+  const stdRet = Math.sqrt(variance);
+  const annualVol = stdRet * Math.sqrt(52) * 100;
+  const annualRet = (1 + meanRet) ** 52 - 1;
+  const sharpe = annualVol > 0 ? (annualRet - SHARPE_RF) / (annualVol/100) : 0;
+
+  // Operazioni chiuse nel range (filtra per exit_date)
+  const rangeStart = slice[0].date;
+  const rangeEnd = slice[slice.length-1].date;
+  const closed = (DATA_VIEW.operations || []).filter(op => {
+    if (op.status !== 'closed') return false;
+    if (!op.exit_date) return false;
+    return op.exit_date >= rangeStart && op.exit_date <= rangeEnd;
+  });
+  const wins = closed.filter(op => op.perf_pct > 0);
+  const losses = closed.filter(op => op.perf_pct <= 0);
+  const nClosed = closed.length;
+  const winRate = nClosed > 0 ? wins.length / nClosed * 100 : 0;
+  const avgGain = wins.length > 0 ? wins.reduce((a,op)=>a+op.perf_pct,0)/wins.length : 0;
+  const avgLoss = losses.length > 0 ? losses.reduce((a,op)=>a+op.perf_pct,0)/losses.length : 0;
+  const avgPnL = nClosed > 0 ? closed.reduce((a,op)=>a+op.perf_pct,0)/nClosed : 0;
+  const plRatio = avgLoss !== 0 ? Math.abs(avgGain / avgLoss) : null;
+
+  // Investito %: media settimanale di (n_positions / MAX_POSITIONS)
+  // Esempio: 7/9 posizioni sempre attive → 77.8%, sistema sempre pieno 9/9 → 100%
+  const sumPositions = slice.reduce((a, e) => a + (e.n_positions || 0), 0);
+  const investedPct = slice.length > 0 ? (sumPositions / (slice.length * MAX_POSITIONS)) * 100 : 0;
+
+  return {
+    slice, sysSlice, worldSlice, cashSlice,
+    rangeStart, rangeEnd, nWeeks, nYears,
+    perf1w, perf1m, totalPct, cagr, avgPnL,
+    sharpe, maxDD, winRate, plRatio,
+    nClosed, nWins: wins.length, nLosses: losses.length,
+    annualVol, worldPct, worldCagr, worldMaxDD: wMaxDD, cashPct,
+    investedPct, closedOps: closed.sort((a,b) => (b.exit_date || '').localeCompare(a.exit_date || '')),
+  };
+}
+
+// ============================================================
+// RENDER · KPI BAR (sempre MAX range, dal sector_data.stats)
+// ============================================================
+function renderKPIBar() {
+  const s = DATA_VIEW.stats || {};
+
+  // Sistema
+  setText('stat-sys-value', '100 → ' + fmtNum(100 * (1 + (s.total_return || 0) / 100), 1));
+  setText('stat-sys-cagr', fmtPerc(s.cagr));
+  setText('stat-sys-dd', fmtPerc(s.max_drawdown));
+
+  // MSCI World
+  const wt = s.world_total_return || 0;
+  setText('stat-world-value', '100 → ' + fmtNum(100 * (1 + wt / 100), 1));
+  // Per il world non ho cagr/dd diretti, li calcolo dalla equity_curve MAX
+  const eq = DATA_VIEW.equity_curve;
+  if (eq && eq.length >= 2) {
+    const nY = eq.length / 52;
+    const worldCagr = ((eq[eq.length-1].world / eq[0].world) ** (1/nY) - 1) * 100;
+    let wPeak = eq[0].world, wMaxDD = 0;
+    for (const e of eq) {
+      if (e.world > wPeak) wPeak = e.world;
+      const dd = (e.world / wPeak - 1) * 100;
+      if (dd < wMaxDD) wMaxDD = dd;
+    }
+    setText('stat-world-cagr', fmtPerc(worldCagr));
+    setText('stat-world-dd', fmtPerc(wMaxDD));
+  }
+
+  // Outperformance
+  const outPerf = (s.total_return || 0) - wt;
+  setText('stat-out-perf', fmtPerc(outPerf), outPerf);
+
+  // % investito (media settimanale n_positions / MAX_POSITIONS)
+  if (eq && eq.length > 0) {
+    const sumP = eq.reduce((a, e) => a + (e.n_positions || 0), 0);
+    const investedPctKpi = (sumP / (eq.length * MAX_POSITIONS)) * 100;
+    setText('stat-time-invested', fmtNum(investedPctKpi, 0) + '%');
+  }
+
+  // DD improvement (sistema vs world)
+  if (eq && eq.length > 0) {
+    let p = eq[0].world, wDD = 0;
+    for (const e of eq) {
+      if (e.world > p) p = e.world;
+      const dd = (e.world / p - 1) * 100;
+      if (dd < wDD) wDD = dd;
+    }
+    const improvement = wDD - (s.max_drawdown || 0);  // se MDD sistema -20% e world -30% → +10%
+    setText('stat-dd-improvement', fmtPerc(improvement), improvement);
+  }
+}
+
+// ============================================================
+// RENDER · RANGE (chiamata su ogni change)
+// ============================================================
+function renderRange() {
+  const st = computeRangeStats();
+  if (!st) return;
+
+  // Window badges
+  const wb = `Dal ${fmtDate(st.rangeStart)} al ${fmtDate(st.rangeEnd)}`;
+  document.getElementById('equity-window-badge').textContent = wb;
+  const opsBadge = document.getElementById('ops-window-badge');
+  if (opsBadge) opsBadge.textContent = wb;
+
+  // Range info
+  document.getElementById('range-info').textContent = `${st.nWeeks} settimane · ${st.nYears.toFixed(1)} anni`;
+
+  // Stats overview (10 blocks)
+  setText('trd-perf-1w', fmtPerc(st.perf1w), st.perf1w);
+  setText('trd-perf-1m', fmtPerc(st.perf1m), st.perf1m);
+  setText('trd-perf-total', fmtPerc(st.totalPct), st.totalPct);
+  setText('trd-cagr', fmtPerc(st.cagr), st.cagr);
+  setText('trd-avgpnl', fmtPerc(st.avgPnL), st.avgPnL);
+  setText('trd-sharpe', fmtNum(st.sharpe));
+  setText('trd-mdd', fmtPerc(st.maxDD), -1);
+  setText('trd-winrate', fmtPerc(st.winRate, 2), 1);
+  setText('trd-plratio', st.plRatio ? fmtNum(st.plRatio) + ' : 1' : '—');
+  setText('trd-total', String(st.nClosed));
+
+  // Win/Loss
+  const winPct = st.nClosed > 0 ? st.nWins / st.nClosed * 100 : 0;
+  const lossPct = st.nClosed > 0 ? st.nLosses / st.nClosed * 100 : 0;
+  document.getElementById('trd-wins').textContent = `${st.nWins} vincenti (${winPct.toFixed(1)}%)`;
+  document.getElementById('trd-losses').textContent = `${st.nLosses} perdenti (${lossPct.toFixed(1)}%)`;
+  document.getElementById('trd-bar-win').style.width = winPct + '%';
+  document.getElementById('trd-bar-loss').style.width = lossPct + '%';
+
+  // Charts
+  renderEquityChart(st);
+  renderCashChart(st);
+  renderEquitySummary(st);
+
+  // Storico operazioni (modal + counter)
+  renderClosedOpsTable(st.closedOps);
+  document.getElementById('storico-trigger-meta').textContent = `${st.nClosed} operazioni nel periodo`;
+  const closedCountEl = document.getElementById('closed-count');
+  if (closedCountEl) closedCountEl.textContent = `${st.nClosed} operazioni`;
+}
+
+// ============================================================
+// EQUITY CHART
+// ============================================================
+function renderEquityChart(st) {
+  const ctx = document.getElementById('equity-chart').getContext('2d');
+  if (equityChartInstance) equityChartInstance.destroy();
+
+  const step = Math.max(1, Math.floor(st.slice.length / 250));
+  const sampled = st.slice.filter((_,i)=> i % step === 0 || i === st.slice.length-1);
+  const labels = sampled.map(e => e.date);
+  const baseS = sampled[0].system, baseW = sampled[0].world;
+  const sysData = sampled.map(e => (e.system / baseS - 1) * 100);
+  const worldData = sampled.map(e => (e.world / baseW - 1) * 100);
+
+  equityChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Sistema Megatrend Sentinel',
+          data: sysData,
+          borderColor: '#1b365d',
+          backgroundColor: 'rgba(27,54,93,0.06)',
+          borderWidth: 2.4,
+          fill: true,
+          tension: 0.12,
+          pointRadius: 0,
+        },
+        {
+          label: 'MSCI World (XDWD)',
+          data: worldData,
+          borderColor: '#4a7fbf',
+          borderDash: [4,3],
+          borderWidth: 1.6,
+          fill: false,
+          tension: 0.12,
+          pointRadius: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top', align: 'center',
+          labels: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#14161d', boxWidth: 12, padding: 14 },
+        },
+        tooltip: {
+          backgroundColor: '#14161d',
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+          callbacks: {
+            label: c => `${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%`,
+            title: cs => fmtDate(cs[0].label),
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#5a5d68', font: { family: "'JetBrains Mono', monospace", size: 9 },
+            maxTicksLimit: 12,
+            callback: function(v, i) {
+              const lbl = labels[i];
+              if (!lbl) return '';
+              const p = lbl.split('-');
+              return p.length === 3 ? `${p[2].substring(0,2)}/${p[1]}/${p[0].substring(2)}` : lbl;
+            },
+          },
+          grid: { color: 'rgba(20,22,29,0.04)' },
+        },
+        y: {
+          ticks: {
+            color: '#5a5d68', font: { family: "'JetBrains Mono', monospace", size: 10 },
+            callback: v => (v >= 0 ? '+' : '') + v.toFixed(0) + '%',
+          },
+          grid: { color: 'rgba(20,22,29,0.06)' },
+        },
+      },
+    },
+  });
+}
+
+// ============================================================
+// CASH CHART (% capitale "non investito" = settori senza pin)
+// ============================================================
+function renderCashChart(st) {
+  const ctx = document.getElementById('cash-chart');
+  if (!ctx) return;
+  if (cashChartInstance) cashChartInstance.destroy();
+
+  const step = Math.max(1, Math.floor(st.slice.length / 250));
+  const sampled = st.slice.filter((_,i)=> i % step === 0 || i === st.slice.length-1);
+  const labels = sampled.map(e => e.date);
+  // % NON investito: settori operativi mancanti su MAX_POSITIONS
+  const data = sampled.map(e => {
+    const n = e.n_positions || 0;
+    return ((MAX_POSITIONS - n) / MAX_POSITIONS) * 100;
+  });
+  const avgInvested = st.slice.length > 0 ?
+    st.slice.reduce((a,e) => a + ((MAX_POSITIONS - (e.n_positions || 0)) / MAX_POSITIONS), 0) / st.slice.length * 100 : 0;
+
+  document.getElementById('cash-avg-info').textContent = `Cash medio nel periodo: ${avgInvested.toFixed(1)}%`;
+
+  cashChartInstance = new Chart(ctx.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '% cash',
+        data: data,
+        borderColor: '#a88530',
+        backgroundColor: 'rgba(168,133,48,0.12)',
+        borderWidth: 1.4,
+        fill: true,
+        tension: 0.12,
+        pointRadius: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#14161d', callbacks: { label: c => `Cash: ${c.parsed.y.toFixed(1)}%`, title: cs => fmtDate(cs[0].label) } } },
+      scales: {
+        x: { ticks: { color: '#5a5d68', font: { size: 9 }, maxTicksLimit: 8,
+              callback: function(v, i) { const lbl = labels[i]; const p = lbl ? lbl.split('-') : null; return p && p.length === 3 ? `${p[2].substring(0,2)}/${p[1]}/${p[0].substring(2)}` : ''; }
+            }, grid: { display: false } },
+        y: { ticks: { color: '#5a5d68', font: { size: 9 }, callback: v => v + '%' }, min: 0, max: 100, grid: { color: 'rgba(20,22,29,0.04)' } },
+      },
+    },
+  });
+}
+
+// ============================================================
+// EQUITY SUMMARY (sotto al chart)
+// ============================================================
+function renderEquitySummary(st) {
+  const el = document.getElementById('equity-summary');
+  if (!el) return;
+  const rangeWord = `dal ${fmtDate(st.rangeStart)} al ${fmtDate(st.rangeEnd)}`;
+  el.innerHTML = `
+    <div class="eq-summary-row">
+      <span class="eq-row-label">SISTEMA ${rangeWord}</span>
+      <span class="eq-pill">Rendimento <b class="${st.totalPct>=0?'pos':'neg'}">${fmtPerc(st.totalPct)}</b></span>
+      <span class="eq-pill">CAGR <b class="${st.cagr>=0?'pos':'neg'}">${fmtPerc(st.cagr)}</b></span>
+      <span class="eq-pill">Max Drawdown <b class="neg">${fmtPerc(st.maxDD)}</b></span>
+      <span class="eq-pill">Investito <b>${st.investedPct.toFixed(0)}%</b></span>
+    </div>
+    <div class="eq-summary-row">
+      <span class="eq-row-label">MSCI WORLD ${rangeWord}</span>
+      <span class="eq-pill">Rendimento <b class="${st.worldPct>=0?'pos':'neg'}">${fmtPerc(st.worldPct)}</b></span>
+      <span class="eq-pill">CAGR <b class="${st.worldCagr>=0?'pos':'neg'}">${fmtPerc(st.worldCagr)}</b></span>
+      <span class="eq-pill">Max Drawdown <b class="neg">${fmtPerc(st.worldMaxDD)}</b></span>
+    </div>
+  `;
+  // CSS inline minimal per coerenza visiva
+  el.style.cssText = 'background: var(--bg-card-2); border: 1px solid var(--border-soft); border-radius: 8px; padding: 14px 18px; margin-top: 14px; font-size: 11px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 10px;';
+}
+
+// ============================================================
+// POSIZIONI APERTE AZIONI
+// ============================================================
+// Colori settori (per pie chart)
+const SECTOR_COLORS = {
+  'XLK': '#1b365d',     'SOXX': '#4a7fbf',    'XLF': '#1f5b3f',
+  'XLV': '#a88530',     'XLI': '#8b2e28',     'XLP': '#6e6a55',
+  'XLE': '#c4894a',     'EXV1.DE': '#7b3f5e', 'EXH5.DE': '#3f7370',
+};
+
+let pieChartInstance = null;
+
+// ============================================================
+// COMPOSITION: pie chart + tabella posizioni + movimenti settimanali
+// ============================================================
+function renderOpenPositions() {
+  const opens = (DATA_VIEW.operations || []).filter(o => o.status === 'open');
+  const nOpen = opens.length;
+  const cashPct = ((MAX_POSITIONS - nOpen) / MAX_POSITIONS) * 100;
+
+  // PIE CHART
+  renderPieChart(opens, cashPct);
+
+  // PIE META (sotto al pie)
+  const pieMeta = document.getElementById('pie-meta');
+  if (pieMeta) {
+    pieMeta.innerHTML = `<b>${nOpen}</b> azioni investite · <b>${cashPct.toFixed(1)}%</b> liquidità · <b>${MAX_POSITIONS}</b> settori totali monitorati`;
+  }
+
+  // TABELLA POSIZIONI APERTE
+  renderOpenPositionsTable(opens, cashPct);
+
+  // MOVIMENTI SETTIMANALI (acquisti/vendite ultima settimana)
+  renderWeeklyMoves();
+
+  // MARKET COMMENTARY
+  renderMarketCommentary(opens, cashPct);
+}
+
+function renderPieChart(opens, cashPct) {
+  const canvas = document.getElementById('pie-chart');
+  if (!canvas) return;
+  if (pieChartInstance) pieChartInstance.destroy();
+
+  // Ogni posizione pesa SEMPRE 100/MAX_POSITIONS (= 11.1% con 9 settori).
+  // Il cash = (MAX_POSITIONS - n_open)/MAX_POSITIONS * 100%
+  const fixedWeight = 100 / MAX_POSITIONS;
+  const labels = opens.map(op => `${stockName(op.ticker)} · ${op.sector_etf}`);
+  const data = opens.map(() => fixedWeight);
+  const colors = opens.map(op => SECTOR_COLORS[op.sector_etf] || '#888');
+
+  // Cash slice (grigia) sempre presente se c'è cash > 0
+  if (cashPct > 0.1) {
+    labels.push('Cash');
+    data.push(cashPct);
+    colors.push('#6b7280');
+  }
+
+  pieChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fbf7ef' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#14161d',
+          callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%` }
+        },
+      },
+    },
+  });
+}
+
+function renderOpenPositionsTable(opens, cashPct) {
+  const headerBody = document.getElementById('open-positions-header-tbody');
+  const body = document.getElementById('open-positions-body');
+  if (!body) return;
+
+  // Divider header
+  if (headerBody) {
+    headerBody.innerHTML = `
+      <tr class="positions-divider">
+        <td colspan="7">
+          <span class="div-label">POSIZIONI APERTE</span>
+          <span class="div-count">${opens.length} ${opens.length === 1 ? 'azione' : 'azioni'} investite · ${cashPct.toFixed(1)}% CASH</span>
+        </td>
+      </tr>`;
+  }
+
+  if (opens.length === 0) {
+    body.innerHTML = '<tr><td colspan="7" class="loading">Nessuna posizione aperta</td></tr>';
+    return;
+  }
+
+  const fixedWeight = 100 / MAX_POSITIONS;  // 11.1% con 9 settori
+  let html = '';
+  opens.forEach(op => {
+    const tag = TAG_LABELS[op.entry_tag] || { label: op.entry_tag || '—', cls: 'badge-value' };
+    const perfCls = op.perf_pct > 0.05 ? 'perf-pos' : (op.perf_pct < -0.05 ? 'perf-neg' : '');
+    const color = SECTOR_COLORS[op.sector_etf] || '#888';
+    html += `
+      <tr>
+        <td>
+          <span style="display:inline-block; width:3px; height:14px; background:${color}; margin-right:6px; vertical-align:middle;"></span>
+          <b>${stockName(op.ticker)}</b>
+          <span style="font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-left: 5px;">${op.ticker}</span>
+          <br><span style="font-size: 11px; color: var(--text-muted);">${regionFlag(op.region)} (${sectorLabel(op.sector_etf)})</span>
+        </td>
+        <td><span class="badge ${tag.cls}">${tag.label}</span></td>
+        <td>${fmtDate(op.entry_date)}</td>
+        <td class="col-num">${fmtNum(op.entry_price)}</td>
+        <td>${op.weeks_held || 0} sett</td>
+        <td class="col-num">${fixedWeight.toFixed(1)}%</td>
+        <td class="col-num ${perfCls}"><b>${fmtPerc(op.perf_pct)}</b></td>
+      </tr>`;
+  });
+  body.innerHTML = html;
+}
+
+function renderWeeklyMoves() {
+  const tbody = document.getElementById('weekly-moves-tbody');
+  if (!tbody) return;
+  const lastDate = DATA.last_data_date;
+  const wm = DATA_VIEW.weekly_moves || {};
+  const buys = wm.buys || [];
+  const sells = wm.sells || [];
+
+  if (buys.length === 0 && sells.length === 0) {
+    tbody.innerHTML = `
+      <tr class="positions-divider">
+        <td colspan="7">
+          <span class="div-label">PORTAFOGLIO INVARIATO IL ${fmtDate(lastDate)}</span>
+        </td>
+      </tr>
+      <tr class="weekly-no-moves">
+        <td colspan="7"><i>Nessun movimento questa settimana. Il portafoglio resta invariato.</i></td>
+      </tr>`;
+    return;
+  }
+
+  let html = `
+    <tr class="positions-divider">
+      <td colspan="7">
+        <span class="div-label">MOVIMENTI DEL ${fmtDate(lastDate)}</span>
+        <span class="div-count">${buys.length} acquisti · ${sells.length} vendite</span>
+      </td>
+    </tr>`;
+
+  buys.forEach(op => {
+    const color = SECTOR_COLORS[op.sector_etf] || '#888';
+    const tag = TAG_LABELS[op.entry_tag] || { label: op.entry_tag || '—', cls: 'badge-value' };
+    html += `
+      <tr class="weekly-row weekly-buy">
+        <td>
+          <span style="display:inline-block; width:3px; height:14px; background:${color}; margin-right:6px; vertical-align:middle;"></span>
+          <b style="color: var(--accent-lead);">↗ ACQUISTO</b>
+          <b style="margin-left:6px;">${stockName(op.ticker)}</b>
+          <span style="font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-left: 5px;">${op.ticker}</span>
+          <br><span style="font-size: 11px; color: var(--text-muted);">${regionFlag(op.region)} (${sectorLabel(op.sector_etf)})</span>
+        </td>
+        <td><span class="badge ${tag.cls}">${tag.label}</span></td>
+        <td>${fmtDate(op.entry_date)}</td>
+        <td class="col-num">${fmtNum(op.entry_price)}</td>
+        <td colspan="3"><i style="color: var(--text-muted); font-size:11px;">Nuovo segnale settore</i></td>
+      </tr>`;
+  });
+
+  sells.forEach(op => {
+    const color = SECTOR_COLORS[op.sector_etf] || '#888';
+    const perfCls = op.perf_pct > 0.05 ? 'perf-pos' : (op.perf_pct < -0.05 ? 'perf-neg' : '');
+    html += `
+      <tr class="weekly-row weekly-sell">
+        <td>
+          <span style="display:inline-block; width:3px; height:14px; background:${color}; margin-right:6px; vertical-align:middle;"></span>
+          <b style="color: var(--accent-lag);">↘ VENDITA</b>
+          <b style="margin-left:6px;">${stockName(op.ticker)}</b>
+          <span style="font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-left: 5px;">${op.ticker}</span>
+          <br><span style="font-size: 11px; color: var(--text-muted);">${regionFlag(op.region)} (${sectorLabel(op.sector_etf)})</span>
+        </td>
+        <td><span class="badge badge-debole">Settore in OUT</span></td>
+        <td>${fmtDate(op.entry_date)} → ${fmtDate(op.exit_date)}</td>
+        <td class="col-num">${fmtNum(op.entry_price)} → ${fmtNum(op.exit_price)}</td>
+        <td>${op.weeks_held} sett</td>
+        <td></td>
+        <td class="col-num ${perfCls}"><b>${fmtPerc(op.perf_pct)}</b></td>
+      </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function renderMarketCommentary(opens, cashPct) {
+  const el = document.getElementById('mc-body');
+  if (!el) return;
+
+  const nOpen = opens.length;
+  const usCount = opens.filter(op => op.region === 'US').length;
+  const itCount = opens.filter(op => op.region === 'IT').length;
+  const investedPct = 100 - cashPct;
+
+  // Settori tematici
+  const tematici = {
+    'Tech': opens.filter(op => ['XLK', 'SOXX'].includes(op.sector_etf)).length,
+    'Finanziari': opens.filter(op => ['XLF', 'EXV1.DE'].includes(op.sector_etf)).length,
+    'Sanità': opens.filter(op => op.sector_etf === 'XLV').length,
+    'Industriali': opens.filter(op => op.sector_etf === 'XLI').length,
+    'Difensivi': opens.filter(op => op.sector_etf === 'XLP').length,
+    'Energia': opens.filter(op => op.sector_etf === 'XLE').length,
+    'Assicurazioni': opens.filter(op => op.sector_etf === 'EXH5.DE').length,
+  };
+  const temaList = Object.entries(tematici).filter(([k, v]) => v > 0)
+    .map(([k, v]) => `<b>${k.toLowerCase()}</b> (${v} ${v === 1 ? 'azione' : 'azioni'})`).join(', ');
+
+  // Esposizione qualitativa
+  let esposizione = 'equilibrata';
+  if (nOpen >= 7) esposizione = '<b>aggressiva</b>: la maggioranza dei settori sono operativi';
+  else if (nOpen >= 4) esposizione = '<b>bilanciata</b>';
+  else if (nOpen >= 2) esposizione = '<b>selettiva</b>: pochi settori in posizione';
+  else esposizione = '<b>difensiva</b>: pochissimi settori operativi';
+
+  let composizione = 'mista';
+  if (usCount >= 4 * itCount && itCount > 0) composizione = `<b>prevalentemente USA</b> (${usCount} azioni) con presenza marginale europea (${itCount})`;
+  else if (usCount > itCount) composizione = `<b>prevalentemente USA</b> (${usCount} USA · ${itCount} IT)`;
+  else if (itCount > usCount) composizione = `<b>prevalentemente IT</b> (${itCount} IT · ${usCount} USA)`;
+  else composizione = `bilanciata USA/EU (${usCount} USA · ${itCount} IT)`;
+
+  // Performance ultimi 30 giorni (4 settimane) dal slice MAX
+  const eq = DATA_VIEW.equity_curve || [];
+  let perf30d = null, world30d = null;
+  if (eq.length >= 5) {
+    perf30d = (eq[eq.length-1].system / eq[eq.length-5].system - 1) * 100;
+    world30d = (eq[eq.length-1].world / eq[eq.length-5].world - 1) * 100;
+  }
+
+  // Movimenti recenti (operazioni con exit_date nelle ultime 4 settimane)
+  const fourWeeksAgo = eq.length >= 5 ? eq[eq.length-5].date : null;
+  const recentClosed = (DATA_VIEW.operations || []).filter(op =>
+    op.status === 'closed' && op.exit_date && fourWeeksAgo && op.exit_date >= fourWeeksAgo
+  );
+  const recentOpens = (DATA_VIEW.operations || []).filter(op =>
+    op.entry_date && fourWeeksAgo && op.entry_date >= fourWeeksAgo
+  );
+
+  let movimenti = '';
+  if (recentClosed.length === 0 && recentOpens.length === 0) {
+    movimenti = 'Nessun movimento operativo nelle ultime 4 settimane, portafoglio stabile.';
+  } else {
+    const parts = [];
+    if (recentOpens.length > 0) parts.push(`<b>${recentOpens.length} ${recentOpens.length === 1 ? 'apertura' : 'aperture'}</b>`);
+    if (recentClosed.length > 0) parts.push(`<b>${recentClosed.length} ${recentClosed.length === 1 ? 'chiusura' : 'chiusure'}</b> (${recentClosed.map(o => o.ticker).join(', ')})`);
+    movimenti = `Nelle ultime 4 settimane: ${parts.join(' + ')}. Dinamica fisiologica di rotazione settoriale.`;
+  }
+
+  // Performance comment
+  let perfComment = '';
+  if (perf30d !== null) {
+    const sign = perf30d >= 0 ? 'positiva' : 'negativa';
+    const cls = perf30d >= 0 ? 'pos' : 'neg';
+    let vsWorld = '';
+    if (world30d !== null) {
+      const diff = perf30d - world30d;
+      if (Math.abs(diff) < 0.5) vsWorld = `<b>in linea</b> con il MSCI World (${fmtPerc(world30d)})`;
+      else if (diff > 0) vsWorld = `<b>in sovraperformance</b> rispetto al MSCI World (${fmtPerc(world30d)})`;
+      else vsWorld = `in <b>sottoperformance</b> rispetto al MSCI World (${fmtPerc(world30d)})`;
+    }
+    perfComment = `Negli ultimi 30 giorni il sistema ha generato una performance ${sign} del <b class="${cls}">${fmtPerc(perf30d)}</b>, ${vsWorld}.`;
+  }
+
+  // Prospettiva
+  let prospettiva = 'sistema in <b>configurazione costruttiva</b>. L\'esposizione attuale è solida.';
+  if (nOpen >= 6) prospettiva = 'sistema in <b>configurazione costruttiva</b>. L\'esposizione attuale è solida, con buffer di liquidità ridotto.';
+  else if (nOpen >= 3) prospettiva = 'sistema in <b>configurazione bilanciata</b>. L\'esposizione attuale è prudente, con buffer di liquidità adeguato.';
+  else prospettiva = 'sistema in <b>configurazione difensiva</b>. Mercato in fase di transizione, attendere segnali di settore più consolidati.';
+
+  el.innerHTML = `
+    <p>Esposizione ${esposizione}: <b>${nOpen} azioni su ${MAX_POSITIONS}</b> settori operativi sono attive, con il <b>${investedPct.toFixed(0)}%</b> del capitale investito e una quota di liquidità del <b>${cashPct.toFixed(1)}%</b> come buffer difensivo. Composizione ${composizione}.</p>
+    <p>Esposizione diversificata su più macro-temi: ${temaList || '<i>nessuna esposizione tematica</i>'}. ${movimenti}</p>
+    <p>${perfComment} <b>Prospettiva:</b> ${prospettiva}</p>
+  `;
+}
+
+// ============================================================
+// STORICO OPERAZIONI CHIUSE (modal table)
+// ============================================================
+function renderClosedOpsTable(closedOps) {
+  const body = document.getElementById('closed-ops-body');
+  if (!body) return;
+  if (!closedOps || closedOps.length === 0) {
+    body.innerHTML = '<tr><td colspan="9" class="loading">Nessuna operazione chiusa nel periodo</td></tr>';
+    return;
+  }
+  let html = '';
+  closedOps.forEach((op, idx) => {
+    const tag = TAG_LABELS[op.entry_tag] || { label: op.entry_tag || '—', cls: 'badge-value' };
+    const perfCls = op.perf_pct > 0.05 ? 'pos' : (op.perf_pct < -0.05 ? 'neg' : '');
+    html += `
+      <tr>
+        <td>${idx + 1}</td>
+        <td><b>${regionFlag(op.region)} ${stockName(op.ticker)}</b> <span style="font-family: var(--mono); font-size: 10px; color: var(--text-muted);">${op.ticker}</span><br><span style="font-size:10.5px; color: var(--text-muted);">${sectorLabel(op.sector_etf)}</span></td>
+        <td><span class="badge ${tag.cls}">${tag.label}</span></td>
+        <td>${fmtDate(op.entry_date)}</td>
+        <td class="col-num">${fmtNum(op.entry_price)}</td>
+        <td>${fmtDate(op.exit_date)}</td>
+        <td class="col-num">${fmtNum(op.exit_price)}</td>
+        <td>${op.weeks_held || 0}</td>
+        <td class="col-num"><b class="${perfCls}">${fmtPerc(op.perf_pct)}</b></td>
+      </tr>`;
+  });
+  body.innerHTML = html;
+}
+
+// ============================================================
+// EVENT HANDLERS
+// ============================================================
+function setupHandlers() {
+  // Preset bottoni (data-preset)
+  document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
+  });
+  // Mode bottoni (data-mode)
+  document.querySelectorAll('.preset-btn[data-mode]').forEach(btn => {
+    btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+  });
+  document.getElementById('date-start').addEventListener('change', onDateInputChange);
+  document.getElementById('date-end').addEventListener('change', onDateInputChange);
+
+  // Modal funzionamento
+  const fmodal = document.getElementById('funzionamento-modal-overlay');
+  const fopen = document.getElementById('open-funzionamento-btn');
+  const fclose = document.getElementById('close-funzionamento-btn');
+  if (fopen && fmodal) {
+    fopen.addEventListener('click', () => { fmodal.classList.add('open'); fmodal.setAttribute('aria-hidden', 'false'); });
+    fopen.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fmodal.classList.add('open'); fmodal.setAttribute('aria-hidden', 'false'); } });
+  }
+  if (fclose && fmodal) fclose.addEventListener('click', () => { fmodal.classList.remove('open'); fmodal.setAttribute('aria-hidden', 'true'); });
+  if (fmodal) fmodal.addEventListener('click', e => { if (e.target === fmodal) { fmodal.classList.remove('open'); fmodal.setAttribute('aria-hidden', 'true'); } });
+
+  // Modal storico operazioni
+  const smodal = document.getElementById('storico-modal-overlay');
+  const sopen = document.getElementById('open-storico-btn');
+  const sclose = document.getElementById('close-storico-btn');
+  if (sopen && smodal) sopen.addEventListener('click', () => { smodal.classList.add('open'); smodal.setAttribute('aria-hidden', 'false'); });
+  if (sclose && smodal) sclose.addEventListener('click', () => { smodal.classList.remove('open'); smodal.setAttribute('aria-hidden', 'true'); });
+  if (smodal) smodal.addEventListener('click', e => { if (e.target === smodal) { smodal.classList.remove('open'); smodal.setAttribute('aria-hidden', 'true'); } });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (fmodal) { fmodal.classList.remove('open'); fmodal.setAttribute('aria-hidden', 'true'); }
+      if (smodal) { smodal.classList.remove('open'); smodal.setAttribute('aria-hidden', 'true'); }
+    }
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadData();
+</script>
+
+</body>
+</html>

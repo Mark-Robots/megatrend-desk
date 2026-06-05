@@ -1,0 +1,27 @@
+{
+  "name": "Megatrend Desk",
+  "short_name": "MGTR Desk",
+  "description": "Sistema di sector rotation con backtest dal 2018: dashboard Azioni e ETF integrate — by MarkRobots",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#1b365d",
+  "background_color": "#fbf7ef",
+  "lang": "it",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
