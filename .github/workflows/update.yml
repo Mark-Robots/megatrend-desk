@@ -1,1 +1,84 @@
+name: Update Megatrend Data
+# Aggiorna sia sector_data.json (ETF) che stocks_data.json (Azioni).
+# Esecuzione automatica: ogni venerdì 16:00 ITA (USA aperto da 30 min).
+on:
+  schedule:
+    # Estate (CEST = UTC+2): 16:00, 16:30, 17:00 ITA
+    - cron: '0,30 14 * * 5'
+    - cron: '0 15 * * 5'
+    # Inverno (CET = UTC+1): 16:00, 16:30, 17:00 ITA
+    - cron: '30 15 * * 5'
+    - cron: '0 16 * * 5'
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'data/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install yfinance pandas numpy
+      - name: Run ETF sector update script
+        run: python scripts/update_data.py
+      - name: Run stocks update script
+        run: python scripts/update_stocks.py
+      - name: Check generated JSON files
+        run: |
+          for f in data/sector_data.json data/stocks_data.json; do
+            if [ -f "$f" ]; then
+              echo "✓ $f: $(wc -c < "$f") byte"
+            else
+              echo "⚠ $f NON generato"
+            fi
+          done
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'Megatrend Bot'
+          git config --global user.email 'bot@users.noreply.github.com'
+          git add data/sector_data.json data/stocks_data.json data/stocks_state.json data/ranking_history.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "Nessuna modifica ai dati"
+            exit 0
+          fi
+          git commit -m "Auto-update: $(date -u +'%Y-%m-%d %H:%M UTC')"
 
+          mkdir -p /tmp/backup_data
+          cp data/*.json /tmp/backup_data/ 2>/dev/null || true
+
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "✓ Push riuscito al tentativo $i"
+              exit 0
+            fi
+            echo "✗ Push tentativo $i fallito, hard reset + ripristino dati..."
+
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/backup_data/*.json data/ 2>/dev/null || true
+
+            git add data/*.json 2>/dev/null || true
+            if ! git diff --staged --quiet; then
+              git commit -m "Auto-update: $(date -u +'%Y-%m-%d %H:%M UTC') (retry $i)"
+            else
+              echo "Nessuna modifica dopo reset, esco"
+              exit 0
+            fi
+            sleep $((i * 2))
+          done
+          echo "ERROR: push fallito dopo 5 tentativi"
+          exit 1
