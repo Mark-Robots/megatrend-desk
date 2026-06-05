@@ -632,16 +632,28 @@ def run_backtest(prices, sector_etfs, mode='balanced'):
             if tk not in prices.columns: continue
             
             entry_price = float(prices[tk].iloc[start_idx])
-            exit_price = float(prices[tk].iloc[end_idx])
-            if pd.isna(entry_price) or pd.isna(exit_price) or entry_price <= 0:
+            if pd.isna(entry_price) or entry_price <= 0:
                 continue
             
             # È "open" se il periodo IN finisce all'ultima data disponibile
             # (il segnale è ancora attivo, l'operazione non è stata chiusa)
             is_open = (end_date == last_data_date) or (end_idx == n_weeks - 1)
             
+            # --- FIX uscita ----------------------------------------------------
+            # end_idx è l'ULTIMA settimana IN. La vendita reale avviene al close
+            # della PRIMA settimana OUT (end_idx + 1) — è ciò che la equity curve
+            # (FASE 3) conta già. Per le operazioni CHIUSE usiamo end_idx + 1 per
+            # prezzo/data/perf; per quelle APERTE non c'è ancora vendita → si usa
+            # l'ultimo close disponibile (mark-to-market).
+            # NB: _start_idx / _end_idx restano INVARIATI → la equity curve non cambia.
+            exit_idx = end_idx if is_open else min(end_idx + 1, n_weeks - 1)
+            exit_price = float(prices[tk].iloc[exit_idx])
+            if pd.isna(exit_price) or exit_price <= 0:
+                continue
+            exit_date_eff = dates[exit_idx]
+            
             perf = (exit_price / entry_price - 1) * 100
-            weeks_held = end_idx - start_idx + 1
+            weeks_held = (exit_idx - start_idx + 1) if is_open else (exit_idx - start_idx)
             
             operations.append({
                 'sector_etf': sec,
@@ -649,7 +661,7 @@ def run_backtest(prices, sector_etfs, mode='balanced'):
                 'region': region,
                 'ticker': tk,
                 'entry_date': str(start_date.date()) if hasattr(start_date, 'date') else str(start_date)[:10],
-                'exit_date': None if is_open else (str(end_date.date()) if hasattr(end_date, 'date') else str(end_date)[:10]),
+                'exit_date': None if is_open else (str(exit_date_eff.date()) if hasattr(exit_date_eff, 'date') else str(exit_date_eff)[:10]),
                 'entry_price': round(entry_price, 4),
                 'exit_price': round(exit_price, 4),
                 'perf_pct': round(perf, 2),
