@@ -1,11 +1,5 @@
 name: Update Megatrend Data
 on:
-  schedule:
-    # === MODALITA' TEST WEEKEND ===
-    # Ven/Sab/Dom, due colpi: 16:00 e 16:15 ITA (estate, UTC+2).
-    # In inverno (UTC+1) diventano 15:00 / 15:15 ITA: per il test non importa,
-    # serve solo a verificare che lo scheduler si accenda da solo (Event=schedule).
-    - cron: '0,15 14 * * 5,6,0'
   push:
     branches: [ main ]
     paths-ignore:
