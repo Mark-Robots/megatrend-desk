@@ -1530,12 +1530,12 @@ body.modal-open { overflow: hidden; }
         m.sectors.forEach(s => {
           if (s.move === 'ingresso')
             rows.push('<span style="color:#34d399;">&#9650; INGRESSO</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">&rarr; ' + esc(s.ticker||'?') + scoreTxt(s) + '</span>');
+                      ' <span style="color:#9ca3af;">&rarr; ' + esc(s.ticker_name||s.ticker||'?') + ' (' + esc(s.ticker||'?') + ')' + scoreTxt(s) + '</span>');
           else if (s.move === 'uscita')
             rows.push('<span style="color:#f87171;">&#9660; USCITA</span> ' + esc(s.name) + scoreSuffix(s));
           else if (s.borderline)
             rows.push('<span style="color:#fbbf24;">&#9888; borderline</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">(' + esc(s.ticker||'?') + ' ROC4 ' + fmt(s.roc4) + '%)</span>');
+                      ' <span style="color:#9ca3af;">(' + esc(s.ticker_name||s.ticker||'?') + ' &middot; ROC4 ' + fmt(s.roc4) + '%)</span>');
         });
         html += '<div style="margin-top:8px;">'
               + '<span style="font-size:11px; letter-spacing:1px; color:#818cf8;">' + label + '</span> ';
