@@ -100,6 +100,7 @@ def main():
                 'move': move,
                 'borderline': bool(borderline),
                 'ticker': r.get('ticker'),
+                'ticker_name': getattr(us, 'STOCK_NAMES', {}).get(r.get('ticker'), r.get('ticker')),
                 'roc4': round(float(roc4), 2) if roc4 is not None else None,
                 'roc13': round(float(r['roc13']), 2) if r.get('roc13') is not None else None,
                 'score': round(float(r['score']), 1) if r.get('score') is not None else None,
