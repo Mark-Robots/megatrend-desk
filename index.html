@@ -1503,7 +1503,7 @@ body.modal-open { overflow: hidden; }
      font-family:'JetBrains Mono', monospace;">
   <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px;">
     <div style="font-size:14px; font-weight:700; color:#e8eaf0;">
-      &#9889; Movimenti previsti <span style="color:#6b7280; font-weight:400;">(se la settimana chiudesse ora)</span>
+      &#9889; Movimenti previsti
     </div>
     <div id="pv-updated" style="font-size:11px; color:#6b7280;"></div>
   </div>
@@ -1522,7 +1522,7 @@ body.modal-open { overflow: hidden; }
       const body = document.getElementById('pv-body');
       const upd = new Date(d.updated_at);
       document.getElementById('pv-updated').textContent =
-        'agg. ' + upd.toLocaleString('it-IT',{timeZone:'Europe/Rome',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) + ' ITA · barra ' + d.last_bar;
+        'agg. ' + upd.toLocaleString('it-IT',{timeZone:'Europe/Rome',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) + ' ITA';
       let html = '';
       MODES.forEach(([key,label]) => {
         const m = d.modes[key]; if(!m) return;
@@ -1530,12 +1530,12 @@ body.modal-open { overflow: hidden; }
         m.sectors.forEach(s => {
           if (s.move === 'ingresso')
             rows.push('<span style="color:#34d399;">&#9650; INGRESSO</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">&rarr; ' + esc(s.ticker_name||s.ticker||'?') + ' (' + esc(s.ticker||'?') + ')' + scoreTxt(s) + '</span>');
+                      ' <span style="color:#9ca3af;">&rarr; ' + esc(s.ticker_name||s.ticker||'?') + ' (' + esc(s.ticker||'?') + ')</span>');
           else if (s.move === 'uscita')
             rows.push('<span style="color:#f87171;">&#9660; USCITA</span> ' + esc(s.name) + scoreSuffix(s));
           else if (s.borderline)
             rows.push('<span style="color:#fbbf24;">&#9888; borderline</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">(' + esc(s.ticker_name||s.ticker||'?') + ' &middot; ROC4 ' + fmt(s.roc4) + '%)</span>');
+                      ' <span style="color:#9ca3af;">(' + esc(s.ticker_name||s.ticker||'?') + ')</span>');
         });
         html += '<div style="margin-top:8px;">'
               + '<span style="font-size:11px; letter-spacing:1px; color:#818cf8;">' + label + '</span> ';
