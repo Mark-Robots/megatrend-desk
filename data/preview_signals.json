@@ -1,0 +1,277 @@
+{
+ "updated_at": "2026-06-10T21:06:25.581052+00:00",
+ "last_bar": "2026-06-05",
+ "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
+ "modes": {
+  "balanced": {
+   "open_sectors": [
+    "EXH5.DE",
+    "EXV1.DE",
+    "SOXX",
+    "XLE",
+    "XLI",
+    "XLK",
+    "XLP"
+   ],
+   "sectors": [
+    {
+     "sector": "XLK",
+     "name": "Tecnologia USA",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "AMD",
+     "roc4": 2.46,
+     "roc13": 142.36,
+     "score": 206.0,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "SOXX",
+     "name": "Semiconduttori",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "MU",
+     "roc4": 15.69,
+     "roc13": 133.43,
+     "score": 359.2,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLF",
+     "name": "Finanziari USA",
+     "in_now": true,
+     "was_in": false,
+     "move": "ingresso",
+     "borderline": false,
+     "ticker": "MS",
+     "roc4": 9.76,
+     "roc13": 32.94,
+     "score": 45.6,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLV",
+     "name": "Sanità USA",
+     "in_now": true,
+     "was_in": false,
+     "move": "ingresso",
+     "borderline": false,
+     "ticker": "UNH",
+     "roc4": 5.13,
+     "roc13": 40.52,
+     "score": 38.5,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLI",
+     "name": "Industriali USA",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "CAT",
+     "roc4": 0.76,
+     "roc13": 33.06,
+     "score": 83.3,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLP",
+     "name": "Consumi essenziali",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "MO",
+     "roc4": 5.97,
+     "roc13": 10.36,
+     "score": 18.4,
+     "tag": "premium_ok"
+    },
+    {
+     "sector": "XLE",
+     "name": "Energia USA",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "VLO",
+     "roc4": 6.63,
+     "roc13": 14.43,
+     "score": 50.4,
+     "tag": "premium_ok"
+    },
+    {
+     "sector": "EXV1.DE",
+     "name": "Banche EU",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "BMPS.MI",
+     "roc4": 5.54,
+     "roc13": 37.48,
+     "score": 36.5,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "EXH5.DE",
+     "name": "Assicurazioni",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "PST.MI",
+     "roc4": 8.42,
+     "roc13": 19.49,
+     "score": 29.0,
+     "tag": "premium_ok"
+    }
+   ],
+   "ingressi": [
+    "XLF",
+    "XLV"
+   ],
+   "uscite": []
+  },
+  "aggressive": {
+   "open_sectors": [
+    "EXH5.DE",
+    "EXV1.DE",
+    "SOXX",
+    "XLE",
+    "XLI",
+    "XLK",
+    "XLP"
+   ],
+   "sectors": [
+    {
+     "sector": "XLK",
+     "name": "Tecnologia USA",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "AMD",
+     "roc4": 2.46,
+     "roc13": 142.36,
+     "score": 44.4,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "SOXX",
+     "name": "Semiconduttori",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "MU",
+     "roc4": 15.69,
+     "roc13": 133.43,
+     "score": 51.0,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLF",
+     "name": "Finanziari USA",
+     "in_now": true,
+     "was_in": false,
+     "move": "ingresso",
+     "borderline": false,
+     "ticker": "MS",
+     "roc4": 9.76,
+     "roc13": 32.94,
+     "score": 16.7,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLV",
+     "name": "Sanità USA",
+     "in_now": true,
+     "was_in": false,
+     "move": "ingresso",
+     "borderline": false,
+     "ticker": "LLY",
+     "roc4": 19.5,
+     "roc13": 14.44,
+     "score": 18.0,
+     "tag": "premium_ok"
+    },
+    {
+     "sector": "XLI",
+     "name": "Industriali USA",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": true,
+     "ticker": "CAT",
+     "roc4": 0.76,
+     "roc13": 33.06,
+     "score": 10.5,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "XLP",
+     "name": "Consumi essenziali",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "MO",
+     "roc4": 5.97,
+     "roc13": 10.36,
+     "score": 7.3,
+     "tag": "premium_ok"
+    },
+    {
+     "sector": "XLE",
+     "name": "Energia USA",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "MPC",
+     "roc4": 7.41,
+     "roc13": 18.86,
+     "score": 10.8,
+     "tag": "premium_ok"
+    },
+    {
+     "sector": "EXV1.DE",
+     "name": "Banche EU",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "MB.MI",
+     "roc4": 6.24,
+     "roc13": 41.86,
+     "score": 16.9,
+     "tag": "top_momentum"
+    },
+    {
+     "sector": "EXH5.DE",
+     "name": "Assicurazioni",
+     "in_now": true,
+     "was_in": true,
+     "move": null,
+     "borderline": false,
+     "ticker": "PST.MI",
+     "roc4": 8.42,
+     "roc13": 19.49,
+     "score": 11.7,
+     "tag": "premium_ok"
+    }
+   ],
+   "ingressi": [
+    "XLF",
+    "XLV"
+   ],
+   "uscite": []
+  }
+ }
+}
