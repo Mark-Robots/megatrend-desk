@@ -1,5 +1,6 @@
-// App Megatrend (Azioni + ETF) · Service Worker v1.0
-const CACHE_NAME = 'app-megatrend-v1';
+// App Megatrend (Azioni + ETF) · Service Worker v2.0
+// v2: HTML e JSON network-first (aggiornamenti immediati), cache solo fallback offline.
+const CACHE_NAME = 'app-megatrend-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -26,24 +27,33 @@ self.addEventListener('activate', event => {
   );
 });
 
+// network-first: prova la rete, salva in cache, fallback alla cache se offline
+function networkFirst(request) {
+  return fetch(request)
+    .then(res => {
+      const resClone = res.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(request, resClone));
+      return res;
+    })
+    .catch(() => caches.match(request));
+}
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  // Dati JSON: network-first per averli sempre freschi, fallback cache
-  const isDataFile = url.pathname.endsWith('stocks_data.json') || 
-                     url.pathname.endsWith('sector_data.json') ||
-                     url.pathname.endsWith('ranking_history.json');
-  
-  if (isDataFile) {
-    event.respondWith(
-      fetch(event.request)
-        .then(res => {
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
-          return res;
-        })
-        .catch(() => caches.match(event.request))
-    );
+
+  // 1) Navigazioni e pagine HTML -> network-first (aggiornamenti subito)
+  const isHTML = event.request.mode === 'navigate' ||
+                 url.pathname.endsWith('.html') ||
+                 url.pathname.endsWith('/');
+
+  // 2) Tutti i JSON dei dati -> network-first (sempre freschi)
+  const isDataFile = url.pathname.includes('/data/') ||
+                     url.pathname.endsWith('.json');
+
+  if (isHTML || isDataFile) {
+    event.respondWith(networkFirst(event.request));
   } else {
+    // 3) Asset statici (icone, chart.js, font...) -> cache-first
     event.respondWith(
       caches.match(event.request).then(cached => cached || fetch(event.request))
     );
