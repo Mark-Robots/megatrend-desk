@@ -95,14 +95,14 @@ def main():
             sectors.append({
                 'sector': sec,
                 'name': NAMES.get(sec, sec),
-                'in_now': in_now,
-                'was_in': was_in,
+                'in_now': bool(in_now),
+                'was_in': bool(was_in),
                 'move': move,
-                'borderline': borderline,
+                'borderline': bool(borderline),
                 'ticker': r.get('ticker'),
-                'roc4': round(roc4, 2) if roc4 is not None else None,
-                'roc13': round(r['roc13'], 2) if r.get('roc13') is not None else None,
-                'score': round(r['score'], 1) if r.get('score') is not None else None,
+                'roc4': round(float(roc4), 2) if roc4 is not None else None,
+                'roc13': round(float(r['roc13']), 2) if r.get('roc13') is not None else None,
+                'score': round(float(r['score']), 1) if r.get('score') is not None else None,
                 'tag': r.get('tag'),
             })
         out['modes'][mode] = {
@@ -115,7 +115,8 @@ def main():
 
     os.makedirs(os.path.dirname(OUT_JSON), exist_ok=True)
     with open(OUT_JSON, 'w', encoding='utf-8') as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
+        json.dump(out, f, ensure_ascii=False, indent=1,
+                  default=lambda o: o.item() if hasattr(o, 'item') else str(o))
     print(f"[PREVIEW] Scritto {OUT_JSON}")
 
 
