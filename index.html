@@ -1532,10 +1532,11 @@ body.modal-open { overflow: hidden; }
             rows.push('<span style="color:#34d399;">&#9650; INGRESSO</span> ' + esc(s.name) +
                       ' <span style="color:#9ca3af;">&rarr; ' + esc(s.ticker_name||s.ticker||'?') + ' (' + esc(s.ticker||'?') + ')</span>');
           else if (s.move === 'uscita')
-            rows.push('<span style="color:#f87171;">&#9660; USCITA</span> ' + esc(s.name) + scoreSuffix(s));
+            rows.push('<span style="color:#f87171;">&#9660; USCITA</span> ' + esc(s.name) +
+                      ' <span style="color:#9ca3af;">&rarr; vendi ' + esc(s.held_name||s.held_ticker||'?') + (s.held_ticker?' ('+esc(s.held_ticker)+')':'') + '</span>');
           else if (s.borderline)
             rows.push('<span style="color:#fbbf24;">&#9888; borderline</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">(' + esc(s.ticker_name||s.ticker||'?') + ')</span>');
+                      ' <span style="color:#9ca3af;">(in portafoglio: ' + esc(s.held_name||s.held_ticker||s.ticker_name||'?') + ')</span>');
         });
         html += '<div style="margin-top:8px;">'
               + '<span style="font-size:11px; letter-spacing:1px; color:#818cf8;">' + label + '</span> ';
