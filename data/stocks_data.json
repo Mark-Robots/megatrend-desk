@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-11T04:19:41.219896+00:00",
+  "updated_at": "2026-06-11T04:22:57.884838+00:00",
   "last_data_date": "2026-06-05",
   "backtest_start": "2018-01-01",
   "universe_size": {
@@ -238,7 +238,7 @@
         "best_operation": {
           "ticker": "NVDA",
           "sector": "Tecnologia USA",
-          "perf_pct": 450.12
+          "perf_pct": 450.13
         },
         "worst_operation": {
           "ticker": "MB.MI",
@@ -270,7 +270,7 @@
         },
         {
           "date": "2019-08-09",
-          "system": 99.4293,
+          "system": 99.4294,
           "cash": 99.9825,
           "world": 95.3576,
           "n_positions": 5,
@@ -283,7 +283,7 @@
           "cash": 99.973,
           "world": 95.6648,
           "n_positions": 5,
-          "pos_ret_sum": -0.164776,
+          "pos_ret_sum": -0.164775,
           "n_active_for_ret": 5
         },
         {
@@ -292,7 +292,7 @@
           "cash": 99.9584,
           "world": 95.0538,
           "n_positions": 5,
-          "pos_ret_sum": -0.037499,
+          "pos_ret_sum": -0.0375,
           "n_active_for_ret": 5
         },
         {
@@ -310,7 +310,7 @@
           "cash": 99.9591,
           "world": 99.4546,
           "n_positions": 5,
-          "pos_ret_sum": -0.018224,
+          "pos_ret_sum": -0.018223,
           "n_active_for_ret": 5
         },
         {
@@ -391,7 +391,7 @@
           "cash": 99.8482,
           "world": 103.7864,
           "n_positions": 8,
-          "pos_ret_sum": 0.061618,
+          "pos_ret_sum": 0.061617,
           "n_active_for_ret": 7
         },
         {
@@ -436,7 +436,7 @@
           "cash": 99.7935,
           "world": 105.2499,
           "n_positions": 9,
-          "pos_ret_sum": 0.086243,
+          "pos_ret_sum": 0.086242,
           "n_active_for_ret": 8
         },
         {
@@ -463,7 +463,7 @@
           "cash": 99.7643,
           "world": 107.0344,
           "n_positions": 8,
-          "pos_ret_sum": 0.017922,
+          "pos_ret_sum": 0.017923,
           "n_active_for_ret": 9
         },
         {
@@ -472,7 +472,7 @@
           "cash": 99.7541,
           "world": 108.4357,
           "n_positions": 8,
-          "pos_ret_sum": -0.033465,
+          "pos_ret_sum": -0.033466,
           "n_active_for_ret": 8
         },
         {
@@ -490,12 +490,12 @@
           "cash": 99.7314,
           "world": 110.3721,
           "n_positions": 7,
-          "pos_ret_sum": -0.149619,
+          "pos_ret_sum": -0.14962,
           "n_active_for_ret": 8
         },
         {
           "date": "2020-01-31",
-          "system": 106.9343,
+          "system": 106.9342,
           "cash": 99.7344,
           "world": 107.1103,
           "n_positions": 6,
@@ -508,12 +508,12 @@
           "cash": 99.7263,
           "world": 111.3213,
           "n_positions": 6,
-          "pos_ret_sum": 0.391606,
+          "pos_ret_sum": 0.391607,
           "n_active_for_ret": 6
         },
         {
           "date": "2020-02-14",
-          "system": 115.9431,
+          "system": 115.943,
           "cash": 99.6913,
           "world": 113.5199,
           "n_positions": 6,
@@ -544,7 +544,7 @@
           "cash": 99.6548,
           "world": 95.827,
           "n_positions": 4,
-          "pos_ret_sum": -0.069085,
+          "pos_ret_sum": -0.069084,
           "n_active_for_ret": 5
         },
         {
@@ -571,7 +571,7 @@
           "cash": 99.7132,
           "world": 83.9914,
           "n_positions": 2,
-          "pos_ret_sum": 0.407874,
+          "pos_ret_sum": 0.407875,
           "n_active_for_ret": 3
         },
         {
@@ -607,7 +607,7 @@
           "cash": 99.611,
           "world": 92.8207,
           "n_positions": 3,
-          "pos_ret_sum": 0.000732,
+          "pos_ret_sum": 0.000731,
           "n_active_for_ret": 4
         },
         {
@@ -652,12 +652,12 @@
           "cash": 99.3921,
           "world": 97.898,
           "n_positions": 3,
-          "pos_ret_sum": -0.037822,
+          "pos_ret_sum": -0.037823,
           "n_active_for_ret": 3
         },
         {
           "date": "2020-06-05",
-          "system": 98.5671,
+          "system": 98.567,
           "cash": 99.5454,
           "world": 102.9235,
           "n_positions": 3,
@@ -675,11 +675,11 @@
         },
         {
           "date": "2020-06-19",
-          "system": 99.8507,
+          "system": 99.8506,
           "cash": 99.5286,
           "world": 101.6188,
           "n_positions": 3,
-          "pos_ret_sum": 0.141544,
+          "pos_ret_sum": 0.141543,
           "n_active_for_ret": 3
         },
         {
@@ -697,7 +697,7 @@
           "cash": 99.4578,
           "world": 100.9941,
           "n_positions": 3,
-          "pos_ret_sum": 0.095809,
+          "pos_ret_sum": 0.095808,
           "n_active_for_ret": 3
         },
         {
@@ -706,7 +706,7 @@
           "cash": 99.5235,
           "world": 101.6913,
           "n_positions": 3,
-          "pos_ret_sum": 0.132157,
+          "pos_ret_sum": 0.132158,
           "n_active_for_ret": 3
         },
         {
@@ -724,16 +724,16 @@
           "cash": 99.4505,
           "world": 100.7076,
           "n_positions": 4,
-          "pos_ret_sum": 0.476546,
+          "pos_ret_sum": 0.476547,
           "n_active_for_ret": 4
         },
         {
           "date": "2020-07-31",
-          "system": 108.077,
+          "system": 108.0769,
           "cash": 99.4198,
           "world": 99.0543,
           "n_positions": 4,
-          "pos_ret_sum": 0.178908,
+          "pos_ret_sum": 0.178907,
           "n_active_for_ret": 4
         },
         {
@@ -760,7 +760,7 @@
           "cash": 99.4315,
           "world": 103.7312,
           "n_positions": 6,
-          "pos_ret_sum": 0.089405,
+          "pos_ret_sum": 0.089404,
           "n_active_for_ret": 6
         },
         {
@@ -778,7 +778,7 @@
           "cash": 99.387,
           "world": 103.0271,
           "n_positions": 6,
-          "pos_ret_sum": -0.1677,
+          "pos_ret_sum": -0.167699,
           "n_active_for_ret": 6
         },
         {
@@ -787,7 +787,7 @@
           "cash": 99.3979,
           "world": 102.6888,
           "n_positions": 5,
-          "pos_ret_sum": -0.111147,
+          "pos_ret_sum": -0.111148,
           "n_active_for_ret": 6
         },
         {
@@ -841,7 +841,7 @@
           "cash": 99.3111,
           "world": 105.1187,
           "n_positions": 5,
-          "pos_ret_sum": -0.080024,
+          "pos_ret_sum": -0.080025,
           "n_active_for_ret": 5
         },
         {
@@ -850,7 +850,7 @@
           "cash": 99.3206,
           "world": 101.001,
           "n_positions": 5,
-          "pos_ret_sum": -0.324735,
+          "pos_ret_sum": -0.324734,
           "n_active_for_ret": 5
         },
         {
@@ -859,7 +859,7 @@
           "cash": 99.2717,
           "world": 106.7962,
           "n_positions": 5,
-          "pos_ret_sum": 0.55092,
+          "pos_ret_sum": 0.550919,
           "n_active_for_ret": 5
         },
         {
@@ -877,7 +877,7 @@
           "cash": 99.2688,
           "world": 110.5999,
           "n_positions": 6,
-          "pos_ret_sum": 0.197263,
+          "pos_ret_sum": 0.197262,
           "n_active_for_ret": 6
         },
         {
@@ -891,7 +891,7 @@
         },
         {
           "date": "2020-12-04",
-          "system": 119.8587,
+          "system": 119.8586,
           "cash": 99.2359,
           "world": 111.77,
           "n_positions": 7,
@@ -904,7 +904,7 @@
           "cash": 99.2513,
           "world": 110.9071,
           "n_positions": 7,
-          "pos_ret_sum": 0.066309,
+          "pos_ret_sum": 0.06631,
           "n_active_for_ret": 7
         },
         {
@@ -922,7 +922,7 @@
           "cash": 99.2111,
           "world": 112.1945,
           "n_positions": 7,
-          "pos_ret_sum": -0.119361,
+          "pos_ret_sum": -0.11936,
           "n_active_for_ret": 7
         },
         {
@@ -940,7 +940,7 @@
           "cash": 99.206,
           "world": 115.3907,
           "n_positions": 6,
-          "pos_ret_sum": 0.43954,
+          "pos_ret_sum": 0.439541,
           "n_active_for_ret": 6
         },
         {
@@ -949,7 +949,7 @@
           "cash": 99.1746,
           "world": 115.9602,
           "n_positions": 6,
-          "pos_ret_sum": -0.084478,
+          "pos_ret_sum": -0.084477,
           "n_active_for_ret": 6
         },
         {
@@ -976,7 +976,7 @@
           "cash": 99.1593,
           "world": 118.7422,
           "n_positions": 6,
-          "pos_ret_sum": 0.40393,
+          "pos_ret_sum": 0.403931,
           "n_active_for_ret": 6
         },
         {
@@ -1048,7 +1048,7 @@
           "cash": 99.0426,
           "world": 124.5478,
           "n_positions": 6,
-          "pos_ret_sum": 0.097338,
+          "pos_ret_sum": 0.097339,
           "n_active_for_ret": 6
         },
         {
@@ -1062,7 +1062,7 @@
         },
         {
           "date": "2021-04-16",
-          "system": 133.5731,
+          "system": 133.573,
           "cash": 99.0411,
           "world": 127.3126,
           "n_positions": 6,
@@ -1111,7 +1111,7 @@
           "cash": 98.9907,
           "world": 125.4901,
           "n_positions": 7,
-          "pos_ret_sum": 0.031322,
+          "pos_ret_sum": 0.031321,
           "n_active_for_ret": 7
         },
         {
@@ -1120,7 +1120,7 @@
           "cash": 98.982,
           "world": 126.926,
           "n_positions": 6,
-          "pos_ret_sum": 0.183872,
+          "pos_ret_sum": 0.183873,
           "n_active_for_ret": 7
         },
         {
@@ -1129,7 +1129,7 @@
           "cash": 98.9499,
           "world": 127.5853,
           "n_positions": 7,
-          "pos_ret_sum": 0.185933,
+          "pos_ret_sum": 0.185932,
           "n_active_for_ret": 6
         },
         {
@@ -1138,7 +1138,7 @@
           "cash": 98.9557,
           "world": 128.9245,
           "n_positions": 7,
-          "pos_ret_sum": -0.015272,
+          "pos_ret_sum": -0.015271,
           "n_active_for_ret": 7
         },
         {
@@ -1174,12 +1174,12 @@
           "cash": 98.9039,
           "world": 133.6083,
           "n_positions": 7,
-          "pos_ret_sum": -0.111513,
+          "pos_ret_sum": -0.111512,
           "n_active_for_ret": 7
         },
         {
           "date": "2021-07-16",
-          "system": 139.8209,
+          "system": 139.8208,
           "cash": 98.8937,
           "world": 133.4012,
           "n_positions": 7,
@@ -1246,7 +1246,7 @@
           "cash": 98.8112,
           "world": 138.5752,
           "n_positions": 8,
-          "pos_ret_sum": 0.076994,
+          "pos_ret_sum": 0.076993,
           "n_active_for_ret": 8
         },
         {
@@ -1260,7 +1260,7 @@
         },
         {
           "date": "2021-09-17",
-          "system": 148.709,
+          "system": 148.7089,
           "cash": 98.7952,
           "world": 137.374,
           "n_positions": 7,
@@ -1309,7 +1309,7 @@
           "cash": 98.7317,
           "world": 140.7773,
           "n_positions": 7,
-          "pos_ret_sum": 0.242504,
+          "pos_ret_sum": 0.242503,
           "n_active_for_ret": 7
         },
         {
@@ -1345,7 +1345,7 @@
           "cash": 98.6879,
           "world": 148.6263,
           "n_positions": 7,
-          "pos_ret_sum": -0.140066,
+          "pos_ret_sum": -0.140067,
           "n_active_for_ret": 8
         },
         {
@@ -1359,7 +1359,7 @@
         },
         {
           "date": "2021-12-03",
-          "system": 159.2929,
+          "system": 159.2928,
           "cash": 98.6777,
           "world": 142.51,
           "n_positions": 7,
@@ -1381,7 +1381,7 @@
           "cash": 98.6434,
           "world": 145.7821,
           "n_positions": 7,
-          "pos_ret_sum": -0.155038,
+          "pos_ret_sum": -0.155037,
           "n_active_for_ret": 7
         },
         {
@@ -1417,7 +1417,7 @@
           "cash": 98.5945,
           "world": 144.5258,
           "n_positions": 7,
-          "pos_ret_sum": 0.129826,
+          "pos_ret_sum": 0.129825,
           "n_active_for_ret": 7
         },
         {
@@ -1426,16 +1426,16 @@
           "cash": 98.5923,
           "world": 141.1604,
           "n_positions": 7,
-          "pos_ret_sum": -0.417372,
+          "pos_ret_sum": -0.417371,
           "n_active_for_ret": 7
         },
         {
           "date": "2022-01-28",
-          "system": 156.8766,
+          "system": 156.8765,
           "cash": 98.5814,
           "world": 138.9687,
           "n_positions": 7,
-          "pos_ret_sum": -0.054661,
+          "pos_ret_sum": -0.054662,
           "n_active_for_ret": 7
         },
         {
@@ -1480,7 +1480,7 @@
           "cash": 98.5011,
           "world": 137.7123,
           "n_positions": 8,
-          "pos_ret_sum": -0.220675,
+          "pos_ret_sum": -0.220676,
           "n_active_for_ret": 8
         },
         {
@@ -1507,7 +1507,7 @@
           "cash": 98.4923,
           "world": 144.7501,
           "n_positions": 8,
-          "pos_ret_sum": 0.23186,
+          "pos_ret_sum": 0.231859,
           "n_active_for_ret": 8
         },
         {
@@ -1521,11 +1521,11 @@
         },
         {
           "date": "2022-04-08",
-          "system": 172.4502,
+          "system": 172.4503,
           "cash": 98.4646,
           "world": 145.789,
           "n_positions": 6,
-          "pos_ret_sum": 0.127496,
+          "pos_ret_sum": 0.127497,
           "n_active_for_ret": 7
         },
         {
@@ -1534,7 +1534,7 @@
           "cash": 98.4558,
           "world": 144.6638,
           "n_positions": 6,
-          "pos_ret_sum": -0.134871,
+          "pos_ret_sum": -0.134872,
           "n_active_for_ret": 6
         },
         {
@@ -1543,7 +1543,7 @@
           "cash": 98.4507,
           "world": 141.6368,
           "n_positions": 6,
-          "pos_ret_sum": -0.098377,
+          "pos_ret_sum": -0.098376,
           "n_active_for_ret": 6
         },
         {
@@ -1552,7 +1552,7 @@
           "cash": 98.4478,
           "world": 141.6816,
           "n_positions": 5,
-          "pos_ret_sum": -0.122226,
+          "pos_ret_sum": -0.122227,
           "n_active_for_ret": 6
         },
         {
@@ -1561,7 +1561,7 @@
           "cash": 98.4106,
           "world": 137.1117,
           "n_positions": 4,
-          "pos_ret_sum": 0.15523,
+          "pos_ret_sum": 0.155231,
           "n_active_for_ret": 5
         },
         {
@@ -1678,7 +1678,7 @@
           "cash": 98.2924,
           "world": 142.0648,
           "n_positions": 4,
-          "pos_ret_sum": -0.183927,
+          "pos_ret_sum": -0.183929,
           "n_active_for_ret": 3
         },
         {
@@ -1687,7 +1687,7 @@
           "cash": 98.2683,
           "world": 145.0607,
           "n_positions": 4,
-          "pos_ret_sum": 0.183109,
+          "pos_ret_sum": 0.18311,
           "n_active_for_ret": 4
         },
         {
@@ -1705,7 +1705,7 @@
           "cash": 98.2771,
           "world": 143.6525,
           "n_positions": 3,
-          "pos_ret_sum": -0.016507,
+          "pos_ret_sum": -0.016508,
           "n_active_for_ret": 4
         },
         {
@@ -1777,7 +1777,7 @@
           "cash": 98.3259,
           "world": 131.6858,
           "n_positions": 1,
-          "pos_ret_sum": 0.068687,
+          "pos_ret_sum": 0.068686,
           "n_active_for_ret": 1
         },
         {
@@ -1804,7 +1804,7 @@
           "cash": 98.3843,
           "world": 136.3247,
           "n_positions": 5,
-          "pos_ret_sum": -0.020007,
+          "pos_ret_sum": -0.020008,
           "n_active_for_ret": 5
         },
         {
@@ -1836,11 +1836,11 @@
         },
         {
           "date": "2022-12-09",
-          "system": 165.1612,
+          "system": 165.1613,
           "cash": 98.5077,
           "world": 134.8474,
           "n_positions": 6,
-          "pos_ret_sum": -0.16108,
+          "pos_ret_sum": -0.161079,
           "n_active_for_ret": 5
         },
         {
@@ -1885,7 +1885,7 @@
           "cash": 98.6959,
           "world": 133.6152,
           "n_positions": 6,
-          "pos_ret_sum": 0.002608,
+          "pos_ret_sum": 0.002609,
           "n_active_for_ret": 6
         },
         {
@@ -1930,7 +1930,7 @@
           "cash": 98.8667,
           "world": 138.0057,
           "n_positions": 7,
-          "pos_ret_sum": -0.072147,
+          "pos_ret_sum": -0.072146,
           "n_active_for_ret": 7
         },
         {
@@ -1939,7 +1939,7 @@
           "cash": 98.9178,
           "world": 136.0762,
           "n_positions": 7,
-          "pos_ret_sum": -0.054219,
+          "pos_ret_sum": -0.05422,
           "n_active_for_ret": 7
         },
         {
@@ -2025,11 +2025,11 @@
         },
         {
           "date": "2023-05-05",
-          "system": 178.2253,
+          "system": 178.2254,
           "cash": 99.441,
           "world": 136.594,
           "n_positions": 5,
-          "pos_ret_sum": 0.118447,
+          "pos_ret_sum": 0.118448,
           "n_active_for_ret": 5
         },
         {
@@ -2110,7 +2110,7 @@
           "cash": 100.0044,
           "world": 143.6974,
           "n_positions": 3,
-          "pos_ret_sum": -0.018383,
+          "pos_ret_sum": -0.018384,
           "n_active_for_ret": 3
         },
         {
@@ -2124,7 +2124,7 @@
         },
         {
           "date": "2023-07-21",
-          "system": 199.0208,
+          "system": 199.0207,
           "cash": 100.1306,
           "world": 146.6519,
           "n_positions": 3,
@@ -2196,11 +2196,11 @@
         },
         {
           "date": "2023-09-15",
-          "system": 197.4162,
+          "system": 197.4163,
           "cash": 100.6962,
           "world": 149.5685,
           "n_positions": 5,
-          "pos_ret_sum": 0.036481,
+          "pos_ret_sum": 0.036482,
           "n_active_for_ret": 4
         },
         {
@@ -2218,7 +2218,7 @@
           "cash": 100.8472,
           "world": 145.865,
           "n_positions": 7,
-          "pos_ret_sum": -0.008623,
+          "pos_ret_sum": -0.008624,
           "n_active_for_ret": 6
         },
         {
@@ -2245,7 +2245,7 @@
           "cash": 101.0647,
           "world": 142.1269,
           "n_positions": 7,
-          "pos_ret_sum": -0.245932,
+          "pos_ret_sum": -0.245933,
           "n_active_for_ret": 7
         },
         {
@@ -2254,7 +2254,7 @@
           "cash": 101.1712,
           "world": 139.4519,
           "n_positions": 7,
-          "pos_ret_sum": -0.07709,
+          "pos_ret_sum": -0.077089,
           "n_active_for_ret": 7
         },
         {
@@ -2290,7 +2290,7 @@
           "cash": 101.4559,
           "world": 148.7643,
           "n_positions": 7,
-          "pos_ret_sum": -0.012868,
+          "pos_ret_sum": -0.012867,
           "n_active_for_ret": 6
         },
         {
@@ -2344,7 +2344,7 @@
           "cash": 101.9477,
           "world": 154.1557,
           "n_positions": 7,
-          "pos_ret_sum": 0.063506,
+          "pos_ret_sum": 0.063505,
           "n_active_for_ret": 7
         },
         {
@@ -2353,7 +2353,7 @@
           "cash": 102.0178,
           "world": 156.1266,
           "n_positions": 7,
-          "pos_ret_sum": 0.264823,
+          "pos_ret_sum": 0.264824,
           "n_active_for_ret": 7
         },
         {
@@ -2443,16 +2443,16 @@
           "cash": 102.7964,
           "world": 171.7693,
           "n_positions": 8,
-          "pos_ret_sum": 0.299178,
+          "pos_ret_sum": 0.299177,
           "n_active_for_ret": 8
         },
         {
           "date": "2024-03-28",
-          "system": 267.6955,
+          "system": 267.6954,
           "cash": 102.8548,
           "world": 172.7012,
           "n_positions": 8,
-          "pos_ret_sum": 0.009308,
+          "pos_ret_sum": 0.009309,
           "n_active_for_ret": 8
         },
         {
@@ -2479,7 +2479,7 @@
           "cash": 103.0978,
           "world": 166.2053,
           "n_positions": 9,
-          "pos_ret_sum": -0.332105,
+          "pos_ret_sum": -0.332106,
           "n_active_for_ret": 8
         },
         {
@@ -2497,7 +2497,7 @@
           "cash": 103.235,
           "world": 169.2945,
           "n_positions": 8,
-          "pos_ret_sum": -0.057294,
+          "pos_ret_sum": -0.057293,
           "n_active_for_ret": 9
         },
         {
@@ -2524,7 +2524,7 @@
           "cash": 103.4846,
           "world": 173.7712,
           "n_positions": 8,
-          "pos_ret_sum": 0.13385,
+          "pos_ret_sum": 0.133849,
           "n_active_for_ret": 8
         },
         {
@@ -2533,7 +2533,7 @@
           "cash": 103.5517,
           "world": 171.2757,
           "n_positions": 8,
-          "pos_ret_sum": -0.012177,
+          "pos_ret_sum": -0.012178,
           "n_active_for_ret": 8
         },
         {
@@ -2542,7 +2542,7 @@
           "cash": 103.6108,
           "world": 175.6782,
           "n_positions": 8,
-          "pos_ret_sum": 0.160952,
+          "pos_ret_sum": 0.160953,
           "n_active_for_ret": 8
         },
         {
@@ -2569,7 +2569,7 @@
           "cash": 103.8436,
           "world": 179.6131,
           "n_positions": 8,
-          "pos_ret_sum": -0.035453,
+          "pos_ret_sum": -0.035452,
           "n_active_for_ret": 8
         },
         {
@@ -2583,11 +2583,11 @@
         },
         {
           "date": "2024-07-12",
-          "system": 297.3838,
+          "system": 297.3837,
           "cash": 103.9998,
           "world": 181.7099,
           "n_positions": 7,
-          "pos_ret_sum": -0.00537,
+          "pos_ret_sum": -0.005371,
           "n_active_for_ret": 7
         },
         {
@@ -2646,11 +2646,11 @@
         },
         {
           "date": "2024-08-30",
-          "system": 300.6343,
+          "system": 300.6342,
           "cash": 104.5157,
           "world": 179.5958,
           "n_positions": 6,
-          "pos_ret_sum": -0.024945,
+          "pos_ret_sum": -0.024946,
           "n_active_for_ret": 5
         },
         {
@@ -2722,7 +2722,7 @@
           "cash": 105.0937,
           "world": 188.2162,
           "n_positions": 6,
-          "pos_ret_sum": -0.184127,
+          "pos_ret_sum": -0.184126,
           "n_active_for_ret": 6
         },
         {
@@ -2731,7 +2731,7 @@
           "cash": 105.1491,
           "world": 185.5067,
           "n_positions": 6,
-          "pos_ret_sum": -0.080929,
+          "pos_ret_sum": -0.08093,
           "n_active_for_ret": 6
         },
         {
@@ -2749,7 +2749,7 @@
           "cash": 105.2783,
           "world": 192.6774,
           "n_positions": 7,
-          "pos_ret_sum": -0.079198,
+          "pos_ret_sum": -0.079197,
           "n_active_for_ret": 7
         },
         {
@@ -2803,7 +2803,7 @@
           "cash": 105.6724,
           "world": 197.2767,
           "n_positions": 4,
-          "pos_ret_sum": 0.045151,
+          "pos_ret_sum": 0.045152,
           "n_active_for_ret": 4
         },
         {
@@ -2884,7 +2884,7 @@
           "cash": 106.1861,
           "world": 199.1405,
           "n_positions": 5,
-          "pos_ret_sum": 0.003082,
+          "pos_ret_sum": 0.003083,
           "n_active_for_ret": 4
         },
         {
@@ -2902,7 +2902,7 @@
           "cash": 106.2977,
           "world": 184.6956,
           "n_positions": 3,
-          "pos_ret_sum": -0.110041,
+          "pos_ret_sum": -0.110042,
           "n_active_for_ret": 4
         },
         {
@@ -2929,7 +2929,7 @@
           "cash": 106.4233,
           "world": 168.0519,
           "n_positions": 4,
-          "pos_ret_sum": -0.500501,
+          "pos_ret_sum": -0.500502,
           "n_active_for_ret": 5
         },
         {
@@ -2970,7 +2970,7 @@
         },
         {
           "date": "2025-05-09",
-          "system": 326.2161,
+          "system": 326.216,
           "cash": 106.7035,
           "world": 181.8221,
           "n_positions": 4,
@@ -3019,16 +3019,16 @@
           "cash": 106.8728,
           "world": 187.3188,
           "n_positions": 7,
-          "pos_ret_sum": -0.120851,
+          "pos_ret_sum": -0.12085,
           "n_active_for_ret": 4
         },
         {
           "date": "2025-06-20",
-          "system": 328.1287,
+          "system": 328.1286,
           "cash": 106.9407,
           "world": 186.6198,
           "n_positions": 7,
-          "pos_ret_sum": -0.023468,
+          "pos_ret_sum": -0.023469,
           "n_active_for_ret": 7
         },
         {
@@ -3042,7 +3042,7 @@
         },
         {
           "date": "2025-07-04",
-          "system": 340.5302,
+          "system": 340.5301,
           "cash": 107.0136,
           "world": 189.7694,
           "n_positions": 6,
@@ -3051,7 +3051,7 @@
         },
         {
           "date": "2025-07-11",
-          "system": 341.1554,
+          "system": 341.1553,
           "cash": 107.0618,
           "world": 191.2881,
           "n_positions": 6,
@@ -3060,7 +3060,7 @@
         },
         {
           "date": "2025-07-18",
-          "system": 344.1667,
+          "system": 344.1666,
           "cash": 107.1107,
           "world": 192.8672,
           "n_positions": 5,
@@ -3069,7 +3069,7 @@
         },
         {
           "date": "2025-07-25",
-          "system": 348.1411,
+          "system": 348.141,
           "cash": 107.145,
           "world": 194.3428,
           "n_positions": 5,
@@ -3096,7 +3096,7 @@
         },
         {
           "date": "2025-08-15",
-          "system": 357.417,
+          "system": 357.4169,
           "cash": 107.2603,
           "world": 197.2939,
           "n_positions": 5,
@@ -3127,12 +3127,12 @@
           "cash": 107.3902,
           "world": 197.3543,
           "n_positions": 5,
-          "pos_ret_sum": 0.118863,
+          "pos_ret_sum": 0.118864,
           "n_active_for_ret": 5
         },
         {
           "date": "2025-09-12",
-          "system": 372.1371,
+          "system": 372.137,
           "cash": 107.4194,
           "world": 200.9958,
           "n_positions": 5,
@@ -3145,7 +3145,7 @@
           "cash": 107.4522,
           "world": 201.9191,
           "n_positions": 4,
-          "pos_ret_sum": 0.019572,
+          "pos_ret_sum": 0.019573,
           "n_active_for_ret": 5
         },
         {
@@ -3204,7 +3204,7 @@
         },
         {
           "date": "2025-11-07",
-          "system": 361.4317,
+          "system": 361.4316,
           "cash": 107.7543,
           "world": 205.0342,
           "n_positions": 5,
@@ -3244,7 +3244,7 @@
           "cash": 107.9025,
           "world": 210.8415,
           "n_positions": 6,
-          "pos_ret_sum": 0.049891,
+          "pos_ret_sum": 0.049892,
           "n_active_for_ret": 6
         },
         {
@@ -3357,7 +3357,7 @@
         },
         {
           "date": "2026-03-06",
-          "system": 360.3914,
+          "system": 360.3913,
           "cash": 108.4337,
           "world": 213.7063,
           "n_positions": 8,
@@ -3420,7 +3420,7 @@
         },
         {
           "date": "2026-04-24",
-          "system": 382.9211,
+          "system": 382.921,
           "cash": 108.7227,
           "world": 220.3679,
           "n_positions": 7,
@@ -3429,7 +3429,7 @@
         },
         {
           "date": "2026-05-01",
-          "system": 391.9085,
+          "system": 391.9084,
           "cash": 108.7504,
           "world": 220.8166,
           "n_positions": 6,
@@ -3438,7 +3438,7 @@
         },
         {
           "date": "2026-05-08",
-          "system": 401.1874,
+          "system": 401.1873,
           "cash": 108.7986,
           "world": 225.6661,
           "n_positions": 6,
@@ -3456,7 +3456,7 @@
         },
         {
           "date": "2026-05-22",
-          "system": 396.6238,
+          "system": 396.6237,
           "cash": 108.8767,
           "world": 231.974,
           "n_positions": 6,
@@ -3725,7 +3725,7 @@
           "entry_date": "2025-03-21",
           "exit_date": "2025-04-04",
           "entry_price": 145.0162,
-          "exit_price": 145.4657,
+          "exit_price": 145.4656,
           "perf_pct": 0.31,
           "weeks_held": 2,
           "status": "closed",
@@ -3870,7 +3870,7 @@
           "exit_date": "2024-09-20",
           "entry_price": 21.0532,
           "exit_price": 115.819,
-          "perf_pct": 450.12,
+          "perf_pct": 450.13,
           "weeks_held": 85,
           "status": "closed",
           "entry_tag": "top_momentum",
@@ -3940,7 +3940,7 @@
           "ticker": "LLY",
           "entry_date": "2023-11-24",
           "exit_date": "2024-05-03",
-          "entry_price": 590.7761,
+          "entry_price": 590.7762,
           "exit_price": 723.613,
           "perf_pct": 22.49,
           "weeks_held": 23,
@@ -3977,7 +3977,7 @@
           "entry_date": "2023-09-29",
           "exit_date": "2023-11-10",
           "entry_price": 526.9312,
-          "exit_price": 586.3608,
+          "exit_price": 586.3609,
           "perf_pct": 11.28,
           "weeks_held": 6,
           "status": "closed",
@@ -4012,7 +4012,7 @@
           "ticker": "LMT",
           "entry_date": "2022-10-28",
           "exit_date": "2023-06-23",
-          "entry_price": 438.8843,
+          "entry_price": 438.8842,
           "exit_price": 423.8592,
           "perf_pct": -3.42,
           "weeks_held": 34,
@@ -4102,7 +4102,7 @@
           "ticker": "KLAC",
           "entry_date": "2022-12-09",
           "exit_date": "2022-12-16",
-          "entry_price": 381.0215,
+          "entry_price": 381.0214,
           "exit_price": 373.3993,
           "perf_pct": -2.0,
           "weeks_held": 1,
@@ -4138,8 +4138,8 @@
           "ticker": "UNP",
           "entry_date": "2022-09-09",
           "exit_date": "2022-09-16",
-          "entry_price": 212.5762,
-          "exit_price": 194.3513,
+          "entry_price": 212.5763,
+          "exit_price": 194.3512,
           "perf_pct": -8.57,
           "weeks_held": 1,
           "status": "closed",
@@ -4210,7 +4210,7 @@
           "ticker": "ABBV",
           "entry_date": "2022-03-18",
           "exit_date": "2022-06-10",
-          "entry_price": 136.4712,
+          "entry_price": 136.4713,
           "exit_price": 123.7988,
           "perf_pct": -9.29,
           "weeks_held": 12,
@@ -4300,8 +4300,8 @@
           "ticker": "LMT",
           "entry_date": "2022-03-18",
           "exit_date": "2022-04-08",
-          "entry_price": 380.8381,
-          "exit_price": 412.4182,
+          "entry_price": 380.8382,
+          "exit_price": 412.4183,
           "perf_pct": 8.29,
           "weeks_held": 3,
           "status": "closed",
@@ -4372,7 +4372,7 @@
           "ticker": "LMT",
           "entry_date": "2022-02-04",
           "exit_date": "2022-02-11",
-          "entry_price": 345.5298,
+          "entry_price": 345.5297,
           "exit_price": 351.618,
           "perf_pct": 1.76,
           "weeks_held": 1,
@@ -4444,7 +4444,7 @@
           "ticker": "COST",
           "entry_date": "2020-10-16",
           "exit_date": "2020-12-31",
-          "entry_price": 350.1272,
+          "entry_price": 350.1271,
           "exit_price": 355.4977,
           "perf_pct": 1.53,
           "weeks_held": 11,
@@ -4480,7 +4480,7 @@
           "ticker": "LLY",
           "entry_date": "2020-04-17",
           "exit_date": "2020-09-11",
-          "entry_price": 146.5915,
+          "entry_price": 146.5916,
           "exit_price": 139.343,
           "perf_pct": -4.94,
           "weeks_held": 21,
@@ -4589,7 +4589,7 @@
           "entry_date": "2019-11-01",
           "exit_date": "2020-02-28",
           "entry_price": 42.3813,
-          "exit_price": 43.3307,
+          "exit_price": 43.3308,
           "perf_pct": 2.24,
           "weeks_held": 17,
           "status": "closed",
@@ -4607,7 +4607,7 @@
           "entry_date": "2019-12-13",
           "exit_date": "2020-01-31",
           "entry_price": 86.8533,
-          "exit_price": 70.2345,
+          "exit_price": 70.2344,
           "perf_pct": -19.13,
           "weeks_held": 7,
           "status": "closed",
@@ -4842,7 +4842,7 @@
         "best_operation": {
           "ticker": "NVDA",
           "sector": "Tecnologia USA",
-          "perf_pct": 450.12
+          "perf_pct": 450.13
         },
         "worst_operation": {
           "ticker": "BAMI.MI",
@@ -4887,7 +4887,7 @@
           "cash": 99.973,
           "world": 95.6648,
           "n_positions": 5,
-          "pos_ret_sum": -0.047814,
+          "pos_ret_sum": -0.047813,
           "n_active_for_ret": 5
         },
         {
@@ -4941,7 +4941,7 @@
           "cash": 99.9197,
           "world": 100.7179,
           "n_positions": 4,
-          "pos_ret_sum": -0.15966,
+          "pos_ret_sum": -0.159661,
           "n_active_for_ret": 4
         },
         {
@@ -4959,7 +4959,7 @@
           "cash": 99.8738,
           "world": 100.3245,
           "n_positions": 4,
-          "pos_ret_sum": 0.112273,
+          "pos_ret_sum": 0.112274,
           "n_active_for_ret": 4
         },
         {
@@ -4968,7 +4968,7 @@
           "cash": 99.881,
           "world": 99.5271,
           "n_positions": 5,
-          "pos_ret_sum": 0.033855,
+          "pos_ret_sum": 0.033854,
           "n_active_for_ret": 4
         },
         {
@@ -5004,7 +5004,7 @@
           "cash": 99.8373,
           "world": 104.3387,
           "n_positions": 7,
-          "pos_ret_sum": 0.043707,
+          "pos_ret_sum": 0.043706,
           "n_active_for_ret": 8
         },
         {
@@ -5067,7 +5067,7 @@
           "cash": 99.7643,
           "world": 107.0344,
           "n_positions": 8,
-          "pos_ret_sum": 0.010293,
+          "pos_ret_sum": 0.010292,
           "n_active_for_ret": 9
         },
         {
@@ -5103,7 +5103,7 @@
           "cash": 99.7344,
           "world": 107.1103,
           "n_positions": 6,
-          "pos_ret_sum": -0.41306,
+          "pos_ret_sum": -0.413059,
           "n_active_for_ret": 7
         },
         {
@@ -5148,7 +5148,7 @@
           "cash": 99.6548,
           "world": 95.827,
           "n_positions": 4,
-          "pos_ret_sum": -0.204173,
+          "pos_ret_sum": -0.204172,
           "n_active_for_ret": 5
         },
         {
@@ -5229,7 +5229,7 @@
           "cash": 99.6037,
           "world": 96.5622,
           "n_positions": 3,
-          "pos_ret_sum": 0.214308,
+          "pos_ret_sum": 0.214307,
           "n_active_for_ret": 3
         },
         {
@@ -5247,7 +5247,7 @@
           "cash": 99.5527,
           "world": 96.7313,
           "n_positions": 3,
-          "pos_ret_sum": 0.098542,
+          "pos_ret_sum": 0.098543,
           "n_active_for_ret": 3
         },
         {
@@ -5274,7 +5274,7 @@
           "cash": 99.5125,
           "world": 98.2466,
           "n_positions": 3,
-          "pos_ret_sum": -0.071051,
+          "pos_ret_sum": -0.07105,
           "n_active_for_ret": 4
         },
         {
@@ -5310,7 +5310,7 @@
           "cash": 99.5235,
           "world": 101.6913,
           "n_positions": 3,
-          "pos_ret_sum": 0.166614,
+          "pos_ret_sum": 0.166615,
           "n_active_for_ret": 3
         },
         {
@@ -5328,7 +5328,7 @@
           "cash": 99.4505,
           "world": 100.7076,
           "n_positions": 4,
-          "pos_ret_sum": 0.254491,
+          "pos_ret_sum": 0.254492,
           "n_active_for_ret": 4
         },
         {
@@ -5342,7 +5342,7 @@
         },
         {
           "date": "2020-08-07",
-          "system": 109.3596,
+          "system": 109.3597,
           "cash": 99.4125,
           "world": 102.2332,
           "n_positions": 5,
@@ -5391,7 +5391,7 @@
           "cash": 99.3979,
           "world": 102.6888,
           "n_positions": 5,
-          "pos_ret_sum": -0.054134,
+          "pos_ret_sum": -0.054135,
           "n_active_for_ret": 6
         },
         {
@@ -5427,7 +5427,7 @@
           "cash": 99.3534,
           "world": 106.1128,
           "n_positions": 4,
-          "pos_ret_sum": 0.19039,
+          "pos_ret_sum": 0.190389,
           "n_active_for_ret": 4
         },
         {
@@ -5517,7 +5517,7 @@
           "cash": 99.2294,
           "world": 111.9357,
           "n_positions": 8,
-          "pos_ret_sum": 0.020895,
+          "pos_ret_sum": 0.020894,
           "n_active_for_ret": 8
         },
         {
@@ -5526,7 +5526,7 @@
           "cash": 99.2111,
           "world": 112.1945,
           "n_positions": 8,
-          "pos_ret_sum": -0.104432,
+          "pos_ret_sum": -0.104431,
           "n_active_for_ret": 8
         },
         {
@@ -5535,7 +5535,7 @@
           "cash": 99.2082,
           "world": 112.733,
           "n_positions": 7,
-          "pos_ret_sum": 0.036688,
+          "pos_ret_sum": 0.036687,
           "n_active_for_ret": 8
         },
         {
@@ -5544,7 +5544,7 @@
           "cash": 99.206,
           "world": 115.3907,
           "n_positions": 7,
-          "pos_ret_sum": 0.442062,
+          "pos_ret_sum": 0.442063,
           "n_active_for_ret": 7
         },
         {
@@ -5553,7 +5553,7 @@
           "cash": 99.1746,
           "world": 115.9602,
           "n_positions": 7,
-          "pos_ret_sum": -0.057865,
+          "pos_ret_sum": -0.057864,
           "n_active_for_ret": 7
         },
         {
@@ -5580,7 +5580,7 @@
           "cash": 99.1593,
           "world": 118.7422,
           "n_positions": 7,
-          "pos_ret_sum": 0.526382,
+          "pos_ret_sum": 0.526383,
           "n_active_for_ret": 7
         },
         {
@@ -5589,12 +5589,12 @@
           "cash": 99.1425,
           "world": 119.6638,
           "n_positions": 7,
-          "pos_ret_sum": 0.385314,
+          "pos_ret_sum": 0.385313,
           "n_active_for_ret": 7
         },
         {
           "date": "2021-02-19",
-          "system": 136.7287,
+          "system": 136.7288,
           "cash": 99.1331,
           "world": 119.6914,
           "n_positions": 7,
@@ -5607,7 +5607,7 @@
           "cash": 99.1258,
           "world": 116.9508,
           "n_positions": 7,
-          "pos_ret_sum": -0.075435,
+          "pos_ret_sum": -0.075434,
           "n_active_for_ret": 7
         },
         {
@@ -5616,7 +5616,7 @@
           "cash": 99.1258,
           "world": 116.0189,
           "n_positions": 7,
-          "pos_ret_sum": 0.091538,
+          "pos_ret_sum": 0.091537,
           "n_active_for_ret": 7
         },
         {
@@ -5625,7 +5625,7 @@
           "cash": 99.0907,
           "world": 120.7269,
           "n_positions": 7,
-          "pos_ret_sum": 0.213343,
+          "pos_ret_sum": 0.213344,
           "n_active_for_ret": 7
         },
         {
@@ -5634,7 +5634,7 @@
           "cash": 99.079,
           "world": 121.324,
           "n_positions": 7,
-          "pos_ret_sum": -0.022523,
+          "pos_ret_sum": -0.022524,
           "n_active_for_ret": 7
         },
         {
@@ -5652,7 +5652,7 @@
           "cash": 99.0426,
           "world": 124.5478,
           "n_positions": 7,
-          "pos_ret_sum": 0.131747,
+          "pos_ret_sum": 0.131748,
           "n_active_for_ret": 7
         },
         {
@@ -5679,7 +5679,7 @@
           "cash": 99.0243,
           "world": 126.2598,
           "n_positions": 8,
-          "pos_ret_sum": -0.10508,
+          "pos_ret_sum": -0.105081,
           "n_active_for_ret": 7
         },
         {
@@ -5706,7 +5706,7 @@
           "cash": 98.9988,
           "world": 125.321,
           "n_positions": 8,
-          "pos_ret_sum": -0.115847,
+          "pos_ret_sum": -0.115846,
           "n_active_for_ret": 8
         },
         {
@@ -5715,7 +5715,7 @@
           "cash": 98.9907,
           "world": 125.4901,
           "n_positions": 8,
-          "pos_ret_sum": 0.050437,
+          "pos_ret_sum": 0.050436,
           "n_active_for_ret": 8
         },
         {
@@ -5724,7 +5724,7 @@
           "cash": 98.982,
           "world": 126.926,
           "n_positions": 7,
-          "pos_ret_sum": 0.183576,
+          "pos_ret_sum": 0.183577,
           "n_active_for_ret": 8
         },
         {
@@ -5733,7 +5733,7 @@
           "cash": 98.9499,
           "world": 127.5853,
           "n_positions": 8,
-          "pos_ret_sum": 0.325079,
+          "pos_ret_sum": 0.325077,
           "n_active_for_ret": 7
         },
         {
@@ -5742,7 +5742,7 @@
           "cash": 98.9557,
           "world": 128.9245,
           "n_positions": 8,
-          "pos_ret_sum": -0.008622,
+          "pos_ret_sum": -0.008621,
           "n_active_for_ret": 8
         },
         {
@@ -5778,12 +5778,12 @@
           "cash": 98.9039,
           "world": 133.6083,
           "n_positions": 8,
-          "pos_ret_sum": -0.115942,
+          "pos_ret_sum": -0.115941,
           "n_active_for_ret": 8
         },
         {
           "date": "2021-07-16",
-          "system": 151.2443,
+          "system": 151.2444,
           "cash": 98.8937,
           "world": 133.4012,
           "n_positions": 7,
@@ -5814,7 +5814,7 @@
           "cash": 98.8696,
           "world": 136.7665,
           "n_positions": 7,
-          "pos_ret_sum": 0.237594,
+          "pos_ret_sum": 0.237595,
           "n_active_for_ret": 7
         },
         {
@@ -5823,7 +5823,7 @@
           "cash": 98.8463,
           "world": 137.588,
           "n_positions": 7,
-          "pos_ret_sum": 0.156642,
+          "pos_ret_sum": 0.156643,
           "n_active_for_ret": 7
         },
         {
@@ -5832,7 +5832,7 @@
           "cash": 98.8485,
           "world": 136.9633,
           "n_positions": 8,
-          "pos_ret_sum": -0.246318,
+          "pos_ret_sum": -0.246319,
           "n_active_for_ret": 7
         },
         {
@@ -5895,7 +5895,7 @@
           "cash": 98.7638,
           "world": 137.1255,
           "n_positions": 7,
-          "pos_ret_sum": 0.15018,
+          "pos_ret_sum": 0.150181,
           "n_active_for_ret": 7
         },
         {
@@ -5922,7 +5922,7 @@
           "cash": 98.7383,
           "world": 142.9656,
           "n_positions": 8,
-          "pos_ret_sum": 0.046034,
+          "pos_ret_sum": 0.046035,
           "n_active_for_ret": 7
         },
         {
@@ -5931,7 +5931,7 @@
           "cash": 98.6967,
           "world": 145.9996,
           "n_positions": 8,
-          "pos_ret_sum": 0.508749,
+          "pos_ret_sum": 0.50875,
           "n_active_for_ret": 8
         },
         {
@@ -5958,7 +5958,7 @@
           "cash": 98.6872,
           "world": 144.0908,
           "n_positions": 7,
-          "pos_ret_sum": -0.17826,
+          "pos_ret_sum": -0.178261,
           "n_active_for_ret": 7
         },
         {
@@ -5967,7 +5967,7 @@
           "cash": 98.6777,
           "world": 142.51,
           "n_positions": 7,
-          "pos_ret_sum": -0.0299,
+          "pos_ret_sum": -0.029899,
           "n_active_for_ret": 7
         },
         {
@@ -6030,7 +6030,7 @@
           "cash": 98.5923,
           "world": 141.1604,
           "n_positions": 7,
-          "pos_ret_sum": -0.413565,
+          "pos_ret_sum": -0.413564,
           "n_active_for_ret": 7
         },
         {
@@ -6048,12 +6048,12 @@
           "cash": 98.55,
           "world": 139.0998,
           "n_positions": 8,
-          "pos_ret_sum": 0.421663,
+          "pos_ret_sum": 0.421664,
           "n_active_for_ret": 7
         },
         {
           "date": "2022-02-11",
-          "system": 183.1217,
+          "system": 183.1218,
           "cash": 98.5544,
           "world": 140.5944,
           "n_positions": 7,
@@ -6066,7 +6066,7 @@
           "cash": 98.5412,
           "world": 137.7054,
           "n_positions": 8,
-          "pos_ret_sum": -0.069163,
+          "pos_ret_sum": -0.069162,
           "n_active_for_ret": 7
         },
         {
@@ -6089,7 +6089,7 @@
         },
         {
           "date": "2022-03-11",
-          "system": 175.2969,
+          "system": 175.297,
           "cash": 98.4945,
           "world": 136.7527,
           "n_positions": 6,
@@ -6120,7 +6120,7 @@
           "cash": 98.4755,
           "world": 144.8122,
           "n_positions": 7,
-          "pos_ret_sum": 0.123308,
+          "pos_ret_sum": 0.123309,
           "n_active_for_ret": 8
         },
         {
@@ -6152,7 +6152,7 @@
         },
         {
           "date": "2022-04-29",
-          "system": 182.5247,
+          "system": 182.5248,
           "cash": 98.4478,
           "world": 141.6816,
           "n_positions": 5,
@@ -6170,7 +6170,7 @@
         },
         {
           "date": "2022-05-13",
-          "system": 185.3851,
+          "system": 185.3852,
           "cash": 98.4099,
           "world": 136.4938,
           "n_positions": 4,
@@ -6179,7 +6179,7 @@
         },
         {
           "date": "2022-05-20",
-          "system": 185.3454,
+          "system": 185.3455,
           "cash": 98.3982,
           "world": 131.6582,
           "n_positions": 4,
@@ -6197,7 +6197,7 @@
         },
         {
           "date": "2022-06-03",
-          "system": 188.1686,
+          "system": 188.1687,
           "cash": 98.3654,
           "world": 136.4317,
           "n_positions": 3,
@@ -6233,7 +6233,7 @@
         },
         {
           "date": "2022-07-01",
-          "system": 183.8652,
+          "system": 183.8653,
           "cash": 98.3303,
           "world": 128.8623,
           "n_positions": 2,
@@ -6251,7 +6251,7 @@
         },
         {
           "date": "2022-07-15",
-          "system": 181.4938,
+          "system": 181.4939,
           "cash": 98.3055,
           "world": 134.1295,
           "n_positions": 2,
@@ -6296,16 +6296,16 @@
         },
         {
           "date": "2022-08-19",
-          "system": 185.7725,
+          "system": 185.7726,
           "cash": 98.2778,
           "world": 146.4586,
           "n_positions": 4,
-          "pos_ret_sum": -0.062293,
+          "pos_ret_sum": -0.062294,
           "n_active_for_ret": 6
         },
         {
           "date": "2022-08-26",
-          "system": 185.0373,
+          "system": 185.0374,
           "cash": 98.2771,
           "world": 143.6525,
           "n_positions": 3,
@@ -6323,7 +6323,7 @@
         },
         {
           "date": "2022-09-09",
-          "system": 180.7455,
+          "system": 180.7456,
           "cash": 98.2705,
           "world": 141.05,
           "n_positions": 3,
@@ -6359,7 +6359,7 @@
         },
         {
           "date": "2022-10-07",
-          "system": 182.2238,
+          "system": 182.2239,
           "cash": 98.3216,
           "world": 131.4614,
           "n_positions": 1,
@@ -6368,7 +6368,7 @@
         },
         {
           "date": "2022-10-14",
-          "system": 181.3368,
+          "system": 181.3369,
           "cash": 98.3325,
           "world": 130.0117,
           "n_positions": 1,
@@ -6381,12 +6381,12 @@
           "cash": 98.3259,
           "world": 131.6858,
           "n_positions": 1,
-          "pos_ret_sum": 0.068687,
+          "pos_ret_sum": 0.068686,
           "n_active_for_ret": 1
         },
         {
           "date": "2022-10-28",
-          "system": 182.9017,
+          "system": 182.9018,
           "cash": 98.342,
           "world": 135.4135,
           "n_positions": 6,
@@ -6458,11 +6458,11 @@
         },
         {
           "date": "2022-12-23",
-          "system": 188.0813,
+          "system": 188.0814,
           "cash": 98.5872,
           "world": 129.8392,
           "n_positions": 7,
-          "pos_ret_sum": 0.171974,
+          "pos_ret_sum": 0.171975,
           "n_active_for_ret": 7
         },
         {
@@ -6471,7 +6471,7 @@
           "cash": 98.5879,
           "world": 129.1833,
           "n_positions": 7,
-          "pos_ret_sum": -0.020763,
+          "pos_ret_sum": -0.020764,
           "n_active_for_ret": 7
         },
         {
@@ -6498,7 +6498,7 @@
           "cash": 98.7273,
           "world": 132.7765,
           "n_positions": 8,
-          "pos_ret_sum": -0.146001,
+          "pos_ret_sum": -0.146,
           "n_active_for_ret": 8
         },
         {
@@ -6507,7 +6507,7 @@
           "cash": 98.7499,
           "world": 136.3006,
           "n_positions": 8,
-          "pos_ret_sum": 0.184673,
+          "pos_ret_sum": 0.184672,
           "n_active_for_ret": 8
         },
         {
@@ -6525,7 +6525,7 @@
           "cash": 98.8287,
           "world": 138.3508,
           "n_positions": 9,
-          "pos_ret_sum": 0.157153,
+          "pos_ret_sum": 0.157152,
           "n_active_for_ret": 9
         },
         {
@@ -6534,16 +6534,16 @@
           "cash": 98.8667,
           "world": 138.0057,
           "n_positions": 9,
-          "pos_ret_sum": 0.034372,
+          "pos_ret_sum": 0.034374,
           "n_active_for_ret": 9
         },
         {
           "date": "2023-02-24",
-          "system": 197.9832,
+          "system": 197.9833,
           "cash": 98.9178,
           "world": 136.0762,
           "n_positions": 9,
-          "pos_ret_sum": -0.145882,
+          "pos_ret_sum": -0.145883,
           "n_active_for_ret": 9
         },
         {
@@ -6552,7 +6552,7 @@
           "cash": 98.9645,
           "world": 137.7951,
           "n_positions": 9,
-          "pos_ret_sum": 0.3014,
+          "pos_ret_sum": 0.301401,
           "n_active_for_ret": 9
         },
         {
@@ -6629,11 +6629,11 @@
         },
         {
           "date": "2023-05-05",
-          "system": 203.5368,
+          "system": 203.5369,
           "cash": 99.441,
           "world": 136.594,
           "n_positions": 6,
-          "pos_ret_sum": 0.125979,
+          "pos_ret_sum": 0.12598,
           "n_active_for_ret": 6
         },
         {
@@ -6678,7 +6678,7 @@
           "cash": 99.7387,
           "world": 143.9217,
           "n_positions": 4,
-          "pos_ret_sum": -0.013125,
+          "pos_ret_sum": -0.013126,
           "n_active_for_ret": 4
         },
         {
@@ -6692,7 +6692,7 @@
         },
         {
           "date": "2023-06-23",
-          "system": 223.4206,
+          "system": 223.4207,
           "cash": 99.8759,
           "world": 142.9863,
           "n_positions": 3,
@@ -6701,7 +6701,7 @@
         },
         {
           "date": "2023-06-30",
-          "system": 226.4841,
+          "system": 226.4842,
           "cash": 99.9577,
           "world": 145.6993,
           "n_positions": 3,
@@ -6714,7 +6714,7 @@
           "cash": 100.0044,
           "world": 143.6974,
           "n_positions": 3,
-          "pos_ret_sum": -0.018383,
+          "pos_ret_sum": -0.018384,
           "n_active_for_ret": 3
         },
         {
@@ -6782,7 +6782,7 @@
         },
         {
           "date": "2023-09-01",
-          "system": 230.7169,
+          "system": 230.717,
           "cash": 100.5378,
           "world": 148.861,
           "n_positions": 4,
@@ -6804,7 +6804,7 @@
           "cash": 100.6962,
           "world": 149.5685,
           "n_positions": 5,
-          "pos_ret_sum": 0.018782,
+          "pos_ret_sum": 0.018783,
           "n_active_for_ret": 4
         },
         {
@@ -6831,7 +6831,7 @@
           "cash": 100.9407,
           "world": 144.3325,
           "n_positions": 6,
-          "pos_ret_sum": -0.081203,
+          "pos_ret_sum": -0.081202,
           "n_active_for_ret": 7
         },
         {
@@ -6867,7 +6867,7 @@
           "cash": 101.2114,
           "world": 145.2437,
           "n_positions": 6,
-          "pos_ret_sum": 0.26279,
+          "pos_ret_sum": 0.262789,
           "n_active_for_ret": 6
         },
         {
@@ -6894,7 +6894,7 @@
           "cash": 101.4559,
           "world": 148.7643,
           "n_positions": 6,
-          "pos_ret_sum": -0.029971,
+          "pos_ret_sum": -0.02997,
           "n_active_for_ret": 5
         },
         {
@@ -6903,7 +6903,7 @@
           "cash": 101.5347,
           "world": 150.7248,
           "n_positions": 6,
-          "pos_ret_sum": -0.090266,
+          "pos_ret_sum": -0.090267,
           "n_active_for_ret": 6
         },
         {
@@ -6912,7 +6912,7 @@
           "cash": 101.6127,
           "world": 152.6336,
           "n_positions": 6,
-          "pos_ret_sum": 0.014261,
+          "pos_ret_sum": 0.01426,
           "n_active_for_ret": 6
         },
         {
@@ -6948,7 +6948,7 @@
           "cash": 101.9477,
           "world": 154.1557,
           "n_positions": 6,
-          "pos_ret_sum": 0.092086,
+          "pos_ret_sum": 0.092085,
           "n_active_for_ret": 6
         },
         {
@@ -6975,7 +6975,7 @@
           "cash": 102.1571,
           "world": 160.3341,
           "n_positions": 6,
-          "pos_ret_sum": 0.040377,
+          "pos_ret_sum": 0.040376,
           "n_active_for_ret": 6
         },
         {
@@ -6984,16 +6984,16 @@
           "cash": 102.2418,
           "world": 162.5328,
           "n_positions": 7,
-          "pos_ret_sum": 0.185393,
+          "pos_ret_sum": 0.185394,
           "n_active_for_ret": 6
         },
         {
           "date": "2024-02-09",
-          "system": 269.3853,
+          "system": 269.3852,
           "cash": 102.3119,
           "world": 164.1447,
           "n_positions": 7,
-          "pos_ret_sum": 0.376818,
+          "pos_ret_sum": 0.376817,
           "n_active_for_ret": 7
         },
         {
@@ -7038,7 +7038,7 @@
           "cash": 102.7023,
           "world": 167.3685,
           "n_positions": 7,
-          "pos_ret_sum": 0.033438,
+          "pos_ret_sum": 0.033437,
           "n_active_for_ret": 7
         },
         {
@@ -7047,7 +7047,7 @@
           "cash": 102.7964,
           "world": 171.7693,
           "n_positions": 7,
-          "pos_ret_sum": 0.307882,
+          "pos_ret_sum": 0.307881,
           "n_active_for_ret": 7
         },
         {
@@ -7056,7 +7056,7 @@
           "cash": 102.8548,
           "world": 172.7012,
           "n_positions": 7,
-          "pos_ret_sum": -0.005771,
+          "pos_ret_sum": -0.00577,
           "n_active_for_ret": 7
         },
         {
@@ -7065,7 +7065,7 @@
           "cash": 102.9241,
           "world": 170.3472,
           "n_positions": 7,
-          "pos_ret_sum": -0.006146,
+          "pos_ret_sum": -0.006145,
           "n_active_for_ret": 7
         },
         {
@@ -7083,7 +7083,7 @@
           "cash": 103.0978,
           "world": 166.2053,
           "n_positions": 8,
-          "pos_ret_sum": -0.319539,
+          "pos_ret_sum": -0.31954,
           "n_active_for_ret": 7
         },
         {
@@ -7115,7 +7115,7 @@
         },
         {
           "date": "2024-05-17",
-          "system": 306.3363,
+          "system": 306.3362,
           "cash": 103.3992,
           "world": 173.7195,
           "n_positions": 7,
@@ -7146,7 +7146,7 @@
           "cash": 103.6108,
           "world": 175.6782,
           "n_positions": 7,
-          "pos_ret_sum": 0.126042,
+          "pos_ret_sum": 0.126043,
           "n_active_for_ret": 7
         },
         {
@@ -7164,7 +7164,7 @@
           "cash": 103.7794,
           "world": 178.8537,
           "n_positions": 7,
-          "pos_ret_sum": 0.000607,
+          "pos_ret_sum": 0.000606,
           "n_active_for_ret": 7
         },
         {
@@ -7173,7 +7173,7 @@
           "cash": 103.8436,
           "world": 179.6131,
           "n_positions": 7,
-          "pos_ret_sum": -0.016216,
+          "pos_ret_sum": -0.016215,
           "n_active_for_ret": 7
         },
         {
@@ -7187,7 +7187,7 @@
         },
         {
           "date": "2024-07-12",
-          "system": 327.8877,
+          "system": 327.8876,
           "cash": 103.9998,
           "world": 181.7099,
           "n_positions": 6,
@@ -7200,7 +7200,7 @@
           "cash": 104.0735,
           "world": 178.0253,
           "n_positions": 6,
-          "pos_ret_sum": -0.142507,
+          "pos_ret_sum": -0.142506,
           "n_active_for_ret": 6
         },
         {
@@ -7209,7 +7209,7 @@
           "cash": 104.1508,
           "world": 176.8518,
           "n_positions": 5,
-          "pos_ret_sum": -0.061308,
+          "pos_ret_sum": -0.061309,
           "n_active_for_ret": 6
         },
         {
@@ -7223,7 +7223,7 @@
         },
         {
           "date": "2024-08-09",
-          "system": 313.4178,
+          "system": 313.4177,
           "cash": 104.2975,
           "world": 171.6934,
           "n_positions": 5,
@@ -7254,7 +7254,7 @@
           "cash": 104.5157,
           "world": 179.5958,
           "n_positions": 6,
-          "pos_ret_sum": -0.024945,
+          "pos_ret_sum": -0.024946,
           "n_active_for_ret": 5
         },
         {
@@ -7308,7 +7308,7 @@
           "cash": 104.9521,
           "world": 186.5508,
           "n_positions": 7,
-          "pos_ret_sum": 0.163256,
+          "pos_ret_sum": 0.163255,
           "n_active_for_ret": 7
         },
         {
@@ -7389,7 +7389,7 @@
           "cash": 105.5359,
           "world": 199.2959,
           "n_positions": 5,
-          "pos_ret_sum": -0.060519,
+          "pos_ret_sum": -0.060518,
           "n_active_for_ret": 5
         },
         {
@@ -7452,7 +7452,7 @@
           "cash": 105.9613,
           "world": 204.2576,
           "n_positions": 4,
-          "pos_ret_sum": -0.100112,
+          "pos_ret_sum": -0.100113,
           "n_active_for_ret": 4
         },
         {
@@ -7484,7 +7484,7 @@
         },
         {
           "date": "2025-02-28",
-          "system": 353.4856,
+          "system": 353.4855,
           "cash": 106.1861,
           "world": 199.1405,
           "n_positions": 5,
@@ -7515,7 +7515,7 @@
           "cash": 106.3488,
           "world": 186.7665,
           "n_positions": 5,
-          "pos_ret_sum": 0.080995,
+          "pos_ret_sum": 0.080994,
           "n_active_for_ret": 3
         },
         {
@@ -7538,11 +7538,11 @@
         },
         {
           "date": "2025-04-11",
-          "system": 326.4909,
+          "system": 326.4908,
           "cash": 106.5043,
           "world": 165.5529,
           "n_positions": 4,
-          "pos_ret_sum": -0.029932,
+          "pos_ret_sum": -0.029933,
           "n_active_for_ret": 4
         },
         {
@@ -7614,7 +7614,7 @@
           "cash": 106.8633,
           "world": 189.64,
           "n_positions": 5,
-          "pos_ret_sum": 0.076503,
+          "pos_ret_sum": 0.076502,
           "n_active_for_ret": 5
         },
         {
@@ -7668,7 +7668,7 @@
           "cash": 107.1107,
           "world": 192.8672,
           "n_positions": 6,
-          "pos_ret_sum": 0.061586,
+          "pos_ret_sum": 0.061587,
           "n_active_for_ret": 7
         },
         {
@@ -7686,7 +7686,7 @@
           "cash": 107.1902,
           "world": 192.246,
           "n_positions": 6,
-          "pos_ret_sum": -0.104491,
+          "pos_ret_sum": -0.10449,
           "n_active_for_ret": 6
         },
         {
@@ -7866,7 +7866,7 @@
           "cash": 107.9667,
           "world": 209.3314,
           "n_positions": 6,
-          "pos_ret_sum": 0.139684,
+          "pos_ret_sum": 0.139685,
           "n_active_for_ret": 6
         },
         {
@@ -7907,7 +7907,7 @@
         },
         {
           "date": "2026-01-23",
-          "system": 466.0375,
+          "system": 466.0374,
           "cash": 108.1798,
           "world": 212.947,
           "n_positions": 6,
@@ -7925,7 +7925,7 @@
         },
         {
           "date": "2026-02-06",
-          "system": 452.1935,
+          "system": 452.1934,
           "cash": 108.2622,
           "world": 212.6277,
           "n_positions": 7,
@@ -7956,7 +7956,7 @@
           "cash": 108.3929,
           "world": 214.2413,
           "n_positions": 8,
-          "pos_ret_sum": -0.094482,
+          "pos_ret_sum": -0.094483,
           "n_active_for_ret": 8
         },
         {
@@ -7974,7 +7974,7 @@
           "cash": 108.4753,
           "world": 211.109,
           "n_positions": 7,
-          "pos_ret_sum": 0.087925,
+          "pos_ret_sum": 0.087926,
           "n_active_for_ret": 8
         },
         {
@@ -8310,7 +8310,7 @@
           "ticker": "MU",
           "entry_date": "2025-06-13",
           "exit_date": null,
-          "entry_price": 115.324,
+          "entry_price": 115.3239,
           "exit_price": 864.01,
           "perf_pct": 649.2,
           "weeks_held": 52,
@@ -8492,7 +8492,7 @@
           "exit_date": "2024-09-20",
           "entry_price": 21.0532,
           "exit_price": 115.819,
-          "perf_pct": 450.12,
+          "perf_pct": 450.13,
           "weeks_held": 85,
           "status": "closed",
           "entry_tag": "top_momentum",
@@ -8544,7 +8544,7 @@
           "ticker": "LLY",
           "entry_date": "2023-11-24",
           "exit_date": "2024-05-03",
-          "entry_price": 590.7761,
+          "entry_price": 590.7762,
           "exit_price": 723.613,
           "perf_pct": 22.49,
           "weeks_held": 23,
@@ -8616,7 +8616,7 @@
           "ticker": "CAT",
           "entry_date": "2022-10-28",
           "exit_date": "2023-06-23",
-          "entry_price": 207.5182,
+          "entry_price": 207.5183,
           "exit_price": 224.0719,
           "perf_pct": 7.98,
           "weeks_held": 34,
@@ -8689,7 +8689,7 @@
           "entry_date": "2023-04-06",
           "exit_date": "2023-04-14",
           "entry_price": 359.5889,
-          "exit_price": 365.8768,
+          "exit_price": 365.8767,
           "perf_pct": 1.75,
           "weeks_held": 1,
           "status": "closed",
@@ -8706,7 +8706,7 @@
           "ticker": "MDLZ",
           "entry_date": "2023-03-24",
           "exit_date": "2023-04-14",
-          "entry_price": 63.1458,
+          "entry_price": 63.1457,
           "exit_price": 64.2013,
           "perf_pct": 1.67,
           "weeks_held": 3,
@@ -8778,7 +8778,7 @@
           "ticker": "ASML",
           "entry_date": "2022-12-09",
           "exit_date": "2022-12-16",
-          "entry_price": 579.5249,
+          "entry_price": 579.5251,
           "exit_price": 556.8559,
           "perf_pct": -3.91,
           "weeks_held": 1,
@@ -8850,7 +8850,7 @@
           "ticker": "DE",
           "entry_date": "2022-09-09",
           "exit_date": "2022-09-16",
-          "entry_price": 353.7688,
+          "entry_price": 353.7687,
           "exit_price": 336.9,
           "perf_pct": -4.77,
           "weeks_held": 1,
@@ -8904,7 +8904,7 @@
           "ticker": "DHR",
           "entry_date": "2022-07-29",
           "exit_date": "2022-08-26",
-          "entry_price": 253.5048,
+          "entry_price": 253.5047,
           "exit_price": 243.8158,
           "perf_pct": -3.82,
           "weeks_held": 4,
@@ -8958,8 +8958,8 @@
           "ticker": "LLY",
           "entry_date": "2022-03-18",
           "exit_date": "2022-06-10",
-          "entry_price": 277.317,
-          "exit_price": 287.3157,
+          "entry_price": 277.3169,
+          "exit_price": 287.3156,
           "perf_pct": 3.61,
           "weeks_held": 12,
           "status": "closed",
@@ -9066,8 +9066,8 @@
           "ticker": "LMT",
           "entry_date": "2022-03-18",
           "exit_date": "2022-04-08",
-          "entry_price": 380.8381,
-          "exit_price": 412.4182,
+          "entry_price": 380.8382,
+          "exit_price": 412.4183,
           "perf_pct": 8.29,
           "weeks_held": 3,
           "status": "closed",
@@ -9138,7 +9138,7 @@
           "ticker": "LMT",
           "entry_date": "2022-02-04",
           "exit_date": "2022-02-11",
-          "entry_price": 345.5298,
+          "entry_price": 345.5297,
           "exit_price": 351.618,
           "perf_pct": 1.76,
           "weeks_held": 1,
@@ -9228,7 +9228,7 @@
           "ticker": "COST",
           "entry_date": "2020-10-16",
           "exit_date": "2020-12-31",
-          "entry_price": 350.1272,
+          "entry_price": 350.1271,
           "exit_price": 355.4977,
           "perf_pct": 1.53,
           "weeks_held": 11,
@@ -9283,7 +9283,7 @@
           "entry_date": "2020-04-17",
           "exit_date": "2020-09-11",
           "entry_price": 85.7489,
-          "exit_price": 94.2684,
+          "exit_price": 94.2685,
           "perf_pct": 9.94,
           "weeks_held": 21,
           "status": "closed",
@@ -9355,7 +9355,7 @@
           "entry_date": "2019-12-06",
           "exit_date": "2020-03-27",
           "entry_price": 251.1545,
-          "exit_price": 219.106,
+          "exit_price": 219.1059,
           "perf_pct": -12.76,
           "weeks_held": 16,
           "status": "closed",
@@ -9462,8 +9462,8 @@
           "ticker": "COST",
           "entry_date": "2019-07-26",
           "exit_date": "2020-01-03",
-          "entry_price": 255.401,
-          "exit_price": 265.9673,
+          "entry_price": 255.4009,
+          "exit_price": 265.9672,
           "perf_pct": 4.14,
           "weeks_held": 23,
           "status": "closed",
@@ -9517,7 +9517,7 @@
           "region": "US",
           "ticker": "MU",
           "entry_date": "2025-06-13",
-          "entry_price": 115.324,
+          "entry_price": 115.3239,
           "current_price": 864.01,
           "perf_pct": 649.2,
           "weeks_held": 52,
