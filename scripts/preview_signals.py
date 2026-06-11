@@ -58,13 +58,16 @@ def main():
     w = len(prices) - 1
     last_bar = str(prices.index[-1].date())
 
-    # posizioni aperte dall'ultimo run ufficiale
+    # posizioni aperte dall'ultimo run ufficiale (settori + titolo detenuto)
     open_secs = {'balanced': set(), 'aggressive': set()}
+    held = {'balanced': {}, 'aggressive': {}}
     try:
         with open(STOCKS_JSON, encoding='utf-8') as f:
             d = json.load(f)
         for m in open_secs:
-            open_secs[m] = {p['sector_etf'] for p in d['modes'][m]['current_positions']}
+            for p in d['modes'][m]['current_positions']:
+                open_secs[m].add(p['sector_etf'])
+                held[m][p['sector_etf']] = p['ticker']
     except Exception as e:
         print(f"[PREVIEW] WARN: non leggo {STOCKS_JSON}: {e}")
 
@@ -92,6 +95,8 @@ def main():
             roc4 = r.get('roc4')
             # borderline: in aggressive il flip e' ROC4 che incrocia 0
             borderline = (mode == 'aggressive' and in_now and roc4 is not None and roc4 < 2.0)
+            held_tk = held[mode].get(sec)
+            names = getattr(us, 'STOCK_NAMES', {})
             sectors.append({
                 'sector': sec,
                 'name': NAMES.get(sec, sec),
@@ -101,6 +106,8 @@ def main():
                 'borderline': bool(borderline),
                 'ticker': r.get('ticker'),
                 'ticker_name': getattr(us, 'STOCK_NAMES', {}).get(r.get('ticker'), r.get('ticker')),
+                'held_ticker': held_tk,
+                'held_name': names.get(held_tk, held_tk) if held_tk else None,
                 'roc4': round(float(roc4), 2) if roc4 is not None else None,
                 'roc13': round(float(r['roc13']), 2) if r.get('roc13') is not None else None,
                 'score': round(float(r['score']), 1) if r.get('score') is not None else None,
