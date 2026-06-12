@@ -26,6 +26,36 @@ def uni_for(sec):
     return us.US_UNIVERSE if sec in us.US_SECTORS_ETF else us.IT_UNIVERSE
 
 
+def sector_is_in(sec, prices):
+    """
+    Stato OPERATIVO REALE del settore, identico al backtest delle 16:00.
+    Replica la pipeline NO_BAD: RRG (rsRatio/rsMom) dell'ETF di settore vs benchmark
+    -> state (quadrante) + stage (1-4 vs MA30) -> is_operational_in_base().
+    Ritorna (in_now: bool, state: str|None, stage: str|None).
+
+    NB: questo e' cio' che mancava al preview. Prima diceva 'in' se esisteva un buon
+    TITOLO nel settore; ma l'ingresso reale dipende dallo STATO DEL SETTORE, non dai titoli.
+    """
+    if sec not in prices.columns:
+        return False, None, None
+    region = 'US' if sec in us.US_SECTORS_ETF else 'IT'
+    bench_tk = us.US_BENCHMARK if region == 'US' else us.EU_BENCHMARK
+    if bench_tk not in prices.columns:
+        return False, None, None
+    sec_prices = prices[sec].dropna()
+    bench_prices = prices[bench_tk].dropna()
+    rrg = us.calculate_rrg(sec_prices, bench_prices, window=14)
+    if rrg is None or len(rrg) == 0:
+        return False, None, None
+    history = us.extract_signal_history_full(rrg, sec_prices, ma_weeks=30)
+    if not history:
+        return False, None, None
+    # l'ultimo periodo della storia = stato corrente del settore
+    last = history[-1]
+    in_now = (last.get('signal') == 'IN')
+    return bool(in_now), last.get('end_state'), last.get('end_stage')
+
+
 def best_candidate(sec, prices, w, mode):
     """Miglior titolo del settore ORA; se il settore e' OUT, il 'capolista' comunque."""
     best = us.select_best_at_week(sec, prices, w, uni_for(sec), mode)
@@ -82,7 +112,10 @@ def main():
         sectors = []
         ingressi, uscite = [], []
         for sec in us.SECTORS_SYSTEM:
-            ref, in_now = best_candidate(sec, prices, w, mode)
+            # STATO REALE DEL SETTORE (regola NO_BAD, identica alle 16:00)
+            in_now, state, stage = sector_is_in(sec, prices)
+            # candidato = miglior titolo del settore ORA (solo informativo: se entrasse, compreresti questo)
+            ref, _cand_in = best_candidate(sec, prices, w, mode)
             was_in = sec in open_secs[mode]
             move = None
             if in_now and not was_in:
@@ -93,8 +126,8 @@ def main():
                 uscite.append(sec)
             r = ref or {}
             roc4 = r.get('roc4')
-            # borderline: in aggressive il flip e' ROC4 che incrocia 0
-            borderline = (mode == 'aggressive' and in_now and roc4 is not None and roc4 < 2.0)
+            # borderline: settore IN ma vicino all'uscita (stage 3 = sopra MA ma in rallentamento)
+            borderline = bool(in_now and was_in and stage == '3')
             held_tk = held[mode].get(sec)
             names = getattr(us, 'STOCK_NAMES', {})
             sectors.append({
@@ -103,7 +136,9 @@ def main():
                 'in_now': bool(in_now),
                 'was_in': bool(was_in),
                 'move': move,
-                'borderline': bool(borderline),
+                'borderline': borderline,
+                'state': state,
+                'stage': stage,
                 'ticker': r.get('ticker'),
                 'ticker_name': getattr(us, 'STOCK_NAMES', {}).get(r.get('ticker'), r.get('ticker')),
                 'held_ticker': held_tk,
