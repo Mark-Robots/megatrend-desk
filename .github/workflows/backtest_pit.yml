@@ -3,6 +3,9 @@ name: Backtest PIT
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   pit:
     runs-on: ubuntu-latest
