@@ -1,0 +1,24 @@
+name: Backtest PIT
+
+on:
+  workflow_dispatch:
+
+jobs:
+  pit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install yfinance pandas numpy
+      - name: Run point-in-time backtest
+        run: python scripts/backtest_pit.py
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/backtest_pit.json
+          git diff --staged --quiet || git commit -m "Backtest PIT: $(date -u +%Y-%m-%d\ %H:%M\ UTC)"
+          git push
