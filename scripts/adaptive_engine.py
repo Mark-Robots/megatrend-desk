@@ -100,10 +100,12 @@ _ORIG_SELECT = us.select_best_at_week
 
 
 def build_full_output(prices, mode):
-    """Chiama il VERO run_backtest con la selezione adattiva montata."""
+    """Chiama il VERO build_mode_output con la selezione adattiva montata.
+    build_mode_output assembla stats + current_positions + weekly_moves
+    oltre a equity_curve/operations -> output completo per la dashboard."""
     us.select_best_at_week = adaptive_select  # monkey-patch
     try:
-        result = us.run_backtest(prices, us.SECTORS_SYSTEM, mode=mode)
+        result = us.build_mode_output(prices, us.SECTORS_SYSTEM, mode)
     finally:
         us.select_best_at_week = _ORIG_SELECT  # ripristino sempre
     return result
