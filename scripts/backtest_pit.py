@@ -228,6 +228,17 @@ def run_pit(prices, dollar_vol, mode):
         'win_rate': round(len(wins) / len(closed) * 100, 1) if closed else 0,
         'top5_share': round(sum(sorted(perfs, reverse=True)[:5]) / sum(perfs) * 100, 1) if sum(perfs) > 0 else 0,
         'equity_last': round(portfolio, 1),
+        # elenco operazioni per confronto settore-per-settore (statico vs PIT)
+        'operations': [{
+            'sector_etf': o['sector_etf'],
+            'ticker': o['ticker'],
+            'region': o['region'],
+            'entry_date': o['entry_date'],
+            'exit_date': o['exit_date'],
+            'perf_pct': o['perf_pct'],
+            'weeks_held': o['weeks_held'],
+            'status': o['status'],
+        } for o in operations],
     }
 
 
