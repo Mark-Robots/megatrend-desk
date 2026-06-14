@@ -213,7 +213,7 @@ STOCK_NAMES = {
 # Gli altri 24 settori sono "INFO_ONLY": niente operazioni nel backtest.
 # ============================================================
 SECTORS_SYSTEM = (
-    'XLK', 'SOXX', 'XLF', 'XLV', 'XLI', 'XLP', 'XLE',  # USA (7)
+    'XLK', 'SOXX', 'XLF', 'XLV', 'XLI', 'XLE',          # USA (6)
     'EXV1.DE', 'EXH5.DE',                               # EU (2)
 )
 
