@@ -97,17 +97,104 @@ def adaptive_select(sector_etf, prices_df, w_idx, universe, mode='balanced'):
 
 
 _ORIG_SELECT = us.select_best_at_week
+_ORIG_HISTORY = us.extract_signal_history_full
+
+# Stop-loss: soglia % sul close dall'ingresso (None = disattivato)
+STOP_LOSS_PCT = 20.0
+_PRICES_REF = None  # popolato in main, serve al patch della history
+
+
+def history_with_stoploss(rrg, sec_prices, ma_weeks=30):
+    """
+    Wrapper di extract_signal_history_full: dopo aver ottenuto i periodi IN,
+    per ciascuno individua il titolo che la selezione adattiva sceglierebbe,
+    e se quel titolo sfonda -STOP_LOSS_PCT% sul close ACCORCIA il periodo IN
+    alla settimana dello stop. Cosi' operations ED equity (che derivano entrambe
+    dai periodi) vedono la stessa uscita anticipata: coerenza garantita.
+    """
+    periods = _ORIG_HISTORY(rrg, sec_prices, ma_weeks)
+    if STOP_LOSS_PCT is None or _PRICES_REF is None:
+        return periods
+
+    # identifica il settore corrente dal nome della serie prezzi dell'ETF
+    sec = getattr(sec_prices, 'name', None)
+    if sec is None or sec not in sb.BASKETS:
+        return periods  # non e' un settore operativo con bacino: nessuno stop
+
+    dates = _PRICES_REF.index
+    n = len(dates)
+    new_periods = []
+    for p in periods:
+        if p['signal'] != 'IN':
+            new_periods.append(p)
+            continue
+        # indici del periodo
+        try:
+            si = dates.get_loc(p['start_date'])
+        except KeyError:
+            si = dates.searchsorted(p['start_date'])
+        try:
+            ei = dates.get_loc(p['end_date'])
+        except KeyError:
+            ei = dates.searchsorted(p['end_date'])
+        if si >= n or ei >= n or ei <= si:
+            new_periods.append(p)
+            continue
+
+        # titolo selezionato all'ingresso (stessa logica adattiva)
+        rev = review_index_for(dates[si], dates)
+        key = (sec, rev)
+        if key not in _REVIEW_CACHE:
+            _REVIEW_CACHE[key] = basket_at(sec, _DOLLAR_VOL, _PRICES_REF, rev)
+        bsk = _REVIEW_CACHE[key]
+        if not bsk:
+            new_periods.append(p)
+            continue
+        best = _ORIG_SELECT(sec, _PRICES_REF, si, {sec: bsk}, mode=_CURRENT_MODE)
+        if best is None or best['ticker'] not in _PRICES_REF.columns:
+            new_periods.append(p)
+            continue
+
+        tk = best['ticker']
+        entry = _PRICES_REF[tk].iloc[si]
+        if pd.isna(entry) or entry <= 0:
+            new_periods.append(p)
+            continue
+        thresh = entry * (1 - STOP_LOSS_PCT / 100.0)
+
+        # cerca la prima settimana in cui il close sfonda lo stop
+        stop_w = None
+        for w in range(si + 1, ei + 1):
+            c = _PRICES_REF[tk].iloc[w]
+            if not pd.isna(c) and c <= thresh:
+                stop_w = w
+                break
+
+        if stop_w is not None:
+            # accorcia il periodo: end_date = settimana dello stop
+            p = dict(p)
+            p['end_date'] = dates[stop_w]
+        new_periods.append(p)
+
+    return new_periods
+
+
+_CURRENT_MODE = 'aggressive'
 
 
 def build_full_output(prices, mode):
-    """Chiama il VERO build_mode_output con la selezione adattiva montata.
-    build_mode_output assembla stats + current_positions + weekly_moves
-    oltre a equity_curve/operations -> output completo per la dashboard."""
-    us.select_best_at_week = adaptive_select  # monkey-patch
+    """Chiama il VERO build_mode_output con selezione adattiva + stop-loss montati.
+    Il doppio patch (select + history) garantisce stop coerente in operations ED equity."""
+    global _PRICES_REF, _CURRENT_MODE
+    _PRICES_REF = prices
+    _CURRENT_MODE = mode
+    us.select_best_at_week = adaptive_select       # patch selezione
+    us.extract_signal_history_full = history_with_stoploss  # patch stop-loss
     try:
         result = us.build_mode_output(prices, us.SECTORS_SYSTEM, mode)
     finally:
-        us.select_best_at_week = _ORIG_SELECT  # ripristino sempre
+        us.select_best_at_week = _ORIG_SELECT          # ripristino sempre
+        us.extract_signal_history_full = _ORIG_HISTORY
     return result
 
 
