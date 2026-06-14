@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-06-14T18:43:23.663159+00:00",
+  "modes": {
+    "aggressive": {
+      "None": {
+        "sl": null,
+        "raw_sum": 2237.0,
+        "n_trades": 78,
+        "n_stops": 0,
+        "win_rate": 51.3,
+        "worst": -40.9,
+        "stopped_winners": [],
+        "n_stopped_winners": 0
+      },
+      "15": {
+        "sl": 15,
+        "raw_sum": 2104.0,
+        "n_trades": 78,
+        "n_stops": 15,
+        "win_rate": 50.0,
+        "worst": -29.7,
+        "stopped_winners": [
+          [
+            "AMD",
+            135.4
+          ]
+        ],
+        "n_stopped_winners": 1
+      },
+      "20": {
+        "sl": 20,
+        "raw_sum": 2237.0,
+        "n_trades": 78,
+        "n_stops": 5,
+        "win_rate": 51.3,
+        "worst": -29.7,
+        "stopped_winners": [],
+        "n_stopped_winners": 0
+      },
+      "25": {
+        "sl": 25,
+        "raw_sum": 2234.0,
+        "n_trades": 78,
+        "n_stops": 3,
+        "win_rate": 51.3,
+        "worst": -29.7,
+        "stopped_winners": [],
+        "n_stopped_winners": 0
+      }
+    }
+  }
+}
