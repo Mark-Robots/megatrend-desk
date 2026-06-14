@@ -59,7 +59,7 @@ def fetch_prices_and_volumes():
 # 2) PANIERE POINT-IN-TIME: dato un indice settimana, per ogni settore ritorna
 #    i TOP_N titoli per dollar-volume medio nelle DV_LOOKBACK_WEEKS precedenti.
 # ---------------------------------------------------------------------------
-def basket_at(sec, dollar_vol, w_idx, prices=None, quality=None):
+def basket_at(sec, dollar_vol, w_idx, prices=None, quality=None, roc_min=0.0):
     """
     Paniere point-in-time: top TOP_N per dollar-volume medio nelle ultime
     DV_LOOKBACK_WEEKS settimane PRIMA di w_idx.
@@ -68,7 +68,7 @@ def basket_at(sec, dollar_vol, w_idx, prices=None, quality=None):
       None  -> nessun filtro (solo dollar-volume)
       'ma'  -> il titolo deve essere SOPRA la sua media mobile 30w a w_idx (trend up)
       'rs'  -> il titolo deve battere l'ETF di settore negli ultimi 26w (forza relativa)
-      'roc' -> il titolo deve avere ROC13 > 0 a w_idx (momentum positivo)
+      'roc' -> il titolo deve avere ROC13 > roc_min a w_idx (momentum sopra soglia)
     """
     cands = sb.BASKETS.get(sec, [])
     lo = max(0, w_idx - sb.DV_LOOKBACK_WEEKS)
@@ -96,7 +96,7 @@ def basket_at(sec, dollar_vol, w_idx, prices=None, quality=None):
                 if len(s) < 14:
                     continue
                 roc13 = (s.iloc[-1] / s.iloc[-14] - 1) * 100
-                if roc13 <= 0:
+                if roc13 <= roc_min:
                     continue
             elif quality == 'rs':
                 if sec not in prices.columns:
@@ -134,7 +134,7 @@ def review_index_for(date, dates):
 # ---------------------------------------------------------------------------
 # 3) BACKTEST: replica fedele di run_backtest FASE 2+3, ma paniere = PIT
 # ---------------------------------------------------------------------------
-def run_pit(prices, dollar_vol, mode, quality=None):
+def run_pit(prices, dollar_vol, mode, quality=None, roc_min=0.0):
     dates = prices.index
     n_weeks = len(dates)
 
@@ -178,7 +178,7 @@ def run_pit(prices, dollar_vol, mode, quality=None):
             rev_idx = review_index_for(dates[si], dates)
             key = (sec, rev_idx)
             if key not in review_cache:
-                review_cache[key] = basket_at(sec, dollar_vol, rev_idx, prices=prices, quality=quality)
+                review_cache[key] = basket_at(sec, dollar_vol, rev_idx, prices=prices, quality=quality, roc_min=roc_min)
             pit_basket = review_cache[key]
             if not pit_basket:
                 continue
@@ -281,7 +281,8 @@ def run_pit(prices, dollar_vol, mode, quality=None):
 
 def main():
     prices, dollar_vol = fetch_prices_and_volumes()
-    SCENARIOS = [('base', None), ('ma', 'ma'), ('rs', 'rs'), ('roc', 'roc')]
+    # test soglie ROC crescenti per vedere se DG/DLTR spariscono e cosa fa il totale
+    SCENARIOS = [('roc0', 'roc', 0.0), ('roc5', 'roc', 5.0), ('roc10', 'roc', 10.0)]
     out = {'generated_at': datetime.now(timezone.utc).isoformat(),
            'config': {'top_n': sb.TOP_N, 'review_months': list(sb.REVIEW_MONTHS),
                       'lookback_weeks': sb.DV_LOOKBACK_WEEKS,
@@ -289,23 +290,26 @@ def main():
                       'scenarios': [s[0] for s in SCENARIOS]},
            'scenarios': {}}
 
-    for label, q in SCENARIOS:
+    for label, q, rmin in SCENARIOS:
         out['scenarios'][label] = {'modes': {}}
         for mode in ('balanced', 'aggressive'):
             print(f"\n[PIT·{label}] === {mode} ===")
-            r = run_pit(prices, dollar_vol, mode, quality=q)
+            r = run_pit(prices, dollar_vol, mode, quality=q, roc_min=rmin)
             out['scenarios'][label]['modes'][mode] = r
-            # contributo settore Consumi (XLP) per confronto rapido
             xlp = [o for o in r['operations'] if o['sector_etf'] == 'XLP' and o['status'] == 'closed']
             xlp_sum = sum(o['perf_pct'] for o in xlp)
-            print(f"  total {r['total_return']:>7}% · CAGR {r['cagr']}% · MaxDD {r['max_drawdown']}% · Sharpe {r['sharpe']} · Consumi {xlp_sum:+.0f}%")
+            # traccia DG e DLTR
+            dgdltr = [o for o in r['operations'] if o['ticker'] in ('DG', 'DLTR')]
+            dg_str = ', '.join(f"{o['ticker']}{o['perf_pct']:+.0f}%" for o in dgdltr) or 'nessuno'
+            print(f"  total {r['total_return']:>7}% · Consumi {xlp_sum:+.0f}% · Sharpe {r['sharpe']} · DG/DLTR: {dg_str}")
 
-    # tabella riassuntiva
-    print(f"\n{'='*60}\nRIASSUNTO — total_return per scenario (aggressive)\n{'='*60}")
-    for label, _ in SCENARIOS:
+    print(f"\n{'='*64}\nRIASSUNTO soglie ROC (aggressive)\n{'='*64}")
+    for label, _, rmin in SCENARIOS:
         r = out['scenarios'][label]['modes']['aggressive']
         xlp = sum(o['perf_pct'] for o in r['operations'] if o['sector_etf'] == 'XLP' and o['status'] == 'closed')
-        print(f"  {label:6} total {r['total_return']:>7}% · Consumi {xlp:+.0f}% · Sharpe {r['sharpe']}")
+        dgdltr = [o for o in r['operations'] if o['ticker'] in ('DG', 'DLTR')]
+        dg_str = ', '.join(f"{o['ticker']}{o['perf_pct']:+.0f}%" for o in dgdltr) or 'NESSUNO'
+        print(f"  ROC>{rmin:>4.0f}%  total {r['total_return']:>7}% · Consumi {xlp:+.0f}% · Sharpe {r['sharpe']} · DG/DLTR: {dg_str}")
 
     path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'backtest_pit.json')
     os.makedirs(os.path.dirname(path), exist_ok=True)
