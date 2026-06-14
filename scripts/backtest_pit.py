@@ -59,7 +59,17 @@ def fetch_prices_and_volumes():
 # 2) PANIERE POINT-IN-TIME: dato un indice settimana, per ogni settore ritorna
 #    i TOP_N titoli per dollar-volume medio nelle DV_LOOKBACK_WEEKS precedenti.
 # ---------------------------------------------------------------------------
-def basket_at(sec, dollar_vol, w_idx):
+def basket_at(sec, dollar_vol, w_idx, prices=None, quality=None):
+    """
+    Paniere point-in-time: top TOP_N per dollar-volume medio nelle ultime
+    DV_LOOKBACK_WEEKS settimane PRIMA di w_idx.
+
+    quality (filtro qualita', point-in-time):
+      None  -> nessun filtro (solo dollar-volume)
+      'ma'  -> il titolo deve essere SOPRA la sua media mobile 30w a w_idx (trend up)
+      'rs'  -> il titolo deve battere l'ETF di settore negli ultimi 26w (forza relativa)
+      'roc' -> il titolo deve avere ROC13 > 0 a w_idx (momentum positivo)
+    """
     cands = sb.BASKETS.get(sec, [])
     lo = max(0, w_idx - sb.DV_LOOKBACK_WEEKS)
     scores = []
@@ -67,12 +77,39 @@ def basket_at(sec, dollar_vol, w_idx):
         if tk not in dollar_vol.columns:
             continue
         window = dollar_vol[tk].iloc[lo:w_idx + 1].dropna()
-        # serve un minimo di storia liquida nella finestra (almeno meta')
         if len(window) < sb.DV_LOOKBACK_WEEKS // 2:
             continue
         avg_dv = float(window.mean())
-        if avg_dv > 0:
-            scores.append((avg_dv, tk))
+        if avg_dv <= 0:
+            continue
+
+        # ---- filtro qualita' (usa solo dati fino a w_idx: point-in-time) ----
+        if quality and prices is not None and tk in prices.columns:
+            s = prices[tk].iloc[:w_idx + 1].dropna()
+            if len(s) < 40:
+                continue
+            if quality == 'ma':
+                ma = s.iloc[-30:].mean()
+                if s.iloc[-1] <= ma:
+                    continue
+            elif quality == 'roc':
+                if len(s) < 14:
+                    continue
+                roc13 = (s.iloc[-1] / s.iloc[-14] - 1) * 100
+                if roc13 <= 0:
+                    continue
+            elif quality == 'rs':
+                if sec not in prices.columns:
+                    continue
+                etf = prices[sec].iloc[:w_idx + 1].dropna()
+                if len(etf) < 27 or len(s) < 27:
+                    continue
+                stock_ret = s.iloc[-1] / s.iloc[-27] - 1
+                etf_ret = etf.iloc[-1] / etf.iloc[-27] - 1
+                if stock_ret <= etf_ret:
+                    continue
+
+        scores.append((avg_dv, tk))
     scores.sort(reverse=True)
     return [tk for _, tk in scores[:sb.TOP_N]]
 
@@ -97,7 +134,7 @@ def review_index_for(date, dates):
 # ---------------------------------------------------------------------------
 # 3) BACKTEST: replica fedele di run_backtest FASE 2+3, ma paniere = PIT
 # ---------------------------------------------------------------------------
-def run_pit(prices, dollar_vol, mode):
+def run_pit(prices, dollar_vol, mode, quality=None):
     dates = prices.index
     n_weeks = len(dates)
 
@@ -141,7 +178,7 @@ def run_pit(prices, dollar_vol, mode):
             rev_idx = review_index_for(dates[si], dates)
             key = (sec, rev_idx)
             if key not in review_cache:
-                review_cache[key] = basket_at(sec, dollar_vol, rev_idx)
+                review_cache[key] = basket_at(sec, dollar_vol, rev_idx, prices=prices, quality=quality)
             pit_basket = review_cache[key]
             if not pit_basket:
                 continue
@@ -244,25 +281,37 @@ def run_pit(prices, dollar_vol, mode):
 
 def main():
     prices, dollar_vol = fetch_prices_and_volumes()
+    SCENARIOS = [('base', None), ('ma', 'ma'), ('rs', 'rs'), ('roc', 'roc')]
     out = {'generated_at': datetime.now(timezone.utc).isoformat(),
            'config': {'top_n': sb.TOP_N, 'review_months': list(sb.REVIEW_MONTHS),
-                      'lookback_weeks': sb.DV_LOOKBACK_WEEKS, 'n_candidates': sum(len(v) for v in sb.BASKETS.values())},
-           'modes': {}}
-    for mode in ('balanced', 'aggressive'):
-        print(f"\n[PIT] === {mode} ===")
-        r = run_pit(prices, dollar_vol, mode)
-        out['modes'][mode] = r
-        print(f"  total_return PIT : {r['total_return']:>8}%  (world {r['world_total_return']}%)")
-        print(f"  CAGR {r['cagr']}% · MaxDD {r['max_drawdown']}% · Sharpe {r['sharpe']}")
-        print(f"  {r['n_operations']} op · win {r['win_rate']}% · top5 {r['top5_share']}%")
+                      'lookback_weeks': sb.DV_LOOKBACK_WEEKS,
+                      'n_candidates': sum(len(v) for v in sb.BASKETS.values()),
+                      'scenarios': [s[0] for s in SCENARIOS]},
+           'scenarios': {}}
+
+    for label, q in SCENARIOS:
+        out['scenarios'][label] = {'modes': {}}
+        for mode in ('balanced', 'aggressive'):
+            print(f"\n[PIT·{label}] === {mode} ===")
+            r = run_pit(prices, dollar_vol, mode, quality=q)
+            out['scenarios'][label]['modes'][mode] = r
+            # contributo settore Consumi (XLP) per confronto rapido
+            xlp = [o for o in r['operations'] if o['sector_etf'] == 'XLP' and o['status'] == 'closed']
+            xlp_sum = sum(o['perf_pct'] for o in xlp)
+            print(f"  total {r['total_return']:>7}% · CAGR {r['cagr']}% · MaxDD {r['max_drawdown']}% · Sharpe {r['sharpe']} · Consumi {xlp_sum:+.0f}%")
+
+    # tabella riassuntiva
+    print(f"\n{'='*60}\nRIASSUNTO — total_return per scenario (aggressive)\n{'='*60}")
+    for label, _ in SCENARIOS:
+        r = out['scenarios'][label]['modes']['aggressive']
+        xlp = sum(o['perf_pct'] for o in r['operations'] if o['sector_etf'] == 'XLP' and o['status'] == 'closed')
+        print(f"  {label:6} total {r['total_return']:>7}% · Consumi {xlp:+.0f}% · Sharpe {r['sharpe']}")
 
     path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'backtest_pit.json')
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as f:
         json.dump(out, f, indent=2)
     print(f"\n[PIT] scritto {path}")
-    print("\n>>> CONFRONTA total_return PIT con il +446% del sistema attuale:")
-    print("    se PIT regge -> logica robusta. Se crolla -> era selection bias.")
 
 
 if __name__ == '__main__':
