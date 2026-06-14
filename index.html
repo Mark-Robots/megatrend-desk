@@ -1608,14 +1608,14 @@ body.modal-open { overflow: hidden; }
       </div>
       <div class="storico-modal-body">
         <p class="how-intro">
-          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing dei <b>9 settori operativi</b> del sistema Megatrend Sentinel ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
+          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing dei <b>8 settori operativi</b> del sistema Megatrend Sentinel ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
         </p>
         <div class="how-steps">
           <div class="how-step">
             <div class="how-step-num">1</div>
             <div class="how-step-body">
               <div class="how-step-title">Timing settoriale ereditato dal sistema ETF</div>
-              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend Sentinel ETF sui 9 settori operativi: 7 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLP Consumi essenziali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
+              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend Sentinel ETF sui 8 settori operativi: 6 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
             </div>
           </div>
           <div class="how-step">
@@ -1636,7 +1636,7 @@ body.modal-open { overflow: hidden; }
             <div class="how-step-num">4</div>
             <div class="how-step-body">
               <div class="how-step-title">Ripartizione del capitale</div>
-              <div class="how-step-text">Ogni posizione pesa <b>1/9 = 11.1%</b> del capitale (peso fisso). Quando solo N settori su 9 sono in posizione, la quota investita è N/9 e la differenza resta in <b>cash</b> al tasso impostato (configurabile). Esempio: 6 settori IN = 67% investito + 33% cash. Niente leva, niente concentrazione, ribilanciamento automatico.</div>
+              <div class="how-step-text">Ogni posizione pesa <b>1/8 = 12.5%</b> del capitale (peso fisso). Quando solo N settori su 8 sono in posizione, la quota investita è N/8 e la differenza resta in <b>cash</b> al tasso impostato (configurabile). Esempio: 6 settori IN = 75% investito + 25% cash. Niente leva, niente concentrazione, ribilanciamento automatico.</div>
             </div>
           </div>
           <div class="how-step">
@@ -1740,7 +1740,7 @@ body.modal-open { overflow: hidden; }
       <span class="window-badge" id="equity-window-badge"></span>
     </div>
     <div class="section-subtitle">
-      Simulazione su capitale iniziale di <b>100</b>. Ogni settore in segnale apre una posizione del <b>11.1% (1/9)</b> con la migliore azione del settore. La quota dei settori fuori segnale viene <b>parcheggiata in cash</b> al tasso annuo impostato qui sotto. La <b>modalità portafoglio</b> (Balanced/Aggressive) determina quale azione viene scelta all'interno di ciascun settore in segnale. Confronto con <b style="color:var(--accent-world);">MSCI World</b>. Tutti gli indicatori (Sharpe, Max Drawdown, Win Rate, ecc.) sono <b>aggiornati in base alla finestra temporale selezionata</b>.
+      Simulazione su capitale iniziale di <b>100</b>. Ogni settore in segnale apre una posizione del <b>12.5% (1/8)</b> con la migliore azione del settore. La quota dei settori fuori segnale viene <b>parcheggiata in cash</b> al tasso annuo impostato qui sotto. La <b>modalità portafoglio</b> (Aggressive/Adaptive) determina quale azione viene scelta all'interno di ciascun settore in segnale. Confronto con <b style="color:var(--accent-world);">MSCI World</b>. Tutti gli indicatori (Sharpe, Max Drawdown, Win Rate, ecc.) sono <b>aggiornati in base alla finestra temporale selezionata</b>.
     </div>
 
     <div class="controls-bar">
@@ -1988,7 +1988,7 @@ function applyMode(mode) {
 }
 
 const SHARPE_RF = 0.0034;
-const MAX_POSITIONS = 9;  // n. settori operativi (SECTORS_SYSTEM)
+const MAX_POSITIONS = 8;  // n. settori operativi (SECTORS_SYSTEM)
 
 // Restituisce il nome esteso di un'azione dal ticker. Fallback al ticker se non in mappa.
 function stockName(ticker) {
@@ -2265,7 +2265,7 @@ function computeRangeStats() {
   const plRatio = avgLoss !== 0 ? Math.abs(avgGain / avgLoss) : null;
 
   // Investito %: media settimanale di (n_positions / MAX_POSITIONS)
-  // Esempio: 7/9 posizioni sempre attive → 77.8%, sistema sempre pieno 9/9 → 100%
+  // Esempio: 7/8 posizioni sempre attive → 87.5%, sistema sempre pieno 8/8 → 100%
   const sumPositions = slice.reduce((a, e) => a + (e.n_positions || 0), 0);
   const investedPct = slice.length > 0 ? (sumPositions / (slice.length * MAX_POSITIONS)) * 100 : 0;
 
@@ -2587,7 +2587,7 @@ function renderPieChart(opens, cashPct) {
   if (!canvas) return;
   if (pieChartInstance) pieChartInstance.destroy();
 
-  // Ogni posizione pesa SEMPRE 100/MAX_POSITIONS (= 11.1% con 9 settori).
+  // Ogni posizione pesa SEMPRE 100/MAX_POSITIONS (= 12.5% con 8 settori).
   // Il cash = (MAX_POSITIONS - n_open)/MAX_POSITIONS * 100%
   const fixedWeight = 100 / MAX_POSITIONS;
   const labels = opens.map(op => `${stockName(op.ticker)} · ${op.sector_etf}`);
@@ -2638,7 +2638,7 @@ function renderOpenPositionsTable(opens, cashPct) {
     return;
   }
 
-  const fixedWeight = 100 / MAX_POSITIONS;  // 11.1% con 9 settori
+  const fixedWeight = 100 / MAX_POSITIONS;  // 12.5% con 8 settori
   let html = '';
   opens.forEach(op => {
     const tag = TAG_LABELS[op.entry_tag] || { label: op.entry_tag || '—', cls: 'badge-value' };
