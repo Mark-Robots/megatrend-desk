@@ -138,7 +138,8 @@ def main():
         'mode_label': 'Adaptive',
         'modes': {},
     }
-    for mode in ('balanced', 'aggressive'):
+    # solo aggressive: l'Adaptive affianca l'Aggressive statico con la stessa filosofia momentum
+    for mode in ('aggressive',):
         print(f"\n[ADAPTIVE·{mode}] backtest con panieri auto-aggiornati...")
         _REVIEW_CACHE.clear()
         result = build_full_output(prices, mode)
