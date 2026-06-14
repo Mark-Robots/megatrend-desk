@@ -1514,7 +1514,7 @@ body.modal-open { overflow: hidden; }
 </div>
 <script>
 (function(){
-  const MODES = [['balanced','BALANCED'],['aggressive','AGGRESSIVE']];
+  const MODES = [['aggressive','AGGRESSIVE']];
   fetch('data/preview_signals.json?t=' + Date.now())
     .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
     .then(d => {
@@ -1660,8 +1660,8 @@ body.modal-open { overflow: hidden; }
       <div class="pie-container">
         <div class="pie-header pie-header-mode">
           <span class="pie-mode-label">Modalità portafoglio</span>
-          <button class="preset-btn active pie-mode-btn" data-mode="balanced">Balanced</button>
-          <button class="preset-btn pie-mode-btn" data-mode="aggressive">Aggressive</button>
+          <button class="preset-btn active pie-mode-btn" data-mode="aggressive">Aggressive</button>
+          <button class="preset-btn pie-mode-btn" data-mode="adaptive">Adaptive</button>
         </div>
         <div class="pie-canvas-wrapper">
           <canvas id="pie-chart"></canvas>
@@ -1949,19 +1949,28 @@ body.modal-open { overflow: hidden; }
 // Replica della grafica cliente.html ETF, adattata a stocks_data.json
 // ============================================================
 let DATA = null;          // Root JSON completo (modes.balanced + modes.aggressive)
+let DATA_ADAPTIVE = null; // Root JSON adaptive_data.json (modes.aggressive)
 let DATA_VIEW = null;     // Vista corrente: punta a DATA.modes[CURRENT_MODE]
-let CURRENT_MODE = 'balanced';
+let CURRENT_MODE = 'aggressive';
 let DATE_RANGE = { start_idx: null, end_idx: null, preset: 'all' };
 let equityChartInstance = null;
 let cashChartInstance = null;
 
 function applyMode(mode) {
-  if (!DATA || !DATA.modes || !DATA.modes[mode]) {
+  // mode 'aggressive' -> sistema statico (stocks_data.json, modes.aggressive)
+  // mode 'adaptive'   -> selezione auto-aggiornata (adaptive_data.json, modes.aggressive)
+  let view = null;
+  if (mode === 'adaptive') {
+    view = (DATA_ADAPTIVE && DATA_ADAPTIVE.modes && DATA_ADAPTIVE.modes.aggressive) || null;
+  } else {
+    view = (DATA && DATA.modes && DATA.modes.aggressive) || null;
+  }
+  if (!view) {
     console.warn('Mode non disponibile:', mode);
     return;
   }
   CURRENT_MODE = mode;
-  DATA_VIEW = DATA.modes[mode];
+  DATA_VIEW = view;
   document.querySelectorAll('.preset-btn[data-mode]').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
@@ -2042,12 +2051,22 @@ async function loadData() {
   try {
     const r = await fetch('data/stocks_data.json?_=' + Date.now());
     DATA = await r.json();
-    // Compatibilità: se il JSON ha struttura modes.{balanced,aggressive}, usala. Altrimenti fallback.
-    if (DATA.modes && DATA.modes.balanced) {
-      DATA_VIEW = DATA.modes[CURRENT_MODE] || DATA.modes.balanced;
+    // carica anche i dati Adaptive (best-effort: se manca, il toggle Adaptive resta inerte)
+    try {
+      const ra = await fetch('data/adaptive_data.json?_=' + Date.now());
+      if (ra.ok) DATA_ADAPTIVE = await ra.json();
+    } catch (e) { console.warn('adaptive_data non disponibile:', e); }
+
+    // Vista iniziale: Aggressive statico
+    if (DATA.modes && DATA.modes.aggressive) {
+      DATA_VIEW = DATA.modes[CURRENT_MODE === 'adaptive'
+        ? null
+        : 'aggressive'] || DATA.modes.aggressive;
+      if (CURRENT_MODE === 'adaptive' && DATA_ADAPTIVE) {
+        DATA_VIEW = DATA_ADAPTIVE.modes.aggressive;
+      }
     } else {
       DATA_VIEW = DATA;
-      // Nascondi il selettore Modalità se i dati sono in formato legacy
       document.querySelectorAll('.preset-btn[data-mode]').forEach(b => b.style.display = 'none');
     }
     if (!DATA_VIEW.equity_curve || DATA_VIEW.equity_curve.length === 0) {
