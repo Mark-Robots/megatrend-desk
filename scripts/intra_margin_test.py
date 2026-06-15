@@ -97,14 +97,15 @@ def run(prices, dv, mode, margin):
                     c=prices[tk].iloc[w]
                     if not pd.isna(c) and c<=th: exit_w=w; reason='stop'; break
                     if margin is not None:
-                        # doppia condizione
+                        # doppia condizione: detenuto debole E alternativa nettamente meglio
                         held_sc=score_of(sec,prices,w,tk,mode)
                         if held_sc is not None and held_sc<=0:
                             alt=best_of(sec,prices,w,[t for t in bsk if t!=tk],mode)
                             if alt is not None:
                                 alt_sc=alt['score']
-                                # alternativa supera il detenuto di almeno margin%
-                                if held_sc<=0 and alt_sc>0 and (alt_sc-held_sc)>=abs(held_sc)*margin/100 + 1e-9:
+                                # margine ASSOLUTO: l'alternativa supera il detenuto
+                                # di almeno 'margin' PUNTI di score (e ha score positivo)
+                                if alt_sc>0 and (alt_sc-held_sc)>=margin:
                                     exit_w=w; reason='rotate'; break
                 xp=float(prices[tk].iloc[exit_w])
                 if pd.isna(xp) or xp<=0: break
@@ -155,7 +156,7 @@ def main():
     print(f"prezzi {prices.shape[1]}x{prices.shape[0]}\n")
     print(f"{'regola':24} {'total':>7} {'MaxDD':>7} {'Sharpe':>7} {'worst':>7} {'trade':>6} {'rotaz':>6} {'winner tagl':>11}")
     print('-'*82)
-    for label,mg in [('base (no rotazione)',None),('margine +20%',20),('margine +30%',30),('margine +50%',50)]:
+    for label,mg in [('base (no rotazione)',None),('margine 10pt',10),('margine 20pt',20),('margine 40pt',40)]:
         r=run(prices,dv,'aggressive',mg)
         print(f"{label:24} {r['total']:>6.0f}% {r['mdd']:>6}% {r['sharpe']:>7} {r['worst']:>6}% {r['n']:>6} {r['n_rot']:>6} {r['n_cut']:>11}")
         if r['cut']: print(f"     tagliati: {r['cut']}")
