@@ -1,0 +1,17 @@
+name: Intra Margin Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  margin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install yfinance pandas numpy
+      - name: Run intra margin test
+        run: python scripts/intra_margin_test.py
