@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-06-12T18:31:07.362865+00:00",
+ "updated_at": "2026-06-15T14:31:27.360077+00:00",
  "last_bar": "2026-06-12",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -26,9 +26,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 21.54,
-     "roc13": 166.53,
-     "score": 237.4,
+     "roc4": 20.62,
+     "roc13": 164.53,
+     "score": 234.9,
      "tag": "top_momentum"
     },
     {
@@ -44,9 +44,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": 37.43,
-     "roc13": 133.8,
-     "score": 385.7,
+     "roc4": 35.46,
+     "roc13": 130.45,
+     "score": 378.7,
      "tag": "top_momentum"
     },
     {
@@ -62,9 +62,9 @@
      "ticker_name": "Citigroup",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 13.46,
-     "roc13": 33.12,
-     "score": 54.9,
+     "roc4": 13.3,
+     "roc13": 32.93,
+     "score": 54.7,
      "tag": "top_momentum"
     },
     {
@@ -80,9 +80,9 @@
      "ticker_name": "UnitedHealth",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 3.53,
-     "roc13": 45.67,
-     "score": 40.9,
+     "roc4": 3.72,
+     "roc13": 45.94,
+     "score": 41.2,
      "tag": "top_momentum"
     },
     {
@@ -98,28 +98,10 @@
      "ticker_name": "Caterpillar",
      "held_ticker": "CAT",
      "held_name": "Caterpillar",
-     "roc4": 2.7,
-     "roc13": 31.71,
-     "score": 82.3,
+     "roc4": 2.51,
+     "roc13": 31.46,
+     "score": 82.0,
      "tag": "top_momentum"
-    },
-    {
-     "sector": "XLP",
-     "name": "Consumi essenziali",
-     "in_now": false,
-     "was_in": false,
-     "move": null,
-     "borderline": false,
-     "state": "Debole",
-     "stage": "2",
-     "ticker": "MDLZ",
-     "ticker_name": "Mondelez",
-     "held_ticker": null,
-     "held_name": null,
-     "roc4": 4.29,
-     "roc13": 15.82,
-     "score": 8.4,
-     "tag": "value_momentum"
     },
     {
      "sector": "XLE",
@@ -134,9 +116,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 4.19,
-     "roc13": 13.29,
-     "score": 47.5,
+     "roc4": 3.65,
+     "roc13": 12.71,
+     "score": 46.8,
      "tag": "premium_ok"
     },
     {
@@ -202,9 +184,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 21.54,
-     "roc13": 166.53,
-     "score": 65.0,
+     "roc4": 20.62,
+     "roc13": 164.53,
+     "score": 63.8,
      "tag": "top_momentum"
     },
     {
@@ -220,9 +202,9 @@
      "ticker_name": "Micron",
      "held_ticker": "MU",
      "held_name": "Micron",
-     "roc4": 37.43,
-     "roc13": 133.8,
-     "score": 66.3,
+     "roc4": 35.46,
+     "roc13": 130.45,
+     "score": 64.0,
      "tag": "top_momentum"
     },
     {
@@ -238,9 +220,9 @@
      "ticker_name": "Goldman Sachs",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 12.95,
-     "roc13": 36.96,
-     "score": 20.2,
+     "roc4": 12.54,
+     "roc13": 36.46,
+     "score": 19.7,
      "tag": "top_momentum"
     },
     {
@@ -256,9 +238,9 @@
      "ticker_name": "UnitedHealth",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 3.53,
-     "roc13": 45.67,
-     "score": 16.2,
+     "roc4": 3.72,
+     "roc13": 45.94,
+     "score": 16.4,
      "tag": "top_momentum"
     },
     {
@@ -274,28 +256,10 @@
      "ticker_name": "General Electric",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 18.85,
-     "roc13": 11.81,
-     "score": 16.7,
+     "roc4": 19.1,
+     "roc13": 12.05,
+     "score": 17.0,
      "tag": "premium_ok"
-    },
-    {
-     "sector": "XLP",
-     "name": "Consumi essenziali",
-     "in_now": false,
-     "was_in": false,
-     "move": null,
-     "borderline": false,
-     "state": "Debole",
-     "stage": "2",
-     "ticker": "MDLZ",
-     "ticker_name": "Mondelez",
-     "held_ticker": null,
-     "held_name": null,
-     "roc4": 4.29,
-     "roc13": 15.82,
-     "score": 7.7,
-     "tag": "value_momentum"
     },
     {
      "sector": "XLE",
@@ -310,9 +274,9 @@
      "ticker_name": "Schlumberger",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 2.55,
-     "roc13": 26.99,
-     "score": 9.9,
+     "roc4": 1.98,
+     "roc13": 26.28,
+     "score": 9.3,
      "tag": "top_momentum"
     },
     {
