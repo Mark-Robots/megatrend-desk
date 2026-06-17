@@ -198,6 +198,21 @@ def find_cycle_lows(prices, cycle_len):
     return lows
 
 
+def find_cycle_highs(prices, cycle_len):
+    """Massimi ciclici (ciclo inverso): punto massimo in una finestra ~0.4*durata."""
+    half = max(3, int(cycle_len * 0.4))
+    min_gap = cycle_len * 0.5
+    highs = []
+    for i in range(len(prices)):
+        a = max(0, i - half)
+        b = min(len(prices), i + half + 1)
+        window = prices[a:b]
+        if prices[i] == max(window):
+            if not highs or (i - highs[-1]) >= min_gap:
+                highs.append(i)
+    return highs
+
+
 def analyze_cycle(prices, dates, spec):
     cl = spec["len"]
     lows = find_cycle_lows(prices, cl)
@@ -230,6 +245,31 @@ def analyze_cycle(prices, dates, spec):
             res["phase_note"] = "ciclo maturo, minimo ciclico in prossimita'"
         # giorni stimati al prossimo minimo (durata teorica - trascorsi)
         res["days_to_low_est"] = max(0, cl - elapsed)
+
+    # --- ciclo inverso (massimi / top) ---
+    highs = find_cycle_highs(prices, cl)
+    res["n_highs"] = len(highs)
+    res["highs_dates"] = [dates[i] for i in highs[-8:]]
+    if len(highs) >= 2:
+        hgaps = [highs[i+1]-highs[i] for i in range(len(highs)-1)]
+        res["high_gap_avg"] = round(statistics.mean(hgaps), 1)
+        last_h = highs[-1]
+        elapsed_h = (len(prices)-1) - last_h
+        res["elapsed_from_high"] = elapsed_h
+        res["last_high_date"] = dates[last_h]
+        prog_h = elapsed_h / cl
+        res["progress_high_pct"] = round(min(prog_h, 1.5) * 100, 0)
+        res["days_to_high_est"] = max(0, cl - elapsed_h)
+        # fase inversa: prima meta' dopo il top = discesa, seconda = risalita verso nuovo top
+        if prog_h < 0.5:
+            res["inv_phase"] = "post-top"
+            res["inv_note"] = "dopo un massimo ciclico, possibile correzione"
+        elif prog_h < 0.9:
+            res["inv_phase"] = "verso-top"
+            res["inv_note"] = "in avvicinamento al prossimo massimo"
+        else:
+            res["inv_phase"] = "top atteso"
+            res["inv_note"] = "massimo ciclico in prossimita'"
     return res
 
 
