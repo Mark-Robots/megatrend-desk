@@ -182,32 +182,59 @@ def load_prices(instrument="sp500"):
     return sorted(seen.items())
 
 
+def _moving_avg(prices, win):
+    """Media mobile centrata, robusta ai bordi."""
+    n = len(prices)
+    half = max(1, win // 2)
+    out = []
+    for i in range(n):
+        a = max(0, i - half)
+        b = min(n, i + half + 1)
+        seg = prices[a:b]
+        out.append(sum(seg) / len(seg))
+    return out
+
+
+def detrend(prices, cycle_len):
+    """Toglie la tendenza di fondo sottraendo una media mobile lunga ~1.2x il ciclo.
+    Sulla serie spianata i massimi/minimi ciclici emergono come picchi locali veri,
+    anche dentro un trend prolungato (risolve il problema dei massimi 'saltati' in
+    fasi rialziste lunghe)."""
+    win = max(5, int(cycle_len * 1.2))
+    ma = _moving_avg(prices, win)
+    return [p - m for p, m in zip(prices, ma)]
+
+
 def find_cycle_lows(prices, cycle_len):
-    """Minimi ciclici: punto minimo in una finestra ~0.4*durata, con distanza minima
-    tra minimi pari a ~0.5*durata (evita doppioni)."""
+    """Minimi ciclici sulla serie DETRENDIZZATA: punto minimo in una finestra ~0.4*durata,
+    con distanza minima tra minimi pari a ~0.5*durata (evita doppioni)."""
+    series = detrend(prices, cycle_len)
     half = max(3, int(cycle_len * 0.4))
     min_gap = cycle_len * 0.5
     lows = []
-    for i in range(len(prices)):
+    for i in range(len(series)):
         a = max(0, i - half)
-        b = min(len(prices), i + half + 1)
-        window = prices[a:b]
-        if prices[i] == min(window):
+        b = min(len(series), i + half + 1)
+        window = series[a:b]
+        if series[i] == min(window):
             if not lows or (i - lows[-1]) >= min_gap:
                 lows.append(i)
     return lows
 
 
 def find_cycle_highs(prices, cycle_len):
-    """Massimi ciclici (ciclo inverso): punto massimo in una finestra ~0.4*durata."""
+    """Massimi ciclici (ciclo inverso) sulla serie DETRENDIZZATA: punto massimo in una
+    finestra ~0.4*durata. Il detrend rende la rilevazione robusta ai trend rialzisti
+    lunghi, in cui i massimi intermedi venivano altrimenti 'coperti' dal picco assoluto."""
+    series = detrend(prices, cycle_len)
     half = max(3, int(cycle_len * 0.4))
     min_gap = cycle_len * 0.5
     highs = []
-    for i in range(len(prices)):
+    for i in range(len(series)):
         a = max(0, i - half)
-        b = min(len(prices), i + half + 1)
-        window = prices[a:b]
-        if prices[i] == max(window):
+        b = min(len(series), i + half + 1)
+        window = series[a:b]
+        if series[i] == max(window):
             if not highs or (i - highs[-1]) >= min_gap:
                 highs.append(i)
     return highs
