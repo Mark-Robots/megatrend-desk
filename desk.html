@@ -464,6 +464,8 @@ async function loadCycle(){
 
 async function loadCycles(url, targetId){
   const el=document.getElementById(targetId);
+  const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fmtCycDate=s=>{ if(!s) return '—'; const p=s.split('-'); return p.length===3?`${p[2]} ${MESI[+p[1]-1]} ${p[0]}`:s; };
   try{
     const d=await(await fetch(url+'?_='+Date.now())).json();
     const cyc=d.cycles||[];
@@ -482,14 +484,14 @@ async function loadCycles(url, targetId){
         <div class="cyc-bar">
           <div class="cyc-fill ${cls}" style="width:${pc}%"></div>
           <div class="cyc-mark" style="left:100%"></div>
-          ${c.progress_high_pct!=null?`<div class="cyc-top-mark" style="left:${Math.min(100,c.progress_high_pct)}%"></div>`:''}
+          ${c.progress_high_pct!=null?`<div class="cyc-top-mark" style="left:${Math.min(100,c.progress_high_pct)}%"><span class="top-lbl">▲ top</span></div>`:''}
         </div>
-        <div class="cyc-phase">Fase <span class="ptag ${cls}">${phaseLabel(c.phase)}</span> · ${c.phase_note}. Ultimo minimo: ${c.last_low_date||'—'}${c.days_to_low_est!=null?` · prossimo minimo stimato tra ~${c.days_to_low_est}gg`:''}.</div>
-        ${c.progress_high_pct!=null?`<div class="cyc-inv">Ciclo inverso (top): ultimo massimo ${c.last_high_date||'—'} · prossimo massimo stimato tra ~${c.days_to_high_est}gg <span class="inv-tag">${c.inv_phase}</span></div>`:''}
+        <div class="cyc-phase">Fase <span class="ptag ${cls}">${phaseLabel(c.phase)}</span> · ${c.phase_note}. Ultimo minimo: ${fmtCycDate(c.last_low_date)}${c.next_low_date_est?` · <b>prossimo minimo atteso ≈ ${fmtCycDate(c.next_low_date_est)}</b>`:(c.days_to_low_est!=null?` · prossimo minimo tra ~${c.days_to_low_est}gg`:'')}.</div>
+        ${c.progress_high_pct!=null?`<div class="cyc-inv">Ciclo inverso (top): ultimo massimo ${fmtCycDate(c.last_high_date)} · <b>prossimo massimo atteso ${c.next_high_date_est?'≈ '+fmtCycDate(c.next_high_date_est):'tra ~'+c.days_to_high_est+'gg'}</b> <span class="inv-tag">${c.inv_phase}</span></div>`:''}
       </div>`;
     }).join('');
 
-    el.innerHTML=rows+`<div class="cyc-foot">${d.instrument} · ultimo dato ${d.last_date} · chiusura ${d.last_close}. ${d.disclaimer||''}</div>`;
+    el.innerHTML=rows+`<div class="cyc-legend"><span class="lg-item"><span class="lg-mark end"></span> fine ciclo (minimo atteso)</span><span class="lg-item"><span class="lg-mark top"></span> ultimo massimo ciclico (ciclo inverso)</span></div><div class="cyc-foot">${d.instrument} · ultimo dato ${d.last_date} · chiusura ${d.last_close}. ${d.disclaimer||''}</div>`;
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
   }
