@@ -111,18 +111,75 @@ def fetch_stooq_csv_github():
     return None
 
 
-def load_prices():
-    data = fetch_twelvedata() or fetch_stooq() or fetch_yfinance()
+def fetch_btc_daily():
+    """Storia giornaliera BTC/USDT da Binance (klines 1d). Multi-host perché
+    alcuni endpoint Binance sono bloccati dai runner GitHub USA (errore 451)."""
+    hosts = ["data-api.binance.vision", "api.binance.com", "api1.binance.com"]
+    for host in hosts:
+        try:
+            all_rows, end = [], None
+            # Binance dà max 1000 candele per richiesta: pagino all'indietro
+            for _ in range(4):
+                url = (f"https://{host}/api/v3/klines?symbol=BTCUSDT"
+                       f"&interval=1d&limit=1000")
+                if end:
+                    url += f"&endTime={end}"
+                arr = json.loads(_http_get(url))
+                if not arr:
+                    break
+                all_rows = arr + all_rows
+                end = arr[0][0] - 1  # openTime della prima candela meno 1ms
+                if len(arr) < 1000:
+                    break
+            if len(all_rows) > 300:
+                data = []
+                seen = set()
+                for k in all_rows:
+                    d = datetime.datetime.utcfromtimestamp(k[0] / 1000).strftime("%Y-%m-%d")
+                    if d in seen:
+                        continue
+                    seen.add(d)
+                    data.append((d, float(k[4])))  # close
+                print(f"[binance] {len(data)} candele daily da {host}")
+                return data
+        except Exception as e:
+            print(f"[binance] {host} fallito: {e}")
+    return None
+
+
+def fetch_btc_kraken():
+    """Fallback BTC: Kraken OHLC daily (XBTUSD)."""
+    try:
+        url = "https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1440"
+        obj = json.loads(_http_get(url))
+        res = obj.get("result", {})
+        key = next((k for k in res if k != "last"), None)
+        if key:
+            rows = res[key]
+            data = [(datetime.datetime.utcfromtimestamp(r[0]).strftime("%Y-%m-%d"),
+                     float(r[4])) for r in rows]
+            if len(data) > 300:
+                print(f"[kraken] {len(data)} candele daily")
+                return data
+    except Exception as e:
+        print(f"[kraken] fallito: {e}")
+    return None
+
+
+def load_prices(instrument="sp500"):
+    if instrument == "btc":
+        data = fetch_btc_daily() or fetch_btc_kraken()
+        src = "Binance / Kraken"
+    else:
+        data = fetch_twelvedata() or fetch_stooq() or fetch_yfinance()
+        src = "Twelve Data / Stooq / yfinance"
     if not data:
-        raise SystemExit("Impossibile scaricare i dati S&P 500 da nessuna fonte "
-                         "(Twelve Data / Stooq / yfinance).")
+        raise SystemExit(f"Impossibile scaricare i dati ({instrument}) da nessuna fonte ({src}).")
     data.sort(key=lambda x: x[0])  # cronologico
-    # dedup per data (tieni l'ultimo)
     seen = {}
     for d, p in data:
         seen[d] = p
-    out = sorted(seen.items())
-    return out
+    return sorted(seen.items())
 
 
 def find_cycle_lows(prices, cycle_len):
@@ -176,33 +233,47 @@ def analyze_cycle(prices, dates, spec):
     return res
 
 
-def main():
-    data = load_prices()
+INSTRUMENTS = [
+    {"id": "sp500", "label": "S&P 500", "out": "data/cycles_data.json",     "round": 2},
+    {"id": "btc",   "label": "Bitcoin", "out": "data/cycles_btc_data.json", "round": 0},
+]
+
+
+def build_one(inst):
+    data = load_prices(inst["id"])
     dates = [d for d, _ in data]
     prices = [p for _, p in data]
-
     cycles = [analyze_cycle(prices, dates, spec) for spec in CYCLES]
-
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "instrument": "S&P 500",
+        "instrument": inst["label"],
         "last_date": dates[-1],
-        "last_close": round(prices[-1], 2),
+        "last_close": round(prices[-1], inst["round"]),
         "n_days": len(prices),
         "cycles": cycles,
         "disclaimer": ("Analisi ciclica indicativa sui minimi storici (metodo dei cicli "
                        "annidati). Lettura probabilistica, non previsione."),
     }
-
-    import os
     os.makedirs("data", exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
+    with open(inst["out"], "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
-    print(f"[ok] scritto {OUT_PATH}")
+    print(f"[ok] {inst['label']} -> {inst['out']}")
     for c in cycles:
         if "progress_pct" in c:
             print(f"  {c['label']:18} {c['elapsed_days']:>3}gg / {c['len_theoretical']} "
                   f"({c['progress_pct']:.0f}%) {c['phase']}")
+
+
+def main():
+    errors = []
+    for inst in INSTRUMENTS:
+        try:
+            build_one(inst)
+        except SystemExit as e:
+            print(f"[skip] {inst['label']}: {e}")
+            errors.append(inst["label"])
+    if len(errors) == len(INSTRUMENTS):
+        raise SystemExit("Nessuno strumento aggiornato.")
 
 
 if __name__ == "__main__":
