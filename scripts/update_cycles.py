@@ -250,7 +250,7 @@ def find_cycle_highs(prices, cycle_len):
     return highs
 
 
-def analyze_cycle(prices, dates, spec):
+def analyze_cycle(prices, dates, spec, apply_bias=False):
     cl = spec["len"]
     lows = find_cycle_lows(prices, cl)
     res = {
@@ -302,8 +302,9 @@ def analyze_cycle(prices, dates, spec):
             _nx = _d + datetime.timedelta(days=cl_eff)
             while _nx <= _last_d:
                 _nx += datetime.timedelta(days=cl_eff)
-            # correzione del bias di anticipo (i minimi tendono ad arrivare dopo)
-            _off = BIAS_OFFSET.get(spec["key"], {}).get("low", 0)
+            # correzione del bias di anticipo (i minimi tendono ad arrivare dopo).
+            # Applicata SOLO se apply_bias=True (offset calibrati su S&P; non validi per altri strumenti).
+            _off = BIAS_OFFSET.get(spec["key"], {}).get("low", 0) if apply_bias else 0
             _nx_adj = _nx + datetime.timedelta(days=_off)
             res["next_low_date_est_raw"] = _nx.strftime("%Y-%m-%d")
             res["next_low_date_est"] = _nx_adj.strftime("%Y-%m-%d")
@@ -339,8 +340,9 @@ def analyze_cycle(prices, dates, spec):
             _nxh = _dh + datetime.timedelta(days=cl_eff_h)
             while _nxh <= _last_date:
                 _nxh += datetime.timedelta(days=cl_eff_h)
-            # correzione del bias (i massimi tendono ad arrivare prima della proiezione)
-            _offh = BIAS_OFFSET.get(spec["key"], {}).get("high", 0)
+            # correzione del bias (i massimi tendono ad arrivare prima della proiezione).
+            # Applicata SOLO se apply_bias=True (offset calibrati su S&P).
+            _offh = BIAS_OFFSET.get(spec["key"], {}).get("high", 0) if apply_bias else 0
             _nxh_adj = _nxh + datetime.timedelta(days=_offh)
             res["next_high_date_est_raw"] = _nxh.strftime("%Y-%m-%d")
             res["next_high_date_est"] = _nxh_adj.strftime("%Y-%m-%d")
@@ -370,7 +372,10 @@ def build_one(inst):
     data = load_prices(inst["id"])
     dates = [d for d, _ in data]
     prices = [p for _, p in data]
-    cycles = [analyze_cycle(prices, dates, spec) for spec in CYCLES]
+    # offset di bias applicato solo all'S&P (gli offset sono calibrati su SPX);
+    # per BTC servono statistiche proprie -> date grezze finché non validate
+    apply_bias = (inst["id"] == "sp500")
+    cycles = [analyze_cycle(prices, dates, spec, apply_bias=apply_bias) for spec in CYCLES]
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "instrument": inst["label"],
