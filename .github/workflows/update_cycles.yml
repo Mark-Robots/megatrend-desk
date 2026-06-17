@@ -28,14 +28,17 @@ jobs:
       - name: Run cycle analysis
         env:
           TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
-        run: python scripts/update_cycles.py
+        run: |
+          python scripts/update_cycles.py
+          echo "--- file generati in data/ ---"
+          ls -la data/
 
       - name: Commit and push
         run: |
           git config user.name  "Cycles Bot"
           git config user.email "actions@github.com"
-          git add data/cycles_data.json data/cycles_btc_data.json 2>/dev/null || true
-          git add -A data/ 2>/dev/null || true
+          git add -A data/
+          git status --short
           if git diff --staged --quiet; then
             echo "Nessuna modifica."
           else
