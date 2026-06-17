@@ -12,6 +12,9 @@ import urllib.request
 PARAMS = json.load(open(os.path.join(os.path.dirname(__file__), 'crypto_params.json')))
 SYMBOLS = {'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT'}
 DMI_PERIOD = 14
+HTF_EMA_LEN = 200
+# Filtro EMA200 per-asset: attivo su BTC/ETH (close>EMA200 per entry), NON su SOL.
+EMA_FILTER = {'BTC': True, 'ETH': True, 'SOL': False}
 # data-api.binance.vision: host ufficiale Binance per dati di mercato,
 # senza il blocco geografico 451 che colpisce api.binance.com da IP USA (GitHub Actions).
 BINANCE = 'https://data-api.binance.vision/api/v3/klines'
@@ -185,12 +188,26 @@ def compute_rolling_dmi(klines, period=14):
     return dmi_by_time
 
 
+def _ema(values, n):
+    """replica ema() dell'app: seed = SMA prime n, poi EMA con k=2/(n+1)."""
+    r = [float('nan')] * len(values)
+    if len(values) < n:
+        return r
+    k = 2 / (n + 1)
+    s = sum(values[:n])
+    r[n-1] = s / n
+    for i in range(n, len(values)):
+        r[i] = values[i] * k + r[i-1] * (1 - k)
+    return r
+
+
 def compute_signals_long_only(klines, asset, dmi_by_time):
-    """replica sentinel mode SENZA ema/volume: solo DMI crossover su d1/d2."""
+    """replica sentinel mode: DMI crossover su d1/d2, con filtro EMA200 per-asset."""
     signals = []
     pos = 'FLAT'; ep = 0.0
-    # array DMI allineato alle candele
     dmi = [dmi_by_time.get(k['time']) for k in klines]
+    use_ema = EMA_FILTER.get(asset, False)
+    htf_ema = _ema([k['close'] for k in klines], HTF_EMA_LEN) if use_ema else None
     for i in range(1, len(klines)):
         di, dip = dmi[i], dmi[i-1]
         if di is None or dip is None:
@@ -201,8 +218,13 @@ def compute_signals_long_only(klines, asset, dmi_by_time):
         lE = (dip < p['d1'] and di >= p['d1']) or (dip < p['d2'] and di >= p['d2'])
         lX = (dip >= p['d1'] and di < p['d1']) or (dip >= p['d2'] and di < p['d2'])
         sE = (dip > p['d3'] and di <= p['d3']) or (dip > p['d4'] and di <= p['d4'])
-        # long-only puro: entry su lE, exit su lX o segnale short
-        if lE and pos != 'LONG':
+        # filtro EMA200 sull'entry long (solo BTC/ETH)
+        htf_ok = True
+        if use_ema:
+            e = htf_ema[i]
+            htf_ok = (e == e) and cl > e  # e==e esclude NaN
+        long_trigger = lE and htf_ok
+        if long_trigger and pos != 'LONG':
             pos = 'LONG'; ep = cl
             signals.append({'i': i, 'type': 'ENTRY_LONG', 'price': cl})
         elif lX and pos == 'LONG':
