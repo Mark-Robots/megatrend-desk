@@ -1476,7 +1476,7 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
         prev_date = date
     
     # Calcola statistiche
-    def compute_stats(eq, eq_dates=None):
+    def compute_stats(eq):
         if len(eq) < 2:
             return None
         start_val = eq[0]
@@ -1498,26 +1498,9 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
             if dd < max_dd:
                 max_dd = dd
 
-        # performance recenti (settimana / mese / da inizio anno)
-        perf_week = (end_val / eq[-2] - 1) * 100 if len(eq) >= 2 else 0
-        perf_month = (end_val / eq[-5] - 1) * 100 if len(eq) >= 5 else 0
-        perf_ytd = 0
-        if eq_dates:
-            import datetime as _dt
-            _yr = str(_dt.date.today().year)
-            _base = 0
-            for _i, _d in enumerate(eq_dates):
-                if str(_d)[:4] == _yr:
-                    _base = _i
-                    break
-            perf_ytd = (end_val / eq[_base] - 1) * 100
-
         return {
             'total_return': round(total_ret, 1),
             'cagr': round(cagr, 1),
-            'perf_week': round(perf_week, 2),
-            'perf_month': round(perf_month, 2),
-            'perf_ytd': round(perf_ytd, 2),
             'max_drawdown': round(max_dd, 1),
             'final_value': round(end_val, 1),
         }
@@ -1540,8 +1523,8 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
         'equity_bh': equity_bh,
         'n_sectors': n_sectors,
         'weight_per_sector': round(weight, 2),
-        'stats_system': compute_stats(equity_system, dates_out),
-        'stats_bh': compute_stats(equity_bh, dates_out),
+        'stats_system': compute_stats(equity_system),
+        'stats_bh': compute_stats(equity_bh),
         'avg_pct_invested': avg_pct_invested,
         'start_date': dates_out[0] if dates_out else None,
         'end_date': dates_out[-1] if dates_out else None,
@@ -1750,13 +1733,62 @@ def compute_portfolio_simulation(all_metrics, prices_df, ma_weeks=30):
                     bench_aligned.append(None)
             benchmarks_out[region] = bench_aligned
 
+    # ── Performance recenti (settimana/mese/YTD) ricostruite come la dashboard ──
+    # Ogni metrica ricostruisce l'equity RIBILANCIATA ripartendo da 100 all'inizio
+    # del suo periodo, usando i settori operativi (default_ts != excluded) e cash drag.
+    sim_dates = [d.strftime('%Y-%m-%d') for d in common_dates]
+    recent_perf = _compute_recent_perf(sectors_out, sim_dates)
+
     return {
-        'dates': [d.strftime('%Y-%m-%d') for d in common_dates],
+        'dates': sim_dates,
         'default_n_operational': n_default_operational,
         'sectors': sectors_out,
         'benchmarks': benchmarks_out,
         'smoothing_weeks': SIGNAL_SMOOTHING_TOLERANCE_WEEKS,
+        'recent_perf': recent_perf,
     }
+
+
+def _compute_recent_perf(sectors_out, dates):
+    """Performance settimana/mese/YTD: equity ribilanciata ricostruita dall'inizio
+    di ciascuna finestra (come fa la dashboard cliente.html)."""
+    import datetime as _dt
+    op = [tk for tk, s in sectors_out.items()
+          if s.get('default_ts') and s['default_ts'] != 'excluded'
+          and s.get('signals_by_ts', {}).get(s['default_ts'])]
+    n = len(op)
+    if n == 0 or len(dates) < 2:
+        return {'perf_week': 0, 'perf_month': 0, 'perf_ytd': 0}
+    weight = 100.0 / n
+
+    def perf_window(start_idx):
+        sub = {tk: weight for tk in op}
+        start_eq = n * weight
+        for i in range(start_idx + 1, len(dates)):
+            for tk in op:
+                sec = sectors_out[tk]
+                prices = sec['prices']
+                if i >= len(prices) or i - 1 >= len(prices):
+                    continue
+                pp, pc = prices[i - 1], prices[i]
+                if pp is None or pc is None or pp == 0:
+                    continue
+                sig = sec['signals_by_ts'][sec['default_ts']]
+                if i - 1 < len(sig) and sig[i - 1]:
+                    sub[tk] *= (1 + (pc / pp - 1))
+        return (sum(sub.values()) / start_eq - 1) * 100
+
+    nlen = len(dates)
+    wk = perf_window(nlen - 2) if nlen >= 2 else 0
+    mo = perf_window(nlen - 5) if nlen >= 5 else 0
+    cur_year = str(_dt.date.today().year)
+    base = 0
+    for i, d in enumerate(dates):
+        if str(d)[:4] == cur_year:
+            base = i
+            break
+    ytd = perf_window(base)
+    return {'perf_week': round(wk, 2), 'perf_month': round(mo, 2), 'perf_ytd': round(ytd, 2)}
 
 
 # ============================================================
