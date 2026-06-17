@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarkRoboT.S. · Trading Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c10;--panel:#11151c;--panel-2:#161b24;--line:#222a35;--line-soft:#1a2029;
+    --txt:#e8edf4;--txt-dim:#8a96a6;--txt-faint:#5a6573;
+    --orange:#ff7a18;--green:#3ddc84;--red:#ff5c5c;--blue:#5b9dff;--cash:#c9a14a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:'JetBrains Mono',monospace;line-height:1.5;
+    -webkit-font-smoothing:antialiased;min-height:100vh;
+    background-image:radial-gradient(circle at 15% 0%, rgba(255,122,24,.06), transparent 40%);}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap}
+  .hex{width:42px;height:42px;flex-shrink:0}
+  .brand h1{font-weight:800;font-size:20px;letter-spacing:.04em}
+  .brand h1 .ts{color:var(--orange)}
+  .brand .sub{font-size:11px;color:var(--txt-dim);letter-spacing:.18em;text-transform:uppercase;margin-top:2px}
+  .updated{margin-left:auto;font-size:11px;color:var(--txt-faint);text-align:right}
+  .updated b{color:var(--txt-dim);font-weight:500}
+  .updated .live{display:inline-flex;align-items:center;gap:5px;margin-top:3px}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .lead{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(20px,3.4vw,30px);line-height:1.3;
+    max-width:36ch;margin:28px 0 36px}
+  .lead em{color:var(--orange);font-style:italic}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px}
+  .card{background:linear-gradient(160deg,var(--panel),var(--panel-2));border:1px solid var(--line);
+    border-radius:14px;padding:22px;display:flex;flex-direction:column;position:relative;overflow:hidden;
+    transition:border-color .2s,transform .2s}
+  .card:hover{border-color:var(--accent,var(--orange));transform:translateY(-2px)}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--orange));opacity:.7}
+  .card.azioni{--accent:var(--orange)} .card.etf{--accent:var(--blue)} .card.crypto{--accent:var(--green)}
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+  .card-name{font-weight:700;font-size:15px;letter-spacing:.03em}
+  .card-tag{font-size:10px;color:var(--txt-faint);letter-spacing:.12em;text-transform:uppercase}
+  /* settimana + mese affiancati */
+  .perf-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px}
+  .perf-box{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:12px 10px}
+  .perf-box .v{font-family:'Fraunces',serif;font-weight:900;font-size:21px;line-height:1;letter-spacing:-.02em}
+  .perf-box .v.pos{color:var(--green)} .perf-box .v.neg{color:var(--red)} .perf-box .v.flat{color:var(--txt-dim)}
+  .perf-box .l{font-size:9px;color:var(--txt-faint);letter-spacing:.1em;text-transform:uppercase;margin-top:7px}
+  /* barra investito/cash */
+  .cashbar{margin-bottom:6px}
+  .cashbar .track{height:7px;border-radius:4px;background:var(--cash);overflow:hidden;display:flex}
+  .cashbar .fill{height:100%;background:var(--accent,var(--orange))}
+  .cashbar .lab{display:flex;justify-content:space-between;font-size:10px;margin-top:7px;color:var(--txt-dim);letter-spacing:.04em}
+  .cashbar .lab .cash{color:var(--cash)}
+  .positions{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft)}
+  .positions .ptitle{font-size:10px;color:var(--txt-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+  .pos-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px}
+  .pos-row .tk{font-weight:700;color:var(--txt)}
+  .pos-row .nm{color:var(--txt-dim);font-size:10px;margin-left:8px}
+  .pos-row .pf{font-weight:700;font-variant-numeric:tabular-nums}
+  .pf.pos{color:var(--green)} .pf.neg{color:var(--red)}
+  .card-link{margin-top:auto;padding-top:18px;display:inline-flex;align-items:center;gap:7px;
+    color:var(--accent,var(--orange));text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.04em;transition:gap .2s}
+  .card-link:hover{gap:12px}
+  .crypto-note{font-size:12px;color:var(--txt-dim);line-height:1.6;margin:6px 0 2px}
+  .loading{color:var(--txt-faint);font-size:12px;padding:20px 0}
+  .disclaimer{margin-top:40px;padding:20px 22px;background:var(--panel);border:1px solid var(--line-soft);
+    border-radius:12px;font-size:11px;color:var(--txt-faint);line-height:1.7}
+  .disclaimer b{color:var(--txt-dim);font-weight:700}
+  footer{margin-top:28px;text-align:center;font-size:11px;color:var(--txt-faint);letter-spacing:.08em}
+  footer .orange{color:var(--orange)}
+  @media (max-width:560px){.wrap{padding:24px 14px 60px}.updated{margin-left:0;width:100%;text-align:left;margin-top:4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="hex" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="MarkRoboT.S.">
+      <polygon points="50,4 91,27 91,73 50,96 9,73 9,27" fill="none" stroke="#ff7a18" stroke-width="5"/>
+      <polygon points="50,24 73,37 73,63 50,76 27,63 27,37" fill="#ff7a18" opacity="0.16"/>
+      <text x="50" y="60" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="26" font-weight="800" fill="#ff7a18">M</text>
+    </svg>
+    <div class="brand">
+      <h1>MarkRoboT<span class="ts">.S.</span></h1>
+      <div class="sub">Trading Desk</div>
+    </div>
+    <div class="updated">dati al <b id="upd-date">—</b>
+      <div class="live"><span class="dot"></span>aggiornamento ogni ora</div>
+    </div>
+  </header>
+
+  <p class="lead">Performance recente e portafoglio dei tre sistemi, <em>letti in tempo reale</em>.</p>
+
+  <div class="grid">
+    <div class="card azioni">
+      <div class="card-head"><span class="card-name">Megatrend · Azioni</span><span class="card-tag">Sector rotation</span></div>
+      <div id="az-body"><div class="loading">Carico dati…</div></div>
+    </div>
+    <div class="card etf">
+      <div class="card-head"><span class="card-name">Megatrend · ETF</span><span class="card-tag">Sector rotation</span></div>
+      <div id="etf-body"><div class="loading">Carico dati…</div></div>
+    </div>
+    <div class="card crypto">
+      <div class="card-head"><span class="card-name">DMI Sentinel · Crypto</span><span class="card-tag">DMI · live</span></div>
+      <p class="crypto-note">Sistema DMI su BTC / ETH / SOL con ottimizzazione walk-forward mensile. Le metriche si calcolano in tempo reale nell'app.</p>
+      <a class="card-link" href="https://mark-robots.github.io/dmi-sentinel/Earnings_3_0.html">apri il sistema live →</a>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <b>Nota.</b> MarkRoboT.S. è un progetto personale di ricerca sul trading algoritmico, condiviso tra appassionati a scopo informativo e didattico. Le performance recenti derivano dai sistemi su dati reali ma <b>non costituiscono garanzia di risultati futuri</b>. Nulla in questa pagina è consulenza finanziaria, raccomandazione di investimento o sollecitazione. Ogni decisione di investimento è a proprio rischio.
+  </div>
+  <footer><span class="orange">◆</span> MarkRoboT.S. · sistemi quantitativi indipendenti</footer>
+</div>
+
+<script>
+const AZ_URL='https://mark-robots.github.io/megatrend-desk/data/stocks_data.json';
+const ETF_URL='https://mark-robots.github.io/megatrend-desk/data/sector_data.json';
+const AZ_SECTORS=8;  // settori operativi Azioni (senza Consumi)
+
+function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');
+  const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];return `${d} ${M[+m-1]} ${y}`;}
+function sign(n){return(n>=0?'+':'')+n.toFixed(Math.abs(n)>=100?0:1)+'%';}
+function cls(n){return n>0.05?'pos':n<-0.05?'neg':'flat';}
+function perfBox(val,label){return `<div class="perf-box"><div class="v ${cls(val)}">${sign(val)}</div><div class="l">${label}</div></div>`;}
+function ytdOf(vals,dates){
+  const yr=String(new Date().getFullYear());
+  let base=0;
+  for(let i=0;i<dates.length;i++){ if(dates[i].slice(0,4)===yr){ base=i>0?i-1:0; break; } }
+  return (vals[vals.length-1]/vals[base]-1)*100;
+}
+function cashBar(inv,accent){const cash=100-inv;return `<div class="cashbar">
+  <div class="track"><div class="fill" style="width:${inv}%"></div></div>
+  <div class="lab"><span>investito ${inv.toFixed(0)}%</span><span class="cash">cash ${cash.toFixed(0)}%</span></div></div>`;}
+
+async function loadAzioni(){
+  const el=document.getElementById('az-body');
+  try{
+    const d=await(await fetch(AZ_URL+'?_='+Date.now())).json();
+    const a=d.modes.aggressive, names=d.stock_names||{}, eq=a.equity_curve.map(e=>e.system);
+    const eqDates=a.equity_curve.map(e=>e.date);
+    const st=a.stats||{};
+    const last=eq[eq.length-1];
+    const wk=st.perf_week!=null?st.perf_week:(last/eq[eq.length-2]-1)*100;
+    const mo=st.perf_month!=null?st.perf_month:(last/eq[eq.length-5]-1)*100;
+    const yt=st.perf_ytd!=null?st.perf_ytd:ytdOf(eq,eqDates);
+    const pos=(a.current_positions||[]);
+    const inv=pos.length/AZ_SECTORS*100;
+    el.innerHTML=`
+      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'mese')}${perfBox(yt,'da inizio anno')}</div>
+      ${cashBar(inv,'var(--orange)')}
+      <div class="positions"><div class="ptitle">azioni in portafoglio · ${pos.length}</div>
+        ${pos.map(p=>`<div class="pos-row">
+          <span><span class="tk">${p.ticker}</span><span class="nm">${(names[p.ticker]||p.sector_name||'').slice(0,16)}</span></span>
+          <span class="pf ${p.perf_pct>=0?'pos':'neg'}">${sign(p.perf_pct)}</span></div>`).join('')}
+      </div>
+      <a class="card-link" href="https://mark-robots.github.io/megatrend-desk/index.html">apri la dashboard →</a>`;
+    return d.last_data_date;
+  }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('Az',e);return null;}
+}
+
+async function loadETF(){
+  const el=document.getElementById('etf-body');
+  try{
+    const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
+    const pe=d.portfolio_equity, es=pe.equity_system;
+    const esDates=pe.dates||[];
+    const st=pe.stats_system||{};
+    const last=es[es.length-1];
+    const wk=st.perf_week!=null?st.perf_week:(last/es[es.length-2]-1)*100;
+    const mo=st.perf_month!=null?st.perf_month:(last/es[es.length-5]-1)*100;
+    const yt=st.perf_ytd!=null?st.perf_ytd:ytdOf(es,esDates);
+    const N=pe.n_sectors;
+    const inSec=(d.ranking?.ranking||[]).filter(s=>s.opSignal==='IN');
+    const inv=inSec.length/N*100;
+    el.innerHTML=`
+      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'mese')}${perfBox(yt,'da inizio anno')}</div>
+      ${cashBar(inv,'var(--blue)')}
+      <div class="positions"><div class="ptitle">ETF in portafoglio · ${inSec.length}</div>
+        ${inSec.map(s=>{const pf=s.opCurrent?.perf_sector;return `<div class="pos-row">
+          <span><span class="tk">${s.ticker}</span><span class="nm">${(s.name||'').slice(0,16)}</span></span>
+          <span class="pf ${pf>=0?'pos':'neg'}">${pf!=null?sign(pf):'—'}</span></div>`;}).join('')}
+      </div>
+      <a class="card-link" href="https://mark-robots.github.io/megatrend-desk/cliente.html">apri la dashboard →</a>`;
+    return d.last_data_date;
+  }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('ETF',e);return null;}
+}
+
+async function refresh(){
+  const[d1,d2]=await Promise.all([loadAzioni(),loadETF()]);
+  const latest=[d1,d2].filter(Boolean).sort().pop();
+  document.getElementById('upd-date').textContent=fmtDate(latest);
+}
+refresh();
+setInterval(refresh, 3600*1000); // ricarica ogni ora
+</script>
+</body>
+</html>
