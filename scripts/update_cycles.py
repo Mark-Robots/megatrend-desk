@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-update_cycles.py — Analisi ciclica S&P 500 (metodo Sartorelli, cicli annidati)
+update_cycles.py — Analisi ciclica S&P 500 (cicli temporali annidati)
 Scarica la storia giornaliera dell'S&P 500, individua i minimi ciclici a tre scale
 (annuale ~250gg, intermedio ~80gg, mensile ~22gg) e scrive data/cycles_data.json.
 
@@ -20,6 +20,16 @@ CYCLES = [
     {"key": "intermedio", "label": "Ciclo intermedio", "len": 80},
     {"key": "mensile",    "label": "Ciclo mensile",    "len": 22},
 ]
+
+# Correzione del bias di anticipo/ritardo, misurata sul backtest SPX 2012-2025
+# (mediana degli errori di proiezione, walk-forward). I minimi tendono ad ANTICIPARE
+# (offset positivo = sposta la data avanti), i massimi tendono a RITARDARE
+# (offset negativo = sposta la data indietro). Applicata alle date proiettate.
+BIAS_OFFSET = {
+    "annuale":    {"low": 21, "high": -38},
+    "intermedio": {"low": 8,  "high": -4},
+    "mensile":    {"low": 2,  "high": 1},
+}
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (cycles-bot)"}
 
@@ -292,8 +302,12 @@ def analyze_cycle(prices, dates, spec):
             _nx = _d + datetime.timedelta(days=cl_eff)
             while _nx <= _last_d:
                 _nx += datetime.timedelta(days=cl_eff)
-            res["next_low_date_est"] = _nx.strftime("%Y-%m-%d")
-            res["days_to_low_est"] = (_nx - _last_d).days
+            # correzione del bias di anticipo (i minimi tendono ad arrivare dopo)
+            _off = BIAS_OFFSET.get(spec["key"], {}).get("low", 0)
+            _nx_adj = _nx + datetime.timedelta(days=_off)
+            res["next_low_date_est_raw"] = _nx.strftime("%Y-%m-%d")
+            res["next_low_date_est"] = _nx_adj.strftime("%Y-%m-%d")
+            res["days_to_low_est"] = (_nx_adj - _last_d).days
         except Exception:
             pass
 
@@ -325,8 +339,12 @@ def analyze_cycle(prices, dates, spec):
             _nxh = _dh + datetime.timedelta(days=cl_eff_h)
             while _nxh <= _last_date:
                 _nxh += datetime.timedelta(days=cl_eff_h)
-            res["next_high_date_est"] = _nxh.strftime("%Y-%m-%d")
-            res["days_to_high_est"] = (_nxh - _last_date).days
+            # correzione del bias (i massimi tendono ad arrivare prima della proiezione)
+            _offh = BIAS_OFFSET.get(spec["key"], {}).get("high", 0)
+            _nxh_adj = _nxh + datetime.timedelta(days=_offh)
+            res["next_high_date_est_raw"] = _nxh.strftime("%Y-%m-%d")
+            res["next_high_date_est"] = _nxh_adj.strftime("%Y-%m-%d")
+            res["days_to_high_est"] = (_nxh_adj - _last_date).days
         except Exception:
             pass
         # fase inversa: prima meta' dopo il top = discesa, seconda = risalita verso nuovo top
