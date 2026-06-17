@@ -10,6 +10,8 @@ Nessuna dipendenza obbligatoria oltre la stdlib; usa yfinance solo come fallback
 """
 import json, csv, io, sys, urllib.request, datetime, statistics
 
+import os
+
 OUT_PATH = "data/cycles_data.json"
 
 # Durate teoriche dei cicli (giorni di borsa) — scuola ciclica classica
@@ -28,43 +30,99 @@ def _http_get(url, timeout=30):
         return r.read().decode("utf-8", "replace")
 
 
-def fetch_stooq():
-    """Storia giornaliera S&P 500 da Stooq (CSV diretto, storico lungo)."""
-    for sym in ("%5Espx", "^spx"):
+def fetch_twelvedata():
+    """Fonte primaria se è impostato TWELVEDATA_API_KEY (secret del repo).
+    Twelve Data è affidabile dai runner GitHub. Simbolo indice S&P 500: SPX."""
+    key = os.environ.get("TWELVEDATA_API_KEY")
+    if not key:
+        return None
+    for sym in ("SPX", "GSPC", "US500"):
         try:
-            txt = _http_get(f"https://stooq.com/q/d/l/?s={sym}&i=d")
-            rows = list(csv.DictReader(io.StringIO(txt)))
-            data = [(r["Date"], float(r["Close"])) for r in rows
-                    if r.get("Close") not in (None, "", "N/D")]
+            url = (f"https://api.twelvedata.com/time_series?symbol={sym}"
+                   f"&interval=1day&outputsize=2000&order=ASC&apikey={key}")
+            obj = json.loads(_http_get(url))
+            vals = obj.get("values")
+            if not vals:
+                print(f"[twelvedata] {sym}: {obj.get('message','nessun dato')}")
+                continue
+            data = [(v["datetime"][:10], float(v["close"])) for v in vals
+                    if v.get("close")]
             if len(data) > 300:
-                print(f"[stooq] {len(data)} candele da {sym}")
+                print(f"[twelvedata] {len(data)} candele da {sym}")
                 return data
         except Exception as e:
-            print(f"[stooq] {sym} fallito: {e}")
+            print(f"[twelvedata] {sym} fallito: {e}")
     return None
 
 
+def fetch_stooq():
+    """Storia giornaliera S&P 500 da Stooq (CSV diretto, storico lungo).
+    Provo più host perché stooq.com può essere bloccato da alcuni runner."""
+    hosts = ["stooq.com", "stooq.pl"]
+    syms = ["%5Espx", "^spx"]
+    for host in hosts:
+        for sym in syms:
+            try:
+                txt = _http_get(f"https://{host}/q/d/l/?s={sym}&i=d")
+                if not txt or txt.strip().lower().startswith("<!doctype"):
+                    continue
+                rows = list(csv.DictReader(io.StringIO(txt)))
+                data = [(r["Date"], float(r["Close"])) for r in rows
+                        if r.get("Close") not in (None, "", "N/D")]
+                if len(data) > 300:
+                    print(f"[stooq] {len(data)} candele da {host}/{sym}")
+                    return data
+            except Exception as e:
+                print(f"[stooq] {host}/{sym} fallito: {e}")
+    return None
+
+
+def _norm_date(x):
+    """Converte l'indice yfinance (Timestamp, datetime o str) in 'YYYY-MM-DD'."""
+    if hasattr(x, "strftime"):
+        return x.strftime("%Y-%m-%d")
+    return str(x)[:10]
+
+
 def fetch_yfinance():
-    """Fallback: yfinance ^GSPC."""
+    """Fallback: yfinance ^GSPC. Gestisce indice come Timestamp o stringa."""
     try:
         import yfinance as yf
-        df = yf.download("^GSPC", period="5y", interval="1d", progress=False)
+        df = yf.download("^GSPC", period="5y", interval="1d",
+                         progress=False, auto_adjust=True)
         if df is not None and len(df) > 300:
-            closes = df["Close"].dropna()
-            data = [(d.strftime("%Y-%m-%d"), float(v)) for d, v in closes.items()]
-            print(f"[yfinance] {len(data)} candele")
-            return data
+            close = df["Close"]
+            # con multi-index colonne (yfinance recente) prendi la prima colonna
+            if hasattr(close, "columns"):
+                close = close.iloc[:, 0]
+            close = close.dropna()
+            data = [(_norm_date(idx), float(val)) for idx, val in close.items()]
+            if len(data) > 300:
+                print(f"[yfinance] {len(data)} candele")
+                return data
     except Exception as e:
         print(f"[yfinance] fallito: {e}")
     return None
 
 
+def fetch_stooq_csv_github():
+    """Ulteriore fallback: file CSV statico storico ^SPX via raw GitHub mirror.
+    (placeholder: usa yfinance/stooq; qui solo per estendibilità futura)"""
+    return None
+
+
 def load_prices():
-    data = fetch_stooq() or fetch_yfinance()
+    data = fetch_twelvedata() or fetch_stooq() or fetch_yfinance()
     if not data:
-        raise SystemExit("Impossibile scaricare i dati S&P 500 da nessuna fonte.")
+        raise SystemExit("Impossibile scaricare i dati S&P 500 da nessuna fonte "
+                         "(Twelve Data / Stooq / yfinance).")
     data.sort(key=lambda x: x[0])  # cronologico
-    return data
+    # dedup per data (tieni l'ultimo)
+    seen = {}
+    for d, p in data:
+        seen[d] = p
+    out = sorted(seen.items())
+    return out
 
 
 def find_cycle_lows(prices, cycle_len):
