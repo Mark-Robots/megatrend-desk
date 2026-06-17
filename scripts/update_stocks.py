@@ -799,11 +799,24 @@ def compute_statistics(equity, operations):
     values = [e['system'] for e in equity]
     cash_v = [e['cash'] for e in equity]
     world_v = [e['world'] for e in equity]
+    dates_v = [e['date'] for e in equity]
     initial = values[0]
     final = values[-1]
     total_ret = (final / initial - 1) * 100
     n_years = len(values) / 52
     cagr = ((final / initial) ** (1 / n_years) - 1) * 100 if n_years > 0 else 0
+
+    # performance recenti (settimana / mese / da inizio anno)
+    perf_week = (final / values[-2] - 1) * 100 if len(values) >= 2 else 0
+    perf_month = (final / values[-5] - 1) * 100 if len(values) >= 5 else 0
+    import datetime as _dt
+    _cur_year = str(_dt.date.today().year)
+    _ytd_base = 0
+    for _i, _d in enumerate(dates_v):
+        if str(_d)[:4] == _cur_year:
+            _ytd_base = _i
+            break
+    perf_ytd = (final / values[_ytd_base] - 1) * 100 if values else 0
     
     peak = values[0]
     max_dd = 0
@@ -843,6 +856,9 @@ def compute_statistics(equity, operations):
     return {
         'total_return': round(total_ret, 2),
         'cagr': round(cagr, 2),
+        'perf_week': round(perf_week, 2),
+        'perf_month': round(perf_month, 2),
+        'perf_ytd': round(perf_ytd, 2),
         'max_drawdown': round(max_dd, 2),
         'sharpe': round(sharpe, 2),
         'annual_vol': round(annual_vol * 100, 2),

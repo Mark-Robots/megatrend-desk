@@ -1476,7 +1476,7 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
         prev_date = date
     
     # Calcola statistiche
-    def compute_stats(eq):
+    def compute_stats(eq, eq_dates=None):
         if len(eq) < 2:
             return None
         start_val = eq[0]
@@ -1497,10 +1497,27 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
             dd = (v / peak - 1) * 100
             if dd < max_dd:
                 max_dd = dd
-        
+
+        # performance recenti (settimana / mese / da inizio anno)
+        perf_week = (end_val / eq[-2] - 1) * 100 if len(eq) >= 2 else 0
+        perf_month = (end_val / eq[-5] - 1) * 100 if len(eq) >= 5 else 0
+        perf_ytd = 0
+        if eq_dates:
+            import datetime as _dt
+            _yr = str(_dt.date.today().year)
+            _base = 0
+            for _i, _d in enumerate(eq_dates):
+                if str(_d)[:4] == _yr:
+                    _base = _i
+                    break
+            perf_ytd = (end_val / eq[_base] - 1) * 100
+
         return {
             'total_return': round(total_ret, 1),
             'cagr': round(cagr, 1),
+            'perf_week': round(perf_week, 2),
+            'perf_month': round(perf_month, 2),
+            'perf_ytd': round(perf_ytd, 2),
             'max_drawdown': round(max_dd, 1),
             'final_value': round(end_val, 1),
         }
@@ -1523,8 +1540,8 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
         'equity_bh': equity_bh,
         'n_sectors': n_sectors,
         'weight_per_sector': round(weight, 2),
-        'stats_system': compute_stats(equity_system),
-        'stats_bh': compute_stats(equity_bh),
+        'stats_system': compute_stats(equity_system, dates_out),
+        'stats_bh': compute_stats(equity_bh, dates_out),
         'avg_pct_invested': avg_pct_invested,
         'start_date': dates_out[0] if dates_out else None,
         'end_date': dates_out[-1] if dates_out else None,
