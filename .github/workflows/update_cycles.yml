@@ -43,5 +43,9 @@ jobs:
             echo "Nessuna modifica."
           else
             git commit -m "Cycles Bot · Auto-update: $(date -u '+%Y-%m-%d %H:%M') UTC"
-            git push
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && break
+              echo "Push tentativo $i fallito, riprovo..."
+              sleep 3
+            done
           fi
