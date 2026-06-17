@@ -107,12 +107,20 @@
   .wave-legend .lg-dot.min{background:#5b9dff} .wave-legend .lg-dot.max{background:#f5b301}
   .wave-legend .lg-line{width:16px;height:3px;border-radius:2px;display:inline-block}
   .wave-legend .lg-line.orange{background:#ff7a18} .wave-legend .lg-line.white{background:#e8eaed}
+  .wave-legend .lg-line.green{background:#22e06b} .wave-legend .lg-line.red{background:#ff5a3c}
+  .ann-wave-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:8px}
   .cyc-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
   .cyc-mini{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:3px}
   .cyc-mini-name{font-weight:600;font-size:12px}
   .cyc-mini-dir{font-weight:700;font-size:12px;text-transform:capitalize}
   .cyc-mini-dir.rialzista{color:var(--green)} .cyc-mini-dir.ribassista{color:var(--orange)}
   .cyc-mini-meta{font-size:10px;color:var(--txt-faint);line-height:1.4}
+  .cyc-aff{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  .aff-badge{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 7px;border-radius:5px;letter-spacing:.02em;border:1px solid var(--line-soft);color:var(--txt-dim)}
+  .aff-badge.a{color:#22e06b;border-color:rgba(34,224,107,.35)}
+  .aff-badge.m{color:#f5b301;border-color:rgba(245,179,1,.35)}
+  .aff-badge.b{color:#8a93a3}
+  .aff-badge.t{color:var(--txt-dim)}
   .sct{background:#0d1117;border:1px solid var(--line-soft);border-radius:11px;padding:13px 14px;position:relative}
   .sct.on{border-color:rgba(61,220,132,.32)}
   .sct.s5{background:rgba(61,220,132,.13);border-color:rgba(61,220,132,.42)}
@@ -558,7 +566,20 @@ async function loadCycles(url, targetId){
       const G0=-50, G1=300;               // finestra: da -50 a +300 giorni rispetto a oggi
       const pts=[];
       for(let g=G0; g<=G1; g++) pts.push([g, onda(g)]);
-      // estremi futuri (g>=0)
+      // --- onda del SOLO ciclo annuale, stessa finestra e scala (tendenza di fondo) ---
+      const ann=cycles.find(c=>c.key==='annuale' && c.last_low_date);
+      let annPts=null, annLen=null, annLow=null;
+      if(ann){
+        annLen=ann.len_effective||ann.len_theoretical;
+        annLow=new Date(ann.last_low_date+'T00:00:00');
+        annPts=[];
+        for(let g=G0; g<=G1; g++){
+          const data=new Date(lastDate.getTime()+g*DAY);
+          const gg=Math.round((data-annLow)/DAY);
+          annPts.push([g, -Math.cos(2*Math.PI*gg/annLen)]);
+        }
+      }
+      // estremi futuri dell'onda aggregata (g>=0)
       const estremi=[];
       for(let i=1;i<pts.length-1;i++){
         const [g,v]=pts[i]; if(g<0) continue;
@@ -567,20 +588,45 @@ async function loadCycles(url, targetId){
         if(v>vp && v>vn) estremi.push(['max',g,v]);
       }
       // dimensioni SVG
-      const W=820, H=220, padL=14, padR=14, padT=44, padB=30;
+      const W=820, H=240, padL=14, padR=14, padT=44, padB=30;
       const plotW=W-padL-padR, plotH=H-padT-padB;
       const x=g=> padL + (g-G0)/(G1-G0)*plotW;
       const y=v=> padT + (1 - (v+1)/2)*plotH;   // v in [-1,1] -> alto=+1
-      // path onda
+      // path onda aggregata
       let dPath='';
       pts.forEach((p,i)=>{ dPath += (i===0?'M':'L') + x(p[0]).toFixed(1) + ',' + y(p[1]).toFixed(1) + ' '; });
-      // area sotto (riempimento soft)
-      const areaPath = `M${x(G0).toFixed(1)},${y(-1).toFixed(1)} ` + dPath.slice(1) + `L${x(G1).toFixed(1)},${y(-1).toFixed(1)} Z`;
+      // banda di fondo: ciclo annuale, segmenti verde(sale)/rosso(scende), semitrasparenti
+      let annBand='', annMarks='';
+      if(annPts){
+        for(let i=1;i<annPts.length;i++){
+          const [g0,v0]=annPts[i-1], [g1,v1]=annPts[i];
+          const col = v1>=v0 ? 'rgba(34,224,107,0.5)' : 'rgba(255,90,60,0.5)';
+          annBand += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="6" stroke-linecap="round"/>`;
+        }
+        // min/max annuali (futuri) con etichetta data CORRETTA per il bias (posizione=ritmo, data=aggiustata)
+        const OFF_ANN={min:21, max:-38};  // offset annuale dal backtest
+        const fmtA=(g,t)=>{ const off=t==='min'?OFF_ANN.min:OFF_ANN.max; const dt=new Date(lastDate.getTime()+(g+off)*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+        for(let i=1;i<annPts.length-1;i++){
+          const [g,v]=annPts[i]; if(g<0) continue;
+          const vp=annPts[i-1][1], vn=annPts[i+1][1];
+          let t=null;
+          if(v<vp&&v<vn) t='min'; if(v>vp&&v>vn) t='max';
+          if(t){
+            const col=t==='min'?'#5b9dff':'#f5b301';
+            const px=x(g), py=y(v);
+            const ly=t==='min'?py+30:py-22;
+            annMarks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5" fill="none" stroke="${col}" stroke-width="2"/>`;
+            annMarks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="${col}" opacity="0.85">${t==='min'?'min':'max'} annuale ${fmtA(g,t)}</text>`;
+          }
+        }
+      }
       // linea oggi
       const xToday=x(0);
       // marcatori: TUTTI gli estremi futuri; il pallino è sempre, l'etichetta-data
       // appare solo se abbastanza distante dall'ultima dello stesso tipo (anti-sovrapposizione)
-      const fmtMini=(g)=>{ const dt=new Date(lastDate.getTime()+g*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+      // etichetta data corretta per il bias mensile (i micro-estremi sono mensili)
+      const OFF_MEN={min:2, max:1};
+      const fmtMini=(g,tipo)=>{ const off=tipo==='min'?OFF_MEN.min:OFF_MEN.max; const dt=new Date(lastDate.getTime()+(g+off)*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
       let marks='';
       let lastLblXmin=-999, lastLblXmax=-999;
       const MIN_GAP=42; // px minimi tra due etichette dello stesso tipo
@@ -596,7 +642,7 @@ async function loadCycles(url, targetId){
         if(tipo==='min'){ if(px-lastLblXmin>=MIN_GAP){ show=true; lastLblXmin=px; } }
         else { if(px-lastLblXmax>=MIN_GAP){ show=true; lastLblXmax=px; } }
         if(show)
-          marks += `<text x="${px.toFixed(1)}" y="${lblY.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}">${sym} ${fmtMini(g)}</text>`;
+          marks += `<text x="${px.toFixed(1)}" y="${lblY.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}">${sym} ${fmtMini(g,tipo)}</text>`;
       });
       // etichette mesi sull'asse x
       let axis='';
@@ -622,7 +668,8 @@ async function loadCycles(url, targetId){
         </defs>
         ${axis}
         <line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W-padR}" y2="${yMid.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3 4"/>
-        <path d="${areaPath}" fill="url(#waveFill-${targetId})"/>
+        ${annBand}
+        ${annMarks}
         <path d="${dPath}" fill="none" stroke="#ff7a18" stroke-width="2.5" stroke-linejoin="round"/>
         <line x1="${xToday.toFixed(1)}" y1="${padT-8}" x2="${xToday.toFixed(1)}" y2="${H-padB}" stroke="#e8eaed" stroke-width="1.5" opacity="0.7"/>
         <text x="${xToday.toFixed(1)}" y="${padT-12}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#e8eaed">oggi</text>
@@ -630,16 +677,102 @@ async function loadCycles(url, targetId){
       </svg>`;
     };
 
+    // --- onda del SOLO ciclo annuale, colorata per direzione (verde sale / rosso scende) ---
+    const annualWave=(cycles, lastDateStr)=>{
+      const ann=cycles.find(c=>c.key==='annuale' && c.last_low_date);
+      if(!ann) return '';
+      const lastDate=new Date(lastDateStr+'T00:00:00');
+      const DAY=86400000;
+      const len=ann.len_effective||ann.len_theoretical;
+      const lastLow=new Date(ann.last_low_date+'T00:00:00');
+      const onda=(offset)=>{
+        const data=new Date(lastDate.getTime()+offset*DAY);
+        const gg=Math.round((data-lastLow)/DAY);
+        return -Math.cos(2*Math.PI*gg/len);   // -1 minimo, +1 massimo
+      };
+      const G0=-Math.round(len*0.7), G1=Math.round(len*1.1);  // ~un ciclo e mezzo intorno a oggi
+      const pts=[];
+      for(let g=G0; g<=G1; g++) pts.push([g, onda(g)]);
+      const W=820, H=200, padL=14, padR=14, padT=40, padB=30;
+      const plotW=W-padL-padR, plotH=H-padT-padB;
+      const x=g=> padL + (g-G0)/(G1-G0)*plotW;
+      const y=v=> padT + (1-(v+1)/2)*plotH;
+      // segmento per segmento, colore per pendenza (sale=verde, scende=rosso)
+      let segPaths='';
+      for(let i=1;i<pts.length;i++){
+        const [g0,v0]=pts[i-1], [g1,v1]=pts[i];
+        const sale = v1>=v0;
+        const col = sale ? '#22e06b' : '#ff5a3c';
+        segPaths += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="3" stroke-linecap="round"/>`;
+      }
+      // estremi (prossimi min/max) con data
+      const fmtMini=(g)=>{ const dt=new Date(lastDate.getTime()+g*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]+' '+String(dt.getFullYear()).slice(2); };
+      let marks='';
+      for(let i=1;i<pts.length-1;i++){
+        const [g,v]=pts[i]; if(g<0) continue;
+        const vp=pts[i-1][1], vn=pts[i+1][1];
+        let tipo=null;
+        if(v<vp&&v<vn) tipo='min';
+        if(v>vp&&v>vn) tipo='max';
+        if(tipo){
+          const col=tipo==='min'?'#5b9dff':'#f5b301';
+          const sym=tipo==='min'?'▼ min':'▲ max';
+          const px=x(g), py=y(v);
+          const ly=tipo==='min'?py+20:py-12;
+          marks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4.5" fill="${col}"/>`;
+          marks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}"><tspan font-weight="700">${sym}</tspan> ${fmtMini(g)}</text>`;
+        }
+      }
+      // marcatore ultimo minimo passato (l'ancora del ciclo)
+      const gAnchor=Math.round((lastLow-lastDate)/DAY);
+      let anchor='';
+      if(gAnchor>=G0){
+        anchor=`<circle cx="${x(gAnchor).toFixed(1)}" cy="${y(-1).toFixed(1)}" r="4" fill="none" stroke="#5b9dff" stroke-width="1.5"/><text x="${x(gAnchor).toFixed(1)}" y="${(y(-1)+18).toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5b9dff">minimo ${fmtMini(gAnchor)}</text>`;
+      }
+      // asse mesi
+      let axis='';
+      let cur=new Date(lastDate.getTime()+G0*DAY);
+      cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      while(true){
+        const g=Math.round((cur-lastDate)/DAY);
+        if(g>G1) break;
+        if(g>=G0){
+          const px=x(g);
+          axis += `<line x1="${px.toFixed(1)}" y1="${padT}" x2="${px.toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>`;
+          axis += `<text x="${px.toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5e6675">${MESI[cur.getMonth()]} ${String(cur.getFullYear()).slice(2)}</text>`;
+        }
+        cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      }
+      const xToday=x(0), yMid=y(0);
+      return `<svg viewBox="0 0 ${W} ${H}" class="wave-svg" xmlns="http://www.w3.org/2000/svg">
+        ${axis}
+        <line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W-padR}" y2="${yMid.toFixed(1)}" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3 4"/>
+        ${segPaths}
+        <line x1="${xToday.toFixed(1)}" y1="${padT-8}" x2="${xToday.toFixed(1)}" y2="${H-padB}" stroke="#e8eaed" stroke-width="1.5" opacity="0.7"/>
+        <text x="${xToday.toFixed(1)}" y="${padT-12}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#e8eaed">oggi</text>
+        ${anchor}${marks}
+      </svg>`;
+    };
+
     // riga compatta con la direzione di ciascun ciclo
+    // affidabilità da backtest storico SPX (regolarità = errore in % durata; timing = errore in gg)
+    const AFFID={
+      annuale:    {reg:'alta',  regCls:'a', tim:'ampio', timTxt:'±49gg'},
+      intermedio: {reg:'media', regCls:'m', tim:'medio', timTxt:'±32gg'},
+      mensile:    {reg:'bassa', regCls:'b', tim:'fine',  timTxt:'±8gg'}
+    };
     const cycSummary=cyc.filter(c=>c.progress_pct!=null).map(c=>{
       const dir=dirOf(c);
-      return `<div class="cyc-mini"><span class="cyc-mini-name">${c.label}</span><span class="cyc-mini-dir ${dir.key}">${dir.label}</span><span class="cyc-mini-meta">${phaseText(c)}</span></div>`;
+      const af=AFFID[c.key];
+      const badges = af ? `<div class="cyc-aff"><span class="aff-badge ${af.regCls}" title="quanto il ciclo è puntuale rispetto alla sua durata">regolarità ${af.reg}</span><span class="aff-badge t" title="precisione del timing in giorni">timing ${af.tim} ${af.timTxt}</span></div>` : '';
+      return `<div class="cyc-mini"><span class="cyc-mini-name">${c.label}</span><span class="cyc-mini-dir ${dir.key}">${dir.label}</span><span class="cyc-mini-meta">${phaseText(c)}</span>${badges}</div>`;
     }).join('');
 
     const chart=waveChart(cyc, d.last_date);
 
     el.innerHTML=`<div class="wave-wrap">${chart}</div>`
-      + `<div class="wave-legend"><span class="lg-item"><span class="lg-dot min"></span> minimo ciclico atteso</span><span class="lg-item"><span class="lg-dot max"></span> massimo ciclico atteso</span><span class="lg-item"><span class="lg-line orange"></span> onda ciclica (somma annuale+intermedio+mensile)</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
+      + `<div class="wave-legend"><span class="lg-item"><span class="lg-line orange"></span> onda ciclica (somma dei 3 cicli) · timing fine</span><span class="lg-item"><span class="lg-line green"></span> fondo annuale in salita</span><span class="lg-item"><span class="lg-line red"></span> fondo annuale in discesa</span><span class="lg-item"><span class="lg-dot min"></span> min</span><span class="lg-item"><span class="lg-dot max"></span> max</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
+      + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza). I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
       + `<div class="cyc-mini-grid">${cycSummary}</div>`
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
