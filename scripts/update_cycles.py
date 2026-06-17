@@ -233,7 +233,18 @@ def analyze_cycle(prices, dates, spec):
         # progresso nel ciclo corrente rispetto alla durata teorica
         prog = elapsed / cl
         res["progress_pct"] = round(min(prog, 1.5) * 100, 0)
-        # fase: prima meta' = ascendente (post-minimo), seconda = discendente (verso minimo)
+        # --- passo REALE del ciclo: media dei gap osservati, limitata vicino al teorico ---
+        # (autocalibrazione: l'onda usa la durata effettiva di QUESTO mercato, non solo il teorico)
+        if "gap_avg" in res and len(gaps) >= 2:
+            eff = res["gap_avg"]
+            # clamp tra 0.6x e 1.6x il teorico, per non derivare su rilevazioni sporche
+            eff = max(cl * 0.6, min(cl * 1.6, eff))
+            cl_eff = int(round(eff))
+        else:
+            cl_eff = cl
+        res["len_effective"] = cl_eff
+        # ricalcolo la fase sul passo reale
+        prog = elapsed / cl_eff
         if prog < 0.5:
             res["phase"] = "ascendente"
             res["phase_note"] = "forze rialziste dopo il minimo"
@@ -243,15 +254,17 @@ def analyze_cycle(prices, dates, spec):
         else:
             res["phase"] = "minimo atteso"
             res["phase_note"] = "ciclo maturo, minimo ciclico in prossimita'"
-        # giorni stimati al prossimo minimo (durata teorica - trascorsi)
-        res["days_to_low_est"] = max(0, cl - elapsed)
-        # data stimata del prossimo minimo (ultimo minimo + durata, proiettata al futuro)
+        # giorni stimati al prossimo minimo (passo reale - trascorsi)
+        res["days_to_low_est"] = max(0, cl_eff - elapsed)
+        # data stimata del prossimo minimo: ultimo minimo + passo REALE, proiettata al futuro.
+        # Ricentratura: 'last' è sempre l'ultimo minimo REALE rilevato oggi, quindi quando
+        # il mercato forma un nuovo minimo l'intera proiezione riparte da lì.
         try:
             _d = datetime.date.fromisoformat(dates[last])
             _last_d = datetime.date.fromisoformat(dates[-1])
-            _nx = _d + datetime.timedelta(days=cl)
+            _nx = _d + datetime.timedelta(days=cl_eff)
             while _nx <= _last_d:
-                _nx += datetime.timedelta(days=cl)
+                _nx += datetime.timedelta(days=cl_eff)
             res["next_low_date_est"] = _nx.strftime("%Y-%m-%d")
             res["days_to_low_est"] = (_nx - _last_d).days
         except Exception:
@@ -268,16 +281,23 @@ def analyze_cycle(prices, dates, spec):
         elapsed_h = (len(prices)-1) - last_h
         res["elapsed_from_high"] = elapsed_h
         res["last_high_date"] = dates[last_h]
-        prog_h = elapsed_h / cl
+        # passo reale dei massimi (clamp vicino al teorico), fallback al len_effective dei minimi
+        if len(hgaps) >= 2:
+            eff_h = max(cl * 0.6, min(cl * 1.6, res["high_gap_avg"]))
+            cl_eff_h = int(round(eff_h))
+        else:
+            cl_eff_h = res.get("len_effective", cl)
+        res["len_effective_high"] = cl_eff_h
+        prog_h = elapsed_h / cl_eff_h
         res["progress_high_pct"] = round(min(prog_h, 1.5) * 100, 0)
-        res["days_to_high_est"] = max(0, cl - elapsed_h)
-        # data stimata del prossimo massimo (ultimo massimo + durata, proiettata al futuro)
+        res["days_to_high_est"] = max(0, cl_eff_h - elapsed_h)
+        # data stimata del prossimo massimo (ultimo massimo REALE + passo reale, proiettata)
         try:
             _dh = datetime.date.fromisoformat(dates[last_h])
             _last_date = datetime.date.fromisoformat(dates[-1])
-            _nxh = _dh + datetime.timedelta(days=cl)
+            _nxh = _dh + datetime.timedelta(days=cl_eff_h)
             while _nxh <= _last_date:
-                _nxh += datetime.timedelta(days=cl)
+                _nxh += datetime.timedelta(days=cl_eff_h)
             res["next_high_date_est"] = _nxh.strftime("%Y-%m-%d")
             res["days_to_high_est"] = (_nxh - _last_date).days
         except Exception:
