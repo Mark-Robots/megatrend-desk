@@ -28,10 +28,72 @@
   .updated .live{display:inline-flex;align-items:center;gap:5px;margin-top:3px}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .lead{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(20px,3.4vw,30px);line-height:1.3;
-    max-width:36ch;margin:28px 0 36px}
-  .lead em{color:var(--orange);font-style:italic}
+  .sec-title{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(22px,3.2vw,30px);line-height:1.2;
+    color:var(--txt);margin:0 0 16px;letter-spacing:-.01em}
+  .sec-title.mt{margin-top:34px}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px}
+  .card.trendmap{margin-top:0}
+  .star-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:11px;margin-top:14px}
+  .cycle-wrap{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:24px;align-items:center;margin-top:16px}
+  @media(max-width:640px){.cycle-wrap{grid-template-columns:1fr}}
+  .cycle-svg{width:100%;height:auto}
+  .cycle-now{font-size:12px;color:var(--txt-dim);margin-top:14px;line-height:1.7}
+  .cycle-now .ph{color:var(--orange);font-weight:700}
+  .phase-legend{display:flex;flex-direction:column;gap:10px}
+  .pl-row{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;background:#0d1117;border:1px solid var(--line-soft);border-radius:10px}
+  .pl-row.active{border-color:rgba(255,122,24,.5);background:rgba(255,122,24,.06)}
+  .pl-row .pl-dot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex-shrink:0}
+  .pl-row .pl-txt .pl-name{font-weight:600;font-size:13px;margin-bottom:2px}
+  .pl-row .pl-txt .pl-asset{font-size:11px;color:var(--txt-faint);line-height:1.5}
+  .cyc-row{margin-top:16px}
+  .cyc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+  .cyc-head .cyc-name{font-weight:600;font-size:13px}
+  .cyc-head .cyc-meta{font-size:11px;color:var(--txt-faint);font-family:'JetBrains Mono',monospace}
+  .cyc-bar{position:relative;height:22px;background:#0d1117;border:1px solid var(--line-soft);border-radius:7px;overflow:hidden}
+  .cyc-fill{position:absolute;top:0;left:0;height:100%;border-radius:6px 0 0 6px;transition:width .4s}
+  .cyc-fill.asc{background:linear-gradient(90deg,rgba(34,224,107,.25),rgba(34,224,107,.5))}
+  .cyc-fill.desc{background:linear-gradient(90deg,rgba(255,196,0,.25),rgba(255,122,24,.55))}
+  .cyc-fill.low{background:linear-gradient(90deg,rgba(255,59,59,.3),rgba(255,59,59,.6))}
+  .cyc-mark{position:absolute;top:-2px;width:2px;height:26px;background:var(--txt-dim);opacity:.5}
+  .cyc-phase{font-size:11px;margin-top:6px;line-height:1.5}
+  .cyc-phase .ptag{font-weight:700}
+  .cyc-phase .ptag.asc{color:var(--green)} .cyc-phase .ptag.desc{color:var(--orange)} .cyc-phase .ptag.low{color:var(--red)}
+  .cyc-foot{font-size:10px;color:var(--txt-faint);margin-top:14px;line-height:1.6}
+  .sct{background:#0d1117;border:1px solid var(--line-soft);border-radius:11px;padding:13px 14px;position:relative}
+  .sct.on{border-color:rgba(61,220,132,.32)}
+  .sct.s5{background:rgba(61,220,132,.13);border-color:rgba(61,220,132,.42)}
+  .sct.s4{background:rgba(61,220,132,.07);border-color:rgba(61,220,132,.28)}
+  .sct.s3{background:rgba(245,179,1,.08);border-color:rgba(245,179,1,.26)}
+  .sct.s2{background:rgba(255,138,40,.08);border-color:rgba(255,138,40,.26)}
+  .sct.s1{background:rgba(232,75,74,.08);border-color:rgba(232,75,74,.24)}
+  .sct.s0{background:rgba(120,130,145,.07);border-color:rgba(120,130,145,.2)}
+  .sct.has-tip{cursor:default}
+  .sct.has-tip:hover{border-color:rgba(255,122,24,.45)}
+  .sct-tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);
+    width:max-content;max-width:230px;background:#161b24;border:1px solid var(--line-soft);border-radius:10px;
+    padding:11px 13px;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:.16s;z-index:20;pointer-events:none}
+  .sct.has-tip:hover .sct-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  .sct-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    border:6px solid transparent;border-top-color:#161b24}
+  .sct-tip .tip-h{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:8px}
+  .sct-tip .tip-x{display:inline-block;font-size:11px;color:var(--txt);background:#0d1117;border:1px solid var(--line-soft);
+    border-radius:6px;padding:3px 8px;margin:0 4px 4px 0}
+  .legend-hint{display:block;margin-top:8px;font-size:11px;color:var(--txt-faint);font-style:italic}
+  .sct-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+  .sct .nm{font-weight:600;font-size:13px;line-height:1.25}
+  .sct .reg{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint);
+    border:1px solid var(--line-soft);border-radius:5px;padding:2px 6px;white-space:nowrap}
+  .sct .stars{font-size:15px;letter-spacing:2px;line-height:1;margin-bottom:7px}
+  .sct .stars .f{color:#f5b301} .sct .stars .e{color:#2a3340}
+  .sct .phase{font-size:10px;color:var(--txt-faint);letter-spacing:.03em;margin-bottom:9px}
+  .sct .badge{display:inline-block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 8px;border-radius:6px;font-weight:700}
+  .sct .badge.in{background:rgba(61,220,132,.13);color:var(--green)}
+  .sct .badge.out{background:rgba(120,130,145,.13);color:var(--txt-dim)}
+  .sct .badge.info{background:rgba(91,157,255,.12);color:var(--blue)}
+  .trend-legend{margin-top:16px;padding:14px 16px;background:#0d1117;border:1px solid var(--line-soft);
+    border-radius:10px;font-size:12px;line-height:1.7;color:var(--txt-dim)}
+  .trend-legend b{color:var(--txt);font-weight:600}
   .card{background:linear-gradient(160deg,var(--panel),var(--panel-2));border:1px solid var(--line);
     border-radius:14px;padding:22px;display:flex;flex-direction:column;position:relative;overflow:hidden;
     transition:border-color .2s,transform .2s}
@@ -44,7 +106,7 @@
   /* settimana + mese affiancati */
   .perf-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px}
   .perf-box{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:12px 10px}
-  .perf-box .v{font-family:'Fraunces',serif;font-weight:900;font-size:21px;line-height:1;letter-spacing:-.02em}
+  .perf-box .v{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:20px;line-height:1;letter-spacing:-.02em}
   .perf-box .v.pos{color:var(--green)} .perf-box .v.neg{color:var(--red)} .perf-box .v.flat{color:var(--txt-dim)}
   .perf-box .l{font-size:9px;color:var(--txt-faint);letter-spacing:.1em;text-transform:uppercase;margin-top:7px}
   /* barra investito/cash */
@@ -90,22 +152,39 @@
     </div>
   </header>
 
-  <p class="lead">Performance recente e portafoglio dei tre sistemi, <em>letti in tempo reale</em>.</p>
+  <h2 class="sec-title">Portafogli</h2>
 
   <div class="grid">
     <div class="card azioni">
-      <div class="card-head"><span class="card-name">Megatrend · Azioni</span><span class="card-tag">Sector rotation</span></div>
+      <div class="card-head"><span class="card-name">Portafoglio Azioni</span><span class="card-tag">Sector rotation</span></div>
       <div id="az-body"><div class="loading">Carico dati…</div></div>
     </div>
     <div class="card etf">
-      <div class="card-head"><span class="card-name">Megatrend · ETF</span><span class="card-tag">Sector rotation</span></div>
+      <div class="card-head"><span class="card-name">Portafoglio ETF</span><span class="card-tag">Sector rotation</span></div>
       <div id="etf-body"><div class="loading">Carico dati…</div></div>
     </div>
     <div class="card crypto">
-      <div class="card-head"><span class="card-name">DMI Sentinel · Crypto</span><span class="card-tag">DMI · live</span></div>
-      <p class="crypto-note">Sistema DMI su BTC / ETH / SOL con ottimizzazione walk-forward mensile. Le metriche si calcolano in tempo reale nell'app.</p>
-      <a class="card-link" href="https://mark-robots.github.io/dmi-sentinel/Earnings_3_0.html">apri il sistema live →</a>
+      <div class="card-head"><span class="card-name">Portafoglio Crypto</span><span class="card-tag">DMI · live</span></div>
+      <div id="crypto-body"><p class="crypto-note">Caricamento…</p></div>
     </div>
+  </div>
+
+  <h2 class="sec-title mt">Mappa dei trend</h2>
+  <div class="card trendmap">
+    <p class="crypto-note">Quali settori sono attualmente <b>in trend</b> e quali <b>fuori trend</b>. Lo stato si basa sulla posizione RRG e sulla fase di Weinstein.</p>
+    <div id="trendmap-body"><p class="crypto-note">Caricamento…</p></div>
+  </div>
+
+  <h2 class="sec-title mt">Ciclo economico</h2>
+  <div class="card cyclecard">
+    <p class="crypto-note">Le quattro fasi del ciclo e le classi di attivo storicamente favorite in ciascuna. Il punto indica una <b>lettura indicativa</b> della fase attuale, derivata dalla rotazione settoriale — non è una previsione macroeconomica.</p>
+    <div id="cycle-body"><p class="crypto-note">Caricamento…</p></div>
+  </div>
+
+  <h2 class="sec-title mt">Analisi ciclica · S&amp;P 500</h2>
+  <div class="card cyclescard">
+    <p class="crypto-note">I cicli temporali annidati dell'indice secondo l'analisi ciclica (Sartorelli): per ogni scala — annuale, intermedio, mensile — da quanti giorni dura il ciclo attuale e a che punto siamo rispetto al prossimo minimo atteso.</p>
+    <div id="cycles-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
   <div class="disclaimer">
@@ -117,6 +196,24 @@
 <script>
 const AZ_URL='https://mark-robots.github.io/megatrend-desk/data/stocks_data.json';
 const ETF_URL='https://mark-robots.github.io/megatrend-desk/data/sector_data.json';
+const CRYPTO_URL='https://mark-robots.github.io/megatrend-desk/data/crypto_data.json';
+const CYCLES_URL='https://mark-robots.github.io/megatrend-desk/data/cycles_data.json';
+
+const SECTOR_STOCKS={
+  SOXX:['NVIDIA','AMD','Broadcom','Micron','TSMC'],
+  XLK:['Apple','Microsoft','Alphabet','Oracle','Salesforce'],
+  XLE:['ExxonMobil','Chevron','ConocoPhillips','Valero'],
+  EXH5:['Allianz','AXA','Generali','Zurich'],
+  EXH6:['LVMH','Hermès','L\u2019Oréal','Kering'],
+  EXH1:['Shell','TotalEnergies','BP','Eni'],
+  EXV1:['UniCredit','Intesa Sanpaolo','Santander','BNP Paribas'],
+  XLI:['Caterpillar','Honeywell','GE','Boeing'],
+  IBB:['Amgen','Gilead','Vertex','Regeneron'],
+  XLV:['UnitedHealth','Johnson & Johnson','Eli Lilly','Pfizer'],
+  XLP:['P&G','Coca-Cola','PepsiCo','Walmart'],
+  EXH4:['Siemens','Schneider Electric','ABB','Airbus'],
+  XLF:['JPMorgan','Bank of America','Goldman Sachs','Visa']
+};
 const AZ_SECTORS=8;  // settori operativi Azioni (senza Consumi)
 
 function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');
@@ -150,7 +247,7 @@ async function loadAzioni(){
     el.innerHTML=`
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'mese')}${perfBox(yt,'da inizio anno')}</div>
       ${cashBar(inv,'var(--orange)')}
-      <div class="positions"><div class="ptitle">azioni in portafoglio · ${pos.length}</div>
+      <div class="positions"><div class="ptitle">portafoglio azioni · ${pos.length}</div>
         ${pos.map(p=>`<div class="pos-row">
           <span><span class="tk">${p.ticker}</span><span class="nm">${(names[p.ticker]||p.sector_name||'').slice(0,16)}</span></span>
           <span class="pf ${p.perf_pct>=0?'pos':'neg'}">${sign(p.perf_pct)}</span></div>`).join('')}
@@ -177,7 +274,7 @@ async function loadETF(){
     el.innerHTML=`
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'mese')}${perfBox(yt,'da inizio anno')}</div>
       ${cashBar(inv,'var(--blue)')}
-      <div class="positions"><div class="ptitle">ETF in portafoglio · ${inSec.length}</div>
+      <div class="positions"><div class="ptitle">portafoglio ETF · ${inSec.length}</div>
         ${inSec.map(s=>{const pf=s.opCurrent?.perf_sector;return `<div class="pos-row">
           <span><span class="tk">${s.ticker}</span><span class="nm">${(s.name||'').slice(0,16)}</span></span>
           <span class="pf ${pf>=0?'pos':'neg'}">${pf!=null?sign(pf):'—'}</span></div>`;}).join('')}
@@ -187,9 +284,211 @@ async function loadETF(){
   }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('ETF',e);return null;}
 }
 
+async function loadCrypto(){
+  const el=document.getElementById('crypto-body');
+  try{
+    const d=await(await fetch(CRYPTO_URL+'?_='+Date.now())).json();
+    const pf=d.portfolio||{};
+    const assets=d.assets||{};
+    const order=['BTC','ETH','SOL'];
+    const rows=order.filter(a=>assets[a]).map(a=>{
+      const v=assets[a];
+      return `<div class="pos-row">
+        <span><span class="tk">${a}</span><span class="nm">${v.in_position?'in posizione':'flat'}</span></span>
+        <span class="pf ${v.perf_ytd>=0?'pos':'neg'}">${sign(v.perf_ytd)}</span></div>`;
+    }).join('');
+    el.innerHTML=`
+      <div class="perf-row">${perfBox(pf.perf_week,'settimana')}${perfBox(pf.perf_month,'mese')}${perfBox(pf.perf_ytd,'da inizio anno')}</div>
+      <div class="positions"><div class="ptitle">portafoglio crypto · ${order.filter(a=>assets[a]).length} · media equipesata</div>
+        ${rows}
+      </div>
+      <a class="card-link" href="https://mark-robots.github.io/dmi-sentinel/Earnings_3_0.html">apri il sistema live →</a>`;
+    return d.updated_at?d.updated_at.slice(0,10):null;
+  }catch(e){
+    el.innerHTML=`<p class="crypto-note">Sistema DMI su BTC / ETH / SOL con ottimizzazione walk-forward. Metriche live nell'app.</p>
+      <a class="card-link" href="https://mark-robots.github.io/dmi-sentinel/Earnings_3_0.html">apri il sistema live →</a>`;
+    return null;
+  }
+}
+
+async function loadTrendMap(){
+  const el=document.getElementById('trendmap-body');
+  try{
+    const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
+    const r=(d.ranking&&d.ranking.ranking)||[];
+    function starCount(state,stage){
+      const sg=parseInt(stage)||0;
+      if(sg===4) return 0;
+      const s=(state||'').toLowerCase();
+      if(s.includes('leader'))       return sg===2?5:4;
+      if(s.includes('emergente'))    return sg===2?4:3;
+      if(s.includes('rallentamento'))return sg===2?3:2;
+      if(s.includes('debole'))       return 1;
+      return 0;
+    }
+    const cleanName=n=>(n||'').replace(/\s+(USA|EU|Europa)$/i,'').trim();
+    const regionLabel=rg=>rg==='USA'?'USA':'Europa';
+    const verdict=(state,stage)=>{
+      const s=(state||'').toLowerCase();
+      const sg=parseInt(stage)||0;
+      if(sg===4) return 'in declino';
+      if(s.includes('leader'))        return sg===2?'forte, in pieno trend':'forte, in consolidamento';
+      if(s.includes('emergente'))     return sg===2?'in rafforzamento':'in costruzione';
+      if(s.includes('rallentamento')) return sg===2?'trend maturo, slancio in calo':'in raffreddamento';
+      if(s.includes('debole'))        return sg===3?'debole, in distribuzione':'debole, rimbalzo da verificare';
+      return '—';
+    };
+    const rows=r.map(s=>({
+      name:cleanName(s.name)||s.ticker||'—',
+      ticker:s.ticker||'',
+      region:regionLabel(s.region),
+      sig:s.opSignal||'',
+      verdict:verdict(s.state,s.stage),
+      n:starCount(s.state,s.stage)
+    })).sort((a,b)=>b.n-a.n);
+
+    const badge=sig=>{
+      if(sig==='IN')   return '<span class="badge in">in trend</span>';
+      if(sig==='INFO') return '<span class="badge info">monitorato</span>';
+      return '<span class="badge out">fuori trend</span>';
+    };
+    const stars=n=>{let h='';for(let i=0;i<5;i++)h+=`<span class="${i<n?'f':'e'}">★</span>`;return h;};
+    const tip=tk=>{
+      const list=SECTOR_STOCKS[tk];
+      if(!list||!list.length) return '';
+      return `<div class="sct-tip"><div class="tip-h">titoli rappresentativi</div>${list.map(x=>`<span class="tip-x">${x}</span>`).join('')}</div>`;
+    };
+
+    el.innerHTML=`<div class="star-grid">${rows.map(s=>`
+      <div class="sct s${s.n}${SECTOR_STOCKS[s.ticker]?' has-tip':''}">
+        <div class="sct-top"><span class="nm">${s.name}</span><span class="reg">${s.region}</span></div>
+        <div class="stars">${stars(s.n)}</div>
+        <div class="phase">${s.verdict}</div>
+        ${badge(s.sig)}
+        ${tip(s.ticker)}
+      </div>`).join('')}</div>
+      <div class="trend-legend">
+        <b>Come leggere le stelle.</b> Ogni settore ha un voto da 0 a 5 stelle che combina la sua <b>forza relativa</b> rispetto al mercato e la sua <b>fase di prezzo</b>: più stelle = settore più in trend.
+        Il badge verde segnala i settori attualmente in trend, quello blu i settori monitorati, quello grigio i settori fuori trend.
+        <span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span>
+      </div>`;
+  }catch(e){
+    el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
+  }
+}
+
+async function loadCycle(){
+  const el=document.getElementById('cycle-body');
+  const CICLICI=['Semiconduttori','Tecnologia USA','Banche','Finanziari USA','Beni personali'];
+  const MATERIE=['Energia USA','Energia','Industriali USA','Industriali'];
+  const DIFENSIVI=['Sanità USA','Beni di consumo difensivi','Assicurazioni','Biotech'];
+  const phases=[
+    {key:'ripresa',name:'Ripresa',asset:'Azioni · settori ciclici',color:'#22e06b',start:270},
+    {key:'espansione',name:'Espansione',asset:'Materie prime · energia',color:'#ffc400',start:0},
+    {key:'rallentamento',name:'Rallentamento',asset:'Difensivi · obbligazioni',color:'#ff7a18',start:90},
+    {key:'recessione',name:'Recessione',asset:'Obbligazioni · liquidità',color:'#ff3b3b',start:180}
+  ];
+  const nextKey={ripresa:'espansione',espansione:'rallentamento',rallentamento:'recessione',recessione:'ripresa'};
+  try{
+    const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
+    const r=(d.ranking&&d.ranking.ranking)||[];
+    const inseg=r.filter(s=>s.opSignal==='IN').sort((a,b)=>(a.rank||99)-(b.rank||99));
+    const catStrength=set=>{let t=0;inseg.forEach((s,i)=>{if(set.includes(s.name))t+=Math.max(1,6-i);});return t;};
+    const strength={
+      ripresa:catStrength(CICLICI),
+      espansione:catStrength(MATERIE),
+      rallentamento:catStrength(DIFENSIVI),
+      recessione:0
+    };
+    if(!inseg.length) strength.recessione=1;
+    let cur='espansione',best=-1;
+    for(const k in strength){if(strength[k]>best){best=strength[k];cur=k;}}
+    const curPhase=phases.find(p=>p.key===cur)||phases[1];
+    // progresso 0..1 dentro la fase: quanto emerge la fase successiva
+    const fc=strength[cur], fn=strength[nextKey[cur]]||0;
+    let prog = (fc+fn)>0 ? fn/(fc+fn) : 0.5;
+    prog = Math.max(0.08, Math.min(0.92, prog)); // tieni il punto dentro l'arco, non sui bordi
+
+    // SVG donut: anello spesso a 4 archi colorati, centro vuoto, punto sull'anello
+    const cx=180,cy=180,R=120,SW=30;
+    const toXY=(ang,rad)=>{const a=(ang-90)*Math.PI/180;return [cx+rad*Math.cos(a),cy+rad*Math.sin(a)];};
+    const arc=(startAng,sweep,color,op)=>{
+      const [x1,y1]=toXY(startAng,R),[x2,y2]=toXY(startAng+sweep,R);
+      const large=sweep>180?1:0;
+      return `<path d="M${x1},${y1} A${R},${R} 0 ${large},1 ${x2},${y2}" fill="none" stroke="${color}" stroke-width="${SW}" opacity="${op}" stroke-linecap="butt"/>`;
+    };
+    let svg=`<svg class="cycle-svg" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">`;
+    // archi delle 4 fasi (gap di 2° tra uno e l'altro per separazione netta)
+    phases.forEach(p=>{
+      const active=p.key===cur;
+      svg+=arc(p.start+2, 86, p.color, active?1:0.5);
+    });
+    // etichette fasi (fuori dall'anello, al centro dell'arco)
+    phases.forEach(p=>{
+      const [lx,ly]=toXY(p.start+45,R+34);
+      const active=p.key===cur;
+      svg+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="12.5" font-weight="${active?'700':'500'}" fill="${active?p.color:'#9aa6b5'}" font-family="JetBrains Mono,monospace">${p.name}</text>`;
+    });
+    // punto "dove siamo": sull'anello, all'angolo start + progresso*90
+    const dotAng=curPhase.start + prog*90;
+    const [px,py]=toXY(dotAng,R);
+    svg+=`<circle cx="${px}" cy="${py}" r="15" fill="${curPhase.color}" opacity="0.28"/>`;
+    svg+=`<circle cx="${px}" cy="${py}" r="8" fill="${curPhase.color}" stroke="#0a0e14" stroke-width="3"/>`;
+    svg+=`</svg>`;
+
+    const legend=phases.map(p=>`
+      <div class="pl-row ${p.key===cur?'active':''}">
+        <span class="pl-dot" style="background:${p.color}"></span>
+        <span class="pl-txt"><div class="pl-name">${p.name}</div><div class="pl-asset">${p.asset}</div></span>
+      </div>`).join('');
+
+    const stage = prog<0.34 ? 'fase iniziale' : prog<0.67 ? 'fase centrale' : 'fase avanzata';
+    el.innerHTML=`<div class="cycle-wrap">
+      <div>${svg}<div class="cycle-now">Lettura attuale: <span class="ph">${curPhase.name}</span> (${stage}) — favoriti ${curPhase.asset.toLowerCase()}.</div></div>
+      <div class="phase-legend">${legend}</div>
+    </div>`;
+  }catch(e){
+    el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
+  }
+}
+
+async function loadCycles(){
+  const el=document.getElementById('cycles-body');
+  try{
+    const d=await(await fetch(CYCLES_URL+'?_='+Date.now())).json();
+    const cyc=d.cycles||[];
+    const phaseClass=p=> p==='ascendente'?'asc' : p==='discendente'?'desc' : 'low';
+    const phaseLabel=p=> p==='ascendente'?'ascendente' : p==='discendente'?'discendente' : 'minimo atteso';
+
+    const rows=cyc.map(c=>{
+      if(c.progress_pct==null) return '';
+      const pc=Math.min(100,c.progress_pct);
+      const cls=phaseClass(c.phase);
+      return `<div class="cyc-row">
+        <div class="cyc-head">
+          <span class="cyc-name">${c.label}</span>
+          <span class="cyc-meta">${c.elapsed_days}gg / ${c.len_theoretical}gg teorici</span>
+        </div>
+        <div class="cyc-bar">
+          <div class="cyc-fill ${cls}" style="width:${pc}%"></div>
+          <div class="cyc-mark" style="left:100%"></div>
+        </div>
+        <div class="cyc-phase">Fase <span class="ptag ${cls}">${phaseLabel(c.phase)}</span> · ${c.phase_note}. Ultimo minimo: ${c.last_low_date||'—'}${c.days_to_low_est!=null?` · prossimo minimo stimato tra ~${c.days_to_low_est}gg`:''}.</div>
+      </div>`;
+    }).join('');
+
+    el.innerHTML=rows+`<div class="cyc-foot">${d.instrument} · ultimo dato ${d.last_date} · chiusura ${d.last_close}. ${d.disclaimer||''}</div>`;
+  }catch(e){
+    el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
+  }
+}
+
 async function refresh(){
-  const[d1,d2]=await Promise.all([loadAzioni(),loadETF()]);
-  const latest=[d1,d2].filter(Boolean).sort().pop();
+  const[d1,d2,d3]=await Promise.all([loadAzioni(),loadETF(),loadCrypto()]);
+  loadTrendMap();
+  loadCycle();
+  loadCycles();
+  const latest=[d1,d2,d3].filter(Boolean).sort().pop();
   document.getElementById('upd-date').textContent=fmtDate(latest);
 }
 refresh();
