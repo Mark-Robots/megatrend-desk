@@ -13,8 +13,10 @@ PARAMS = json.load(open(os.path.join(os.path.dirname(__file__), 'crypto_params.j
 SYMBOLS = {'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT'}
 DMI_PERIOD = 14
 HTF_EMA_LEN = 200
-# Filtro EMA200 per-asset: attivo su BTC/ETH (close>EMA200 per entry), NON su SOL.
-EMA_FILTER = {'BTC': True, 'ETH': True, 'SOL': False}
+LOOKBACK_DAYS = 365
+# Motore vero (dmi_dashboard_1h_ver_1_3): htf:true GLOBALE per tutti gli asset.
+# volume:false, trail:false, longOnly:true.
+EMA_FILTER = {'BTC': True, 'ETH': True, 'SOL': True}
 # data-api.binance.vision: host ufficiale Binance per dati di mercato,
 # senza il blocco geografico 451 che colpisce api.binance.com da IP USA (GitHub Actions).
 BINANCE = 'https://data-api.binance.vision/api/v3/klines'
@@ -201,78 +203,73 @@ def _ema(values, n):
     return r
 
 
-def compute_signals_long_only(klines, asset, dmi_by_time):
-    """replica sentinel mode: DMI crossover su d1/d2, con filtro EMA200 per-asset."""
-    signals = []
-    pos = 'FLAT'; ep = 0.0
-    dmi = [dmi_by_time.get(k['time']) for k in klines]
+def run_backtest(klines, asset, dmi_by_time):
+    """Replica il motore vero (dmi_dashboard_1h_ver_1_3):
+    - finestra ultimi LOOKBACK_DAYS giorni
+    - equity continua candela-per-candela (equity *= 1+ret se in posizione)
+    - long-only, EMA200 filter su entry, no volume, no trail
+    - exit su lX (cross down d1/d2) o sE (segnale short chiude il long)
+    """
     use_ema = EMA_FILTER.get(asset, False)
-    htf_ema = _ema([k['close'] for k in klines], HTF_EMA_LEN) if use_ema else None
-    for i in range(1, len(klines)):
-        di, dip = dmi[i], dmi[i-1]
+    closes_all = [k['close'] for k in klines]
+    htf_ema_all = _ema(closes_all, HTF_EMA_LEN) if use_ema else None
+    dmi_all = [dmi_by_time.get(k['time']) for k in klines]
+
+    # finestra: ultimi LOOKBACK_DAYS giorni
+    now_ts = klines[-1]['time']
+    cutoff = now_ts - LOOKBACK_DAYS * 86400
+    start_idx = next((i for i, k in enumerate(klines) if k['time'] >= cutoff), 0)
+
+    times = [k['time'] for k in klines[start_idx:]]
+    closes = closes_all[start_idx:]
+    dmis = dmi_all[start_idx:]
+    ema_w = htf_ema_all[start_idx:] if htf_ema_all else None
+
+    equity = [1.0]
+    pos = 'FLAT'; ep = 0.0
+    for i in range(1, len(dmis)):
+        di, dip = dmis[i], dmis[i-1]
+        cl, prevCl = closes[i], closes[i-1]
+        price_ret = (cl - prevCl) / prevCl if prevCl > 0 else 0.0
+        strat_ret = price_ret if pos == 'LONG' else 0.0
+        equity.append(equity[i-1] * (1 + strat_ret))
+
         if di is None or dip is None:
             continue
-        d = datetime.datetime.utcfromtimestamp(klines[i]['time'])
+        d = datetime.datetime.utcfromtimestamp(times[i])
         p = get_params(asset, d.year, d.month)
-        cl = klines[i]['close']
         lE = (dip < p['d1'] and di >= p['d1']) or (dip < p['d2'] and di >= p['d2'])
         lX = (dip >= p['d1'] and di < p['d1']) or (dip >= p['d2'] and di < p['d2'])
         sE = (dip > p['d3'] and di <= p['d3']) or (dip > p['d4'] and di <= p['d4'])
-        # filtro EMA200 sull'entry long (solo BTC/ETH)
+
         htf_ok = True
-        if use_ema:
-            e = htf_ema[i]
-            htf_ok = (e == e) and cl > e  # e==e esclude NaN
+        if use_ema and ema_w:
+            e = ema_w[i]
+            htf_ok = True if (e != e) else (cl > e)  # NaN -> non blocca
         long_trigger = lE and htf_ok
+
         if long_trigger and pos != 'LONG':
             pos = 'LONG'; ep = cl
-            signals.append({'i': i, 'type': 'ENTRY_LONG', 'price': cl})
         elif lX and pos == 'LONG':
-            signals.append({'i': i, 'type': 'EXIT_LONG', 'price': cl})
             pos = 'FLAT'
         elif sE and pos == 'LONG':
-            signals.append({'i': i, 'type': 'EXIT_LONG', 'price': cl})
             pos = 'FLAT'
-    return signals
+
+    return times, equity, (pos == 'LONG')
 
 
-def compute_equity(klines, signals):
-    """replica computeEquity: equity mark-to-market da 100."""
-    n = len(klines)
-    sig_map = {s['i']: s for s in signals}
-    equity = 100.0; pos = 'FLAT'; ep = 0.0
-    eq_series = []  # (time, equity_mark_to_market)
-    for i in range(n):
-        c = klines[i]
-        sig = sig_map.get(i)
-        if sig:
-            if sig['type'] == 'ENTRY_LONG':
-                pos = 'LONG'; ep = sig['price']
-            elif ep > 0:
-                ret = (sig['price'] / ep - 1)
-                equity *= (1 + ret)
-                pos = 'FLAT'; ep = 0.0
-        mEq = equity
-        if pos == 'LONG' and ep > 0:
-            mEq = equity * (c['close'] / ep)
-        eq_series.append((c['time'], mEq))
-    return eq_series
-
-
-def perf_from(eq_series, start_ts):
-    """rendimento % dall'inizio finestra (ricostruito ripartendo dal valore a start_ts)."""
-    if not eq_series:
+def perf_from(times, equity, start_ts):
+    """rendimento % dall'inizio finestra: equity normalizzata al primo punto >= start_ts."""
+    if not equity:
         return 0.0
-    # trova il valore base al primo punto >= start_ts
     base = None
-    last = eq_series[-1][1]
-    for t, v in eq_series:
+    for t, v in zip(times, equity):
         if t >= start_ts:
             base = v
             break
     if base is None or base == 0:
         return 0.0
-    return (last / base - 1) * 100
+    return (equity[-1] / base - 1) * 100
 
 
 def main():
@@ -282,10 +279,9 @@ def main():
     month_ts = int((now - datetime.timedelta(days=30)).timestamp())
     ytd_ts = int(datetime.datetime(now.year, 1, 1).timestamp())
     # scarico da ~400 giorni fa (basta per DMI + finestre); start dipende da asset
-    fetch_start = int((now - datetime.timedelta(days=420)).timestamp() * 1000)
+    fetch_start = int((now - datetime.timedelta(days=600)).timestamp() * 1000)
 
     per_asset = {}
-    eq_all = {}
     for asset, sym in SYMBOLS.items():
         print(f"[{asset}] scarico klines 1h...")
         kl = fetch_klines(sym, fetch_start)
@@ -294,17 +290,14 @@ def main():
             print(f"[{asset}] dati insufficienti, skip")
             continue
         dmi = compute_rolling_dmi(kl, DMI_PERIOD)
-        sigs = compute_signals_long_only(kl, asset, dmi)
-        eq = compute_equity(kl, sigs)
-        eq_all[asset] = eq
+        times, equity, in_pos = run_backtest(kl, asset, dmi)
         per_asset[asset] = {
-            'perf_week': round(perf_from(eq, week_ts), 2),
-            'perf_month': round(perf_from(eq, month_ts), 2),
-            'perf_ytd': round(perf_from(eq, ytd_ts), 2),
-            'in_position': sigs[-1]['type'] == 'ENTRY_LONG' if sigs else False,
-            'n_signals': len(sigs),
+            'perf_week': round(perf_from(times, equity, week_ts), 2),
+            'perf_month': round(perf_from(times, equity, month_ts), 2),
+            'perf_ytd': round(perf_from(times, equity, ytd_ts), 2),
+            'in_position': in_pos,
         }
-        print(f"[{asset}] sett {per_asset[asset]['perf_week']}% mese {per_asset[asset]['perf_month']}% YTD {per_asset[asset]['perf_ytd']}%")
+        print(f"[{asset}] sett {per_asset[asset]['perf_week']}% mese {per_asset[asset]['perf_month']}% YTD {per_asset[asset]['perf_ytd']}% in_pos={in_pos}")
 
     # media equipesata delle perf (semplice media dei rendimenti %)
     def avg(key):
