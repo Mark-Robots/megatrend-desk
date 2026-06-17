@@ -166,11 +166,11 @@ async function loadETF(){
     const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
     const pe=d.portfolio_equity, es=pe.equity_system;
     const esDates=pe.dates||[];
-    const st=pe.stats_system||{};
+    const rp=(d.portfolio_simulation&&d.portfolio_simulation.recent_perf)||{};
     const last=es[es.length-1];
-    const wk=st.perf_week!=null?st.perf_week:(last/es[es.length-2]-1)*100;
-    const mo=st.perf_month!=null?st.perf_month:(last/es[es.length-5]-1)*100;
-    const yt=st.perf_ytd!=null?st.perf_ytd:ytdOf(es,esDates);
+    const wk=rp.perf_week!=null?rp.perf_week:(last/es[es.length-2]-1)*100;
+    const mo=rp.perf_month!=null?rp.perf_month:(last/es[es.length-5]-1)*100;
+    const yt=rp.perf_ytd!=null?rp.perf_ytd:ytdOf(es,esDates);
     const N=pe.n_sectors;
     const inSec=(d.ranking?.ranking||[]).filter(s=>s.opSignal==='IN');
     const inv=inSec.length/N*100;
