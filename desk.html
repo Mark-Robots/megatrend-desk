@@ -187,6 +187,12 @@
     <div id="cycles-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
+  <h2 class="sec-title mt">Analisi ciclica · Bitcoin</h2>
+  <div class="card cyclescard">
+    <p class="crypto-note">Gli stessi cicli temporali annidati applicati a Bitcoin (BTC/USDT, dati giornalieri). Bitcoin scambia 7 giorni su 7, quindi le durate sono in giorni di calendario.</p>
+    <div id="cycles-btc-body"><p class="crypto-note">Caricamento…</p></div>
+  </div>
+
   <div class="disclaimer">
     <b>Nota.</b> MarkRoboT.S. è un progetto personale di ricerca sul trading algoritmico, condiviso tra appassionati a scopo informativo e didattico. Le performance recenti derivano dai sistemi su dati reali ma <b>non costituiscono garanzia di risultati futuri</b>. Nulla in questa pagina è consulenza finanziaria, raccomandazione di investimento o sollecitazione. Ogni decisione di investimento è a proprio rischio.
   </div>
@@ -198,6 +204,7 @@ const AZ_URL='https://mark-robots.github.io/megatrend-desk/data/stocks_data.json
 const ETF_URL='https://mark-robots.github.io/megatrend-desk/data/sector_data.json';
 const CRYPTO_URL='https://mark-robots.github.io/megatrend-desk/data/crypto_data.json';
 const CYCLES_URL='https://mark-robots.github.io/megatrend-desk/data/cycles_data.json';
+const CYCLES_BTC_URL='https://mark-robots.github.io/megatrend-desk/data/cycles_btc_data.json';
 
 const SECTOR_STOCKS={
   SOXX:['NVIDIA','AMD','Broadcom','Micron','TSMC'],
@@ -452,10 +459,10 @@ async function loadCycle(){
   }
 }
 
-async function loadCycles(){
-  const el=document.getElementById('cycles-body');
+async function loadCycles(url, targetId){
+  const el=document.getElementById(targetId);
   try{
-    const d=await(await fetch(CYCLES_URL+'?_='+Date.now())).json();
+    const d=await(await fetch(url+'?_='+Date.now())).json();
     const cyc=d.cycles||[];
     const phaseClass=p=> p==='ascendente'?'asc' : p==='discendente'?'desc' : 'low';
     const phaseLabel=p=> p==='ascendente'?'ascendente' : p==='discendente'?'discendente' : 'minimo atteso';
@@ -487,7 +494,8 @@ async function refresh(){
   const[d1,d2,d3]=await Promise.all([loadAzioni(),loadETF(),loadCrypto()]);
   loadTrendMap();
   loadCycle();
-  loadCycles();
+  loadCycles(CYCLES_URL, 'cycles-body');
+  loadCycles(CYCLES_BTC_URL, 'cycles-btc-body');
   const latest=[d1,d2,d3].filter(Boolean).sort().pop();
   document.getElementById('upd-date').textContent=fmtDate(latest);
 }
