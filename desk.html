@@ -482,13 +482,28 @@ async function loadCycles(url, targetId){
   try{
     const d=await(await fetch(url+'?_='+Date.now())).json();
     const cyc=d.cycles||[];
-    const phaseClass=p=> p==='ascendente'?'asc' : p==='discendente'?'desc' : 'low';
-    const phaseLabel=p=> p==='ascendente'?'ascendente' : p==='discendente'?'discendente' : 'minimo atteso';
+    const phaseClass=p=> p==='rialzista'?'asc' : p==='ribassista'?'desc' : 'low';
+    // direzione dedotta da cosa arriva prima: il prossimo massimo o il prossimo minimo
+    const dirOf=(c)=>{
+      const dl=c.days_to_low_est, dh=c.days_to_high_est;
+      if(dl==null||dh==null) return {key:'—',label:'—'};
+      if(dh<dl) return {key:'rialzista', label:'rialzista'};
+      return {key:'ribassista', label:'ribassista'};
+    };
+    const phaseText=(c)=>{
+      const dir=dirOf(c);
+      if(dir.key==='rialzista')
+        return `in salita verso il prossimo massimo (${fmtCycDate(c.next_high_date_est)})`;
+      if(dir.key==='ribassista')
+        return `in discesa verso il prossimo minimo (${fmtCycDate(c.next_low_date_est)})`;
+      return 'direzione non determinata';
+    };
 
     const rows=cyc.map(c=>{
       if(c.progress_pct==null) return '';
       const pc=Math.min(100,c.progress_pct);
-      const cls=phaseClass(c.phase);
+      const dir=dirOf(c);
+      const cls=phaseClass(dir.key);
       const cl=c.len_theoretical;
       // la barra rappresenta i prossimi 'cl' giorni da oggi (0% = oggi, 100% = oggi + durata ciclo)
       const posMin = c.days_to_low_est!=null  ? Math.max(0,Math.min(100, c.days_to_low_est /cl*100)) : null;
@@ -505,7 +520,7 @@ async function loadCycles(url, targetId){
           <div class="cyc-now-line" style="left:0%"></div>
           ${mkMin}${mkMax}
         </div>
-        <div class="cyc-phase">Fase <span class="ptag ${cls}">${phaseLabel(c.phase)}</span> · ${c.phase_note}</div>
+        <div class="cyc-phase">Direzione <span class="ptag ${cls}">${dir.label}</span> · ${phaseText(c)}</div>
       </div>`;
     }).join('');
 
