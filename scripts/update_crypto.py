@@ -14,9 +14,8 @@ SYMBOLS = {'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT'}
 DMI_PERIOD = 14
 HTF_EMA_LEN = 200
 LOOKBACK_DAYS = 365
-# Motore vero (dmi_dashboard_1h_ver_1_3): htf:true GLOBALE per tutti gli asset.
-# volume:false, trail:false, longOnly:true.
-EMA_FILTER = {'BTC': True, 'ETH': True, 'SOL': True}
+# EMA200 per-asset: ON per BTC/ETH, OFF per SOL (confermato da Luigi).
+EMA_FILTER = {'BTC': True, 'ETH': True, 'SOL': False}
 # data-api.binance.vision: host ufficiale Binance per dati di mercato,
 # senza il blocco geografico 451 che colpisce api.binance.com da IP USA (GitHub Actions).
 BINANCE = 'https://data-api.binance.vision/api/v3/klines'
@@ -28,18 +27,21 @@ BINANCE_FALLBACKS = [
 
 
 def get_params(asset, year, month):
-    """replica getParams(a,y,m): mappa anno/mese -> soglie d1/d2/d3/d4."""
+    """replica getParams/getParam del motore v1.3: ogni soglia controlla la PROPRIA
+    lunghezza e usa il proprio def se l'indice e' fuori range."""
     p = PARAMS[asset]
     sy, sm = p['start']
     idx = (year - sy) * 12 + (month - sm)
-    if idx < 0 or idx >= len(p['d1']):
-        return {'d1': p['def'][0], 'd2': p['def'][1], 'd3': p['def'][2], 'd4': p['def'][3]}
-    if p['d1'][idx] == 0 and p['d2'][idx] == 0 and p['d3'][idx] == 0 and p['d4'][idx] == 0:
-        for i in range(idx - 1, -1, -1):
-            if not (p['d1'][i] == 0 and p['d2'][i] == 0 and p['d3'][i] == 0 and p['d4'][i] == 0):
-                return {'d1': p['d1'][i], 'd2': p['d2'][i], 'd3': p['d3'][i], 'd4': p['d4'][i]}
-        return {'d1': p['def'][0], 'd2': p['def'][1], 'd3': p['def'][2], 'd4': p['def'][3]}
-    return {'d1': p['d1'][idx], 'd2': p['d2'][idx], 'd3': p['d3'][idx], 'd4': p['d4'][idx]}
+
+    def _one(arr, dflt):
+        return arr[idx] if (0 <= idx < len(arr)) else dflt
+
+    return {
+        'd1': _one(p['d1'], p['def'][0]),
+        'd2': _one(p['d2'], p['def'][1]),
+        'd3': _one(p['d3'], p['def'][2]),
+        'd4': _one(p['d4'], p['def'][3]),
+    }
 
 
 def _fetch_kraken(symbol, start_ms, interval='1h'):
@@ -227,6 +229,8 @@ def run_backtest(klines, asset, dmi_by_time):
 
     equity = [1.0]
     pos = 'FLAT'; ep = 0.0
+    trades = []
+    entry_date = None
     for i in range(1, len(dmis)):
         di, dip = dmis[i], dmis[i-1]
         cl, prevCl = closes[i], closes[i-1]
@@ -249,13 +253,15 @@ def run_backtest(klines, asset, dmi_by_time):
         long_trigger = lE and htf_ok
 
         if long_trigger and pos != 'LONG':
-            pos = 'LONG'; ep = cl
+            pos = 'LONG'; ep = cl; entry_date = d.strftime('%Y-%m-%d')
         elif lX and pos == 'LONG':
+            trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100))
             pos = 'FLAT'
         elif sE and pos == 'LONG':
+            trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100))
             pos = 'FLAT'
 
-    return times, equity, (pos == 'LONG')
+    return times, equity, (pos == 'LONG'), trades
 
 
 def perf_from(times, equity, start_ts):
@@ -290,14 +296,20 @@ def main():
             print(f"[{asset}] dati insufficienti, skip")
             continue
         dmi = compute_rolling_dmi(kl, DMI_PERIOD)
-        times, equity, in_pos = run_backtest(kl, asset, dmi)
+        times, equity, in_pos, trades = run_backtest(kl, asset, dmi)
         per_asset[asset] = {
             'perf_week': round(perf_from(times, equity, week_ts), 2),
             'perf_month': round(perf_from(times, equity, month_ts), 2),
             'perf_ytd': round(perf_from(times, equity, ytd_ts), 2),
             'in_position': in_pos,
         }
-        print(f"[{asset}] sett {per_asset[asset]['perf_week']}% mese {per_asset[asset]['perf_month']}% YTD {per_asset[asset]['perf_ytd']}% in_pos={in_pos}")
+        a = per_asset[asset]
+        print(f"[{asset}] sett {a['perf_week']}% mese {a['perf_month']}% YTD {a['perf_ytd']}% in_pos={in_pos}")
+        print(f"[{asset}] DIAG: {len(trades)} trade nella finestra, equity {equity[0]:.3f}->{equity[-1]:.3f}")
+        # ultimi 5 trade del 2026 per confronto con l'app
+        t2026 = [t for t in trades if t[0] and t[0] >= '2025-12']
+        for ed, xd, pnl in t2026[-6:]:
+            print(f"[{asset}]   {ed} -> {xd}: {pnl:+.2f}%")
 
     # media equipesata delle perf (semplice media dei rendimenti %)
     def avg(key):
