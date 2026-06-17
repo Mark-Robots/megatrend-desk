@@ -98,6 +98,21 @@
   .sin-text{font-size:13px;line-height:1.65;color:var(--txt);margin:0 0 12px}
   .sin-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
   .cyc-sintesi{margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft)}
+  /* onda ciclica sintetica */
+  .wave-wrap{width:100%;margin-top:8px}
+  .wave-svg{width:100%;height:auto;display:block}
+  .wave-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:10px;color:var(--txt-faint)}
+  .wave-legend .lg-item{display:flex;align-items:center;gap:6px}
+  .wave-legend .lg-dot{width:9px;height:9px;border-radius:50%}
+  .wave-legend .lg-dot.min{background:#5b9dff} .wave-legend .lg-dot.max{background:#f5b301}
+  .wave-legend .lg-line{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .wave-legend .lg-line.orange{background:#ff7a18} .wave-legend .lg-line.white{background:#e8eaed}
+  .cyc-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
+  .cyc-mini{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:3px}
+  .cyc-mini-name{font-weight:600;font-size:12px}
+  .cyc-mini-dir{font-weight:700;font-size:12px;text-transform:capitalize}
+  .cyc-mini-dir.rialzista{color:var(--green)} .cyc-mini-dir.ribassista{color:var(--orange)}
+  .cyc-mini-meta{font-size:10px;color:var(--txt-faint);line-height:1.4}
   .sct{background:#0d1117;border:1px solid var(--line-soft);border-radius:11px;padding:13px 14px;position:relative}
   .sct.on{border-color:rgba(61,220,132,.32)}
   .sct.s5{background:rgba(61,220,132,.13);border-color:rgba(61,220,132,.42)}
@@ -520,34 +535,113 @@ async function loadCycles(url, targetId){
       return 'direzione non determinata';
     };
 
-    const rows=cyc.map(c=>{
-      if(c.progress_pct==null) return '';
-      const pc=Math.min(100,c.progress_pct);
+    // --- onda ciclica sintetica: somma pesata dei 3 cicli ---
+    const waveChart=(cycles, lastDateStr)=>{
+      const lastDate=new Date(lastDateStr+'T00:00:00');
+      const pesi={annuale:3, intermedio:2, mensile:1};
+      const segs=cycles.filter(c=>c.last_low_date).map(c=>({
+        len:c.len_effective||c.len_theoretical,
+        lastLow:new Date(c.last_low_date+'T00:00:00'),
+        peso:pesi[c.key]||1
+      }));
+      if(!segs.length) return '';
+      const DAY=86400000;
+      const onda=(offset)=>{
+        const data=new Date(lastDate.getTime()+offset*DAY);
+        let tot=0, pt=0;
+        segs.forEach(s=>{
+          const gg=Math.round((data-s.lastLow)/DAY);
+          tot += -Math.cos(2*Math.PI*gg/s.len)*s.peso; pt+=s.peso;
+        });
+        return tot/pt;
+      };
+      const G0=-50, G1=300;               // finestra: da -50 a +300 giorni rispetto a oggi
+      const pts=[];
+      for(let g=G0; g<=G1; g++) pts.push([g, onda(g)]);
+      // estremi futuri (g>=0)
+      const estremi=[];
+      for(let i=1;i<pts.length-1;i++){
+        const [g,v]=pts[i]; if(g<0) continue;
+        const vp=pts[i-1][1], vn=pts[i+1][1];
+        if(v<vp && v<vn) estremi.push(['min',g,v]);
+        if(v>vp && v>vn) estremi.push(['max',g,v]);
+      }
+      // dimensioni SVG
+      const W=820, H=220, padL=14, padR=14, padT=44, padB=30;
+      const plotW=W-padL-padR, plotH=H-padT-padB;
+      const x=g=> padL + (g-G0)/(G1-G0)*plotW;
+      const y=v=> padT + (1 - (v+1)/2)*plotH;   // v in [-1,1] -> alto=+1
+      // path onda
+      let dPath='';
+      pts.forEach((p,i)=>{ dPath += (i===0?'M':'L') + x(p[0]).toFixed(1) + ',' + y(p[1]).toFixed(1) + ' '; });
+      // area sotto (riempimento soft)
+      const areaPath = `M${x(G0).toFixed(1)},${y(-1).toFixed(1)} ` + dPath.slice(1) + `L${x(G1).toFixed(1)},${y(-1).toFixed(1)} Z`;
+      // linea oggi
+      const xToday=x(0);
+      // marcatori: TUTTI gli estremi futuri; il pallino è sempre, l'etichetta-data
+      // appare solo se abbastanza distante dall'ultima dello stesso tipo (anti-sovrapposizione)
+      const fmtMini=(g)=>{ const dt=new Date(lastDate.getTime()+g*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+      let marks='';
+      let lastLblXmin=-999, lastLblXmax=-999;
+      const MIN_GAP=42; // px minimi tra due etichette dello stesso tipo
+      estremi.forEach((e)=>{
+        const [tipo,g,v]=e;
+        const px=x(g), py=y(v);
+        const col = tipo==='min' ? '#5b9dff' : '#f5b301';
+        const sym = tipo==='min' ? '▼' : '▲';
+        const lblY = tipo==='min' ? py+18 : py-10;
+        marks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" fill="${col}"/>`;
+        // decido se mostrare l'etichetta
+        let show=false;
+        if(tipo==='min'){ if(px-lastLblXmin>=MIN_GAP){ show=true; lastLblXmin=px; } }
+        else { if(px-lastLblXmax>=MIN_GAP){ show=true; lastLblXmax=px; } }
+        if(show)
+          marks += `<text x="${px.toFixed(1)}" y="${lblY.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}">${sym} ${fmtMini(g)}</text>`;
+      });
+      // etichette mesi sull'asse x
+      let axis='';
+      let cur=new Date(lastDate.getTime()+G0*DAY);
+      cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      while(true){
+        const g=Math.round((cur-lastDate)/DAY);
+        if(g>G1) break;
+        if(g>=G0){
+          const px=x(g);
+          axis += `<line x1="${px.toFixed(1)}" y1="${padT}" x2="${px.toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>`;
+          axis += `<text x="${px.toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5e6675">${MESI[cur.getMonth()]} ${String(cur.getFullYear()).slice(2)}</text>`;
+        }
+        cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      }
+      const yMid=y(0);
+      return `<svg viewBox="0 0 ${W} ${H}" class="wave-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waveFill-${targetId}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,122,24,0.18)"/>
+            <stop offset="100%" stop-color="rgba(255,122,24,0)"/>
+          </linearGradient>
+        </defs>
+        ${axis}
+        <line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W-padR}" y2="${yMid.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3 4"/>
+        <path d="${areaPath}" fill="url(#waveFill-${targetId})"/>
+        <path d="${dPath}" fill="none" stroke="#ff7a18" stroke-width="2.5" stroke-linejoin="round"/>
+        <line x1="${xToday.toFixed(1)}" y1="${padT-8}" x2="${xToday.toFixed(1)}" y2="${H-padB}" stroke="#e8eaed" stroke-width="1.5" opacity="0.7"/>
+        <text x="${xToday.toFixed(1)}" y="${padT-12}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#e8eaed">oggi</text>
+        ${marks}
+      </svg>`;
+    };
+
+    // riga compatta con la direzione di ciascun ciclo
+    const cycSummary=cyc.filter(c=>c.progress_pct!=null).map(c=>{
       const dir=dirOf(c);
-      const cls=phaseClass(dir.key);
-      const cl=c.len_theoretical;
-      // la barra rappresenta i prossimi 'cl' giorni da oggi (0% = oggi, 100% = oggi + durata ciclo)
-      const posMin = c.days_to_low_est!=null  ? Math.max(0,Math.min(100, c.days_to_low_est /cl*100)) : null;
-      const posMax = c.days_to_high_est!=null ? Math.max(0,Math.min(100, c.days_to_high_est/cl*100)) : null;
-      // se i due marcatori sono vicini, alzo l'etichetta del secondo per non sovrapporle
-      const vicini = (posMin!=null && posMax!=null && Math.abs(posMin-posMax)<14);
-      const hiClass = vicini ? ' hi' : '';
-      const mkMin = posMin!=null ? `<div class="cyc-mk min" style="left:${posMin}%"><span class="mk-lbl"><b>▼ min</b>${fmtCycDate(c.next_low_date_est)}</span><span class="mk-dot"></span></div>` : '';
-      const mkMax = posMax!=null ? `<div class="cyc-mk max${hiClass}" style="left:${posMax}%"><span class="mk-lbl"><b>▲ max</b>${fmtCycDate(c.next_high_date_est)}</span><span class="mk-dot"></span></div>` : '';
-      return `<div class="cyc-row">
-        <div class="cyc-head">
-          <span class="cyc-name">${c.label}</span>
-          <span class="cyc-meta">${c.elapsed_days}gg nel ciclo · durata ${cl}gg</span>
-        </div>
-        <div class="cyc-bar">
-          <div class="cyc-dirfill ${dir.key}"></div>
-          ${mkMin}${mkMax}
-        </div>
-        <div class="cyc-phase">Direzione <span class="ptag ${cls}">${dir.label}</span> · ${phaseText(c)}</div>
-      </div>`;
+      return `<div class="cyc-mini"><span class="cyc-mini-name">${c.label}</span><span class="cyc-mini-dir ${dir.key}">${dir.label}</span><span class="cyc-mini-meta">${phaseText(c)}</span></div>`;
     }).join('');
 
-    el.innerHTML=rows+`<div class="cyc-legend"><span class="lg-item"><span class="lg-dot min"></span> prossimo minimo atteso</span><span class="lg-item"><span class="lg-dot max"></span> prossimo massimo atteso</span><span class="lg-item"><span class="lg-bar up"></span> barra verde = in cerca del massimo</span><span class="lg-item"><span class="lg-bar dn"></span> barra rossa = in cerca del minimo</span></div><div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. ${d.disclaimer||''}</div>`;
+    const chart=waveChart(cyc, d.last_date);
+
+    el.innerHTML=`<div class="wave-wrap">${chart}</div>`
+      + `<div class="wave-legend"><span class="lg-item"><span class="lg-dot min"></span> minimo ciclico atteso</span><span class="lg-item"><span class="lg-dot max"></span> massimo ciclico atteso</span><span class="lg-item"><span class="lg-line orange"></span> onda ciclica (somma annuale+intermedio+mensile)</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
+      + `<div class="cyc-mini-grid">${cycSummary}</div>`
+      + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
     if(targetId==='cycles-body'){
       const byKey={};
