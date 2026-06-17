@@ -604,7 +604,9 @@ async function loadCycles(url, targetId){
           annBand += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="6" stroke-linecap="round"/>`;
         }
         // min/max annuali (futuri) con etichetta data CORRETTA per il bias (posizione=ritmo, data=aggiustata)
-        const OFF_ANN={min:21, max:-38};  // offset annuale dal backtest
+        // offset applicato solo all'S&P (cycles-body); per BTC restano date grezze
+        const isSP = (targetId==='cycles-body');
+        const OFF_ANN = isSP ? {min:21, max:-38} : {min:0, max:0};  // offset annuale dal backtest SPX
         const fmtA=(g,t)=>{ const off=t==='min'?OFF_ANN.min:OFF_ANN.max; const dt=new Date(lastDate.getTime()+(g+off)*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
         for(let i=1;i<annPts.length-1;i++){
           const [g,v]=annPts[i]; if(g<0) continue;
@@ -624,8 +626,8 @@ async function loadCycles(url, targetId){
       const xToday=x(0);
       // marcatori: TUTTI gli estremi futuri; il pallino è sempre, l'etichetta-data
       // appare solo se abbastanza distante dall'ultima dello stesso tipo (anti-sovrapposizione)
-      // etichetta data corretta per il bias mensile (i micro-estremi sono mensili)
-      const OFF_MEN={min:2, max:1};
+      // etichetta data corretta per il bias mensile (i micro-estremi sono mensili); solo S&P
+      const OFF_MEN = (targetId==='cycles-body') ? {min:2, max:1} : {min:0, max:0};
       const fmtMini=(g,tipo)=>{ const off=tipo==='min'?OFF_MEN.min:OFF_MEN.max; const dt=new Date(lastDate.getTime()+(g+off)*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
       let marks='';
       let lastLblXmin=-999, lastLblXmax=-999;
@@ -772,7 +774,7 @@ async function loadCycles(url, targetId){
 
     el.innerHTML=`<div class="wave-wrap">${chart}</div>`
       + `<div class="wave-legend"><span class="lg-item"><span class="lg-line orange"></span> onda ciclica (somma dei 3 cicli) · timing fine</span><span class="lg-item"><span class="lg-line green"></span> fondo annuale in salita</span><span class="lg-item"><span class="lg-line red"></span> fondo annuale in discesa</span><span class="lg-item"><span class="lg-dot min"></span> min</span><span class="lg-item"><span class="lg-dot max"></span> max</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
-      + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza). I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
+      + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. ${targetId==='cycles-body' ? "Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza)." : "Le date sono grezze (la calibrazione del bias è specifica per l'S&P; per Bitcoin servono statistiche proprie, non ancora applicate)."} I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
       + `<div class="cyc-mini-grid">${cycSummary}</div>`
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
