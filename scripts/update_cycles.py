@@ -245,6 +245,17 @@ def analyze_cycle(prices, dates, spec):
             res["phase_note"] = "ciclo maturo, minimo ciclico in prossimita'"
         # giorni stimati al prossimo minimo (durata teorica - trascorsi)
         res["days_to_low_est"] = max(0, cl - elapsed)
+        # data stimata del prossimo minimo (ultimo minimo + durata, proiettata al futuro)
+        try:
+            _d = datetime.date.fromisoformat(dates[last])
+            _last_d = datetime.date.fromisoformat(dates[-1])
+            _nx = _d + datetime.timedelta(days=cl)
+            while _nx <= _last_d:
+                _nx += datetime.timedelta(days=cl)
+            res["next_low_date_est"] = _nx.strftime("%Y-%m-%d")
+            res["days_to_low_est"] = (_nx - _last_d).days
+        except Exception:
+            pass
 
     # --- ciclo inverso (massimi / top) ---
     highs = find_cycle_highs(prices, cl)
@@ -260,6 +271,17 @@ def analyze_cycle(prices, dates, spec):
         prog_h = elapsed_h / cl
         res["progress_high_pct"] = round(min(prog_h, 1.5) * 100, 0)
         res["days_to_high_est"] = max(0, cl - elapsed_h)
+        # data stimata del prossimo massimo (ultimo massimo + durata, proiettata al futuro)
+        try:
+            _dh = datetime.date.fromisoformat(dates[last_h])
+            _last_date = datetime.date.fromisoformat(dates[-1])
+            _nxh = _dh + datetime.timedelta(days=cl)
+            while _nxh <= _last_date:
+                _nxh += datetime.timedelta(days=cl)
+            res["next_high_date_est"] = _nxh.strftime("%Y-%m-%d")
+            res["days_to_high_est"] = (_nxh - _last_date).days
+        except Exception:
+            pass
         # fase inversa: prima meta' dopo il top = discesa, seconda = risalita verso nuovo top
         if prog_h < 0.5:
             res["inv_phase"] = "post-top"
