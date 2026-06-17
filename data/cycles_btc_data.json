@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-06-17T09:17:30.862879+00:00",
+  "updated_at": "2026-06-17T09:26:42.472037+00:00",
   "instrument": "Bitcoin",
   "last_date": "2026-06-17",
-  "last_close": 64944.0,
+  "last_close": 65077.0,
   "n_days": 3227,
   "cycles": [
     {
@@ -39,6 +39,7 @@
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
       "days_to_low_est": 118,
+      "next_low_date_est": "2026-10-13",
       "n_highs": 9,
       "highs_dates": [
         "2019-06-26",
@@ -54,7 +55,8 @@
       "elapsed_from_high": 254,
       "last_high_date": "2025-10-06",
       "progress_high_pct": 102.0,
-      "days_to_high_est": 0,
+      "days_to_high_est": 246,
+      "next_high_date_est": "2027-02-18",
       "inv_phase": "top atteso",
       "inv_note": "massimo ciclico in prossimita'"
     },
@@ -92,6 +94,7 @@
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
       "days_to_low_est": 69,
+      "next_low_date_est": "2026-08-25",
       "n_highs": 29,
       "highs_dates": [
         "2024-05-20",
@@ -108,6 +111,7 @@
       "last_high_date": "2026-05-10",
       "progress_high_pct": 48.0,
       "days_to_high_est": 42,
+      "next_high_date_est": "2026-07-29",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -145,6 +149,7 @@
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
       "days_to_low_est": 11,
+      "next_low_date_est": "2026-06-28",
       "n_highs": 120,
       "highs_dates": [
         "2025-10-06",
@@ -161,6 +166,7 @@
       "last_high_date": "2026-06-15",
       "progress_high_pct": 9.0,
       "days_to_high_est": 20,
+      "next_high_date_est": "2026-07-07",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-17T09:17:27.133399+00:00",
+  "updated_at": "2026-06-17T09:26:37.085157+00:00",
   "instrument": "S&P 500",
   "last_date": "2026-06-16",
   "last_close": 7511.35,
@@ -32,7 +32,8 @@
       "progress_pct": 22.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 196,
+      "days_to_low_est": 172,
+      "next_low_date_est": "2026-12-05",
       "n_highs": 2,
       "highs_dates": [
         "2022-01-03",
@@ -42,7 +43,8 @@
       "elapsed_from_high": 10,
       "last_high_date": "2026-06-02",
       "progress_high_pct": 4.0,
-      "days_to_high_est": 240,
+      "days_to_high_est": 236,
+      "next_high_date_est": "2027-02-07",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -79,7 +81,8 @@
       "progress_pct": 68.0,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 26,
+      "days_to_low_est": 2,
+      "next_low_date_est": "2026-06-18",
       "n_highs": 12,
       "highs_dates": [
         "2022-11-30",
@@ -95,7 +98,8 @@
       "elapsed_from_high": 10,
       "last_high_date": "2026-06-02",
       "progress_high_pct": 12.0,
-      "days_to_high_est": 70,
+      "days_to_high_est": 66,
+      "next_high_date_est": "2026-08-21",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -132,7 +136,8 @@
       "progress_pct": 18.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 18,
+      "days_to_low_est": 16,
+      "next_low_date_est": "2026-07-02",
       "n_highs": 42,
       "highs_dates": [
         "2025-05-19",
@@ -148,7 +153,8 @@
       "elapsed_from_high": 10,
       "last_high_date": "2026-06-02",
       "progress_high_pct": 45.0,
-      "days_to_high_est": 12,
+      "days_to_high_est": 8,
+      "next_high_date_est": "2026-06-24",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     }
