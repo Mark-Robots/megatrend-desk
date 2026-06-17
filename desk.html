@@ -603,11 +603,12 @@ async function loadCycles(url, targetId){
           const col = v1>=v0 ? 'rgba(34,224,107,0.5)' : 'rgba(255,90,60,0.5)';
           annBand += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="6" stroke-linecap="round"/>`;
         }
-        // min/max annuali (futuri) con etichetta data CORRETTA per il bias (posizione=ritmo, data=aggiustata)
+        // min/max annuali (futuri): cerchio + etichetta posizionati alla data CORRETTA per il bias,
+        // così marcatore e data coincidono. La banda colorata (forma onda) resta intatta.
         // offset applicato solo all'S&P (cycles-body); per BTC restano date grezze
         const isSP = (targetId==='cycles-body');
         const OFF_ANN = isSP ? {min:21, max:-38} : {min:0, max:0};  // offset annuale dal backtest SPX
-        const fmtA=(g,t)=>{ const off=t==='min'?OFF_ANN.min:OFF_ANN.max; const dt=new Date(lastDate.getTime()+(g+off)*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+        const fmtA=(gg)=>{ const dt=new Date(lastDate.getTime()+gg*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
         for(let i=1;i<annPts.length-1;i++){
           const [g,v]=annPts[i]; if(g<0) continue;
           const vp=annPts[i-1][1], vn=annPts[i+1][1];
@@ -615,10 +616,12 @@ async function loadCycles(url, targetId){
           if(v<vp&&v<vn) t='min'; if(v>vp&&v>vn) t='max';
           if(t){
             const col=t==='min'?'#5b9dff':'#f5b301';
-            const px=x(g), py=y(v);
+            const off=t==='min'?OFF_ANN.min:OFF_ANN.max;
+            const gAdj=g+off;                 // posizione aggiustata (dove cade il vero estremo atteso)
+            const px=x(gAdj), py=y(v);         // cerchio sulla data aggiustata, altezza = picco onda
             const ly=t==='min'?py+30:py-22;
             annMarks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5" fill="none" stroke="${col}" stroke-width="2"/>`;
-            annMarks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="${col}" opacity="0.85">${t==='min'?'min':'max'} annuale ${fmtA(g,t)}</text>`;
+            annMarks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="${col}" opacity="0.85">${t==='min'?'min':'max'} annuale ${fmtA(gAdj)}</text>`;
           }
         }
       }
@@ -628,13 +631,15 @@ async function loadCycles(url, targetId){
       // appare solo se abbastanza distante dall'ultima dello stesso tipo (anti-sovrapposizione)
       // etichetta data corretta per il bias mensile (i micro-estremi sono mensili); solo S&P
       const OFF_MEN = (targetId==='cycles-body') ? {min:2, max:1} : {min:0, max:0};
-      const fmtMini=(g,tipo)=>{ const off=tipo==='min'?OFF_MEN.min:OFF_MEN.max; const dt=new Date(lastDate.getTime()+(g+off)*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+      const fmtMini=(gg)=>{ const dt=new Date(lastDate.getTime()+gg*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
       let marks='';
       let lastLblXmin=-999, lastLblXmax=-999;
       const MIN_GAP=42; // px minimi tra due etichette dello stesso tipo
       estremi.forEach((e)=>{
         const [tipo,g,v]=e;
-        const px=x(g), py=y(v);
+        const off=tipo==='min'?OFF_MEN.min:OFF_MEN.max;
+        const gAdj=g+off;                  // posizione aggiustata: cerchio e data coincidono
+        const px=x(gAdj), py=y(v);
         const col = tipo==='min' ? '#5b9dff' : '#f5b301';
         const sym = tipo==='min' ? '▼' : '▲';
         const lblY = tipo==='min' ? py+18 : py-10;
@@ -644,7 +649,7 @@ async function loadCycles(url, targetId){
         if(tipo==='min'){ if(px-lastLblXmin>=MIN_GAP){ show=true; lastLblXmin=px; } }
         else { if(px-lastLblXmax>=MIN_GAP){ show=true; lastLblXmax=px; } }
         if(show)
-          marks += `<text x="${px.toFixed(1)}" y="${lblY.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}">${sym} ${fmtMini(g,tipo)}</text>`;
+          marks += `<text x="${px.toFixed(1)}" y="${lblY.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}">${sym} ${fmtMini(gAdj)}</text>`;
       });
       // etichette mesi sull'asse x
       let axis='';
