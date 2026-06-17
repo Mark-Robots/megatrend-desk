@@ -302,14 +302,10 @@ def main():
             'perf_month': round(perf_from(times, equity, month_ts), 2),
             'perf_ytd': round(perf_from(times, equity, ytd_ts), 2),
             'in_position': in_pos,
+            'n_trades': len(trades),
         }
         a = per_asset[asset]
-        print(f"[{asset}] sett {a['perf_week']}% mese {a['perf_month']}% YTD {a['perf_ytd']}% in_pos={in_pos}")
-        print(f"[{asset}] DIAG: {len(trades)} trade nella finestra, equity {equity[0]:.3f}->{equity[-1]:.3f}")
-        # ultimi 5 trade del 2026 per confronto con l'app
-        t2026 = [t for t in trades if t[0] and t[0] >= '2025-12']
-        for ed, xd, pnl in t2026[-6:]:
-            print(f"[{asset}]   {ed} -> {xd}: {pnl:+.2f}%")
+        print(f"[{asset}] sett {a['perf_week']}% mese {a['perf_month']}% YTD {a['perf_ytd']}% in_pos={in_pos} ({len(trades)} trade)")
 
     # media equipesata delle perf (semplice media dei rendimenti %)
     def avg(key):
