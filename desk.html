@@ -46,14 +46,13 @@
   .pl-row .pl-txt .pl-name{font-weight:600;font-size:13px;margin-bottom:2px}
   .pl-row .pl-txt .pl-asset{font-size:11px;color:var(--txt-faint);line-height:1.5}
   .cyc-row{margin-top:26px}
-  .cyc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:30px}
+  .cyc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:58px}
   .cyc-head .cyc-name{font-weight:600;font-size:13px}
   .cyc-head .cyc-meta{font-size:11px;color:var(--txt-faint);font-family:'JetBrains Mono',monospace}
   .cyc-bar{position:relative;height:22px;background:#0d1117;border:1px solid var(--line-soft);border-radius:7px}
-  .cyc-fill{position:absolute;top:0;left:0;height:100%;border-radius:6px 0 0 6px;transition:width .4s}
-  .cyc-fill.asc{background:linear-gradient(90deg,rgba(34,224,107,.25),rgba(34,224,107,.5))}
-  .cyc-fill.desc{background:linear-gradient(90deg,rgba(255,196,0,.25),rgba(255,122,24,.55))}
-  .cyc-fill.low{background:linear-gradient(90deg,rgba(255,59,59,.3),rgba(255,59,59,.6))}
+  .cyc-dirfill{position:absolute;inset:0;border-radius:6px;overflow:hidden;background:rgba(120,130,145,.15)}
+  .cyc-dirfill.rialzista{background:linear-gradient(90deg,rgba(34,224,107,.22),rgba(34,224,107,.5))}
+  .cyc-dirfill.ribassista{background:linear-gradient(90deg,rgba(255,59,59,.22),rgba(255,80,60,.5))}
   /* marcatori min/max etichettati sopra la barra */
   .cyc-mk{position:absolute;top:-4px;height:30px;width:2px;transform:translateX(-1px)}
   .cyc-mk.min{background:#5b9dff}
@@ -62,6 +61,9 @@
     font-size:9.5px;font-family:'JetBrains Mono',monospace;line-height:1.25;text-align:center}
   .cyc-mk.min .mk-lbl{color:#5b9dff} .cyc-mk.max .mk-lbl{color:#f5b301}
   .cyc-mk .mk-lbl b{display:block;font-weight:700;font-size:8px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+  .cyc-mk.hi{height:46px;top:-20px}
+  .cyc-mk.hi .mk-lbl{bottom:50px}
+  .cyc-mk.hi .mk-dot{bottom:40px}
   .cyc-mk .mk-dot{position:absolute;bottom:24px;left:50%;width:5px;height:5px;border-radius:50%;transform:translateX(-50%)}
   .cyc-mk.min .mk-dot{background:#5b9dff} .cyc-mk.max .mk-dot{background:#f5b301}
   .cyc-now-line{position:absolute;top:-2px;height:26px;width:2px;background:var(--txt);opacity:.55}
@@ -74,7 +76,17 @@
   .cyc-legend .lg-item{display:flex;align-items:center;gap:6px}
   .cyc-legend .lg-dot{width:9px;height:9px;border-radius:50%}
   .cyc-legend .lg-dot.min{background:#5b9dff} .cyc-legend .lg-dot.max{background:#f5b301}
+  .cyc-legend .lg-bar{width:16px;height:9px;border-radius:3px;display:inline-block}
+  .cyc-legend .lg-bar.up{background:rgba(34,224,107,.5)} .cyc-legend .lg-bar.dn{background:rgba(255,80,60,.5)}
   .cyc-foot{font-size:10px;color:var(--txt-faint);margin-top:12px;line-height:1.6}
+  .sin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+  .sin-pill{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:4px}
+  .sin-pill .sl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint)}
+  .sin-pill .sv{font-weight:700;font-size:14px;text-transform:capitalize}
+  .sin-pill .sv.rialzista{color:var(--green)} .sin-pill .sv.ribassista{color:var(--orange)}
+  .sin-text{font-size:13px;line-height:1.65;color:var(--txt);margin:0 0 12px}
+  .sin-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
+  .cyc-sintesi{margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft)}
   .sct{background:#0d1117;border:1px solid var(--line-soft);border-radius:11px;padding:13px 14px;position:relative}
   .sct.on{border-color:rgba(61,220,132,.32)}
   .sct.s5{background:rgba(61,220,132,.13);border-color:rgba(61,220,132,.42)}
@@ -189,12 +201,6 @@
   <div class="card trendmap">
     <p class="crypto-note">Quali settori sono attualmente <b>in trend</b> e quali <b>fuori trend</b>. Lo stato si basa sulla posizione RRG e sulla fase di Weinstein.</p>
     <div id="trendmap-body"><p class="crypto-note">Caricamento…</p></div>
-  </div>
-
-  <h2 class="sec-title mt">Ciclo economico</h2>
-  <div class="card cyclecard">
-    <p class="crypto-note">Le quattro fasi del ciclo e le classi di attivo storicamente favorite in ciascuna. Il punto indica una <b>lettura indicativa</b> della fase attuale, derivata dalla rotazione settoriale — non è una previsione macroeconomica.</p>
-    <div id="cycle-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
   <h2 class="sec-title mt">Analisi ciclica · S&amp;P 500</h2>
@@ -427,6 +433,7 @@ async function loadCycle(){
     let cur='espansione',best=-1;
     for(const k in strength){if(strength[k]>best){best=strength[k];cur=k;}}
     const curPhase=phases.find(p=>p.key===cur)||phases[1];
+    window.__cicloEco={fase:curPhase.name, key:cur};
     // progresso 0..1 dentro la fase: quanto emerge la fase successiva
     const fc=strength[cur], fn=strength[nextKey[cur]]||0;
     let prog = (fc+fn)>0 ? fn/(fc+fn) : 0.5;
@@ -508,32 +515,97 @@ async function loadCycles(url, targetId){
       // la barra rappresenta i prossimi 'cl' giorni da oggi (0% = oggi, 100% = oggi + durata ciclo)
       const posMin = c.days_to_low_est!=null  ? Math.max(0,Math.min(100, c.days_to_low_est /cl*100)) : null;
       const posMax = c.days_to_high_est!=null ? Math.max(0,Math.min(100, c.days_to_high_est/cl*100)) : null;
+      // se i due marcatori sono vicini, alzo l'etichetta del secondo per non sovrapporle
+      const vicini = (posMin!=null && posMax!=null && Math.abs(posMin-posMax)<14);
+      const hiClass = vicini ? ' hi' : '';
       const mkMin = posMin!=null ? `<div class="cyc-mk min" style="left:${posMin}%"><span class="mk-lbl"><b>▼ min</b>${fmtCycDate(c.next_low_date_est)}</span><span class="mk-dot"></span></div>` : '';
-      const mkMax = posMax!=null ? `<div class="cyc-mk max" style="left:${posMax}%"><span class="mk-lbl"><b>▲ max</b>${fmtCycDate(c.next_high_date_est)}</span><span class="mk-dot"></span></div>` : '';
+      const mkMax = posMax!=null ? `<div class="cyc-mk max${hiClass}" style="left:${posMax}%"><span class="mk-lbl"><b>▲ max</b>${fmtCycDate(c.next_high_date_est)}</span><span class="mk-dot"></span></div>` : '';
       return `<div class="cyc-row">
         <div class="cyc-head">
           <span class="cyc-name">${c.label}</span>
           <span class="cyc-meta">${c.elapsed_days}gg nel ciclo · durata ${cl}gg</span>
         </div>
         <div class="cyc-bar">
-          <div class="cyc-fill ${cls}" style="width:${pc}%"></div>
-          <div class="cyc-now-line" style="left:0%"></div>
+          <div class="cyc-dirfill ${dir.key}"></div>
           ${mkMin}${mkMax}
         </div>
         <div class="cyc-phase">Direzione <span class="ptag ${cls}">${dir.label}</span> · ${phaseText(c)}</div>
       </div>`;
     }).join('');
 
-    el.innerHTML=rows+`<div class="cyc-legend"><span class="lg-item"><span class="lg-dot min"></span> prossimo minimo atteso</span><span class="lg-item"><span class="lg-dot max"></span> prossimo massimo atteso</span><span class="lg-item">la barra copre i prossimi giorni del ciclo a partire da oggi</span></div><div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. ${d.disclaimer||''}</div>`;
+    el.innerHTML=rows+`<div class="cyc-legend"><span class="lg-item"><span class="lg-dot min"></span> prossimo minimo atteso</span><span class="lg-item"><span class="lg-dot max"></span> prossimo massimo atteso</span><span class="lg-item"><span class="lg-bar up"></span> barra verde = in cerca del massimo</span><span class="lg-item"><span class="lg-bar dn"></span> barra rossa = in cerca del minimo</span></div><div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. ${d.disclaimer||''}</div>`;
+
+    if(targetId==='cycles-body'){
+      const byKey={};
+      cyc.forEach(c=>{ byKey[c.key]=dirOf(c).key; });
+      const stato={
+        lungo:byKey['annuale']||'—',
+        medio:byKey['intermedio']||'—',
+        breve:byKey['mensile']||'—',
+        next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
+      };
+      el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
+    }
+    if(targetId==='cycles-btc-body'){
+      const byKey={};
+      cyc.forEach(c=>{ byKey[c.key]=dirOf(c).key; });
+      const stato={
+        lungo:byKey['annuale']||'—',
+        medio:byKey['intermedio']||'—',
+        breve:byKey['mensile']||'—',
+        next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
+      };
+      el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
+    }
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
   }
 }
 
+function sintesiHTML(stato){
+  const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fmt=s=>{ if(!s) return '—'; const p=s.split('-'); return p.length===3?`${p[2]} ${MESI[+p[1]-1]} ${p[0]}`:s; };
+  const {lungo,medio,breve}=stato;
+  const dirs=[lungo,medio,breve];
+  const nRib=dirs.filter(x=>x==='ribassista').length;
+  const nRial=dirs.filter(x=>x==='rialzista').length;
+
+  let tempo;
+  if(nRib===3)
+    tempo=`Tutti e tre i cicli puntano verso il basso: pressione ribassista coordinata su breve, medio e lungo, in cerca di un minimo (atteso intorno a ${fmt(stato.next_low)}).`;
+  else if(nRial===3)
+    tempo=`Tutti e tre i cicli puntano verso l'alto: spinta rialzista coordinata su breve, medio e lungo.`;
+  else if(lungo==='ribassista' && breve==='rialzista')
+    tempo=`La tendenza di fondo resta in discesa verso il minimo atteso intorno a ${fmt(stato.next_low)}, ma il ciclo breve prova a rimbalzare: possibile rimbalzo dentro una correzione più ampia.`;
+  else if(lungo==='rialzista' && breve==='ribassista')
+    tempo=`La tendenza di fondo è costruttiva, con una correzione di breve in corso: possibile pausa dentro un movimento al rialzo.`;
+  else if(lungo==='rialzista')
+    tempo=`Tendenza di fondo orientata al rialzo; i cicli minori danno qualche oscillazione lungo il percorso.`;
+  else
+    tempo=`Tendenza di fondo orientata al ribasso verso il minimo di ${fmt(stato.next_low)}; i cicli minori alternano alti e bassi lungo la discesa.`;
+
+  let allineamento;
+  if(nRib===3 || nRial===3)
+    allineamento=`I tre orizzonti temporali sono allineati nella stessa direzione: segnale ciclico più nitido, da seguire comunque con la prudenza dovuta a una lettura probabilistica.`;
+  else if(lungo===medio && medio!==breve)
+    allineamento=`Lungo e medio periodo concordano, mentre il breve va in controtendenza: tipico di un'oscillazione minore dentro un movimento più ampio.`;
+  else
+    allineamento=`Gli orizzonti non sono del tutto allineati: utile distinguere il breve (più rumoroso) dal medio-lungo, che definisce la tendenza prevalente.`;
+
+  return `
+    <div class="sin-grid">
+      <div class="sin-pill"><span class="sl">Lungo · annuale</span><span class="sv ${lungo}">${lungo}</span></div>
+      <div class="sin-pill"><span class="sl">Medio · intermedio</span><span class="sv ${medio}">${medio}</span></div>
+      <div class="sin-pill"><span class="sl">Breve · mensile</span><span class="sv ${breve}">${breve}</span></div>
+    </div>
+    <p class="sin-text">${tempo}</p>
+    <p class="sin-text">${allineamento}</p>
+    <p class="sin-note">Lettura sintetica generata automaticamente dall'analisi ciclica dei minimi e massimi storici. È un quadro indicativo a scopo informativo, non una previsione né una raccomandazione operativa.</p>`;
+}
+
 async function refresh(){
   const[d1,d2,d3]=await Promise.all([loadAzioni(),loadETF(),loadCrypto()]);
   loadTrendMap();
-  loadCycle();
   loadCycles(CYCLES_URL, 'cycles-body');
   loadCycles(CYCLES_BTC_URL, 'cycles-btc-body');
   const latest=[d1,d2,d3].filter(Boolean).sort().pop();
