@@ -12,7 +12,14 @@ import urllib.request
 PARAMS = json.load(open(os.path.join(os.path.dirname(__file__), 'crypto_params.json')))
 SYMBOLS = {'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT'}
 DMI_PERIOD = 14
-BINANCE = 'https://api.binance.com/api/v3/klines'
+# data-api.binance.vision: host ufficiale Binance per dati di mercato,
+# senza il blocco geografico 451 che colpisce api.binance.com da IP USA (GitHub Actions).
+BINANCE = 'https://data-api.binance.vision/api/v3/klines'
+BINANCE_FALLBACKS = [
+    'https://data-api.binance.vision/api/v3/klines',
+    'https://api.binance.com/api/v3/klines',
+    'https://api1.binance.com/api/v3/klines',
+]
 
 
 def get_params(asset, year, month):
@@ -30,21 +37,64 @@ def get_params(asset, year, month):
     return {'d1': p['d1'][idx], 'd2': p['d2'][idx], 'd3': p['d3'][idx], 'd4': p['d4'][idx]}
 
 
+def _fetch_kraken(symbol, start_ms, interval='1h'):
+    """fallback Kraken se Binance e' geo-bloccato (451) da GitHub Actions.
+    Kraken OHLC: interval in minuti, max 720 candele per richiesta."""
+    pair_map = {'BTCUSDT': 'XBTUSDT', 'ETHUSDT': 'ETHUSDT', 'SOLUSDT': 'SOLUSDT'}
+    pair = pair_map.get(symbol, symbol)
+    since = start_ms // 1000
+    out = []
+    url = f"https://api.kraken.com/0/public/OHLC?pair={pair}&interval=60&since={since}"
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = json.loads(r.read())
+        if data.get('error'):
+            return []
+        result = data.get('result', {})
+        key = next((k for k in result if k != 'last'), None)
+        if not key:
+            return []
+        for row in result[key]:
+            # [time, open, high, low, close, vwap, volume, count]
+            out.append({'time': int(row[0]), 'open': float(row[1]), 'high': float(row[2]),
+                        'low': float(row[3]), 'close': float(row[4]), 'volume': float(row[6])})
+    except Exception as e:
+        print(f"  kraken fallback fallito: {e}")
+        return []
+    return out
+
+
 def fetch_klines(symbol, start_ms, interval='1h'):
-    """scarica candele orarie da Binance, paginando (max 1000/req)."""
+    """scarica candele orarie da Binance, paginando (max 1000/req).
+    Prova piu' host per evitare il blocco 451 geografico su GitHub Actions.
+    Se tutti falliscono, ripiega su Kraken."""
     out = []
     cur = start_ms
+    host = None
+    binance_failed = False
     while True:
-        url = f"{BINANCE}?symbol={symbol}&interval={interval}&startTime={cur}&limit=1000"
-        for attempt in range(3):
-            try:
-                with urllib.request.urlopen(url, timeout=30) as r:
-                    data = json.loads(r.read())
+        data = None
+        last_err = None
+        hosts = [host] if host else BINANCE_FALLBACKS
+        for base in hosts:
+            url = f"{base}?symbol={symbol}&interval={interval}&startTime={cur}&limit=1000"
+            for attempt in range(2):
+                try:
+                    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req, timeout=30) as r:
+                        data = json.loads(r.read())
+                    host = base
+                    break
+                except Exception as e:
+                    last_err = e
+                    time.sleep(1.5)
+            if data is not None:
                 break
-            except Exception as e:
-                if attempt == 2:
-                    raise
-                time.sleep(2)
+        if data is None:
+            # Binance non raggiungibile: ripiega su Kraken (una sola chiamata)
+            binance_failed = True
+            break
         if not data:
             break
         for k in data:
@@ -54,6 +104,9 @@ def fetch_klines(symbol, start_ms, interval='1h'):
             break
         cur = data[-1][0] + 1
         time.sleep(0.25)
+    if binance_failed and not out:
+        print(f"  Binance bloccato (451), provo Kraken per {symbol}...")
+        out = _fetch_kraken(symbol, start_ms, interval)
     return out
 
 
