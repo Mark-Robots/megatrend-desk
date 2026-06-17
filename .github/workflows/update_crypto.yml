@@ -1,0 +1,28 @@
+name: Update Crypto
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'   # ogni giorno alle 06:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  crypto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run crypto update
+        run: python scripts/update_crypto.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git pull --rebase || true
+          git add data/crypto_data.json
+          git diff --staged --quiet || git commit -m "Update crypto_data.json"
+          git push || true
