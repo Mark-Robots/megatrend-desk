@@ -26,6 +26,8 @@ jobs:
         run: pip install yfinance --quiet || true
 
       - name: Run cycle analysis
+        env:
+          TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
         run: python scripts/update_cycles.py
 
       - name: Commit and push
