@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-06-17T12:11:12.074600+00:00",
+  "updated_at": "2026-06-17T13:59:57.754582+00:00",
   "instrument": "Bitcoin",
   "last_date": "2026-06-17",
-  "last_close": 64866.0,
+  "last_close": 65292.0,
   "n_days": 3227,
   "cycles": [
     {
@@ -39,8 +39,9 @@
       "len_effective": 256,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 124,
-      "next_low_date_est": "2026-10-19",
+      "days_to_low_est": 145,
+      "next_low_date_est_raw": "2026-10-19",
+      "next_low_date_est": "2026-11-09",
       "n_highs": 12,
       "highs_dates": [
         "2021-03-13",
@@ -57,8 +58,9 @@
       "last_high_date": "2026-05-10",
       "len_effective_high": 279,
       "progress_high_pct": 14.0,
-      "days_to_high_est": 241,
-      "next_high_date_est": "2027-02-13",
+      "days_to_high_est": 203,
+      "next_high_date_est_raw": "2027-02-13",
+      "next_high_date_est": "2027-01-06",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -96,8 +98,9 @@
       "len_effective": 80,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 69,
-      "next_low_date_est": "2026-08-25",
+      "days_to_low_est": 77,
+      "next_low_date_est_raw": "2026-08-25",
+      "next_low_date_est": "2026-09-02",
       "n_highs": 39,
       "highs_dates": [
         "2024-07-28",
@@ -114,8 +117,9 @@
       "last_high_date": "2026-05-10",
       "len_effective_high": 84,
       "progress_high_pct": 45.0,
-      "days_to_high_est": 46,
-      "next_high_date_est": "2026-08-02",
+      "days_to_high_est": 42,
+      "next_high_date_est_raw": "2026-08-02",
+      "next_high_date_est": "2026-07-29",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -153,8 +157,9 @@
       "len_effective": 20,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 8,
-      "next_low_date_est": "2026-06-25",
+      "days_to_low_est": 10,
+      "next_low_date_est_raw": "2026-06-25",
+      "next_low_date_est": "2026-06-27",
       "n_highs": 151,
       "highs_dates": [
         "2026-01-28",
@@ -171,8 +176,9 @@
       "last_high_date": "2026-06-15",
       "len_effective_high": 22,
       "progress_high_pct": 9.0,
-      "days_to_high_est": 20,
-      "next_high_date_est": "2026-07-07",
+      "days_to_high_est": 21,
+      "next_high_date_est_raw": "2026-07-07",
+      "next_high_date_est": "2026-07-08",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     }
