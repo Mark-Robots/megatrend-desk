@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-06-17T09:04:20.502502+00:00",
+  "updated_at": "2026-06-17T09:17:30.862879+00:00",
   "instrument": "Bitcoin",
   "last_date": "2026-06-17",
-  "last_close": 65026.0,
+  "last_close": 64944.0,
   "n_days": 3227,
   "cycles": [
     {
@@ -38,7 +38,25 @@
       "progress_pct": 53.0,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 118
+      "days_to_low_est": 118,
+      "n_highs": 9,
+      "highs_dates": [
+        "2019-06-26",
+        "2020-02-14",
+        "2021-04-13",
+        "2021-11-08",
+        "2023-07-13",
+        "2024-03-13",
+        "2025-01-21",
+        "2025-10-06"
+      ],
+      "high_gap_avg": 356.4,
+      "elapsed_from_high": 254,
+      "last_high_date": "2025-10-06",
+      "progress_high_pct": 102.0,
+      "days_to_high_est": 0,
+      "inv_phase": "top atteso",
+      "inv_note": "massimo ciclico in prossimita'"
     },
     {
       "key": "intermedio",
@@ -73,7 +91,25 @@
       "progress_pct": 14.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 69
+      "days_to_low_est": 69,
+      "n_highs": 29,
+      "highs_dates": [
+        "2024-05-20",
+        "2024-07-28",
+        "2024-12-17",
+        "2025-05-22",
+        "2025-08-13",
+        "2025-10-06",
+        "2026-01-14",
+        "2026-05-10"
+      ],
+      "high_gap_avg": 113.3,
+      "elapsed_from_high": 38,
+      "last_high_date": "2026-05-10",
+      "progress_high_pct": 48.0,
+      "days_to_high_est": 42,
+      "inv_phase": "post-top",
+      "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
     {
       "key": "mensile",
@@ -108,7 +144,25 @@
       "progress_pct": 50.0,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 11
+      "days_to_low_est": 11,
+      "n_highs": 120,
+      "highs_dates": [
+        "2025-10-06",
+        "2025-10-26",
+        "2025-12-03",
+        "2026-01-14",
+        "2026-03-04",
+        "2026-03-16",
+        "2026-05-10",
+        "2026-06-15"
+      ],
+      "high_gap_avg": 27.0,
+      "elapsed_from_high": 2,
+      "last_high_date": "2026-06-15",
+      "progress_high_pct": 9.0,
+      "days_to_high_est": 20,
+      "inv_phase": "post-top",
+      "inv_note": "dopo un massimo ciclico, possibile correzione"
     }
   ],
   "disclaimer": "Analisi ciclica indicativa sui minimi storici (metodo dei cicli annidati). Lettura probabilistica, non previsione."
