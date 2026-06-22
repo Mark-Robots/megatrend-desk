@@ -108,6 +108,9 @@
   .wave-legend .lg-line{width:16px;height:3px;border-radius:2px;display:inline-block}
   .wave-legend .lg-line.orange{background:#ff7a18} .wave-legend .lg-line.white{background:#e8eaed}
   .wave-legend .lg-line.green{background:#22e06b} .wave-legend .lg-line.red{background:#ff5a3c}
+  .wave-legend .lg-tri{width:0;height:0;display:inline-block}
+  .wave-legend .lg-tri.up{border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid #22c55e}
+  .wave-legend .lg-tri.dn{border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #ef4444}
   .ann-wave-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:8px}
   .cyc-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
   .cyc-mini{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:3px}
@@ -558,7 +561,27 @@ async function loadCycles(url, targetId){
     const waveChart=(cycles, lastDateStr)=>{
       const lastDate=new Date(lastDateStr+'T00:00:00');
       const pesi={annuale:3, intermedio:2, mensile:1};
+      const isSP_w = (targetId==='cycles-body');
+      // offset di bias (giorni) per ciclo — solo S&P; su BTC restano 0 (onda invariata)
+      const OFF = isSP_w
+        ? {annuale:{min:21,max:-38}, intermedio:{min:8,max:-4}, mensile:{min:2,max:1}}
+        : {annuale:{min:0,max:0}, intermedio:{min:0,max:0}, mensile:{min:0,max:0}};
+      // onda ANCORATA: i minimi/massimi sono ancorati alle date ATTESE (con bias),
+      // così il picco della curva cade esattamente dove arriva il vero estremo.
+      // ggRaw = giorni dal minimo reale; minimo atteso a k*len+offMin, massimo a k*len+len/2+offMax.
+      function ondaBias(ggRaw, len, off){
+        const k=Math.floor(ggRaw/len);
+        for(let kk=k-1; kk<=k+1; kk++){
+          const minA=kk*len+off.min;
+          const maxA=kk*len+len/2+off.max;
+          const minB=(kk+1)*len+off.min;
+          if(ggRaw>=minA && ggRaw<maxA){ const f=(ggRaw-minA)/(maxA-minA); return -Math.cos(Math.PI*f); }
+          if(ggRaw>=maxA && ggRaw<minB){ const f=(ggRaw-maxA)/(minB-maxA); return Math.cos(Math.PI*f); }
+        }
+        return -Math.cos(2*Math.PI*ggRaw/len); // fallback
+      }
       const segs=cycles.filter(c=>c.last_low_date).map(c=>({
+        key:c.key,
         len:c.len_effective||c.len_theoretical,
         lastLow:new Date(c.last_low_date+'T00:00:00'),
         peso:pesi[c.key]||1
@@ -566,13 +589,12 @@ async function loadCycles(url, targetId){
       if(!segs.length) return '';
       const DAY=86400000;
       const onda=(offset)=>{
-        const data=new Date(lastDate.getTime()+offset*DAY);
-        let tot=0, pt=0;
-        segs.forEach(s=>{
-          const gg=Math.round((data-s.lastLow)/DAY);
-          tot += -Math.cos(2*Math.PI*gg/s.len)*s.peso; pt+=s.peso;
-        });
-        return tot/pt;
+        // V1: l'onda è SOLO il ciclo annuale, così il suo picco coincide esattamente
+        // con l'inverso annuale (il massimo del ciclo di fondo). Niente intermedio/mensile.
+        const annSeg=segs.find(s=>s.key==='annuale');
+        if(!annSeg) return 0;
+        const ggRaw=(new Date(lastDate.getTime()+offset*DAY)-annSeg.lastLow)/DAY;
+        return ondaBias(ggRaw, annSeg.len, OFF.annuale||{min:0,max:0});
       };
       const G0=-50, G1=300;               // finestra: da -50 a +300 giorni rispetto a oggi
       const pts=[];
@@ -583,11 +605,12 @@ async function loadCycles(url, targetId){
       if(ann){
         annLen=ann.len_effective||ann.len_theoretical;
         annLow=new Date(ann.last_low_date+'T00:00:00');
+        const offA=OFF.annuale||{min:0,max:0};
         annPts=[];
         for(let g=G0; g<=G1; g++){
           const data=new Date(lastDate.getTime()+g*DAY);
-          const gg=Math.round((data-annLow)/DAY);
-          annPts.push([g, -Math.cos(2*Math.PI*gg/annLen)]);
+          const ggRaw=(data-annLow)/DAY;
+          annPts.push([g, ondaBias(ggRaw, annLen, offA)]);   // onda annuale ancorata col bias
         }
       }
       // estremi futuri dell'onda aggregata (g>=0)
@@ -611,14 +634,11 @@ async function loadCycles(url, targetId){
       if(annPts){
         for(let i=1;i<annPts.length;i++){
           const [g0,v0]=annPts[i-1], [g1,v1]=annPts[i];
-          const col = v1>=v0 ? 'rgba(34,224,107,0.5)' : 'rgba(255,90,60,0.5)';
-          annBand += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="6" stroke-linecap="round"/>`;
+          const col = v1>=v0 ? 'rgba(34,224,107,0.85)' : 'rgba(255,90,60,0.85)';
+          annBand += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="8" stroke-linecap="round"/>`;
         }
-        // min/max annuali (futuri): cerchio + etichetta posizionati alla data CORRETTA per il bias,
-        // così marcatore e data coincidono. La banda colorata (forma onda) resta intatta.
-        // offset applicato solo all'S&P (cycles-body); per BTC restano date grezze
-        const isSP = (targetId==='cycles-body');
-        const OFF_ANN = isSP ? {min:21, max:-38} : {min:0, max:0};  // offset annuale dal backtest SPX
+        // l'onda è GIÀ spostata col bias, quindi i suoi estremi cadono alle date corrette:
+        // cerchio ed etichetta vanno sull'apice reale dell'onda (posizione g), niente doppio offset
         const fmtA=(gg)=>{ const dt=new Date(lastDate.getTime()+gg*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
         for(let i=1;i<annPts.length-1;i++){
           const [g,v]=annPts[i]; if(g<0) continue;
@@ -626,42 +646,58 @@ async function loadCycles(url, targetId){
           let t=null;
           if(v<vp&&v<vn) t='min'; if(v>vp&&v>vn) t='max';
           if(t){
-            const col=t==='min'?'#5b9dff':'#f5b301';
-            const off=t==='min'?OFF_ANN.min:OFF_ANN.max;
-            const gAdj=g+off;                 // posizione aggiustata (dove cade il vero estremo atteso)
-            const px=x(gAdj), py=y(v);         // cerchio sulla data aggiustata, altezza = picco onda
-            const ly=t==='min'?py+30:py-22;
-            annMarks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5" fill="none" stroke="${col}" stroke-width="2"/>`;
-            annMarks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="${col}" opacity="0.85">${t==='min'?'min':'max'} annuale ${fmtA(gAdj)}</text>`;
+            const col=t==='min'?'#22c55e':'#ef4444';
+            const px=x(g), py=y(v);
+            // triangolo grande (annuale): min ▲ verde sopra, max ▼ rosso sotto
+            const sz=14, w=sz*1.1;
+            const tp = t==='min'
+              ? `${px-w/2},${(py+sz*0.7).toFixed(1)} ${px+w/2},${(py+sz*0.7).toFixed(1)} ${px},${(py-sz*0.6).toFixed(1)}`
+              : `${px-w/2},${(py-sz*0.7).toFixed(1)} ${px+w/2},${(py-sz*0.7).toFixed(1)} ${px},${(py+sz*0.6).toFixed(1)}`;
+            // posizione etichetta: sotto il min / sopra il max, ma se uscirebbe dal bordo la ribalto dentro
+            let ly = t==='min' ? py+34 : py-26;
+            const topLimit = padT+8, botLimit = H-padB-4;
+            if(t==='min' && ly>botLimit) ly = py-22;   // minimo troppo in basso -> etichetta sopra il triangolo
+            if(t==='max' && ly<topLimit) ly = py+30;   // massimo troppo in alto -> etichetta sotto il triangolo
+            annMarks += `<polygon points="${tp}" fill="${col}" stroke="#0a0e14" stroke-width="0.5"/>`;
+            annMarks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="${col}" opacity="0.95" font-weight="700">${t==='min'?'min':'max'} annuale ${fmtA(g)}</text>`;
           }
         }
       }
       // linea oggi
       const xToday=x(0);
-      // marcatori: TUTTI gli estremi futuri; il pallino è sempre, l'etichetta-data
-      // appare solo se abbastanza distante dall'ultima dello stesso tipo (anti-sovrapposizione)
-      // etichetta data corretta per il bias mensile (i micro-estremi sono mensili); solo S&P
-      const OFF_MEN = (targetId==='cycles-body') ? {min:2, max:1} : {min:0, max:0};
       const fmtMini=(gg)=>{ const dt=new Date(lastDate.getTime()+gg*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+      // triangolo direzionale: min = ▲ verde (poi sale), max = ▼ rosso (poi scende)
+      // dimensione diversa per ciclo: annuale grande, intermedio medio
+      function tri(px,py,tipo,size){
+        const col = tipo==='min' ? '#22c55e' : '#ef4444';
+        const h=size, w=size*1.1;
+        // min: punta in alto (sopra il punto); max: punta in basso (sotto il punto)
+        const pts = tipo==='min'
+          ? `${px-w/2},${(py+h*0.6).toFixed(1)} ${px+w/2},${(py+h*0.6).toFixed(1)} ${px},${(py-h*0.5).toFixed(1)}`
+          : `${px-w/2},${(py-h*0.6).toFixed(1)} ${px+w/2},${(py-h*0.6).toFixed(1)} ${px},${(py+h*0.5).toFixed(1)}`;
+        return `<polygon points="${pts}" fill="${col}"/>`;
+      }
+      // estremi attesi (con bias) dei cicli annuale e intermedio, nella finestra
+      function estremiAttesi(s){
+        const off=OFF[s.key]||{min:0,max:0};
+        const ggLow0=(lastDate - s.lastLow)/DAY;
+        const res=[];
+        for(let k=-1;k<=Math.ceil((G1+ggLow0)/s.len)+1;k++){
+          const gMin=k*s.len+off.min-ggLow0, gMax=k*s.len+s.len/2+off.max-ggLow0;
+          if(gMin>=0 && gMin<=G1) res.push({g:Math.round(gMin), tipo:'min'});
+          if(gMax>=0 && gMax<=G1) res.push({g:Math.round(gMax), tipo:'max'});
+        }
+        return res;
+      }
+      // valore y dell'onda aggregata in g (per posizionare il marcatore sulla curva)
+      const yOndaAt=(g)=>{ const i=Math.round(g-G0); return (i>=0&&i<pts.length)?pts[i][1]:onda(g); };
       let marks='';
       let lastLblXmin=-999, lastLblXmax=-999;
-      const MIN_GAP=42; // px minimi tra due etichette dello stesso tipo
-      estremi.forEach((e)=>{
-        const [tipo,g,v]=e;
-        const off=tipo==='min'?OFF_MEN.min:OFF_MEN.max;
-        const gAdj=g+off;                  // posizione aggiustata: cerchio e data coincidono
-        const px=x(gAdj), py=y(v);
-        const col = tipo==='min' ? '#5b9dff' : '#f5b301';
-        const sym = tipo==='min' ? '▼' : '▲';
-        const lblY = tipo==='min' ? py+18 : py-10;
-        marks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" fill="${col}"/>`;
-        // decido se mostrare l'etichetta
-        let show=false;
-        if(tipo==='min'){ if(px-lastLblXmin>=MIN_GAP){ show=true; lastLblXmin=px; } }
-        else { if(px-lastLblXmax>=MIN_GAP){ show=true; lastLblXmax=px; } }
-        if(show)
-          marks += `<text x="${px.toFixed(1)}" y="${lblY.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}">${sym} ${fmtMini(gAdj)}</text>`;
-      });
+      const MIN_GAP=42;
+      const segInt=segs.find(s=>s.key==='intermedio'), segAnn=segs.find(s=>s.key==='annuale');
+      // V2: la linea arancione morbida mostra già il ritmo intermedio;
+      // i marcatori a triangolo restano solo per gli estremi ANNUALI (vedi annMarks sopra),
+      // così il grafico è pulito. Niente triangoli intermedi sparsi.
       // etichette mesi sull'asse x
       let axis='';
       let cur=new Date(lastDate.getTime()+G0*DAY);
@@ -688,7 +724,6 @@ async function loadCycles(url, targetId){
         <line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W-padR}" y2="${yMid.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3 4"/>
         ${annBand}
         ${annMarks}
-        <path d="${dPath}" fill="none" stroke="#ff7a18" stroke-width="2.5" stroke-linejoin="round"/>
         <line x1="${xToday.toFixed(1)}" y1="${padT-8}" x2="${xToday.toFixed(1)}" y2="${H-padB}" stroke="#e8eaed" stroke-width="1.5" opacity="0.7"/>
         <text x="${xToday.toFixed(1)}" y="${padT-12}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#e8eaed">oggi</text>
         ${marks}
@@ -789,7 +824,7 @@ async function loadCycles(url, targetId){
     const chart=waveChart(cyc, d.last_date);
 
     el.innerHTML=`<div class="wave-wrap">${chart}</div>`
-      + `<div class="wave-legend"><span class="lg-item"><span class="lg-line orange"></span> onda ciclica (somma dei 3 cicli) · timing fine</span><span class="lg-item"><span class="lg-line green"></span> fondo annuale in salita</span><span class="lg-item"><span class="lg-line red"></span> fondo annuale in discesa</span><span class="lg-item"><span class="lg-dot min"></span> min</span><span class="lg-item"><span class="lg-dot max"></span> max</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
+      + `<div class="wave-legend"><span class="lg-item"><span class="lg-line green"></span> tendenza di fondo in salita (verso il massimo)</span><span class="lg-item"><span class="lg-line red"></span> tendenza di fondo in discesa (verso il minimo)</span><span class="lg-item"><span class="lg-tri up"></span> minimo annuale</span><span class="lg-item"><span class="lg-tri dn"></span> massimo annuale</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
       + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. ${targetId==='cycles-body' ? "Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza)." : "Le date sono grezze (la calibrazione del bias è specifica per l'S&P; per Bitcoin servono statistiche proprie, non ancora applicate)."} I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
       + `<div class="cyc-mini-grid">${cycSummary}</div>`
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
