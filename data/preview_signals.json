@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-06-22T18:31:14.707864+00:00",
+ "updated_at": "2026-06-23T14:31:12.210642+00:00",
  "last_bar": "2026-06-19",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -106,12 +106,12 @@
     {
      "sector": "XLE",
      "name": "Energia USA",
-     "in_now": true,
+     "in_now": false,
      "was_in": true,
-     "move": null,
+     "move": "uscita",
      "borderline": false,
-     "state": "In rallentamento",
-     "stage": "2",
+     "state": null,
+     "stage": null,
      "ticker": "XOM",
      "ticker_name": "ExxonMobil",
      "held_ticker": "VLO",
@@ -159,7 +159,9 @@
     }
    ],
    "ingressi": [],
-   "uscite": []
+   "uscite": [
+    "XLE"
+   ]
   },
   "aggressive": {
    "open_sectors": [
@@ -264,12 +266,12 @@
     {
      "sector": "XLE",
      "name": "Energia USA",
-     "in_now": true,
+     "in_now": false,
      "was_in": true,
-     "move": null,
+     "move": "uscita",
      "borderline": false,
-     "state": "In rallentamento",
-     "stage": "2",
+     "state": null,
+     "stage": null,
      "ticker": "VLO",
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
@@ -317,7 +319,9 @@
     }
    ],
    "ingressi": [],
-   "uscite": []
+   "uscite": [
+    "XLE"
+   ]
   }
  }
 }
