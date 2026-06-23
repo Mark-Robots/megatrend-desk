@@ -99,6 +99,14 @@
   .sin-text{font-size:13px;line-height:1.65;color:var(--txt);margin:0 0 12px}
   .sin-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
   .cyc-sintesi{margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft)}
+  .cicli-lunghi{margin-top:18px;padding:14px 16px;background:rgba(255,255,255,0.02);border:1px solid var(--line-soft);border-radius:10px}
+  .cicli-lunghi .long-head{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--txt-faint);margin-bottom:10px}
+  .cicli-lunghi .long-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:5px 0;flex-wrap:wrap}
+  .cicli-lunghi .long-name{font-size:13px;font-weight:700;color:var(--txt);text-transform:capitalize}
+  .cicli-lunghi .long-dates{font-size:11px;color:var(--txt-dim)}
+  .cicli-lunghi .long-dates b{color:var(--txt);font-weight:600}
+  .cicli-lunghi .long-warn{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-soft)}
+  .cicli-lunghi .long-warn b{color:#ffb454}
   /* onda ciclica sintetica */
   .wave-wrap{width:100%;margin-top:8px}
   .wave-svg{width:100%;height:auto;display:block}
@@ -842,6 +850,8 @@ async function loadCycles(url, targetId){
         next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
       };
       el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
+      const lunghi = cyc.filter(c=>c.long);
+      if(lunghi.length) el.insertAdjacentHTML('beforeend', cicliLunghiHTML(lunghi));
     }
     if(targetId==='cycles-btc-body'){
       const byKey={}; const dateByKey={};
@@ -905,6 +915,23 @@ function sintesiHTML(stato){
     <p class="sin-text">${tempo}</p>
     <p class="sin-text">${allineamento}</p>
     <p class="sin-note">Lettura sintetica generata automaticamente dall'analisi ciclica dei minimi e massimi storici. È un quadro indicativo a scopo informativo, non una previsione né una raccomandazione operativa.</p>`;
+}
+
+function cicliLunghiHTML(lunghi){
+  const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fmt=s=>{ if(!s) return '—'; const p=s.split('-'); return p.length===3?`${p[2]} ${MESI[+p[1]-1]} ${p[0]}`:s; };
+  const rows = lunghi.map(c=>{
+    const nome = c.label.replace('Ciclo ','');
+    return `<div class="long-row">
+      <span class="long-name">${nome}</span>
+      <span class="long-dates">minimo atteso <b>${fmt(c.next_low_date_est)}</b> · massimo atteso <b>${fmt(c.next_high_date_est)}</b></span>
+    </div>`;
+  }).join('');
+  return `<div class="cicli-lunghi">
+    <div class="long-head">Cicli lunghi · contesto di sfondo</div>
+    ${rows}
+    <div class="long-warn">⚠ Date puramente orientative, con margine d'errore molto ampio (nell'ordine di <b>diversi mesi</b>). I cicli lunghi si ripetono poche volte nella storia disponibile, quindi la loro precisione è bassa: vanno letti come "stagioni molto larghe", non come appuntamenti. Date grezze, non corrette per il bias.</div>
+  </div>`;
 }
 
 async function refresh(){
