@@ -95,6 +95,7 @@
   .sin-pill .sl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint)}
   .sin-pill .sv{font-weight:700;font-size:14px;text-transform:capitalize}
   .sin-pill .sv.rialzista{color:var(--green)} .sin-pill .sv.ribassista{color:var(--orange)}
+  .sin-pill .sv-date{font-size:10px;color:var(--txt-faint);letter-spacing:.02em;margin-top:1px}
   .sin-text{font-size:13px;line-height:1.65;color:var(--txt);margin:0 0 12px}
   .sin-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
   .cyc-sintesi{margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft)}
@@ -830,23 +831,27 @@ async function loadCycles(url, targetId){
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
     if(targetId==='cycles-body'){
-      const byKey={};
-      cyc.forEach(c=>{ byKey[c.key]=dirOf(c).key; });
+      const byKey={}; const dateByKey={};
+      cyc.forEach(c=>{ const dir=dirOf(c); byKey[c.key]=dir.key;
+        dateByKey[c.key] = dir.key==='rialzista' ? c.next_high_date_est : dir.key==='ribassista' ? c.next_low_date_est : null; });
       const stato={
         lungo:byKey['annuale']||'—',
         medio:byKey['intermedio']||'—',
         breve:byKey['mensile']||'—',
+        dataLungo:dateByKey['annuale'], dataMedio:dateByKey['intermedio'], dataBreve:dateByKey['mensile'],
         next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
       };
       el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
     }
     if(targetId==='cycles-btc-body'){
-      const byKey={};
-      cyc.forEach(c=>{ byKey[c.key]=dirOf(c).key; });
+      const byKey={}; const dateByKey={};
+      cyc.forEach(c=>{ const dir=dirOf(c); byKey[c.key]=dir.key;
+        dateByKey[c.key] = dir.key==='rialzista' ? c.next_high_date_est : dir.key==='ribassista' ? c.next_low_date_est : null; });
       const stato={
         lungo:byKey['annuale']||'—',
         medio:byKey['intermedio']||'—',
         breve:byKey['mensile']||'—',
+        dataLungo:dateByKey['annuale'], dataMedio:dateByKey['intermedio'], dataBreve:dateByKey['mensile'],
         next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
       };
       el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
@@ -886,11 +891,16 @@ function sintesiHTML(stato){
   else
     allineamento=`Gli orizzonti non sono del tutto allineati: utile distinguere il breve (più rumoroso) dal medio-lungo, che definisce la tendenza prevalente.`;
 
+  const finoAl=(dir,data)=>{
+    if(!data) return '';
+    const verso = dir==='ribassista' ? 'fino al min del' : dir==='rialzista' ? 'fino al max del' : 'fino al';
+    return `<span class="sv-date">${verso} ${fmt(data)}</span>`;
+  };
   return `
     <div class="sin-grid">
-      <div class="sin-pill"><span class="sl">Lungo · annuale</span><span class="sv ${lungo}">${lungo}</span></div>
-      <div class="sin-pill"><span class="sl">Medio · intermedio</span><span class="sv ${medio}">${medio}</span></div>
-      <div class="sin-pill"><span class="sl">Breve · mensile</span><span class="sv ${breve}">${breve}</span></div>
+      <div class="sin-pill"><span class="sl">Lungo · annuale</span><span class="sv ${lungo}">${lungo}</span>${finoAl(lungo,stato.dataLungo)}</div>
+      <div class="sin-pill"><span class="sl">Medio · intermedio</span><span class="sv ${medio}">${medio}</span>${finoAl(medio,stato.dataMedio)}</div>
+      <div class="sin-pill"><span class="sl">Breve · mensile</span><span class="sv ${breve}">${breve}</span>${finoAl(breve,stato.dataBreve)}</div>
     </div>
     <p class="sin-text">${tempo}</p>
     <p class="sin-text">${allineamento}</p>
