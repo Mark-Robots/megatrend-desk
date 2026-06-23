@@ -197,6 +197,35 @@ def load_prices(instrument="sp500"):
     return sorted(seen.items())
 
 
+def load_long_history():
+    """Storia lunga S&P dal 1983, necessaria per i cicli lunghi (biennale/quadriennale).
+    Il feed live (Twelve Data free) restituisce poca storia: per cicli di 2-4 anni servono
+    decenni di dati. Il CSV è committato nel repo in data/sp500_1983_2026.csv.
+    Ritorna lista [(date_iso, close)] ordinata, o None se il file non c'è."""
+    path = os.path.join("data", "sp500_1983_2026.csv")
+    if not os.path.exists(path):
+        # fallback: prova a leggerlo dall'URL raw del repo (utile in alcuni runner)
+        try:
+            raw = _http_get("https://raw.githubusercontent.com/Mark-Robots/megatrend-desk/main/data/sp500_1983_2026.csv")
+            lines = raw.splitlines()
+        except Exception:
+            return None
+    else:
+        with open(path, encoding="utf-8") as f:
+            lines = f.read().splitlines()
+    out = []
+    for ln in lines[1:]:  # salta intestazione
+        parts = ln.split(",")
+        if len(parts) < 5:
+            continue
+        try:
+            out.append((parts[0].strip(), float(parts[4])))  # date, close
+        except ValueError:
+            continue
+    out.sort(key=lambda x: x[0])
+    return out or None
+
+
 def _moving_avg(prices, win):
     """Media mobile centrata, robusta ai bordi."""
     n = len(prices)
@@ -381,7 +410,30 @@ def build_one(inst):
     # offset di bias applicato solo all'S&P (gli offset sono calibrati su SPX);
     # per BTC servono statistiche proprie -> date grezze finché non validate
     apply_bias = (inst["id"] == "sp500")
-    cycles = [analyze_cycle(prices, dates, spec, apply_bias=apply_bias) for spec in CYCLES]
+
+    # Per l'S&P: i cicli LUNGHI (biennale/quadriennale) hanno bisogno di decenni di storia.
+    # Il feed live è troppo corto, quindi per quei cicli uso il CSV dal 1983 (committato nel repo),
+    # esteso con la coda recente del feed live se più aggiornato. I cicli brevi restano sul feed.
+    long_dates, long_prices = dates, prices
+    if inst["id"] == "sp500":
+        lh = load_long_history()
+        if lh:
+            merged = {d: p for d, p in lh}
+            for d, p in zip(dates, prices):   # la coda recente del feed sovrascrive/estende
+                merged[d] = p
+            items = sorted(merged.items())
+            long_dates = [d for d, _ in items]
+            long_prices = [p for _, p in items]
+            print(f"[info] storia lunga S&P: {long_dates[0]} -> {long_dates[-1]} ({len(long_prices)} giorni)")
+        else:
+            print("[warn] CSV storia lunga non trovato: i cicli lunghi useranno la storia corta del feed")
+
+    cycles = []
+    for spec in CYCLES:
+        if inst["id"] == "sp500" and spec.get("long"):
+            cycles.append(analyze_cycle(long_prices, long_dates, spec, apply_bias=False))  # lunghi: storia lunga, date grezze
+        else:
+            cycles.append(analyze_cycle(prices, dates, spec, apply_bias=apply_bias))
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "instrument": inst["label"],
