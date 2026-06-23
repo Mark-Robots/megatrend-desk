@@ -19,6 +19,11 @@ CYCLES = [
     {"key": "annuale",    "label": "Ciclo annuale",    "len": 250},
     {"key": "intermedio", "label": "Ciclo intermedio", "len": 80},
     {"key": "mensile",    "label": "Ciclo mensile",    "len": 22},
+    # Cicli lunghi (solo come contesto di lungo periodo, date GREZZE senza bias).
+    # Margine d'errore molto ampio (ordine di mesi): pochi cicli completi nei dati,
+    # bias non validabile -> li lasciamo grezzi e li marchiamo 'long'=True per l'avvertenza.
+    {"key": "biennale",     "label": "Ciclo biennale",     "len": 500,  "long": True},
+    {"key": "quadriennale", "label": "Ciclo quadriennale", "len": 1000, "long": True},
 ]
 
 # Correzione del bias di anticipo/ritardo, misurata sul backtest SPX 2012-2025
@@ -255,6 +260,7 @@ def analyze_cycle(prices, dates, spec, apply_bias=False):
     lows = find_cycle_lows(prices, cl)
     res = {
         "key": spec["key"], "label": spec["label"], "len_theoretical": cl,
+        "long": spec.get("long", False),
         "n_lows": len(lows), "lows_idx": lows[-8:],  # ultimi minimi (indici)
         "lows_dates": [dates[i] for i in lows[-8:]],
     }
