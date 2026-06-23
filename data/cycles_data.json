@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-22T23:48:26.291644+00:00",
+  "updated_at": "2026-06-23T04:22:21.939107+00:00",
   "instrument": "S&P 500",
   "last_date": "2026-06-22",
   "last_close": 7472.79,
@@ -9,6 +9,7 @@
       "key": "annuale",
       "label": "Ciclo annuale",
       "len_theoretical": 250,
+      "long": false,
       "n_lows": 6,
       "lows_idx": [
         0,
@@ -61,6 +62,7 @@
       "key": "intermedio",
       "label": "Ciclo intermedio",
       "len_theoretical": 80,
+      "long": false,
       "n_lows": 20,
       "lows_idx": [
         783,
@@ -120,6 +122,7 @@
       "key": "mensile",
       "label": "Ciclo mensile",
       "len_theoretical": 22,
+      "long": false,
       "n_lows": 59,
       "lows_idx": [
         1109,
@@ -174,6 +177,80 @@
       "next_high_date_est": "2026-07-13",
       "inv_phase": "verso-top",
       "inv_note": "in avvicinamento al prossimo massimo"
+    },
+    {
+      "key": "biennale",
+      "label": "Ciclo biennale",
+      "len_theoretical": 500,
+      "long": true,
+      "n_lows": 4,
+      "lows_idx": [
+        0,
+        329,
+        591,
+        952
+      ],
+      "lows_dates": [
+        "2021-06-23",
+        "2022-10-12",
+        "2023-10-27",
+        "2025-04-08"
+      ],
+      "gap_avg": 317.3,
+      "gap_min": 262,
+      "gap_max": 361,
+      "elapsed_days": 301,
+      "last_low_date": "2025-04-08",
+      "progress_pct": 60.0,
+      "len_effective": 317,
+      "phase": "minimo atteso",
+      "phase_note": "ciclo maturo, minimo ciclico in prossimita'",
+      "days_to_low_est": 194,
+      "next_low_date_est_raw": "2027-01-02",
+      "next_low_date_est": "2027-01-02",
+      "n_highs": 2,
+      "highs_dates": [
+        "2022-01-03",
+        "2026-06-02"
+      ],
+      "high_gap_avg": 1106,
+      "elapsed_from_high": 13,
+      "last_high_date": "2026-06-02",
+      "len_effective_high": 317,
+      "progress_high_pct": 4.0,
+      "days_to_high_est": 297,
+      "next_high_date_est_raw": "2027-04-15",
+      "next_high_date_est": "2027-04-15",
+      "inv_phase": "post-top",
+      "inv_note": "dopo un massimo ciclico, possibile correzione"
+    },
+    {
+      "key": "quadriennale",
+      "label": "Ciclo quadriennale",
+      "len_theoretical": 1000,
+      "long": true,
+      "n_lows": 1,
+      "lows_idx": [
+        329
+      ],
+      "lows_dates": [
+        "2022-10-12"
+      ],
+      "n_highs": 2,
+      "highs_dates": [
+        "2021-12-27",
+        "2026-06-02"
+      ],
+      "high_gap_avg": 1111,
+      "elapsed_from_high": 13,
+      "last_high_date": "2026-06-02",
+      "len_effective_high": 1000,
+      "progress_high_pct": 1.0,
+      "days_to_high_est": 980,
+      "next_high_date_est_raw": "2029-02-26",
+      "next_high_date_est": "2029-02-26",
+      "inv_phase": "post-top",
+      "inv_note": "dopo un massimo ciclico, possibile correzione"
     }
   ],
   "disclaimer": "Analisi ciclica indicativa sui minimi storici (metodo dei cicli annidati). Lettura probabilistica, non previsione."
