@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-06-23T04:50:39.323327+00:00",
+  "updated_at": "2026-06-23T23:34:34.833931+00:00",
   "instrument": "Bitcoin",
   "last_date": "2026-06-23",
-  "last_close": 63800.0,
+  "last_close": 62664.0,
   "n_days": 3233,
   "cycles": [
     {
@@ -130,39 +130,39 @@
       "label": "Ciclo mensile",
       "len_theoretical": 22,
       "long": false,
-      "n_lows": 159,
+      "n_lows": 160,
       "lows_idx": [
-        3078,
         3094,
         3113,
         3125,
         3146,
         3177,
         3196,
-        3214
+        3214,
+        3232
       ],
       "lows_dates": [
-        "2026-01-20",
         "2026-02-05",
         "2026-02-24",
         "2026-03-08",
         "2026-03-29",
         "2026-04-29",
         "2026-05-18",
-        "2026-06-05"
+        "2026-06-05",
+        "2026-06-23"
       ],
       "gap_avg": 20.3,
       "gap_min": 11,
       "gap_max": 47,
-      "elapsed_days": 18,
-      "last_low_date": "2026-06-05",
-      "progress_pct": 82.0,
+      "elapsed_days": 0,
+      "last_low_date": "2026-06-23",
+      "progress_pct": 0.0,
       "len_effective": 20,
-      "phase": "minimo atteso",
-      "phase_note": "ciclo maturo, minimo ciclico in prossimita'",
-      "days_to_low_est": 2,
-      "next_low_date_est_raw": "2026-06-25",
-      "next_low_date_est": "2026-06-25",
+      "phase": "ascendente",
+      "phase_note": "forze rialziste dopo il minimo",
+      "days_to_low_est": 20,
+      "next_low_date_est_raw": "2026-07-13",
+      "next_low_date_est": "2026-07-13",
       "n_highs": 151,
       "highs_dates": [
         "2026-01-28",
