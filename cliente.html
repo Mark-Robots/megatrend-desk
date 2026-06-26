@@ -481,17 +481,19 @@ body {
 .tv-mini-wrap { width: 100%; height: 220px; }
 
 /* Righe ETF cliccabili in tabella posizioni */
-#open-positions-table tbody tr[data-ticker] { cursor: pointer; transition: background 0.12s; }
+#open-positions-table tbody tr[data-ticker] { transition: background 0.12s; }
 #open-positions-table tbody tr[data-ticker]:hover { background: rgba(20,22,29,0.04); }
-#open-positions-table tbody tr[data-ticker] td:first-child::after {
-  content: '↗';
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: 6px;
-  opacity: 0.5;
-  transition: opacity 0.15s;
+#open-positions-table tbody tr td:first-child { position: relative; }
+.ytd-spark {
+  position: absolute; left: 0; top: calc(100% - 2px); z-index: 40;
+  background: #fbf7ee; border: 1px solid rgba(0,0,0,.12); border-radius: 10px;
+  padding: 10px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  opacity: 0; visibility: hidden; transform: translateY(4px); transition: .16s; pointer-events: none;
+  width: 264px;
 }
-#open-positions-table tbody tr[data-ticker]:hover td:first-child::after { opacity: 1; }
+#open-positions-table tbody tr.has-spark:hover .ytd-spark { opacity: 1; visibility: visible; transform: translateY(0); }
+.ytd-spark-h { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-family: var(--mono); }
+.ytd-spark svg { display: block; width: 100%; height: auto; }
 .chart-container {
   background: #ffffff;
   border: 1px solid var(--border);
@@ -3111,7 +3113,23 @@ function renderOpenPositionsTable(comp) {
     if (entryPriceUsed != null && nowPriceUsed != null && entryPriceUsed > 0) {
       perf = (nowPriceUsed / entryPriceUsed - 1) * 100;
     }
-    
+
+    // Serie da inizio anno per il mini-grafico hover: uso prezzi EUR se disponibili, altrimenti USA
+    const serieFull = (sec.prices_eur && sec.prices_eur.some(v=>v!=null)) ? sec.prices_eur : sec.prices;
+    let ytdSeries = null;
+    if (serieFull && sim.dates) {
+      const yr = sim.dates[lastIdx].slice(0,4);
+      const startStr = yr + '-01-01';
+      const pts = [];
+      for (let i=0;i<sim.dates.length;i++){
+        if (sim.dates[i] >= startStr && serieFull[i]!=null && !isNaN(serieFull[i]) && serieFull[i]>0) pts.push(serieFull[i]);
+      }
+      if (pts.length>=2){
+        const base=pts[0];
+        ytdSeries = pts.map(v=>Math.round((v/base-1)*1000)/10); // % da inizio anno, 1 decimale
+      }
+    }
+
     rows.push({
       ticker_raw: s.ticker_raw,
       short: s.short,
@@ -3122,6 +3140,7 @@ function renderOpenPositionsTable(comp) {
       entryIsFallback: isFallback,
       region: getETFInfo(s.ticker_raw) ? getETFInfo(s.ticker_raw).region : '',
       color: s.color,
+      ytdSeries,
     });
   });
   
@@ -3135,10 +3154,12 @@ function renderOpenPositionsTable(comp) {
     const pEntry = r.entryPrice != null
       ? '€' + Number(r.entryPrice).toFixed(2) + (r.entryIsFallback ? '<span class="px-fb" title="Prezzo iShares EUR non disponibile a questa data, mostrato valore dell\'indice SPDR USA">*</span>' : '')
       : '—';
-    return `<tr data-ticker="${r.short}" data-name="${r.name}" data-isin="${r.isin}" data-region="${r.region}">
+    const spark = etfSparkline(r);
+    return `<tr data-ticker="${r.short}" data-name="${r.name}" data-isin="${r.isin}" data-region="${r.region}"${spark?' class="has-spark"':''}>
       <td>
         <span class="col-etf" style="border-left:3px solid ${r.color};padding-left:8px;">${r.short}</span>
         <span class="col-desc"> ${flag} (${r.name})</span>
+        ${spark}
       </td>
       <td class="col-isin">${r.isin}</td>
       <td class="col-date">${fmtDate(r.entryDate)}</td>
@@ -3148,6 +3169,31 @@ function renderOpenPositionsTable(comp) {
       <td class="col-num ${perfCls}">${perfTxt}</td>
     </tr>`;
   }).join('');
+}
+
+// Mini-grafico (sparkline) da inizio anno per un ETF in posizione.
+function etfSparkline(r){
+  const s = r.ytdSeries;
+  if(!s || s.length < 2) return '';
+  const W=240, H=70, padX=6, padY=10;
+  const min=Math.min(...s), max=Math.max(...s), range=(max-min)||1;
+  const x=i=> padX + i*(W-2*padX)/(s.length-1);
+  const y=v=> padY + (1-(v-min)/range)*(H-2*padY);
+  let d='';
+  s.forEach((v,i)=>{ d += (i===0?'M':'L') + x(i).toFixed(1) + ',' + y(v).toFixed(1) + ' '; });
+  const last=s[s.length-1];
+  const col = last>=0 ? '#3a9d4e' : '#b5403a';
+  let zero='';
+  if(min<=0 && max>=0){ const yz=y(0).toFixed(1); zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(0,0,0,.18)" stroke-dasharray="2 3"/>`; }
+  const area = `M${x(0).toFixed(1)},${y(s[0]).toFixed(1)} ` + d.slice(1) + `L${x(s.length-1).toFixed(1)},${(H-padY).toFixed(1)} L${x(0).toFixed(1)},${(H-padY).toFixed(1)} Z`;
+  return `<div class="ytd-spark">
+    <div class="ytd-spark-h">da inizio anno · <b style="color:${col}">${last>=0?'+':''}${last.toFixed(1)}%</b></div>
+    <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+      ${zero}
+      <path d="${area}" fill="${col}" opacity="0.10"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+  </div>`;
 }
 
 // ============================================================
@@ -3564,16 +3610,9 @@ function closeQuoteModal() {
   document.getElementById('quote-modal-mini-chart').innerHTML = '';
 }
 
-// Wire up: click sulle righe ETF nella tabella posizioni (event delegation)
-document.addEventListener('click', (e) => {
-  const tr = e.target.closest('#open-positions-table tbody tr[data-ticker]');
-  if (!tr) return;
-  const short = tr.getAttribute('data-ticker');
-  const name = tr.getAttribute('data-name') || '';
-  const isin = tr.getAttribute('data-isin') || '—';
-  const region = tr.getAttribute('data-region') || '';
-  if (short) openQuoteModal(short, name, isin, region);
-});
+// Popup TradingView disabilitato: ora le posizioni ETF mostrano il mini-grafico
+// da inizio anno al passaggio del mouse (hover), come nella pagina Azioni.
+// (Il click sulle righe non apre più il modal TradingView.)
 
 // Wire up close
 document.getElementById('quote-modal-close')?.addEventListener('click', closeQuoteModal);
