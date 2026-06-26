@@ -1467,6 +1467,18 @@ body.modal-open { overflow: hidden; }
   
   .footer .disclaimer { font-size: 10.5px; line-height: 1.6; }
 }
+/* Mini-grafico da inizio anno (hover su posizione aperta) */
+#open-positions-table tbody tr td:first-child { position: relative; }
+.ytd-spark {
+  position: absolute; left: 0; top: calc(100% - 2px); z-index: 40;
+  background: #fbf7ee; border: 1px solid rgba(0,0,0,.12); border-radius: 10px;
+  padding: 10px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  opacity: 0; visibility: hidden; transform: translateY(4px); transition: .16s; pointer-events: none;
+  width: 264px;
+}
+#open-positions-table tbody tr.has-spark:hover .ytd-spark { opacity: 1; visibility: visible; transform: translateY(0); }
+.ytd-spark-h { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-family: var(--mono); }
+.ytd-spark svg { display: block; width: 100%; height: auto; }
 </style>
   <!-- PWA · MarkRobots App -->
   <link rel="manifest" href="manifest.json">
@@ -2644,13 +2656,15 @@ function renderOpenPositionsTable(opens, cashPct) {
     const tag = TAG_LABELS[op.entry_tag] || { label: op.entry_tag || '—', cls: 'badge-value' };
     const perfCls = op.perf_pct > 0.05 ? 'perf-pos' : (op.perf_pct < -0.05 ? 'perf-neg' : '');
     const color = SECTOR_COLORS[op.sector_etf] || '#888';
+    const spark = ytdSparkline(op);   // mini-grafico da inizio anno (se disponibile)
     html += `
-      <tr>
+      <tr data-ticker="${op.ticker}"${spark?' class="has-spark"':''}>
         <td>
           <span style="display:inline-block; width:3px; height:14px; background:${color}; margin-right:6px; vertical-align:middle;"></span>
           <b>${stockName(op.ticker)}</b>
           <span style="font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-left: 5px;">${op.ticker}</span>
           <br><span style="font-size: 11px; color: var(--text-muted);">${regionFlag(op.region)} (${sectorLabel(op.sector_etf)})</span>
+          ${spark}
         </td>
         <td><span class="badge ${tag.cls}">${tag.label}</span></td>
         <td>${fmtDate(op.entry_date)}</td>
@@ -2661,6 +2675,34 @@ function renderOpenPositionsTable(opens, cashPct) {
       </tr>`;
   });
   body.innerHTML = html;
+}
+
+// Mini-grafico (sparkline) da inizio anno per una posizione aperta.
+// Usa op.ytd_series (% rispetto al 1° gennaio) generata dallo script.
+function ytdSparkline(op){
+  const s = op.ytd_series;
+  if(!s || s.length < 2) return '';
+  const W=240, H=70, padX=6, padY=10;
+  const min=Math.min(...s), max=Math.max(...s);
+  const range=(max-min)||1;
+  const x=i=> padX + i*(W-2*padX)/(s.length-1);
+  const y=v=> padY + (1-(v-min)/range)*(H-2*padY);
+  let d='';
+  s.forEach((v,i)=>{ d += (i===0?'M':'L') + x(i).toFixed(1) + ',' + y(v).toFixed(1) + ' '; });
+  const last=s[s.length-1];
+  const col = last>=0 ? '#3a9d4e' : '#b5403a';
+  // linea dello zero (inizio anno) se è nel range
+  let zero='';
+  if(min<=0 && max>=0){ const yz=y(0).toFixed(1); zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(0,0,0,.18)" stroke-dasharray="2 3"/>`; }
+  const area = `M${x(0).toFixed(1)},${y(s[0]).toFixed(1)} ` + d.slice(1) + `L${x(s.length-1).toFixed(1)},${(H-padY).toFixed(1)} L${x(0).toFixed(1)},${(H-padY).toFixed(1)} Z`;
+  return `<div class="ytd-spark">
+    <div class="ytd-spark-h">da inizio anno · <b style="color:${col}">${last>=0?'+':''}${last.toFixed(1)}%</b></div>
+    <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+      ${zero}
+      <path d="${area}" fill="${col}" opacity="0.10"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+  </div>`;
 }
 
 function renderWeeklyMoves() {
