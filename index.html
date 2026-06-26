@@ -122,12 +122,36 @@
   .wave-legend .lg-tri.dn{border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #ef4444}
   .ann-wave-note{font-size:10px;color:var(--txt-faint);line-height:1.6;margin-top:8px}
   .cyc-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
+  /* cicli in stile mappa trend, uno sotto l'altro */
+  .cyc-rows{margin-top:18px;display:flex;flex-direction:column}
+  .cyc-row{display:grid;grid-template-columns:22px 150px 1fr 22px auto;gap:14px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line-soft)}
+  .cyc-row:last-child{border-bottom:none}
+  .cyc-rank{font-size:11px;color:var(--txt-faint);text-align:right}
+  .cyc-rname{display:flex;align-items:center;gap:10px;min-width:0}
+  .cyc-racc{width:4px;height:22px;border-radius:2px;flex:none}
+  .cyc-rlabel{font-size:14px;color:var(--txt);text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cyc-rtrack{height:9px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden}
+  .cyc-rfill{height:100%;border-radius:5px}
+  .cyc-rfill.up,.cyc-racc.up{background:var(--green)} .cyc-rfill.dn,.cyc-racc.dn{background:var(--red)}
+  .cyc-rfill.fl,.cyc-racc.fl{background:var(--txt-faint)}
+  .cyc-rmom{display:flex;justify-content:center;align-items:center;font-size:14px;font-weight:700}
+  .cyc-arrow.up{color:var(--green)} .cyc-arrow.dn{color:var(--red)} .cyc-arrow.fl{color:var(--txt-faint)}
+  .cyc-rend{display:flex;justify-content:flex-end}
+  .cyc-rbadges{display:flex;gap:6px;flex-wrap:wrap;grid-column:2 / -1;margin-top:-2px}
+  @media(max-width:620px){
+    .cyc-row{grid-template-columns:18px 1fr auto;row-gap:6px}
+    .cyc-rtrack{grid-column:2 / 4} .cyc-rmom{display:none} .cyc-rbadges{grid-column:2 / -1}
+  }
   .cyc-mini{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:3px}
   .cyc-mini-name{font-weight:600;font-size:12px}
   .cyc-mini-dir{font-weight:700;font-size:12px;text-transform:capitalize}
   .cyc-mini-dir.rialzista{color:var(--green)} .cyc-mini-dir.ribassista{color:var(--orange)}
   .cyc-mini-meta{font-size:10px;color:var(--txt-faint);line-height:1.4}
   .cyc-aff{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  .cyc-end{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;
+    padding:4px 9px;border-radius:6px;letter-spacing:.02em}
+  .cyc-end.up{background:rgba(34,224,107,.16);color:#3ddc84;border:1px solid rgba(34,224,107,.4)}
+  .cyc-end.dn{background:rgba(255,92,92,.16);color:#ff7a6b;border:1px solid rgba(255,92,92,.4)}
   .aff-badge{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 7px;border-radius:5px;letter-spacing:.02em;border:1px solid var(--line-soft);color:var(--txt-dim)}
   .aff-badge.a{color:#22e06b;border-color:rgba(34,224,107,.35)}
   .aff-badge.m{color:#f5b301;border-color:rgba(245,179,1,.35)}
@@ -505,10 +529,10 @@ async function loadTrendMap(){
         <div class="tm-col"><div class="tm-colhead"><span class="tm-area">Europa</span><span class="tm-areasub">STOXX 600</span></div>${colHTML('EU')}</div>
       </div>
       <div class="tm-foot">
-        <span class="tm-leg"><span class="tm-dot q-impr"></span>Improving</span>
-        <span class="tm-leg"><span class="tm-dot q-lead"></span>Leading</span>
-        <span class="tm-leg"><span class="tm-dot q-weak"></span>Weakening</span>
-        <span class="tm-leg"><span class="tm-dot q-lag"></span>Lagging</span>
+        <span class="tm-leg"><span class="tm-dot q-impr"></span>In rafforzamento</span>
+        <span class="tm-leg"><span class="tm-dot q-lead"></span>Leader</span>
+        <span class="tm-leg"><span class="tm-dot q-weak"></span>In indebolimento</span>
+        <span class="tm-leg"><span class="tm-dot q-lag"></span>Debole</span>
         <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; sale</span>
         <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
         <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
@@ -872,15 +896,43 @@ async function loadCycles(url, targetId){
     // riga compatta con la direzione di ciascun ciclo
     // affidabilità da backtest storico SPX (regolarità = errore in % durata; timing = errore in gg)
     const AFFID={
-      annuale:    {reg:'alta',  regCls:'a', tim:'ampio', timTxt:'±49gg'},
+      mensile:    {reg:'bassa', regCls:'b', tim:'fine',  timTxt:'±8gg'},
       intermedio: {reg:'media', regCls:'m', tim:'medio', timTxt:'±32gg'},
-      mensile:    {reg:'bassa', regCls:'b', tim:'fine',  timTxt:'±8gg'}
+      annuale:    {reg:'media', regCls:'m', tim:'ampio', timTxt:'±49gg'},
+      biennale:   {reg:'media', regCls:'m', tim:'molto ampio', timTxt:'±mesi'},
+      quadriennale:{reg:'media',regCls:'m', tim:'molto ampio', timTxt:'±mesi'}
     };
-    const cycSummary=cyc.filter(c=>c.progress_pct!=null).map(c=>{
+    // ordine crescente di durata
+    const ORDER={mensile:1, intermedio:2, annuale:3, biennale:4, quadriennale:5};
+    const fineCiclo=(c,dir)=>{
+      const data = dir.key==='rialzista' ? c.next_high_date_est
+                 : dir.key==='ribassista' ? c.next_low_date_est : null;
+      if(!data) return '';
+      const cls = dir.key==='rialzista' ? 'up' : 'dn';
+      return `<span class="cyc-end ${cls}">${fmtCycDate(data)}</span>`;
+    };
+    const momArrow=(dir)=> dir.key==='rialzista' ? '<span class="cyc-arrow up">&#9650;</span>'
+                          : dir.key==='ribassista' ? '<span class="cyc-arrow dn">&#9660;</span>'
+                          : '<span class="cyc-arrow fl">&mdash;</span>';
+    const ordered = cyc.filter(c=>c.progress_pct!=null).sort((a,b)=>(ORDER[a.key]||99)-(ORDER[b.key]||99));
+    // durata massima per scalare la barra (la barra mostra la durata relativa del ciclo)
+    const maxLen = Math.max(...ordered.map(c=>c.len_theoretical||c.len_effective||1));
+    const cycSummary = ordered.map((c,i)=>{
       const dir=dirOf(c);
       const af=AFFID[c.key];
-      const badges = af ? `<div class="cyc-aff"><span class="aff-badge ${af.regCls}" title="quanto il ciclo è puntuale rispetto alla sua durata">regolarità ${af.reg}</span><span class="aff-badge t" title="precisione del timing in giorni">timing ${af.tim} ${af.timTxt}</span></div>` : '';
-      return `<div class="cyc-mini"><span class="cyc-mini-name">${c.label}</span><span class="cyc-mini-dir ${dir.key}">${dir.label}</span><span class="cyc-mini-meta">${phaseText(c)}</span>${badges}</div>`;
+      const len=c.len_theoretical||c.len_effective||1;
+      const pct=Math.max(8, Math.round(Math.sqrt(len/maxLen)*100)); // radice: comprime il range enorme (22gg..1000gg)
+      const barCls = dir.key==='rialzista' ? 'up' : dir.key==='ribassista' ? 'dn' : 'fl';
+      const nome=c.label.replace('Ciclo ','');
+      const badges = af ? `<span class="aff-badge ${af.regCls}" title="quanto il ciclo è puntuale rispetto alla sua durata">affidabilità ${af.reg}</span>` : '';
+      return `<div class="cyc-row">
+        <div class="cyc-rank">${i+1}</div>
+        <div class="cyc-rname"><span class="cyc-racc ${barCls}"></span><span class="cyc-rlabel">${nome}</span></div>
+        <div class="cyc-rtrack"><div class="cyc-rfill ${barCls}" style="width:${pct}%"></div></div>
+        <div class="cyc-rmom">${momArrow(dir)}</div>
+        <div class="cyc-rend">${fineCiclo(c,dir)}</div>
+        <div class="cyc-rbadges">${badges}</div>
+      </div>`;
     }).join('');
 
     const chart=waveChart(cyc, d.last_date);
@@ -888,37 +940,9 @@ async function loadCycles(url, targetId){
     el.innerHTML=`<div class="wave-wrap">${chart}</div>`
       + `<div class="wave-legend"><span class="lg-item"><span class="lg-line green"></span> tendenza di fondo in salita (verso il massimo)</span><span class="lg-item"><span class="lg-line red"></span> tendenza di fondo in discesa (verso il minimo)</span><span class="lg-item"><span class="lg-tri up"></span> minimo annuale</span><span class="lg-item"><span class="lg-tri dn"></span> massimo annuale</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
       + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. ${targetId==='cycles-body' ? "Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza)." : "Le date sono grezze (la calibrazione del bias è specifica per l'S&P; per Bitcoin servono statistiche proprie, non ancora applicate)."} I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
-      + `<div class="cyc-mini-grid">${cycSummary}</div>`
+      + `<div class="cyc-rows">${cycSummary}</div>`
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
-    if(targetId==='cycles-body'){
-      const byKey={}; const dateByKey={};
-      cyc.forEach(c=>{ const dir=dirOf(c); byKey[c.key]=dir.key;
-        dateByKey[c.key] = dir.key==='rialzista' ? c.next_high_date_est : dir.key==='ribassista' ? c.next_low_date_est : null; });
-      const stato={
-        lungo:byKey['annuale']||'—',
-        medio:byKey['intermedio']||'—',
-        breve:byKey['mensile']||'—',
-        dataLungo:dateByKey['annuale'], dataMedio:dateByKey['intermedio'], dataBreve:dateByKey['mensile'],
-        next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
-      };
-      el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
-      const lunghi = cyc.filter(c=>c.long);
-      if(lunghi.length) el.insertAdjacentHTML('beforeend', cicliLunghiHTML(lunghi));
-    }
-    if(targetId==='cycles-btc-body'){
-      const byKey={}; const dateByKey={};
-      cyc.forEach(c=>{ const dir=dirOf(c); byKey[c.key]=dir.key;
-        dateByKey[c.key] = dir.key==='rialzista' ? c.next_high_date_est : dir.key==='ribassista' ? c.next_low_date_est : null; });
-      const stato={
-        lungo:byKey['annuale']||'—',
-        medio:byKey['intermedio']||'—',
-        breve:byKey['mensile']||'—',
-        dataLungo:dateByKey['annuale'], dataMedio:dateByKey['intermedio'], dataBreve:dateByKey['mensile'],
-        next_low:cyc.find(x=>x.key==='annuale')?.next_low_date_est
-      };
-      el.insertAdjacentHTML('beforeend', `<div class="cyc-sintesi">${sintesiHTML(stato)}</div>`);
-    }
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
   }
