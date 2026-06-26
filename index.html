@@ -230,19 +230,11 @@
   .tm-acc{width:4px;height:22px;border-radius:2px;flex:none}
   .tm-label{font-size:14px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tm-track{height:9px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;position:relative}
-  .tm-fill{height:100%;border-radius:5px;position:relative;overflow:hidden;transform-origin:left center;transform:scaleX(0);
-    animation:tmGrow 4.5s cubic-bezier(.3,.7,.3,1) infinite}
-  @keyframes tmGrow{0%{transform:scaleX(0)}22%{transform:scaleX(1)}88%{transform:scaleX(1)}100%{transform:scaleX(0)}}
-  .tm-fill::after{content:"";position:absolute;top:0;left:-50%;width:50%;height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:tmSheen 4.5s linear infinite}
-  @keyframes tmSheen{0%{left:-50%;opacity:0}25%{opacity:1}60%{left:130%;opacity:1}61%{opacity:0}100%{left:130%;opacity:0}}
+  .tm-fill{height:100%;border-radius:5px;position:relative;overflow:hidden}
   .tm-mom{display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:700}
-  .tm-mom .mom-up{display:inline-block;color:var(--green);animation:tmUp 1.5s ease-in-out infinite}
-  .tm-mom .mom-dn{display:inline-block;color:var(--red);animation:tmDn 1.5s ease-in-out infinite}
-  .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint);animation:tmBreathe 2.2s ease-in-out infinite}
-  @keyframes tmUp{0%,100%{transform:translateY(4px);opacity:.5}50%{transform:translateY(-4px);opacity:1}}
-  @keyframes tmDn{0%,100%{transform:translateY(-4px);opacity:.5}50%{transform:translateY(4px);opacity:1}}
-  @keyframes tmBreathe{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:.9;transform:scale(1.1)}}
+  .tm-mom .mom-up{display:inline-block;color:var(--green)}
+  .tm-mom .mom-dn{display:inline-block;color:var(--red)}
+  .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint)}
   .q-lead{background:var(--green)} .q-weak{background:var(--red)}
   .q-impr{background:var(--blue,#469cdf)} .q-lag{background:#dba32f}
   .tm-dot{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
@@ -498,12 +490,11 @@ async function loadTrendMap(){
       const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
       return items.map((d,i)=>{
         const pct=Math.max(6,(d.n/5)*100);
-        const delay=(i*0.14).toFixed(2)+'s';
         const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
         return `<div class="tm-row${hasTip}">
           <div class="tm-rank">${i+1}</div>
           <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${tip(d.ticker)}</div>
-          <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%;animation-delay:${delay}"></div></div>
+          <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
           <div class="tm-mom">${momHTML(d.m)}</div>
         </div>`;
       }).join('');
