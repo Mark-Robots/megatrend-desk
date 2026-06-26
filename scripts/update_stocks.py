@@ -679,9 +679,10 @@ def run_backtest(prices, sector_etfs, mode='balanced'):
             # Settimanale, compatta. Normalizzata in % rispetto al primo valore dell'anno.
             if is_open:
                 try:
-                    year_start = pd.Timestamp(datetime(today.year, 1, 1))
-                    serie = prices[tk]
-                    serie_ytd = serie[serie.index >= year_start].dropna()
+                    serie = prices[tk].dropna()
+                    cur_year = serie.index[-1].year   # anno dall'ultima data disponibile (sempre presente)
+                    year_start = pd.Timestamp(datetime(cur_year, 1, 1))
+                    serie_ytd = serie[serie.index >= year_start]
                     if len(serie_ytd) >= 2:
                         base = float(serie_ytd.iloc[0])
                         pts = [round((float(v)/base - 1)*100, 2) for v in serie_ytd.values]  # % da inizio anno
