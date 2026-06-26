@@ -515,17 +515,8 @@ body {
 .tv-mini-wrap { width: 100%; height: 220px; }
 
 /* Righe ETF cliccabili in tabella posizioni */
-#open-positions-table tbody tr[data-ticker] { cursor: pointer; transition: background 0.12s; }
+#open-positions-table tbody tr[data-ticker] { transition: background 0.12s; }
 #open-positions-table tbody tr[data-ticker]:hover { background: rgba(20,22,29,0.04); }
-#open-positions-table tbody tr[data-ticker] td:first-child::after {
-  content: '↗';
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: 6px;
-  opacity: 0.5;
-  transition: opacity 0.15s;
-}
-#open-positions-table tbody tr[data-ticker]:hover td:first-child::after { opacity: 1; }
 .chart-container {
   background: #ffffff;
   border: 1px solid var(--border);
