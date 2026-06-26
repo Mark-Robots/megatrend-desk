@@ -675,6 +675,20 @@ def run_backtest(prices, sector_etfs, mode='balanced'):
                 '_start_idx': start_idx,
                 '_end_idx': end_idx,
             })
+            # Per le posizioni APERTE: salvo la serie prezzi da inizio anno (per il mini-grafico hover).
+            # Settimanale, compatta. Normalizzata in % rispetto al primo valore dell'anno.
+            if is_open:
+                try:
+                    year_start = pd.Timestamp(datetime(today.year, 1, 1))
+                    serie = prices[tk]
+                    serie_ytd = serie[serie.index >= year_start].dropna()
+                    if len(serie_ytd) >= 2:
+                        base = float(serie_ytd.iloc[0])
+                        pts = [round((float(v)/base - 1)*100, 2) for v in serie_ytd.values]  # % da inizio anno
+                        operations[-1]['ytd_series'] = pts
+                        operations[-1]['ytd_dates'] = [str(d.date()) for d in serie_ytd.index]
+                except Exception as _e:
+                    pass
     
     print(f"\n[BACKTEST] Generate {len(operations)} operazioni totali ({sum(1 for o in operations if o['status']=='closed')} chiuse, {sum(1 for o in operations if o['status']=='open')} aperte)")
     
