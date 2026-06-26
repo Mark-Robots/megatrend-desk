@@ -146,7 +146,7 @@
   .sct-tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);
     width:max-content;max-width:230px;background:#161b24;border:1px solid var(--line-soft);border-radius:10px;
     padding:11px 13px;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:.16s;z-index:20;pointer-events:none}
-  .sct.has-tip:hover .sct-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  .sct.has-tip:hover .sct-tip,.tm-row.has-tip:hover .sct-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
   .sct-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
     border:6px solid transparent;border-top-color:#161b24}
   .sct-tip .tip-h{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:8px}
@@ -218,6 +218,37 @@
   footer{margin-top:28px;text-align:center;font-size:11px;color:var(--txt-faint);letter-spacing:.08em}
   footer .orange{color:var(--orange)}
   @media (max-width:560px){.wrap{padding:24px 14px 60px}.updated{margin-left:0;width:100%;text-align:left;margin-top:4px}}
+  /* ===== Mappa dei trend · animata ===== */
+  .tm-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:14px}
+  @media(max-width:760px){.tm-grid{grid-template-columns:1fr;gap:22px}}
+  .tm-colhead{display:flex;align-items:baseline;justify-content:center;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
+  .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
+  .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
+  .tm-row{display:grid;grid-template-columns:22px 1fr 120px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-rank{font-size:11px;color:var(--txt-faint);text-align:right}
+  .tm-name{display:flex;align-items:center;gap:10px;min-width:0;position:relative}
+  .tm-acc{width:4px;height:22px;border-radius:2px;flex:none}
+  .tm-label{font-size:14px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tm-track{height:9px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;position:relative}
+  .tm-fill{height:100%;border-radius:5px;position:relative;overflow:hidden;transform-origin:left center;transform:scaleX(0);
+    animation:tmGrow 4.5s cubic-bezier(.3,.7,.3,1) infinite}
+  @keyframes tmGrow{0%{transform:scaleX(0)}22%{transform:scaleX(1)}88%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+  .tm-fill::after{content:"";position:absolute;top:0;left:-50%;width:50%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:tmSheen 4.5s linear infinite}
+  @keyframes tmSheen{0%{left:-50%;opacity:0}25%{opacity:1}60%{left:130%;opacity:1}61%{opacity:0}100%{left:130%;opacity:0}}
+  .tm-mom{display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:700}
+  .tm-mom .mom-up{display:inline-block;color:var(--green);animation:tmUp 1.5s ease-in-out infinite}
+  .tm-mom .mom-dn{display:inline-block;color:var(--red);animation:tmDn 1.5s ease-in-out infinite}
+  .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint);animation:tmBreathe 2.2s ease-in-out infinite}
+  @keyframes tmUp{0%,100%{transform:translateY(4px);opacity:.5}50%{transform:translateY(-4px);opacity:1}}
+  @keyframes tmDn{0%,100%{transform:translateY(-4px);opacity:.5}50%{transform:translateY(4px);opacity:1}}
+  @keyframes tmBreathe{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:.9;transform:scale(1.1)}}
+  .q-lead{background:var(--green)} .q-weak{background:var(--red)}
+  .q-impr{background:var(--blue,#469cdf)} .q-lag{background:#dba32f}
+  .tm-dot{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
+  .tm-foot{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--txt-dim)}
+  .tm-leg{display:flex;align-items:center;gap:7px}
+  .tm-sp{margin-left:auto}
 </style>
 </head>
 <body>
@@ -427,40 +458,71 @@ async function loadTrendMap(){
       if(s.includes('debole'))        return sg===3?'debole, in distribuzione':'debole, rimbalzo da verificare';
       return '—';
     };
+    // quadrante RRG (colore accento) e momentum derivati dai dati live
+    const quadrant=(state,stage)=>{
+      const s=(state||'').toLowerCase(); const sg=parseInt(stage)||0;
+      if(sg===4) return 'lag';
+      if(s.includes('leader'))        return 'lead';   // forte
+      if(s.includes('emergente'))     return 'impr';   // in miglioramento
+      if(s.includes('rallentamento')) return 'weak';   // in indebolimento
+      if(s.includes('debole'))        return sg===3?'weak':'lag';
+      return 'lag';
+    };
+    const momentum=(state,stage)=>{
+      const s=(state||'').toLowerCase(); const sg=parseInt(stage)||0;
+      if(sg===4) return -1;
+      if(s.includes('leader'))        return 1;
+      if(s.includes('emergente'))     return 1;
+      if(s.includes('rallentamento')) return -1;
+      if(s.includes('debole'))        return sg===2?1:-1;
+      return 0;
+    };
     const rows=r.map(s=>({
       name:cleanName(s.name)||s.ticker||'—',
       ticker:s.ticker||'',
-      region:regionLabel(s.region),
+      region:(s.region==='USA')?'USA':'EU',
       sig:s.opSignal||'',
       verdict:verdict(s.state,s.stage),
-      n:starCount(s.state,s.stage)
-    })).sort((a,b)=>b.n-a.n);
+      n:starCount(s.state,s.stage),
+      q:quadrant(s.state,s.stage),
+      m:momentum(s.state,s.stage)
+    }));
 
-    const badge=sig=>{
-      if(sig==='IN')   return '<span class="badge in">in trend</span>';
-      if(sig==='INFO') return '<span class="badge info">monitorato</span>';
-      return '<span class="badge out">fuori trend</span>';
-    };
-    const stars=n=>{let h='';for(let i=0;i<5;i++)h+=`<span class="${i<n?'f':'e'}">★</span>`;return h;};
+    const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
     const tip=tk=>{
       const list=SECTOR_STOCKS[tk];
       if(!list||!list.length) return '';
       return `<div class="sct-tip"><div class="tip-h">titoli rappresentativi</div>${list.map(x=>`<span class="tip-x">${x}</span>`).join('')}</div>`;
     };
+    const colHTML=(area)=>{
+      const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
+      return items.map((d,i)=>{
+        const pct=Math.max(6,(d.n/5)*100);
+        const delay=(i*0.14).toFixed(2)+'s';
+        const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
+        return `<div class="tm-row${hasTip}">
+          <div class="tm-rank">${i+1}</div>
+          <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${tip(d.ticker)}</div>
+          <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%;animation-delay:${delay}"></div></div>
+          <div class="tm-mom">${momHTML(d.m)}</div>
+        </div>`;
+      }).join('');
+    };
 
-    el.innerHTML=`<div class="star-grid">${rows.map(s=>`
-      <div class="sct s${s.n}${SECTOR_STOCKS[s.ticker]?' has-tip':''}">
-        <div class="sct-top"><span class="nm">${s.name}</span><span class="reg">${s.region}</span></div>
-        <div class="stars">${stars(s.n)}</div>
-        <div class="phase">${s.verdict}</div>
-        ${badge(s.sig)}
-        ${tip(s.ticker)}
-      </div>`).join('')}</div>
-      <div class="trend-legend">
-        <b>Come leggere le stelle.</b> Ogni settore ha un voto da 0 a 5 stelle che combina la sua <b>forza relativa</b> rispetto al mercato e la sua <b>fase di prezzo</b>: più stelle = settore più in trend.
-        Il badge verde segnala i settori attualmente in trend, quello blu i settori monitorati, quello grigio i settori fuori trend.
-        <span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span>
-      </div>`;
+    el.innerHTML=`<div class="tm-grid">
+        <div class="tm-col"><div class="tm-colhead"><span class="tm-area">USA</span><span class="tm-areasub">S&amp;P 500</span></div>${colHTML('USA')}</div>
+        <div class="tm-col"><div class="tm-colhead"><span class="tm-area">Europa</span><span class="tm-areasub">STOXX 600</span></div>${colHTML('EU')}</div>
+      </div>
+      <div class="tm-foot">
+        <span class="tm-leg"><span class="tm-dot q-impr"></span>Improving</span>
+        <span class="tm-leg"><span class="tm-dot q-lead"></span>Leading</span>
+        <span class="tm-leg"><span class="tm-dot q-weak"></span>Weakening</span>
+        <span class="tm-leg"><span class="tm-dot q-lag"></span>Lagging</span>
+        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; sale</span>
+        <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
+        <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
+      </div>
+      <div class="trend-legend"><span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
   }
