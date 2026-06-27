@@ -12,22 +12,22 @@
 <style>
 :root {
   /* Palette Earnings 3.0 — Editorial Paper Warm */
-  --bg-primary: #f4ede0;           /* paper warm crema */
-  --bg-card: #fbf7ef;              /* cream card */
-  --bg-card-2: #ece4d3;             /* paper tint subtle */
-  --bg-card-3: #ddd3be;             /* rule line */
-  --text-primary: #14161d;          /* deep ink */
-  --text-secondary: #555d6e;        /* secondary ink */
-  --text-muted: #8a8f9b;            /* tertiary ink */
+  --bg-primary: #0a0c10;           /* paper warm crema */
+  --bg-card: #11151c;              /* cream card */
+  --bg-card-2: #161b24;             /* paper tint subtle */
+  --bg-card-3: #1f2630;             /* rule line */
+  --text-primary: #e8edf4;          /* deep ink */
+  --text-secondary: #8a96a6;        /* secondary ink */
+  --text-muted: #5a6573;            /* tertiary ink */
   /* Accent: navy elegante invece di blu acceso */
-  --accent-gold: #1b365d;           /* navy primario */
-  --accent-gold-dim: #a88530;       /* gold metallico per dettagli */
-  --accent-lead: #1f5b3f;           /* forest green */
-  --accent-lag: #8b2e28;            /* terracotta */
-  --accent-world: #1b365d;          /* navy benchmark */
-  --accent-cash: #8a8f9b;
-  --border: rgba(20,22,29,0.08);
-  --border-soft: rgba(20,22,29,0.14);
+  --accent-gold: #5b9dff;           /* navy primario */
+  --accent-gold-dim: #c9a14a;       /* gold metallico per dettagli */
+  --accent-lead: #3ddc84;           /* forest green */
+  --accent-lag: #ff5c5c;            /* terracotta */
+  --accent-world: #5b9dff;          /* navy benchmark */
+  --accent-cash: #c9a14a;
+  --border: rgba(255,255,255,0.08);
+  --border-soft: rgba(255,255,255,0.14);
   /* JetBrains Mono per tutto, DM Sans solo come fallback */
   --mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
   --sans: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
@@ -136,18 +136,18 @@ body {
 
 /* Pulsante "Torna al desk" */
 .header-right .tech-link.cross-system {
-  background: linear-gradient(135deg, #1b365d, #284772);
-  color: #fbf7ef;
-  border: 1px solid #1b365d;
+  background: linear-gradient(135deg, #5b9dff, #284772);
+  color: #11151c;
+  border: 1px solid #5b9dff;
   font-weight: 600;
   font-size: 10px;
   padding: 6px 12px;
   letter-spacing: 0.06em;
-  box-shadow: 0 2px 6px rgba(27,54,93,0.18);
+  box-shadow: 0 2px 6px rgba(91,157,255,0.18);
 }
 .header-right .tech-link.cross-system:hover {
   background: linear-gradient(135deg, #c79a49, #b58730);
-  color: #fbf7ef;
+  color: #11151c;
   border-color: #c79a49;
   box-shadow: 0 3px 10px rgba(199,154,73,0.35);
   transform: translateY(-1px);
@@ -155,7 +155,7 @@ body {
 
 /* ============================================================ HOW IT WORKS ============================================================ */
 .how-it-works {
-  background: linear-gradient(135deg, rgba(27,54,93,0.05), rgba(27,54,93,0.04));
+  background: linear-gradient(135deg, rgba(91,157,255,0.05), rgba(91,157,255,0.04));
   border: 1px solid var(--border-soft);
   border-left: 3px solid var(--accent-gold);
   border-radius: 10px;
@@ -196,7 +196,7 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(27,54,93,0.15);
+  background: rgba(91,157,255,0.15);
   color: var(--accent-gold);
   font-family: var(--mono);
   font-size: 13px;
@@ -204,7 +204,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(27,54,93,0.4);
+  border: 1px solid rgba(91,157,255,0.4);
 }
 .how-step-body { flex: 1; }
 .how-step-title {
@@ -261,8 +261,8 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-gold);
-  background: rgba(27,54,93,0.08);
-  border: 1px solid rgba(27,54,93,0.25);
+  background: rgba(91,157,255,0.08);
+  border: 1px solid rgba(91,157,255,0.25);
   border-radius: 4px;
   font-weight: 500;
 }
@@ -287,7 +287,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 28px;
-  box-shadow: 0 1px 2px rgba(20,22,29,0.04);
+  box-shadow: 0 1px 2px rgba(255,255,255,0.04);
 }
 .kpi-block {
   flex: 1;
@@ -399,7 +399,7 @@ body {
 .quote-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20,22,29,0.55);
+  background: rgba(255,255,255,0.55);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   z-index: 9500;
@@ -411,7 +411,7 @@ body {
 }
 .quote-modal-overlay.open { display: flex; }
 .quote-modal {
-  background: #ffffff;
+  background: #11151c;
   border: 1px solid var(--border-soft);
   border-radius: 12px;
   width: 100%;
@@ -419,7 +419,7 @@ body {
   max-height: 88vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 80px rgba(20,22,29,0.25);
+  box-shadow: 0 24px 80px rgba(255,255,255,0.25);
   overflow: hidden;
   animation: storicoSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -482,12 +482,12 @@ body {
 
 /* Righe ETF cliccabili in tabella posizioni */
 #open-positions-table tbody tr[data-ticker] { transition: background 0.12s; }
-#open-positions-table tbody tr[data-ticker]:hover { background: rgba(20,22,29,0.04); }
+#open-positions-table tbody tr[data-ticker]:hover { background: rgba(255,255,255,0.04); }
 #open-positions-table tbody tr td:first-child { position: relative; }
 .ytd-spark {
   position: absolute; left: 0; top: calc(100% - 2px); z-index: 40;
-  background: #fbf7ee; border: 1px solid rgba(0,0,0,.12); border-radius: 10px;
-  padding: 10px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  background: #11151c; border: 1px solid rgba(255,255,255,.14); border-radius: 10px;
+  padding: 10px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.5);
   opacity: 0; visibility: hidden; transform: translateY(4px); transition: .16s; pointer-events: none;
   width: 264px;
 }
@@ -495,7 +495,7 @@ body {
 .ytd-spark-h { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-family: var(--mono); }
 .ytd-spark svg { display: block; width: 100%; height: auto; }
 .chart-container {
-  background: #ffffff;
+  background: #11151c;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 18px 20px;
@@ -532,8 +532,8 @@ body {
 .equity-summary {
   margin-top: 56px;
   padding: 18px 22px;
-  background: rgba(27,54,93,0.05);
-  border: 1px solid rgba(27,54,93,0.18);
+  background: rgba(91,157,255,0.05);
+  border: 1px solid rgba(91,157,255,0.18);
   border-radius: 8px;
   color: var(--text-secondary);
 }
@@ -592,7 +592,7 @@ body {
 .wm-trade {
   padding: 10px 14px;
   margin-bottom: 8px;
-  background: rgba(20,22,29,0.03);
+  background: rgba(255,255,255,0.03);
   border-radius: 6px;
   border: 1px solid var(--border-soft);
 }
@@ -640,7 +640,7 @@ body {
   font-size: 11px;
   font-style: italic;
   color: var(--text-muted);
-  background: rgba(27,54,93,0.05);
+  background: rgba(91,157,255,0.05);
   border-radius: 4px;
   border-left: 2px solid var(--accent-gold);
   line-height: 1.5;
@@ -656,7 +656,7 @@ body {
 .market-commentary {
   margin-top: 22px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(27,54,93,0.04), rgba(27,54,93,0.03));
+  background: linear-gradient(135deg, rgba(91,157,255,0.04), rgba(91,157,255,0.03));
   border: 1px solid var(--border-soft);
   border-radius: 8px;
 }
@@ -721,7 +721,7 @@ body {
 .mc-body .mc-prospect-neu .mc-prospect-dot { background: var(--accent-gold); }
 .mc-body .mc-prospect-neg .mc-prospect-dot { background: var(--accent-lag); }
 .mc-body .mc-prospect-pos { background: rgba(31,91,63,0.10); color: var(--accent-lead); border: 1px solid rgba(31,91,63,0.3); }
-.mc-body .mc-prospect-neu { background: rgba(27,54,93,0.10); color: var(--accent-gold); border: 1px solid rgba(27,54,93,0.3); }
+.mc-body .mc-prospect-neu { background: rgba(91,157,255,0.10); color: var(--accent-gold); border: 1px solid rgba(91,157,255,0.3); }
 .mc-body .mc-prospect-neg { background: rgba(139,46,40,0.10); color: var(--accent-lag); border: 1px solid rgba(139,46,40,0.3); }
 .equity-summary b { color: var(--text-primary); }
 .es-row {
@@ -735,7 +735,7 @@ body {
 .es-row + .es-row {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px dashed rgba(27,54,93,0.18);
+  border-top: 1px dashed rgba(91,157,255,0.18);
 }
 .es-label {
   font-family: var(--mono);
@@ -751,7 +751,7 @@ body {
   gap: 4px;
   padding: 2px 8px;
   border-radius: 4px;
-  background: rgba(20,22,29,0.04);
+  background: rgba(255,255,255,0.04);
   border: 1px solid var(--border-soft);
   font-family: var(--mono);
   font-size: 12.5px;
@@ -835,7 +835,7 @@ body {
   letter-spacing: 0.02em;
 }
 .pie-container {
-  background: #ffffff;
+  background: #11151c;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 18px 20px;
@@ -991,7 +991,7 @@ body {
   border: 1px solid rgba(139,46,40,0.3);
 }
 .chip-leader { background: rgba(31,91,63,0.12); color: var(--accent-lead); }
-.chip-emerging { background: rgba(27,54,93,0.12); color: var(--accent-gold); }
+.chip-emerging { background: rgba(91,157,255,0.12); color: var(--accent-gold); }
 .chip-weakening { background: rgba(251,146,60,0.12); color: #fb923c; }
 .chip-weak { background: rgba(139,46,40,0.12); color: var(--accent-lag); }
 .chip-stage1 { background: rgba(96,165,250,0.12); color: #60a5fa; }
@@ -1156,7 +1156,7 @@ body {
 .storico-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20,22,29,0.55);
+  background: rgba(255,255,255,0.55);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   z-index: 9000;
@@ -1182,7 +1182,7 @@ body {
   max-height: 88vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 80px rgba(20,22,29,0.25);
+  box-shadow: 0 24px 80px rgba(255,255,255,0.25);
   overflow: hidden;
   animation: storicoSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2711,8 +2711,8 @@ function renderEquityChart(pe) {
   const datasets = [{
     label: 'Sistema Megatrend Sentinel',
     data: pe.equity_system,
-    borderColor: '#1b365d',
-    backgroundColor: 'rgba(27,54,93,0.10)',
+    borderColor: '#5b9dff',
+    backgroundColor: 'rgba(91,157,255,0.10)',
     borderWidth: 2.5,
     tension: 0.1,
     pointRadius: 0,
@@ -2740,9 +2740,9 @@ function renderEquityChart(pe) {
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { display: true, position: 'top', labels: { color: '#14161d', font: { family: 'JetBrains Mono', size: 11 }, padding: 16, usePointStyle: true, pointStyle: 'line' } },
+        legend: { display: true, position: 'top', labels: { color: '#e8edf4', font: { family: 'JetBrains Mono', size: 11 }, padding: 16, usePointStyle: true, pointStyle: 'line' } },
         tooltip: {
-          backgroundColor: 'rgba(20,22,29,0.95)', titleColor: '#ffffff', bodyColor: '#e9ecf2',
+          backgroundColor: 'rgba(17,21,28,0.96)', titleColor: '#e8edf4', bodyColor: '#8a96a6', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
           borderColor: '#2a3441', borderWidth: 1, padding: 12,
           titleFont: { family: 'JetBrains Mono', size: 11, weight: 600 },
           bodyFont: { family: 'JetBrains Mono', size: 10.5 },
@@ -2856,12 +2856,12 @@ function renderEquityChart(pe) {
         }
       },
       scales: {
-        x: { ticks: { color: '#555d6e', font: { family: 'JetBrains Mono', size: 9 }, maxRotation: 0, autoSkip: false }, grid: { color: 'rgba(20,22,29,0.08)' } },
-        y: { ticks: { color: '#555d6e', font: { family: 'JetBrains Mono', size: 10 }, callback: (v) => {
+        x: { ticks: { color: '#8a96a6', font: { family: 'JetBrains Mono', size: 9 }, maxRotation: 0, autoSkip: false }, grid: { color: 'rgba(255,255,255,0.08)' } },
+        y: { ticks: { color: '#8a96a6', font: { family: 'JetBrains Mono', size: 10 }, callback: (v) => {
           const d = v - 100;
           if (d === 0) return '0%';
           return (d > 0 ? '+' : '') + (+d.toFixed(1)) + '%';
-        } }, grid: { color: 'rgba(20,22,29,0.08)' } }
+        } }, grid: { color: 'rgba(255,255,255,0.08)' } }
       }
     }
   });
@@ -2899,7 +2899,7 @@ function renderCashChart(pe) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(20,22,29,0.95)', titleColor: '#ffffff', bodyColor: '#e9ecf2',
+          backgroundColor: 'rgba(17,21,28,0.96)', titleColor: '#e8edf4', bodyColor: '#8a96a6', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
           borderColor: '#2a3441', borderWidth: 1, padding: 10,
           titleFont: { family: 'JetBrains Mono', size: 11 }, bodyFont: { family: 'JetBrains Mono', size: 11 },
           callbacks: {
@@ -2909,8 +2909,8 @@ function renderCashChart(pe) {
         }
       },
       scales: {
-        x: { ticks: { color: '#555d6e', font: { family: 'JetBrains Mono', size: 9 }, maxRotation: 0, autoSkip: false }, grid: { color: 'rgba(20,22,29,0.06)' } },
-        y: { min: 0, max: 100, ticks: { color: '#555d6e', font: { family: 'JetBrains Mono', size: 9 }, stepSize: 25, callback: (v) => v + '%' }, grid: { color: 'rgba(20,22,29,0.06)' } }
+        x: { ticks: { color: '#8a96a6', font: { family: 'JetBrains Mono', size: 9 }, maxRotation: 0, autoSkip: false }, grid: { color: 'rgba(255,255,255,0.06)' } },
+        y: { min: 0, max: 100, ticks: { color: '#8a96a6', font: { family: 'JetBrains Mono', size: 9 }, stepSize: 25, callback: (v) => v + '%' }, grid: { color: 'rgba(255,255,255,0.06)' } }
       }
     }
   });
@@ -3018,14 +3018,14 @@ function renderPieChart(comp) {
   pieChartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: { labels, datasets: [{
-      data: values, backgroundColor: colors, borderColor: '#fbf7ef', borderWidth: 2,
+      data: values, backgroundColor: colors, borderColor: '#11151c', borderWidth: 2,
     }]},
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },  // legenda rimossa come richiesto
         tooltip: {
-          backgroundColor: 'rgba(20,22,29,0.95)', titleColor: '#ffffff', bodyColor: '#e9ecf2',
+          backgroundColor: 'rgba(17,21,28,0.96)', titleColor: '#e8edf4', bodyColor: '#8a96a6', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
           borderColor: '#2a3441', borderWidth: 1, padding: 10,
           titleFont: { family: 'JetBrains Mono', size: 13, weight: 600 },
           bodyFont: { family: 'JetBrains Mono', size: 11 },
@@ -3182,9 +3182,9 @@ function etfSparkline(r){
   let d='';
   s.forEach((v,i)=>{ d += (i===0?'M':'L') + x(i).toFixed(1) + ',' + y(v).toFixed(1) + ' '; });
   const last=s[s.length-1];
-  const col = last>=0 ? '#3a9d4e' : '#b5403a';
+  const col = last>=0 ? '#3ddc84' : '#ff5c5c';
   let zero='';
-  if(min<=0 && max>=0){ const yz=y(0).toFixed(1); zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(0,0,0,.18)" stroke-dasharray="2 3"/>`; }
+  if(min<=0 && max>=0){ const yz=y(0).toFixed(1); zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(255,255,255,.25)" stroke-dasharray="2 3"/>`; }
   const area = `M${x(0).toFixed(1)},${y(s[0]).toFixed(1)} ` + d.slice(1) + `L${x(s.length-1).toFixed(1)},${(H-padY).toFixed(1)} L${x(0).toFixed(1)},${(H-padY).toFixed(1)} Z`;
   return `<div class="ytd-spark">
     <div class="ytd-spark-h">da inizio anno · <b style="color:${col}">${last>=0?'+':''}${last.toFixed(1)}%</b></div>
