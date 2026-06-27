@@ -12,23 +12,23 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  /* Palette Earnings 3.0 — Editorial Paper Warm */
-  --bg-primary: #f4ede0;           /* paper warm crema */
-  --bg-card: #fbf7ef;              /* cream card */
-  --bg-card-2: #ece4d3;             /* paper tint subtle */
-  --bg-card-3: #ddd3be;             /* rule line */
-  --text-primary: #14161d;          /* deep ink */
-  --text-secondary: #555d6e;        /* secondary ink */
-  --text-muted: #8a8f9b;            /* tertiary ink */
-  /* Accent: navy elegante invece di blu acceso */
-  --accent-gold: #1b365d;           /* navy primario */
-  --accent-gold-dim: #a88530;       /* gold metallico per dettagli */
-  --accent-lead: #1f5b3f;           /* forest green */
-  --accent-lag: #8b2e28;            /* terracotta */
-  --accent-world: #1b365d;          /* navy benchmark */
-  --accent-cash: #8a8f9b;
-  --border: rgba(20,22,29,0.08);
-  --border-soft: rgba(20,22,29,0.14);
+  /* Palette tema scuro — coerente con il desk (mark-robots.github.io/megatrend-desk) */
+  --bg-primary: #0a0c10;           /* sfondo desk */
+  --bg-card: #11151c;              /* pannello desk */
+  --bg-card-2: #161b24;             /* tint pannello */
+  --bg-card-3: #1f2630;             /* rule line / tint forte */
+  --text-primary: #e8edf4;          /* testo chiaro */
+  --text-secondary: #8a96a6;        /* testo secondario */
+  --text-muted: #5a6573;            /* testo tenue */
+  /* Accenti adattati al fondo scuro */
+  --accent-gold: #5b9dff;           /* blu (era navy) per leggibilità su scuro */
+  --accent-gold-dim: #c9a14a;       /* oro/cash del desk */
+  --accent-lead: #3ddc84;           /* verde desk */
+  --accent-lag: #ff5c5c;            /* rosso desk */
+  --accent-world: #5b9dff;          /* blu benchmark */
+  --accent-cash: #c9a14a;
+  --border: rgba(255,255,255,0.08);
+  --border-soft: rgba(255,255,255,0.14);
   /* JetBrains Mono per tutto, DM Sans solo come fallback */
   --mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
   --sans: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
@@ -137,18 +137,18 @@ body {
 
 /* Pulsante "Torna al desk" */
 .header-right .tech-link.cross-system {
-  background: linear-gradient(135deg, #1b365d, #284772);
-  color: #fbf7ef;
-  border: 1px solid #1b365d;
+  background: linear-gradient(135deg, #5b9dff, #284772);
+  color: #11151c;
+  border: 1px solid #5b9dff;
   font-weight: 600;
   font-size: 10px;
   padding: 6px 12px;
   letter-spacing: 0.06em;
-  box-shadow: 0 2px 6px rgba(27,54,93,0.18);
+  box-shadow: 0 2px 6px rgba(91,157,255,0.18);
 }
 .header-right .tech-link.cross-system:hover {
   background: linear-gradient(135deg, #c79a49, #b58730);
-  color: #fbf7ef;
+  color: #11151c;
   border-color: #c79a49;
   box-shadow: 0 3px 10px rgba(199,154,73,0.35);
   transform: translateY(-1px);
@@ -165,31 +165,31 @@ body {
   transition: all 0.15s;
 }
 .preset-btn[data-mode="balanced"]:hover {
-  border-color: #1b365d;
-  color: #1b365d;
+  border-color: #5b9dff;
+  color: #5b9dff;
 }
 .preset-btn[data-mode="aggressive"]:hover {
   border-color: #b58730;
   color: #b58730;
 }
 .preset-btn[data-mode="balanced"].active {
-  background: linear-gradient(135deg, #1b365d, #284772);
-  border-color: #1b365d;
-  color: #fbf7ef;
+  background: linear-gradient(135deg, #5b9dff, #284772);
+  border-color: #5b9dff;
+  color: #11151c;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(27,54,93,0.3);
+  box-shadow: 0 2px 8px rgba(91,157,255,0.3);
 }
 .preset-btn[data-mode="aggressive"].active {
   background: linear-gradient(135deg, #c79a49, #b58730);
   border-color: #b58730;
-  color: #fbf7ef;
+  color: #11151c;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(199,154,73,0.4);
 }
 
 /* ============================================================ HOW IT WORKS ============================================================ */
 .how-it-works {
-  background: linear-gradient(135deg, rgba(27,54,93,0.05), rgba(27,54,93,0.04));
+  background: linear-gradient(135deg, rgba(91,157,255,0.05), rgba(91,157,255,0.04));
   border: 1px solid var(--border-soft);
   border-left: 3px solid var(--accent-gold);
   border-radius: 10px;
@@ -230,7 +230,7 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(27,54,93,0.15);
+  background: rgba(91,157,255,0.15);
   color: var(--accent-gold);
   font-family: var(--mono);
   font-size: 13px;
@@ -238,7 +238,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(27,54,93,0.4);
+  border: 1px solid rgba(91,157,255,0.4);
 }
 .how-step-body { flex: 1; }
 .how-step-title {
@@ -295,8 +295,8 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-gold);
-  background: rgba(27,54,93,0.08);
-  border: 1px solid rgba(27,54,93,0.25);
+  background: rgba(91,157,255,0.08);
+  border: 1px solid rgba(91,157,255,0.25);
   border-radius: 4px;
   font-weight: 500;
 }
@@ -321,7 +321,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 28px;
-  box-shadow: 0 1px 2px rgba(20,22,29,0.04);
+  box-shadow: 0 1px 2px rgba(255,255,255,0.04);
 }
 .kpi-block {
   flex: 1;
@@ -433,7 +433,7 @@ body {
 .quote-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20,22,29,0.55);
+  background: rgba(255,255,255,0.55);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   z-index: 9500;
@@ -445,7 +445,7 @@ body {
 }
 .quote-modal-overlay.open { display: flex; }
 .quote-modal {
-  background: #ffffff;
+  background: #11151c;
   border: 1px solid var(--border-soft);
   border-radius: 12px;
   width: 100%;
@@ -453,7 +453,7 @@ body {
   max-height: 88vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 80px rgba(20,22,29,0.25);
+  box-shadow: 0 24px 80px rgba(255,255,255,0.25);
   overflow: hidden;
   animation: storicoSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -516,9 +516,9 @@ body {
 
 /* Righe ETF cliccabili in tabella posizioni */
 #open-positions-table tbody tr[data-ticker] { transition: background 0.12s; }
-#open-positions-table tbody tr[data-ticker]:hover { background: rgba(20,22,29,0.04); }
+#open-positions-table tbody tr[data-ticker]:hover { background: rgba(255,255,255,0.04); }
 .chart-container {
-  background: #ffffff;
+  background: #11151c;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 18px 20px;
@@ -555,8 +555,8 @@ body {
 .equity-summary {
   margin-top: 56px;
   padding: 18px 22px;
-  background: rgba(27,54,93,0.05);
-  border: 1px solid rgba(27,54,93,0.18);
+  background: rgba(91,157,255,0.05);
+  border: 1px solid rgba(91,157,255,0.18);
   border-radius: 8px;
   color: var(--text-secondary);
 }
@@ -615,7 +615,7 @@ body {
 .wm-trade {
   padding: 10px 14px;
   margin-bottom: 8px;
-  background: rgba(20,22,29,0.03);
+  background: rgba(255,255,255,0.03);
   border-radius: 6px;
   border: 1px solid var(--border-soft);
 }
@@ -663,7 +663,7 @@ body {
   font-size: 11px;
   font-style: italic;
   color: var(--text-muted);
-  background: rgba(27,54,93,0.05);
+  background: rgba(91,157,255,0.05);
   border-radius: 4px;
   border-left: 2px solid var(--accent-gold);
   line-height: 1.5;
@@ -679,7 +679,7 @@ body {
 .market-commentary {
   margin-top: 22px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(27,54,93,0.04), rgba(27,54,93,0.03));
+  background: linear-gradient(135deg, rgba(91,157,255,0.04), rgba(91,157,255,0.03));
   border: 1px solid var(--border-soft);
   border-radius: 8px;
 }
@@ -744,7 +744,7 @@ body {
 .mc-body .mc-prospect-neu .mc-prospect-dot { background: var(--accent-gold); }
 .mc-body .mc-prospect-neg .mc-prospect-dot { background: var(--accent-lag); }
 .mc-body .mc-prospect-pos { background: rgba(31,91,63,0.10); color: var(--accent-lead); border: 1px solid rgba(31,91,63,0.3); }
-.mc-body .mc-prospect-neu { background: rgba(27,54,93,0.10); color: var(--accent-gold); border: 1px solid rgba(27,54,93,0.3); }
+.mc-body .mc-prospect-neu { background: rgba(91,157,255,0.10); color: var(--accent-gold); border: 1px solid rgba(91,157,255,0.3); }
 .mc-body .mc-prospect-neg { background: rgba(139,46,40,0.10); color: var(--accent-lag); border: 1px solid rgba(139,46,40,0.3); }
 .equity-summary b { color: var(--text-primary); }
 .es-row {
@@ -758,7 +758,7 @@ body {
 .es-row + .es-row {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px dashed rgba(27,54,93,0.18);
+  border-top: 1px dashed rgba(91,157,255,0.18);
 }
 .es-label {
   font-family: var(--mono);
@@ -774,7 +774,7 @@ body {
   gap: 4px;
   padding: 2px 8px;
   border-radius: 4px;
-  background: rgba(20,22,29,0.04);
+  background: rgba(255,255,255,0.04);
   border: 1px solid var(--border-soft);
   font-family: var(--mono);
   font-size: 12.5px;
@@ -858,7 +858,7 @@ body {
   letter-spacing: 0.02em;
 }
 .pie-container {
-  background: #ffffff;
+  background: #11151c;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 18px 20px;
@@ -1029,7 +1029,7 @@ body {
   border: 1px solid rgba(139,46,40,0.3);
 }
 .chip-leader { background: rgba(31,91,63,0.12); color: var(--accent-lead); }
-.chip-emerging { background: rgba(27,54,93,0.12); color: var(--accent-gold); }
+.chip-emerging { background: rgba(91,157,255,0.12); color: var(--accent-gold); }
 .chip-weakening { background: rgba(251,146,60,0.12); color: #fb923c; }
 .chip-weak { background: rgba(139,46,40,0.12); color: var(--accent-lag); }
 .chip-stage1 { background: rgba(96,165,250,0.12); color: #60a5fa; }
@@ -1194,7 +1194,7 @@ body {
 .storico-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20,22,29,0.55);
+  background: rgba(255,255,255,0.55);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   z-index: 9000;
@@ -1220,7 +1220,7 @@ body {
   max-height: 88vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 80px rgba(20,22,29,0.25);
+  box-shadow: 0 24px 80px rgba(255,255,255,0.25);
   overflow: hidden;
   animation: storicoSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1462,8 +1462,8 @@ body.modal-open { overflow: hidden; }
 #open-positions-table tbody tr td:first-child { position: relative; }
 .ytd-spark {
   position: absolute; left: 0; top: calc(100% - 2px); z-index: 40;
-  background: #fbf7ee; border: 1px solid rgba(0,0,0,.12); border-radius: 10px;
-  padding: 10px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  background: #11151c; border: 1px solid rgba(255,255,255,.14); border-radius: 10px;
+  padding: 10px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.5);
   opacity: 0; visibility: hidden; transform: translateY(4px); transition: .16s; pointer-events: none;
   width: 264px;
 }
@@ -1474,8 +1474,8 @@ body.modal-open { overflow: hidden; }
   <!-- PWA · MarkRobots App -->
   <link rel="manifest" href="manifest.json">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#1b365d">
-  <meta name="background-color" content="#fbf7ef">
+  <meta name="theme-color" content="#5b9dff">
+  <meta name="background-color" content="#11151c">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -1502,16 +1502,16 @@ body.modal-open { overflow: hidden; }
      Autonomo: stili inline, nessuna dipendenza esterna.
      ============================================================ -->
 <div id="preview-panel" style="display:none; margin:18px 0; padding:16px 18px;
-     background:#12151c; border:1px solid #232838; border-radius:12px;
+     background:#11151c; border:1px solid rgba(255,255,255,0.08); border-radius:12px;
      font-family:'JetBrains Mono', monospace;">
   <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px;">
-    <div style="font-size:14px; font-weight:700; color:#e8eaf0;">
+    <div style="font-size:14px; font-weight:700; color:#e8edf4;">
       &#9889; Movimenti previsti
     </div>
-    <div id="pv-updated" style="font-size:11px; color:#6b7280;"></div>
+    <div id="pv-updated" style="font-size:11px; color:#8a96a6;"></div>
   </div>
   <div id="pv-body" style="margin-top:10px;"></div>
-  <div style="margin-top:10px; font-size:10.5px; color:#4b5563;">
+  <div style="margin-top:10px; font-size:10.5px; color:#5a6573;">
     Anteprima indicativa &middot; il segnale ufficiale si forma alla chiusura di venerd&igrave;.
   </div>
 </div>
@@ -1532,21 +1532,21 @@ body.modal-open { overflow: hidden; }
         const rows = [];
         m.sectors.forEach(s => {
           if (s.move === 'ingresso')
-            rows.push('<span style="color:#34d399;">&#9650; INGRESSO</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">&rarr; ' + esc(s.ticker_name||s.ticker||'?') + ' (' + esc(s.ticker||'?') + ')</span>');
+            rows.push('<span style="color:#3ddc84;">&#9650; INGRESSO</span> ' + esc(s.name) +
+                      ' <span style="color:#8a96a6;">&rarr; ' + esc(s.ticker_name||s.ticker||'?') + ' (' + esc(s.ticker||'?') + ')</span>');
           else if (s.move === 'uscita')
-            rows.push('<span style="color:#f87171;">&#9660; USCITA</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">&rarr; vendi ' + esc(s.held_name||s.held_ticker||'?') + (s.held_ticker?' ('+esc(s.held_ticker)+')':'') + '</span>');
+            rows.push('<span style="color:#ff5c5c;">&#9660; USCITA</span> ' + esc(s.name) +
+                      ' <span style="color:#8a96a6;">&rarr; vendi ' + esc(s.held_name||s.held_ticker||'?') + (s.held_ticker?' ('+esc(s.held_ticker)+')':'') + '</span>');
           else if (s.borderline)
             rows.push('<span style="color:#fbbf24;">&#9888; borderline</span> ' + esc(s.name) +
-                      ' <span style="color:#9ca3af;">(in portafoglio: ' + esc(s.held_name||s.held_ticker||s.ticker_name||'?') + ')</span>');
+                      ' <span style="color:#8a96a6;">(in portafoglio: ' + esc(s.held_name||s.held_ticker||s.ticker_name||'?') + ')</span>');
         });
         html += '<div style="margin-top:8px;">'
-              + '<span style="font-size:11px; letter-spacing:1px; color:#818cf8;">' + label + '</span> ';
+              + '<span style="font-size:11px; letter-spacing:1px; color:#5b9dff;">' + label + '</span> ';
         if (rows.length === 0)
-          html += '<span style="font-size:12.5px; color:#6b7280;">nessun movimento previsto</span>';
+          html += '<span style="font-size:12.5px; color:#5a6573;">nessun movimento previsto</span>';
         else
-          html += '<div style="font-size:12.5px; color:#d1d5db; line-height:1.8;">' + rows.join('<br>') + '</div>';
+          html += '<div style="font-size:12.5px; color:#e8edf4; line-height:1.8;">' + rows.join('<br>') + '</div>';
         html += '</div>';
       });
       body.innerHTML = html;
@@ -1557,7 +1557,7 @@ body.modal-open { overflow: hidden; }
   function esc(t){ const e=document.createElement('span'); e.textContent=t==null?'':String(t); return e.innerHTML; }
   function fmt(x){ return (x==null)?'n/d':(x>=0?'+':'')+x.toFixed(1); }
   function scoreTxt(s){ return (s.roc13!=null)?(' · ROC13 '+fmt(s.roc13)+'%'):''; }
-  function scoreSuffix(s){ return (s.ticker)?(' <span style="color:#9ca3af;">('+esc(s.ticker)+')</span>'):''; }
+  function scoreSuffix(s){ return (s.ticker)?(' <span style="color:#8a96a6;">('+esc(s.ticker)+')</span>'):''; }
 })();
 </script>
   <!-- =========================== HEADER =========================== -->
@@ -2406,8 +2406,8 @@ function renderEquityChart(st) {
         {
           label: 'Sistema Megatrend Sentinel',
           data: sysData,
-          borderColor: '#1b365d',
-          backgroundColor: 'rgba(27,54,93,0.06)',
+          borderColor: '#5b9dff',
+          backgroundColor: 'rgba(91,157,255,0.06)',
           borderWidth: 2.4,
           fill: true,
           tension: 0.12,
@@ -2416,7 +2416,7 @@ function renderEquityChart(st) {
         {
           label: 'MSCI World (XDWD)',
           data: worldData,
-          borderColor: '#4a7fbf',
+          borderColor: '#85b7eb',
           borderDash: [4,3],
           borderWidth: 1.6,
           fill: false,
@@ -2432,10 +2432,10 @@ function renderEquityChart(st) {
       plugins: {
         legend: {
           position: 'top', align: 'center',
-          labels: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#14161d', boxWidth: 12, padding: 14 },
+          labels: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#e8edf4', boxWidth: 12, padding: 14 },
         },
         tooltip: {
-          backgroundColor: '#14161d',
+          backgroundColor: '#e8edf4',
           titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
           bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
           callbacks: {
@@ -2447,7 +2447,7 @@ function renderEquityChart(st) {
       scales: {
         x: {
           ticks: {
-            color: '#5a5d68', font: { family: "'JetBrains Mono', monospace", size: 9 },
+            color: '#8a96a6', font: { family: "'JetBrains Mono', monospace", size: 9 },
             maxTicksLimit: 12,
             callback: function(v, i) {
               const lbl = labels[i];
@@ -2456,14 +2456,14 @@ function renderEquityChart(st) {
               return p.length === 3 ? `${p[2].substring(0,2)}/${p[1]}/${p[0].substring(2)}` : lbl;
             },
           },
-          grid: { color: 'rgba(20,22,29,0.04)' },
+          grid: { color: 'rgba(255,255,255,0.04)' },
         },
         y: {
           ticks: {
-            color: '#5a5d68', font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: '#8a96a6', font: { family: "'JetBrains Mono', monospace", size: 10 },
             callback: v => (v >= 0 ? '+' : '') + v.toFixed(0) + '%',
           },
-          grid: { color: 'rgba(20,22,29,0.06)' },
+          grid: { color: 'rgba(255,255,255,0.06)' },
         },
       },
     },
@@ -2498,8 +2498,8 @@ function renderCashChart(st) {
       datasets: [{
         label: '% cash',
         data: data,
-        borderColor: '#a88530',
-        backgroundColor: 'rgba(168,133,48,0.12)',
+        borderColor: '#c9a14a',
+        backgroundColor: 'rgba(201,161,74,0.12)',
         borderWidth: 1.4,
         fill: true,
         tension: 0.12,
@@ -2509,12 +2509,12 @@ function renderCashChart(st) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#14161d', callbacks: { label: c => `Cash: ${c.parsed.y.toFixed(1)}%`, title: cs => fmtDate(cs[0].label) } } },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#e8edf4', callbacks: { label: c => `Cash: ${c.parsed.y.toFixed(1)}%`, title: cs => fmtDate(cs[0].label) } } },
       scales: {
-        x: { ticks: { color: '#5a5d68', font: { size: 9 }, maxTicksLimit: 8,
+        x: { ticks: { color: '#8a96a6', font: { size: 9 }, maxTicksLimit: 8,
               callback: function(v, i) { const lbl = labels[i]; const p = lbl ? lbl.split('-') : null; return p && p.length === 3 ? `${p[2].substring(0,2)}/${p[1]}/${p[0].substring(2)}` : ''; }
             }, grid: { display: false } },
-        y: { ticks: { color: '#5a5d68', font: { size: 9 }, callback: v => v + '%' }, min: 0, max: 100, grid: { color: 'rgba(20,22,29,0.04)' } },
+        y: { ticks: { color: '#8a96a6', font: { size: 9 }, callback: v => v + '%' }, min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' } },
       },
     },
   });
@@ -2551,8 +2551,8 @@ function renderEquitySummary(st) {
 // ============================================================
 // Colori settori (per pie chart)
 const SECTOR_COLORS = {
-  'XLK': '#1b365d',     'SOXX': '#4a7fbf',    'XLF': '#1f5b3f',
-  'XLV': '#a88530',     'XLI': '#8b2e28',     'XLP': '#6e6a55',
+  'XLK': '#5b9dff',     'SOXX': '#85b7eb',    'XLF': '#1f5b3f',
+  'XLV': '#c9a14a',     'XLI': '#8b2e28',     'XLP': '#6e6a55',
   'XLE': '#c4894a',     'EXV1.DE': '#7b3f5e', 'EXH5.DE': '#3f7370',
 };
 
@@ -2606,13 +2606,13 @@ function renderPieChart(opens, cashPct) {
 
   pieChartInstance = new Chart(canvas.getContext('2d'), {
     type: 'doughnut',
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fbf7ef' }] },
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#11151c' }] },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '62%',
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#14161d',
+          backgroundColor: '#e8edf4',
           callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%` }
         },
       },
@@ -2681,10 +2681,10 @@ function ytdSparkline(op){
   let d='';
   s.forEach((v,i)=>{ d += (i===0?'M':'L') + x(i).toFixed(1) + ',' + y(v).toFixed(1) + ' '; });
   const last=s[s.length-1];
-  const col = last>=0 ? '#3a9d4e' : '#b5403a';
+  const col = last>=0 ? '#3ddc84' : '#ff5c5c';
   // linea dello zero (inizio anno) se è nel range
   let zero='';
-  if(min<=0 && max>=0){ const yz=y(0).toFixed(1); zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(0,0,0,.18)" stroke-dasharray="2 3"/>`; }
+  if(min<=0 && max>=0){ const yz=y(0).toFixed(1); zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(255,255,255,.25)" stroke-dasharray="2 3"/>`; }
   const area = `M${x(0).toFixed(1)},${y(s[0]).toFixed(1)} ` + d.slice(1) + `L${x(s.length-1).toFixed(1)},${(H-padY).toFixed(1)} L${x(0).toFixed(1)},${(H-padY).toFixed(1)} Z`;
   return `<div class="ytd-spark">
     <div class="ytd-spark-h">da inizio anno · <b style="color:${col}">${last>=0?'+':''}${last.toFixed(1)}%</b></div>
