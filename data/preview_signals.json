@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-06-26T16:31:03.419767+00:00",
+ "updated_at": "2026-06-29T14:31:24.065280+00:00",
  "last_bar": "2026-06-26",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -26,9 +26,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 0.7,
-     "roc13": 157.29,
-     "score": 198.9,
+     "roc4": 1.06,
+     "roc13": 158.22,
+     "score": 200.0,
      "tag": "top_momentum"
     },
     {
@@ -44,9 +44,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": 24.98,
-     "roc13": 239.87,
-     "score": 493.9,
+     "roc4": 16.61,
+     "roc13": 217.12,
+     "score": 454.2,
      "tag": "top_momentum"
     },
     {
@@ -62,9 +62,9 @@
      "ticker_name": "Citigroup",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 15.15,
-     "roc13": 35.65,
-     "score": 51.7,
+     "roc4": 12.6,
+     "roc13": 32.64,
+     "score": 48.3,
      "tag": "top_momentum"
     },
     {
@@ -80,9 +80,9 @@
      "ticker_name": "UnitedHealth",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 12.46,
-     "roc13": 65.12,
-     "score": 55.6,
+     "roc4": 13.15,
+     "roc13": 66.14,
+     "score": 56.5,
      "tag": "top_momentum"
     },
     {
@@ -94,13 +94,13 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "CAT",
-     "ticker_name": "Caterpillar",
+     "ticker": "HON",
+     "ticker_name": "Honeywell",
      "held_ticker": "CAT",
      "held_name": "Caterpillar",
-     "roc4": 15.86,
-     "roc13": 46.2,
-     "score": 94.4,
+     "roc4": 95.25,
+     "roc13": 110.45,
+     "score": 111.0,
      "tag": "top_momentum"
     },
     {
@@ -116,9 +116,9 @@
      "ticker_name": "Schlumberger",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": -13.88,
-     "roc13": -12.19,
-     "score": 9.2,
+     "roc4": -13.39,
+     "roc13": -11.69,
+     "score": 9.8,
      "tag": null
     },
     {
@@ -152,9 +152,9 @@
      "ticker_name": "Poste Italiane",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 15.62,
-     "roc13": 48.12,
-     "score": 57.6,
+     "roc4": 12.22,
+     "roc13": 43.77,
+     "score": 53.0,
      "tag": "top_momentum"
     }
    ],
@@ -184,9 +184,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 0.7,
-     "roc13": 157.29,
-     "score": 47.7,
+     "roc4": 1.06,
+     "roc13": 158.22,
+     "score": 48.2,
      "tag": "top_momentum"
     },
     {
@@ -202,9 +202,9 @@
      "ticker_name": "Micron",
      "held_ticker": "MU",
      "held_name": "Micron",
-     "roc4": 24.98,
-     "roc13": 239.87,
-     "score": 89.4,
+     "roc4": 16.61,
+     "roc13": 217.12,
+     "score": 76.8,
      "tag": "top_momentum"
     },
     {
@@ -220,9 +220,9 @@
      "ticker_name": "Citigroup",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 15.15,
-     "roc13": 35.65,
-     "score": 21.3,
+     "roc4": 12.6,
+     "roc13": 32.64,
+     "score": 18.6,
      "tag": "top_momentum"
     },
     {
@@ -238,9 +238,9 @@
      "ticker_name": "UnitedHealth",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 12.46,
-     "roc13": 65.12,
-     "score": 28.3,
+     "roc4": 13.15,
+     "roc13": 66.14,
+     "score": 29.0,
      "tag": "top_momentum"
     },
     {
@@ -252,13 +252,13 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "CAT",
-     "ticker_name": "Caterpillar",
+     "ticker": "HON",
+     "ticker_name": "Honeywell",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 15.86,
-     "roc13": 46.2,
-     "score": 25.0,
+     "roc4": 95.25,
+     "roc13": 110.45,
+     "score": 99.8,
      "tag": "top_momentum"
     },
     {
@@ -274,9 +274,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 5.31,
-     "roc13": 1.86,
-     "score": 4.3,
+     "roc4": 5.94,
+     "roc13": 2.47,
+     "score": 4.9,
      "tag": "expensive_flat"
     },
     {
@@ -310,9 +310,9 @@
      "ticker_name": "Poste Italiane",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 15.62,
-     "roc13": 48.12,
-     "score": 25.4,
+     "roc4": 12.22,
+     "roc13": 43.77,
+     "score": 21.7,
      "tag": "top_momentum"
     }
    ],
