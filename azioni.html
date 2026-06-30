@@ -1604,21 +1604,21 @@ body.modal-open { overflow: hidden; }
         <div>
           <div class="storico-modal-title" id="funzionamento-modal-title">Come funziona il sistema Megatrend Sentinel Azioni</div>
           <div class="storico-modal-subtitle">
-            Spiegazione completa della logica: timing settoriale ereditato, selezione automatica della migliore azione del settore, doppia modalità Balanced/Aggressive.
+            Spiegazione completa della logica: timing settoriale ereditato, selezione automatica della migliore azione del settore, doppia modalità Aggressive/Adaptive.
           </div>
         </div>
         <button class="storico-modal-close" id="close-funzionamento-btn" type="button" aria-label="Chiudi">×</button>
       </div>
       <div class="storico-modal-body">
         <p class="how-intro">
-          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing dei <b>8 settori operativi</b> del sistema Megatrend Sentinel ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
+          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing degli <b>8 settori operativi</b> del sistema Megatrend Sentinel ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
         </p>
         <div class="how-steps">
           <div class="how-step">
             <div class="how-step-num">1</div>
             <div class="how-step-body">
               <div class="how-step-title">Timing settoriale ereditato dal sistema ETF</div>
-              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend Sentinel ETF sui 8 settori operativi: 6 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
+              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend Sentinel ETF sugli 8 settori operativi: 6 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
             </div>
           </div>
           <div class="how-step">
@@ -1631,8 +1631,8 @@ body.modal-open { overflow: hidden; }
           <div class="how-step">
             <div class="how-step-num">3</div>
             <div class="how-step-body">
-              <div class="how-step-title">Doppia modalità Balanced / Aggressive</div>
-              <div class="how-step-text">Tutti gli indicatori sono calcolati su <b>candela settimanale</b> (chiusura del venerdì). <b style="color:var(--accent-lead);">Balanced</b> (default): score = ROC13w×0.6 + ROC52w×0.4 → premia il trend trimestrale + annuale, sceglie large cap consolidate. <b style="color:var(--accent-lag);">Aggressive</b>: score = ROC4w×0.7 + ROC13w×0.3 → premia il momentum mensile, caccia i rally più freschi (selezioni più volatili ma con CAGR storicamente più alto). Cambia la modalità nel riquadro Allocazione sopra al pie chart per confrontare i due scenari.</div>
+              <div class="how-step-title">Doppia modalità Aggressive / Adaptive</div>
+              <div class="how-step-text">Tutti gli indicatori sono calcolati su <b>candela settimanale</b> (chiusura del venerdì). <b style="color:var(--accent-lag);">Aggressive</b> (default): per ogni settore in segnale sceglie l'azione col miglior momentum (score = ROC4w×0.7 + ROC13w×0.3), caccia i rally più freschi su panieri fissi di candidati. <b style="color:var(--accent-lead);">Adaptive</b>: stessa filosofia momentum, ma con due differenze — l'universo dei titoli candidati si <b>auto-aggiorna ogni 6 mesi</b> (i più liquidi per dollar-volume con ROC a 13 settimane positivo) e ogni posizione ha uno <b>stop-loss fisso −20%</b> sul prezzo di chiusura. Cambia la modalità nel riquadro Allocazione sopra al pie chart per confrontare i due scenari.</div>
             </div>
           </div>
           <div class="how-step">
