@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-06-29T18:31:15.470143+00:00",
+ "updated_at": "2026-06-30T14:31:11.445625+00:00",
  "last_bar": "2026-06-26",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -94,13 +94,13 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "HON",
-     "ticker_name": "Honeywell",
+     "ticker": "CAT",
+     "ticker_name": "Caterpillar",
      "held_ticker": "CAT",
      "held_name": "Caterpillar",
-     "roc4": 95.25,
-     "roc13": 110.45,
-     "score": 111.0,
+     "roc4": 13.88,
+     "roc13": 43.71,
+     "score": 91.1,
      "tag": "top_momentum"
     },
     {
@@ -152,9 +152,9 @@
      "ticker_name": "Poste Italiane",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 12.22,
-     "roc13": 43.77,
-     "score": 53.0,
+     "roc4": 15.62,
+     "roc13": 48.12,
+     "score": 54.8,
      "tag": "top_momentum"
     }
    ],
@@ -252,13 +252,13 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "HON",
-     "ticker_name": "Honeywell",
+     "ticker": "CAT",
+     "ticker_name": "Caterpillar",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 95.25,
-     "roc13": 110.45,
-     "score": 99.8,
+     "roc4": 13.88,
+     "roc13": 43.71,
+     "score": 22.8,
      "tag": "top_momentum"
     },
     {
@@ -310,9 +310,9 @@
      "ticker_name": "Poste Italiane",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 12.22,
-     "roc13": 43.77,
-     "score": 21.7,
+     "roc4": 15.62,
+     "roc13": 48.12,
+     "score": 25.4,
      "tag": "top_momentum"
     }
    ],
