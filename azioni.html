@@ -2435,7 +2435,8 @@ function renderEquityChart(st) {
           labels: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#e8edf4', boxWidth: 12, padding: 14 },
         },
         tooltip: {
-          backgroundColor: '#e8edf4',
+          backgroundColor: 'rgba(17,21,28,0.96)', titleColor: '#e8edf4', bodyColor: '#e8edf4',
+          borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
           titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
           bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
           callbacks: {
@@ -2509,7 +2510,7 @@ function renderCashChart(st) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#e8edf4', callbacks: { label: c => `Cash: ${c.parsed.y.toFixed(1)}%`, title: cs => fmtDate(cs[0].label) } } },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(17,21,28,0.96)', titleColor: '#e8edf4', bodyColor: '#e8edf4', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1, callbacks: { label: c => `Cash: ${c.parsed.y.toFixed(1)}%`, title: cs => fmtDate(cs[0].label) } } },
       scales: {
         x: { ticks: { color: '#8a96a6', font: { size: 9 }, maxTicksLimit: 8,
               callback: function(v, i) { const lbl = labels[i]; const p = lbl ? lbl.split('-') : null; return p && p.length === 3 ? `${p[2].substring(0,2)}/${p[1]}/${p[0].substring(2)}` : ''; }
@@ -2612,7 +2613,8 @@ function renderPieChart(opens, cashPct) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#e8edf4',
+          backgroundColor: 'rgba(17,21,28,0.96)', titleColor: '#e8edf4', bodyColor: '#e8edf4',
+          borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
           callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%` }
         },
       },
