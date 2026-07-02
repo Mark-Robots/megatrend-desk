@@ -1,0 +1,24 @@
+{
+  "name": "MyValue",
+  "base": 100.0,
+  "systems": [
+    "ETF",
+    "Azioni"
+  ],
+  "note": "Indice equipesato: media dei rendimenti settimanali dei sistemi Megatrend. Parte da 100.",
+  "history": [
+    {
+      "date": "2026-06-26",
+      "value": 100.0,
+      "weekly_pct": 0.0,
+      "parts": {
+        "azioni": -1.2168,
+        "etf": -5.0815
+      },
+      "seed": true
+    }
+  ],
+  "updated_at": "2026-07-02T19:27:32.073892+00:00",
+  "last_value": 100.0,
+  "last_date": "2026-06-26"
+}
