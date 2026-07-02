@@ -1,0 +1,33 @@
+name: Update MyValue
+
+on:
+  schedule:
+    # Sabato alle 07:00 UTC (dopo che ETF e Azioni si sono aggiornati venerdì sera)
+    - cron: '0 7 * * 6'
+  workflow_dispatch:   # consente il Run workflow manuale dal tab Actions
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run MyValue update
+        run: python scripts/update_myvalue.py
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/myvalue.json
+          git diff --staged --quiet || git commit -m "MyValue: aggiornamento settimanale"
+          git push
