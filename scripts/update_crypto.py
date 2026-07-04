@@ -8,8 +8,27 @@ Salva data/crypto_data.json nel repo megatrend-desk.
 import json, os, sys, time, datetime
 import urllib.request
 
-# ── PARAMETRI MENSILI (estratti da Earnings_3_0.html) ──────────────────
-PARAMS = json.load(open(os.path.join(os.path.dirname(__file__), 'crypto_params.json')))
+# ── PARAMETRI MENSILI ──────────────────────────────────────────────────
+# Fonte UNICA: params.json della repo dmi-sentinel (la stessa che alimenta
+# la pagina DMI). Così basta aggiornare i parametri in un solo posto e il
+# desk resta sempre allineato alla pagina, senza copie disallineate.
+# Fallback al file locale scripts/crypto_params.json se la rete non risponde.
+PARAMS_URL = "https://raw.githubusercontent.com/Mark-Robots/dmi-sentinel/main/params.json"
+PARAMS_LOCAL = os.path.join(os.path.dirname(__file__), 'crypto_params.json')
+
+def _load_params():
+    try:
+        req = urllib.request.Request(PARAMS_URL, headers={"User-Agent": "megatrend-crypto/1.0"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            data = json.loads(r.read().decode("utf-8"))
+        print(f"[params] caricati da dmi-sentinel/params.json (updated_at: {data.get('updated_at','?')})")
+        return data
+    except Exception as e:
+        print(f"[params] URL non raggiungibile ({e}), uso il file locale di riserva")
+        with open(PARAMS_LOCAL, encoding="utf-8") as f:
+            return json.load(f)
+
+PARAMS = _load_params()
 SYMBOLS = {'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT'}
 DMI_PERIOD = 14
 HTF_EMA_LEN = 200
