@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: crypto-commit
+  cancel-in-progress: false
+
 jobs:
   crypto:
     runs-on: ubuntu-latest
@@ -18,11 +22,17 @@ jobs:
           python-version: '3.11'
       - name: Run crypto update
         run: python scripts/update_crypto.py
-      - name: Commit
+      - name: Commit and push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git pull --rebase || true
           git add data/crypto_data.json
-          git diff --staged --quiet || git commit -m "Update crypto_data.json"
-          git push || true
+          if git diff --staged --quiet; then
+            echo "Nessuna modifica da committare."
+            exit 0
+          fi
+          git commit -m "Update crypto_data.json"
+          # allinea al remoto prima del push (senza mascherare gli errori)
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}
+          echo "Push completato."
