@@ -1,6 +1,9 @@
 name: Adaptive Engine
 
 on:
+  schedule:
+    # Venerdì 14:05 UTC = 16:05 italiane (estive) — allineato agli altri update delle quotazioni
+    - cron: "5 14 * * 5"
   workflow_dispatch:
 
 permissions:
