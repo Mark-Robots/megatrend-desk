@@ -304,7 +304,10 @@
     </div>
   </div>
 
-  <h2 class="sec-title mt">Mappa dei trend</h2>
+  <h2 class="sec-title mt" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>Mappa dei trend</span>
+    <a href="./universo.html" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:400;color:var(--txt-dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 14px;transition:.15s;letter-spacing:.02em" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--txt)'" onmouseout="this.style.borderColor='var(--line)';this.style.color='var(--txt-dim)'">vedi tutti i settori (universo completo) →</a>
+  </h2>
   <div class="card trendmap">
     <p class="crypto-note">Quali settori sono attualmente <b>in trend</b> e quali <b>fuori trend</b>. Lo stato si basa sulla posizione RRG e sulla fase di Weinstein.</p>
     <div id="trendmap-body"><p class="crypto-note">Caricamento…</p></div>
@@ -329,11 +332,11 @@
 </div>
 
 <script>
-const AZ_URL='https://mark-robots.github.io/megatrend-desk/data/stocks_data.json';
-const ETF_URL='https://mark-robots.github.io/megatrend-desk/data/sector_data.json';
-const CRYPTO_URL='https://mark-robots.github.io/megatrend-desk/data/crypto_data.json';
-const CYCLES_URL='https://mark-robots.github.io/megatrend-desk/data/cycles_data.json';
-const CYCLES_BTC_URL='https://mark-robots.github.io/megatrend-desk/data/cycles_btc_data.json';
+const AZ_URL='./data/stocks_data.json';
+const ETF_URL='./data/sector_data.json';
+const CRYPTO_URL='./data/crypto_data.json';
+const CYCLES_URL='./data/cycles_data.json';
+const CYCLES_BTC_URL='./data/cycles_btc_data.json';
 
 const SECTOR_STOCKS={
   SOXX:['NVIDIA','AMD','Broadcom','Micron','TSMC'],
@@ -388,7 +391,7 @@ async function loadAzioni(){
           <span><span class="tk">${p.ticker}</span><span class="nm">${(names[p.ticker]||p.sector_name||'').slice(0,16)}</span></span>
           <span class="pf ${p.perf_pct>=0?'pos':'neg'}">${sign(p.perf_pct)}</span></div>`).join('')}
       </div>
-      <a class="card-link" href="https://mark-robots.github.io/megatrend-desk/azioni.html">apri la dashboard <span class="arr">→</span></a>`;
+      <a class="card-link" href="./azioni.html">apri la dashboard <span class="arr">→</span></a>`;
     return d.last_data_date;
   }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('Az',e);return null;}
 }
@@ -415,7 +418,7 @@ async function loadETF(){
           <span><span class="tk">${s.ticker}</span><span class="nm">${(s.name||'').slice(0,16)}</span></span>
           <span class="pf ${pf>=0?'pos':'neg'}">${pf!=null?sign(pf):'—'}</span></div>`;}).join('')}
       </div>
-      <a class="card-link" href="https://mark-robots.github.io/megatrend-desk/cliente.html">apri la dashboard <span class="arr">→</span></a>`;
+      <a class="card-link" href="./cliente.html">apri la dashboard <span class="arr">→</span></a>`;
     return d.last_data_date;
   }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('ETF',e);return null;}
 }
