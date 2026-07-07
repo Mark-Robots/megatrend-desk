@@ -153,13 +153,70 @@
 </div>
 
 <script>
-const DATA_URL='./data/universe_data.json?_='+Date.now();
+// azioni rappresentative per ogni settore (desk + universo esteso)
+const SECTOR_STOCKS={
+  // --- 13 del desk ---
+  SOXX:['NVIDIA','AMD','Broadcom','Micron','TSMC'],
+  XLK:['Apple','Microsoft','Alphabet','Oracle','Salesforce'],
+  XLE:['ExxonMobil','Chevron','ConocoPhillips','Valero'],
+  EXH5:['Allianz','AXA','Generali','Zurich'],
+  EXH6:['LVMH','Herm\u00e8s','L\u2019Or\u00e9al','Kering'],
+  EXH1:['Shell','TotalEnergies','BP','Eni'],
+  EXV1:['UniCredit','Intesa Sanpaolo','Santander','BNP Paribas'],
+  XLI:['Caterpillar','Honeywell','GE','Boeing'],
+  IBB:['Amgen','Gilead','Vertex','Regeneron'],
+  XLV:['UnitedHealth','Johnson & Johnson','Eli Lilly','Pfizer'],
+  XLP:['P&G','Coca-Cola','PepsiCo','Walmart'],
+  EXH4:['Siemens','Schneider Electric','ABB','Airbus'],
+  XLF:['JPMorgan','Bank of America','Goldman Sachs','Visa'],
+  // --- GICS USA extra ---
+  XLY:['Amazon','Tesla','Home Depot','McDonald\u2019s','Nike'],
+  XLU:['NextEra','Southern Co','Duke Energy','Constellation'],
+  XLB:['Linde','Sherwin-Williams','Freeport','Ecolab'],
+  XLRE:['Prologis','American Tower','Equinix','Welltower'],
+  XLC:['Meta','Alphabet','Netflix','Disney','T-Mobile'],
+  // --- tematici ---
+  DRIV:['Tesla','NVIDIA','BYD','Alphabet','Aptiv'],
+  BOTZ:['NVIDIA','Intuitive Surgical','ABB','Keyence','Fanuc'],
+  ICLN:['First Solar','Enphase','Iberdrola','Vestas','Orsted'],
+  HACK:['Palo Alto','CrowdStrike','Zscaler','Fortinet','Cloudflare'],
+  ITA:['RTX','Boeing','Lockheed Martin','GE Aerospace','Northrop'],
+  // --- Europa extra ---
+  EXV3:['SAP','ASML','Infineon','Capgemini'],
+  EXV4:['Novo Nordisk','AstraZeneca','Roche','Novartis'],
+  EXH9:['Iberdrola','Enel','E.ON','National Grid'],
+  EXH7:['Nestl\u00e9','Unilever','Diageo','Danone'],
+  EXV6:['Air Liquide','BASF','Rio Tinto','Glencore'],
+  EXV5:['Mercedes-Benz','BMW','Volkswagen','Stellantis'],
+  EXV7:['Air Liquide','BASF','Linde','Solvay'],
+  EXH3:['Deutsche Telekom','Vodafone','Orange','Telef\u00f3nica'],
+};
+const UNIVERSE_URL='./data/universe_data.json?_='+Date.now();
+const DESK_URL='./data/sector_data.json?_='+Date.now();
 
 async function loadTrendMap(){
   const el=document.getElementById('trendmap-body');
   try{
-    const d=await(await fetch(DATA_URL)).json();
-    const r=d.sectors||[];
+    // carico ENTRAMBE le fonti: settori extra (universo) + settori operativi (desk)
+    const [uni, desk] = await Promise.all([
+      fetch(UNIVERSE_URL).then(r=>r.json()).catch(()=>({sectors:[]})),
+      fetch(DESK_URL).then(r=>r.json()).catch(()=>({ranking:{ranking:[]}}))
+    ]);
+    const extra = uni.sectors || [];
+    const deskRows = (desk.ranking && desk.ranking.ranking) || [];
+    // unisco evitando doppioni (per ticker); il desk ha priorità sui campi
+    const seen = new Set();
+    const r = [];
+    for(const x of deskRows){
+      const key=(x.ticker||'').toUpperCase();
+      if(seen.has(key)) continue; seen.add(key);
+      r.push(x);
+    }
+    for(const x of extra){
+      const key=(x.ticker||'').toUpperCase();
+      if(seen.has(key)) continue; seen.add(key);
+      r.push(x);
+    }
 
     function starCount(state,stage){
       const sg=parseInt(stage)||0;
@@ -202,16 +259,21 @@ async function loadTrendMap(){
     }));
 
     const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
-    const tip=grp=> grp?`<div class="sct-tip"><div class="tip-h">categoria</div><span class="tip-x">${grp}</span></div>`:'';
+    const tip=tk=>{
+      const list=SECTOR_STOCKS[tk];
+      if(!list||!list.length) return '';
+      return `<div class="sct-tip"><div class="tip-h">titoli rappresentativi</div>${list.map(x=>`<span class="tip-x">${x}</span>`).join('')}</div>`;
+    };
 
     const colHTML=(area)=>{
       const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
       if(!items.length) return '<p class="crypto-note" style="opacity:.6">Nessun settore in questa area.</p>';
       return items.map((d,i)=>{
         const pct=Math.max(6,(d.n/5)*100);
-        return `<div class="tm-row has-tip">
+        const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
+        return `<div class="tm-row${hasTip}">
           <div class="tm-rank">${i+1}</div>
-          <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${tip(d.group)}</div>
+          <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${tip(d.ticker)}</div>
           <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
           <div class="tm-mom">${momHTML(d.m)}</div>
         </div>`;
@@ -231,7 +293,7 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
         <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
       </div>
-      <div class="trend-legend"><span class="legend-hint">Passa il mouse su un settore per vedere la categoria.</span></div>`;
+      <div class="trend-legend"><span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non ancora disponibili. Lancia il workflow "Update Universe" per generarli.</p>';
   }
