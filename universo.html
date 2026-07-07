@@ -262,8 +262,8 @@ async function loadTrendMap(){
       n:starCount(s.state,s.stage),
       q:quadrant(s.state,s.stage),
       m:momentum(s.state,s.stage),
-      entry:s.state_entry_date||(s.signal&&s.signal.stateEntryDate)||null,
-      weeks:(s.weeks_in_state!=null?s.weeks_in_state:(s.signal&&s.signal.weeksFromState))||null
+      entry:(s.opCurrent&&s.opCurrent.start_date)||s.trend_start_date||null,
+      weeks:(s.opCurrent&&s.opCurrent.weeks)||(s.weeks_in_trend!=null?s.weeks_in_trend:null)
     }));
 
     const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
