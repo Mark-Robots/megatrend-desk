@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universo Completo · MarkRoboT.S.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c10;--panel:#11151c;--panel2:#161b24;--txt:#e8edf4;--txt-dim:#8a96a6;--txt-faint:#5a6573;
+    --green:#3ddc84;--red:#ff5c5c;--blue:#5b9dff;--gold:#c9a14a;--line:#222a35;--line-soft:#1a2029;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:'JetBrains Mono',monospace;-webkit-font-smoothing:antialiased;min-height:100vh;padding:32px 20px 60px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:18px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:34px;letter-spacing:.3px;line-height:1}
+  h1 span{color:var(--gold)}
+  .sub{font-size:12px;color:var(--txt-faint);letter-spacing:.12em;text-transform:uppercase;margin-top:8px}
+  .back{font-size:12px;color:var(--txt-dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 14px;transition:.15s;white-space:nowrap}
+  .back:hover{border-color:var(--blue);color:var(--txt)}
+  .intro{font-size:13px;color:var(--txt-dim);line-height:1.7;margin:18px 0 24px;max-width:820px}
+  .intro b{color:var(--txt)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .filters button{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--txt-dim);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;transition:.15s}
+  .filters button:hover{border-color:var(--blue);color:var(--txt)}
+  .filters button.active{border-color:var(--green);color:var(--txt);background:#19212c}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--txt-faint))}
+  .card.lead{--accent:var(--green)} .card.impr{--accent:var(--blue)} .card.weak{--accent:var(--red)} .card.lag{--accent:var(--gold)}
+  .c-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:4px}
+  .c-tk{font-size:17px;font-weight:700;letter-spacing:.5px}
+  .c-grp{font-size:9px;color:var(--txt-faint);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:5px;padding:3px 7px}
+  .c-name{font-size:12px;color:var(--txt-dim);margin-bottom:14px;min-height:30px}
+  .c-state{font-family:'Fraunces',serif;font-size:16px;font-weight:600;margin-bottom:12px}
+  .c-state.lead{color:var(--green)} .c-state.impr{color:var(--blue)} .c-state.weak{color:var(--red)} .c-state.lag{color:var(--gold)}
+  .c-metrics{display:flex;gap:14px;font-size:11px;color:var(--txt-dim)}
+  .c-metrics .m{flex:1}
+  .c-metrics .k{color:var(--txt-faint);font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+  .c-metrics .v{font-size:15px;font-weight:600;color:var(--txt);margin-top:3px}
+  .c-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:11px}
+  .c-stage{color:var(--txt-dim)}
+  .c-op{font-weight:700;letter-spacing:.05em}
+  .c-op.in{color:var(--green)} .c-op.out{color:var(--txt-faint)}
+  .loading{text-align:center;color:var(--txt-faint);padding:60px;font-size:14px}
+  footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;color:var(--txt-faint);line-height:1.7}
+  .meta{font-size:11px;color:var(--txt-faint);margin-bottom:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Universo <span>Completo</span></h1>
+      <div class="sub">Tutti i settori · anche quelli fuori dal desk · MarkRoboT.S.</div>
+    </div>
+    <a class="back" href="./index.html">&larr; Torna al desk</a>
+  </header>
+
+  <div class="intro">
+    Il desk opera su un gruppo selezionato di settori. Questa vista mostra <b>l'universo esteso</b> —
+    inclusi settori e tematici esclusi dal sistema operativo (automotive, utilities, materiali, AI, difesa&hellip;).
+    Serve a <b>cogliere in anticipo un'eventuale rotazione di leadership</b>: se uno di questi diventa Leader o Emergente,
+    lo vedi qui prima che entri nel radar operativo. Stesse formule e benchmark del desk, quindi i valori sono confrontabili.
+  </div>
+
+  <div class="meta" id="meta"></div>
+
+  <div class="filters" id="filters">
+    <button data-f="all" class="active">Tutti</button>
+    <button data-f="in">Solo operativi (IN)</button>
+    <button data-f="lead">Leader</button>
+    <button data-f="impr">Emergenti</button>
+    <button data-f="GICS USA">GICS USA</button>
+    <button data-f="Tematico">Tematici</button>
+    <button data-f="Settore EU">Europa</button>
+  </div>
+
+  <div id="grid" class="grid"><div class="loading">Caricamento universo&hellip;</div></div>
+
+  <footer>
+    Vista informativa dell'universo settoriale esteso. Non costituisce consulenza finanziaria n&eacute; raccomandazione.
+    Le performance passate non sono indicative di quelle future. I settori qui elencati non fanno parte del portafoglio operativo del desk.
+  </footer>
+</div>
+
+<script>
+const DATA_URL='./data/universe_data.json?_='+Date.now();
+let DATA=[];
+const qClass=(state,stage)=>{
+  if(stage==='4') return 'lag';
+  if(state==='Leader') return 'lead';
+  if(state==='Emergente') return 'impr';
+  if(state==='In rallentamento') return 'weak';
+  return 'lag';
+};
+function fmtDate(iso){if(!iso)return '—';const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0]}`;}
+
+function render(list){
+  const grid=document.getElementById('grid');
+  if(!list.length){grid.innerHTML='<div class="loading">Nessun settore in questa categoria.</div>';return;}
+  grid.innerHTML=list.map(s=>{
+    const cls=qClass(s.state,s.stage);
+    const stageLabels={'1':'Fase 1 · base','2':'Fase 2 · rialzo','3':'Fase 3 · distribuzione','4':'Fase 4 · ribasso','—':'—'};
+    return `<div class="card ${cls}">
+      <div class="c-top"><span class="c-tk">${s.ticker}</span><span class="c-grp">${s.group}</span></div>
+      <div class="c-name">${s.name}</div>
+      <div class="c-state ${cls}">${s.state}</div>
+      <div class="c-metrics">
+        <div class="m"><div class="k">Forza</div><div class="v">${s.rsRatio.toFixed(1)}</div></div>
+        <div class="m"><div class="k">Momentum</div><div class="v">${s.rsMom.toFixed(1)}</div></div>
+      </div>
+      <div class="c-foot">
+        <span class="c-stage">${stageLabels[s.stage]||('Fase '+s.stage)}</span>
+        <span class="c-op ${s.opSignal==='IN'?'in':'out'}">${s.opSignal}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function applyFilter(f){
+  let list=DATA;
+  if(f==='in') list=DATA.filter(s=>s.opSignal==='IN');
+  else if(f==='lead') list=DATA.filter(s=>s.state==='Leader');
+  else if(f==='impr') list=DATA.filter(s=>s.state==='Emergente');
+  else if(f!=='all') list=DATA.filter(s=>s.group===f);
+  render(list);
+}
+
+fetch(DATA_URL).then(r=>r.json()).then(d=>{
+  DATA=d.sectors||[];
+  document.getElementById('meta').textContent=`${d.count||DATA.length} settori extra · dati al ${fmtDate(d.last_data_date)} · benchmark USA ${d.benchmarks?.USA||'SPY'} / EU ${d.benchmarks?.EU||'EXSA'}`;
+  render(DATA);
+  document.querySelectorAll('#filters button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      applyFilter(b.dataset.f);
+    };
+  });
+}).catch(e=>{
+  document.getElementById('grid').innerHTML='<div class="loading">Dati non ancora disponibili.<br>Lancia il workflow "Update Universe" per generarli.</div>';
+});
+</script>
+</body>
+</html>
