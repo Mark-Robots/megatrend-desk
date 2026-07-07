@@ -154,24 +154,38 @@ def process_region(close, bench_ticker, sector_dict, region_label):
         stage = classify_stage(sec)
         op = is_operational_in_base(state, stage)
 
-        # data di ingresso nello stato attuale: risalgo la serie RRG finché lo
-        # stato coincide con quello corrente; la prima settimana in cui cambia
-        # segna l'inizio dello stato attuale.
-        state_entry = None
-        weeks_in_state = 0
+        # data di inizio OPERATIVITÀ (da quando il settore è "in trend", cioè IN
+        # senza interruzioni): risalgo la serie calcolando stato+fase settimana per
+        # settimana e mi fermo quando NON era operativo. Questo riflette da quanto
+        # il settore è cavalcabile, non solo l'ultimo scalino di stato RRG.
+        op_entry = None
+        weeks_in_trend = 0
         try:
             rrg_hist = rrg.dropna()
+            # preparo la MA30 per valutare la fase a ritroso
+            sec_al = sec.reindex(rrg_hist.index, method='ffill')
+            ma30 = sec.rolling(30).mean().reindex(rrg_hist.index, method='ffill')
             for k in range(len(rrg_hist) - 1, -1, -1):
                 rk = float(rrg_hist['rsRatio'].iloc[k])
                 mk = float(rrg_hist['rsMom'].iloc[k])
-                if classify_quadrant(rk, mk) == state:
-                    state_entry = rrg_hist.index[k]
-                    weeks_in_state += 1
+                st_k = classify_quadrant(rk, mk)
+                # fase a quella settimana
+                pk = sec_al.iloc[k]; mak = ma30.iloc[k]
+                if pd.isna(mak):
+                    stg_k = '—'
+                else:
+                    mak_prev = ma30.iloc[k-5] if k >= 5 else mak
+                    up = mak > mak_prev; above = pk > mak
+                    stg_k = '2' if (above and up) else '3' if (above and not up) else '4' if (not above and not up) else '1'
+                if is_operational_in_base(st_k, stg_k):
+                    op_entry = rrg_hist.index[k]
+                    weeks_in_trend += 1
                 else:
                     break
-            state_entry_str = state_entry.strftime('%Y-%m-%d') if state_entry is not None else None
+            op_entry_str = op_entry.strftime('%Y-%m-%d') if op_entry is not None else None
         except Exception:
-            state_entry_str = None
+            op_entry_str = None
+            weeks_in_trend = 0
 
         rows.append({
             'ticker': ticker.replace('.DE', ''),
@@ -184,8 +198,8 @@ def process_region(close, bench_ticker, sector_dict, region_label):
             'state': state,
             'stage': stage,
             'opSignal': 'IN' if op else 'OUT',
-            'state_entry_date': state_entry_str,
-            'weeks_in_state': weeks_in_state,
+            'trend_start_date': op_entry_str,
+            'weeks_in_trend': weeks_in_trend,
             'history_weeks': len(sec),
         })
         print(f"  [ok] {ticker:9} {name:24} {state:16} F{stage}  rs={rs:.1f} mom={mom:.1f}")
