@@ -153,6 +153,26 @@ def process_region(close, bench_ticker, sector_dict, region_label):
         state = classify_quadrant(rs, mom)
         stage = classify_stage(sec)
         op = is_operational_in_base(state, stage)
+
+        # data di ingresso nello stato attuale: risalgo la serie RRG finché lo
+        # stato coincide con quello corrente; la prima settimana in cui cambia
+        # segna l'inizio dello stato attuale.
+        state_entry = None
+        weeks_in_state = 0
+        try:
+            rrg_hist = rrg.dropna()
+            for k in range(len(rrg_hist) - 1, -1, -1):
+                rk = float(rrg_hist['rsRatio'].iloc[k])
+                mk = float(rrg_hist['rsMom'].iloc[k])
+                if classify_quadrant(rk, mk) == state:
+                    state_entry = rrg_hist.index[k]
+                    weeks_in_state += 1
+                else:
+                    break
+            state_entry_str = state_entry.strftime('%Y-%m-%d') if state_entry is not None else None
+        except Exception:
+            state_entry_str = None
+
         rows.append({
             'ticker': ticker.replace('.DE', ''),
             'ticker_raw': ticker,
@@ -164,6 +184,8 @@ def process_region(close, bench_ticker, sector_dict, region_label):
             'state': state,
             'stage': stage,
             'opSignal': 'IN' if op else 'OUT',
+            'state_entry_date': state_entry_str,
+            'weeks_in_state': weeks_in_state,
             'history_weeks': len(sec),
         })
         print(f"  [ok] {ticker:9} {name:24} {state:16} F{stage}  rs={rs:.1f} mom={mom:.1f}")
