@@ -112,7 +112,10 @@
   .tm-colhead{display:flex;align-items:baseline;justify-content:center;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
-  .tm-row{display:grid;grid-template-columns:22px 1fr 120px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-row{display:grid;grid-template-columns:22px 1fr 78px 100px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-date{font-size:10.5px;color:var(--txt-dim);text-align:right;white-space:nowrap}
+  .tm-date.fresh{color:var(--green);font-weight:700}
+  .tm-date .wk{color:var(--txt-faint);font-size:9px}
   .tm-rank{font-size:11px;color:var(--txt-faint);text-align:right}
   .tm-name{display:flex;align-items:center;gap:10px;min-width:0;position:relative}
   .tm-acc{width:4px;height:22px;border-radius:2px;flex:none}
@@ -204,6 +207,8 @@ async function loadTrendMap(){
     ]);
     const extra = uni.sectors || [];
     const deskRows = (desk.ranking && desk.ranking.ranking) || [];
+    // data dell'ultima settimana disponibile (per evidenziare i "nuovi")
+    const LAST_DATE = uni.last_data_date || desk.last_data_date || null;
     // unisco evitando doppioni (per ticker); il desk ha priorità sui campi
     const seen = new Set();
     const r = [];
@@ -247,6 +252,7 @@ async function loadTrendMap(){
       return 0;
     };
     const cleanName=n=>(n||'').replace(/\s+(USA|EU|Europa)$/i,'').trim();
+    const fmtShort=iso=>{if(!iso)return '';const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]}`;};
 
     const rows=r.map(s=>({
       name:cleanName(s.name)||s.ticker||'\u2014',
@@ -255,7 +261,9 @@ async function loadTrendMap(){
       region:(s.region==='USA')?'USA':'EU',
       n:starCount(s.state,s.stage),
       q:quadrant(s.state,s.stage),
-      m:momentum(s.state,s.stage)
+      m:momentum(s.state,s.stage),
+      entry:s.state_entry_date||(s.signal&&s.signal.stateEntryDate)||null,
+      weeks:(s.weeks_in_state!=null?s.weeks_in_state:(s.signal&&s.signal.weeksFromState))||null
     }));
 
     const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
@@ -271,9 +279,14 @@ async function loadTrendMap(){
       return items.map((d,i)=>{
         const pct=Math.max(6,(d.n/5)*100);
         const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
+        const fresh=(d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
+        const dateHTML=d.entry
+          ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}${d.weeks!=null?` <span class="wk">(${d.weeks}s)</span>`:''}</div>`
+          : `<div class="tm-date">&mdash;</div>`;
         return `<div class="tm-row${hasTip}">
           <div class="tm-rank">${i+1}</div>
           <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${tip(d.ticker)}</div>
+          ${dateHTML}
           <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
           <div class="tm-mom">${momHTML(d.m)}</div>
         </div>`;
@@ -293,7 +306,7 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
         <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
       </div>
-      <div class="trend-legend"><span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
+      <div class="trend-legend"><span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; nello stato attuale; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non ancora disponibili. Lancia il workflow "Update Universe" per generarli.</p>';
   }
