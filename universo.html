@@ -112,7 +112,7 @@
   .tm-colhead{display:flex;align-items:baseline;justify-content:center;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
-  .tm-row{display:grid;grid-template-columns:22px 1fr 78px 100px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-row{display:grid;grid-template-columns:22px 1fr 96px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
   .tm-date{font-size:10.5px;color:var(--txt-dim);text-align:right;white-space:nowrap}
   .tm-date.fresh{color:var(--green);font-weight:700}
   .tm-date .wk{color:var(--txt-faint);font-size:9px}
@@ -252,7 +252,7 @@ async function loadTrendMap(){
       return 0;
     };
     const cleanName=n=>(n||'').replace(/\s+(USA|EU|Europa)$/i,'').trim();
-    const fmtShort=iso=>{if(!iso)return '';const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]}`;};
+    const fmtShort=iso=>{if(!iso)return '';const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0]}`;};
 
     const rows=r.map(s=>({
       name:cleanName(s.name)||s.ticker||'\u2014',
@@ -281,7 +281,7 @@ async function loadTrendMap(){
         const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
         const fresh=(d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
         const dateHTML=d.entry
-          ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}${d.weeks!=null?` <span class="wk">(${d.weeks}s)</span>`:''}</div>`
+          ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}</div>`
           : `<div class="tm-date">&mdash;</div>`;
         return `<div class="tm-row${hasTip}">
           <div class="tm-rank">${i+1}</div>
