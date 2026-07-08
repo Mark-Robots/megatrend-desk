@@ -113,6 +113,26 @@
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
   .tm-row{display:grid;grid-template-columns:22px 1fr 96px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
+  /* pannello titoli del settore (si apre al click) */
+  .tm-row.clickable{cursor:pointer}
+  .tm-row.clickable:hover{background:rgba(255,255,255,0.02);border-radius:6px}
+  .tm-row.open-sec{background:rgba(91,157,255,0.06);border-radius:6px}
+  .stock-panel{grid-column:1/-1;margin:2px 0 10px;padding:14px 16px;background:#0d1117;border:1px solid var(--line-soft);border-radius:10px}
+  .stock-panel-h{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:10px}
+  .stock-list{display:flex;flex-wrap:wrap;gap:8px}
+  .stock-chip{font-size:12px;color:var(--txt);background:#11151c;border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:default;transition:.15s;position:relative}
+  .stock-chip:hover{border-color:var(--blue);background:#161b24}
+  .stock-chip .sc-perf{font-size:10px;margin-left:6px;font-weight:700}
+  .sc-perf.pos{color:var(--green)} .sc-perf.neg{color:var(--red)} .sc-perf.flat{color:var(--txt-faint)}
+  /* grafico del titolo (al hover sul chip) */
+  .stock-chart{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);
+    background:#0a0c10;border:1px solid var(--line);border-radius:10px;padding:12px;width:260px;z-index:30;
+    opacity:0;visibility:hidden;transition:.15s;box-shadow:0 8px 28px rgba(0,0,0,.55)}
+  .stock-chip:hover .stock-chart{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  .stock-chart-h{font-size:10px;color:var(--txt-dim);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+  .stock-chart-h b{font-size:13px}
+  .stock-chart svg{display:block;width:100%;height:auto}
+  .stock-chart .sub{font-size:9px;color:var(--txt-faint);margin-top:4px}
   .tm-date{font-size:10.5px;color:var(--txt-dim);text-align:right;white-space:nowrap}
   .tm-date.fresh{color:var(--green);font-weight:700}
   .tm-date .wk{color:var(--txt-faint);font-size:9px}
@@ -196,15 +216,19 @@ const SECTOR_STOCKS={
 };
 const UNIVERSE_URL='./data/universe_data.json?_='+Date.now();
 const DESK_URL='./data/sector_data.json?_='+Date.now();
+const STOCKS_URL='./data/universe_stocks.json?_='+Date.now();
+let STOCKS_DATA={};   // popolato al caricamento: {SEC:{entry_date, stocks:[...]}}
 
 async function loadTrendMap(){
   const el=document.getElementById('trendmap-body');
   try{
     // carico ENTRAMBE le fonti: settori extra (universo) + settori operativi (desk)
-    const [uni, desk] = await Promise.all([
+    const [uni, desk, stk] = await Promise.all([
       fetch(UNIVERSE_URL).then(r=>r.json()).catch(()=>({sectors:[]})),
-      fetch(DESK_URL).then(r=>r.json()).catch(()=>({ranking:{ranking:[]}}))
+      fetch(DESK_URL).then(r=>r.json()).catch(()=>({ranking:{ranking:[]}})),
+      fetch(STOCKS_URL).then(r=>r.json()).catch(()=>({sectors:{}}))
     ]);
+    STOCKS_DATA = stk.sectors || {};
     const extra = uni.sectors || [];
     const deskRows = (desk.ranking && desk.ranking.ranking) || [];
     // data dell'ultima settimana disponibile (per evidenziare i "nuovi")
@@ -267,25 +291,19 @@ async function loadTrendMap(){
     }));
 
     const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
-    const tip=tk=>{
-      const list=SECTOR_STOCKS[tk];
-      if(!list||!list.length) return '';
-      return `<div class="sct-tip"><div class="tip-h">titoli rappresentativi</div>${list.map(x=>`<span class="tip-x">${x}</span>`).join('')}</div>`;
-    };
-
     const colHTML=(area)=>{
       const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
       if(!items.length) return '<p class="crypto-note" style="opacity:.6">Nessun settore in questa area.</p>';
       return items.map((d,i)=>{
         const pct=Math.max(6,(d.n/5)*100);
-        const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
+        const canOpen=SECTOR_STOCKS[d.ticker]?' clickable':'';
         const fresh=(d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
         const dateHTML=d.entry
           ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}</div>`
           : `<div class="tm-date">&mdash;</div>`;
-        return `<div class="tm-row${hasTip}">
+        return `<div class="tm-row${canOpen}" data-sec="${d.ticker}">
           <div class="tm-rank">${i+1}</div>
-          <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${tip(d.ticker)}</div>
+          <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span></div>
           ${dateHTML}
           <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
           <div class="tm-mom">${momHTML(d.m)}</div>
@@ -306,11 +324,77 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
         <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
       </div>
-      <div class="trend-legend"><span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; nello stato attuale; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
+      <div class="trend-legend"><span class="legend-hint">Clicca un settore per vedere i suoi titoli; passa poi il mouse su un titolo per il grafico e la performance dalla data d'ingresso del settore. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
+
+    attachSectorClicks();
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non ancora disponibili. Lancia il workflow "Update Universe" per generarli.</p>';
   }
 }
+// grafico SVG della serie % di un titolo (stile desk, ispirato a ytdSparkline)
+function stockChartSVG(stock){
+  const s=stock.series;
+  if(!s||s.length<2) return `<div class="stock-chart-h">${stock.name}</div><div class="sub">dati non disponibili</div>`;
+  const W=236,H=64,padX=4,padY=8;
+  const min=Math.min(...s),max=Math.max(...s),range=(max-min)||1;
+  const x=i=>padX+i*(W-2*padX)/(s.length-1);
+  const y=v=>padY+(1-(v-min)/range)*(H-2*padY);
+  let d='';s.forEach((v,i)=>{d+=(i===0?'M':'L')+x(i).toFixed(1)+','+y(v).toFixed(1)+' ';});
+  const last=s[s.length-1];
+  const col=last>=0?'#3ddc84':'#ff5c5c';
+  let zero='';
+  if(min<=0&&max>=0){const yz=y(0).toFixed(1);zero=`<line x1="${padX}" y1="${yz}" x2="${W-padX}" y2="${yz}" stroke="rgba(255,255,255,.22)" stroke-dasharray="2 3"/>`;}
+  const area=`M${x(0).toFixed(1)},${y(s[0]).toFixed(1)} `+d.slice(1)+`L${x(s.length-1).toFixed(1)},${(H-padY).toFixed(1)} L${x(0).toFixed(1)},${(H-padY).toFixed(1)} Z`;
+  const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fp=iso=>{if(!iso)return'';const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0]}`;};
+  return `<div class="stock-chart-h">${stock.name} · <b style="color:${col}">${last>=0?'+':''}${last.toFixed(1)}%</b></div>
+    <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+      ${zero}
+      <path d="${area}" fill="${col}" opacity="0.10"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+    <div class="sub">dal ${fp(stock.from)} a oggi</div>`;
+}
+
+// pannello coi titoli di un settore (chip + grafico al hover)
+function stockPanelHTML(secTicker){
+  const data=STOCKS_DATA[secTicker];
+  const names=SECTOR_STOCKS[secTicker]||[];
+  if(!data||!data.stocks||!data.stocks.length){
+    // fallback: mostro solo i nomi senza grafico (dati non ancora generati)
+    if(!names.length) return '';
+    return `<div class="stock-panel"><div class="stock-panel-h">titoli rappresentativi</div>
+      <div class="stock-list">${names.map(n=>`<span class="stock-chip">${n}</span>`).join('')}</div>
+      <div class="sub" style="font-size:9px;color:var(--txt-faint);margin-top:8px">Grafici disponibili dopo l'aggiornamento dati titoli.</div></div>`;
+  }
+  const chips=data.stocks.map(st=>{
+    const cls=st.perf>0.05?'pos':st.perf<-0.05?'neg':'flat';
+    return `<span class="stock-chip">${st.name}<span class="sc-perf ${cls}">${st.perf>=0?'+':''}${st.perf.toFixed(1)}%</span>
+      <div class="stock-chart">${stockChartSVG(st)}</div></span>`;
+  }).join('');
+  return `<div class="stock-panel"><div class="stock-panel-h">titoli · performance dal ${data.entry_date}</div>
+    <div class="stock-list">${chips}</div></div>`;
+}
+
+// gestione click sui settori: apre/chiude il pannello titoli sotto la riga
+function attachSectorClicks(){
+  document.querySelectorAll('.tm-row.clickable').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const sec=row.dataset.sec;
+      const next=row.nextElementSibling;
+      // se il pannello è già aperto subito sotto, lo chiudo (toggle)
+      if(next&&next.classList.contains('stock-panel')){
+        next.remove();row.classList.remove('open-sec');return;
+      }
+      // chiudo eventuali altri pannelli aperti
+      document.querySelectorAll('.stock-panel').forEach(p=>p.remove());
+      document.querySelectorAll('.tm-row.open-sec').forEach(r=>r.classList.remove('open-sec'));
+      const html=stockPanelHTML(sec);
+      if(html){row.insertAdjacentHTML('afterend',html);row.classList.add('open-sec');}
+    });
+  });
+}
+
 loadTrendMap();
 </script>
 </body>
