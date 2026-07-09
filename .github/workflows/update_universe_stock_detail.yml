@@ -1,0 +1,36 @@
+name: Update Universe Stock Detail
+
+on:
+  schedule:
+    - cron: "5 23 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: universe-stockdetail-commit
+  cancel-in-progress: false
+
+jobs:
+  stock-detail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install yfinance pandas
+      - name: Run
+        run: python scripts/update_universe_stock_detail.py
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/universe_stock_detail.json
+          if git diff --staged --quiet; then echo "Nessuna modifica."; exit 0; fi
+          git commit -m "Update universe_stock_detail.json"
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}
