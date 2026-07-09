@@ -284,14 +284,68 @@ def find_cycle_highs(prices, cycle_len):
     return highs
 
 
-def analyze_cycle(prices, dates, spec, apply_bias=False):
+def find_nested_lows(prices, cycle_len, parent_lows=None, tol_frac=0.35):
+    """Minimi ciclici ANNIDATI (metodo gerarchico, teoria di Hurst).
+
+    Un minimo di ciclo superiore DEVE essere anche minimo di tutti i cicli inferiori.
+    Quindi:
+      - se parent_lows è None (ciclo più lungo): ricerca normale
+      - altrimenti: i minimi del genitore vengono ereditati come minimi di questo ciclo,
+        e tra due minimi del genitore si cercano i minimi propri di questo ciclo.
+
+    tol_frac: tolleranza (frazione di cycle_len) entro cui un minimo proprio vicino a
+    un minimo ereditato viene assorbito da quest'ultimo (evita doppioni ravvicinati).
+    """
+    own = find_cycle_lows(prices, cycle_len)
+    if not parent_lows:
+        return own
+
+    parent = sorted(set(parent_lows))
+    tol = max(2, int(cycle_len * tol_frac))
+    min_gap = max(2, int(cycle_len * 0.5))
+
+    # i minimi del genitore sono minimi anche qui (annidamento garantito)
+    result = list(parent)
+
+    # aggiungo i minimi propri che NON cadono troppo vicino a un minimo ereditato
+    for i in own:
+        if any(abs(i - p) <= tol for p in parent):
+            continue                       # troppo vicino a un minimo del genitore: assorbito
+        result.append(i)
+
+    result = sorted(set(result))
+
+    # ripulisco: se due minimi consecutivi sono più vicini di min_gap, tengo
+    # quello ereditato (o, se entrambi propri, il più profondo sulla serie detrendizzata)
+    series = detrend(prices, cycle_len)
+    parent_set = set(parent)
+    cleaned = []
+    for i in result:
+        if not cleaned:
+            cleaned.append(i); continue
+        j = cleaned[-1]
+        if i - j < min_gap:
+            if i in parent_set and j not in parent_set:
+                cleaned[-1] = i           # priorità al minimo ereditato
+            elif j in parent_set and i not in parent_set:
+                pass                      # tengo j (ereditato)
+            else:
+                if series[i] < series[j]:
+                    cleaned[-1] = i       # tengo il più profondo
+        else:
+            cleaned.append(i)
+    return cleaned
+
+
+def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
     cl = spec["len"]
-    lows = find_cycle_lows(prices, cl)
+    lows = find_nested_lows(prices, cl, parent_lows=parent_lows)
     res = {
         "key": spec["key"], "label": spec["label"], "len_theoretical": cl,
         "long": spec.get("long", False),
         "n_lows": len(lows), "lows_idx": lows[-8:],  # ultimi minimi (indici)
         "lows_dates": [dates[i] for i in lows[-8:]],
+        "lows_idx_full": lows,   # lista completa: serve all'annidamento dei cicli inferiori
     }
     if len(lows) >= 2:
         gaps = [lows[i+1]-lows[i] for i in range(len(lows)-1)]
@@ -429,11 +483,29 @@ def build_one(inst):
             print("[warn] CSV storia lunga non trovato: i cicli lunghi useranno la storia corta del feed")
 
     cycles = []
+    # ANNIDAMENTO GERARCHICO: elaboro i cicli brevi dal più lungo al più corto,
+    # passando i minimi del ciclo superiore come "genitori". Così ogni minimo
+    # annuale è anche minimo intermedio e mensile (teoria dei cicli annidati).
+    short_specs = [s for s in CYCLES if not s.get("long")]
+    short_specs.sort(key=lambda s: -s["len"])        # annuale -> intermedio -> mensile
+    parent_lows = None
+    nested_results = {}
+    for spec in short_specs:
+        res = analyze_cycle(prices, dates, spec, apply_bias=apply_bias, parent_lows=parent_lows)
+        nested_results[spec["key"]] = res
+        parent_lows = res.get("lows_idx_full") or res.get("lows_idx")
+    # cicli lunghi: indipendenti, sulla storia lunga, date grezze
     for spec in CYCLES:
         if inst["id"] == "sp500" and spec.get("long"):
-            cycles.append(analyze_cycle(long_prices, long_dates, spec, apply_bias=False))  # lunghi: storia lunga, date grezze
+            cycles.append(analyze_cycle(long_prices, long_dates, spec, apply_bias=False))
+        elif spec.get("long"):
+            cycles.append(analyze_cycle(prices, dates, spec, apply_bias=False))
         else:
-            cycles.append(analyze_cycle(prices, dates, spec, apply_bias=apply_bias))
+            cycles.append(nested_results[spec["key"]])
+    # rimuovo il campo di servizio usato solo per l'annidamento (non serve nel JSON)
+    for c in cycles:
+        c.pop("lows_idx_full", None)
+
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "instrument": inst["label"],
