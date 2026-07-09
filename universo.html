@@ -126,7 +126,23 @@
   .sec-stocks-h{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:8px;padding-top:4px;border-top:1px solid var(--line-soft)}
   .stock-panel-h{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:10px}
   .stock-list{display:flex;flex-wrap:wrap;gap:8px}
-  .stock-chip{font-size:12px;color:var(--txt-dim);background:#11151c;border:1px solid var(--line);border-radius:8px;padding:6px 11px}
+  .stock-chip{font-size:12px;color:var(--txt-dim);background:#11151c;border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;transition:.15s}
+  .stock-chip:hover{border-color:var(--blue);color:var(--txt)}
+  .stock-chip.active{border-color:var(--blue);color:var(--txt);background:#161b24}
+  /* scheda dettaglio titolo */
+  .stk-card{margin-top:12px;padding:14px;background:#0a0c10;border:1px solid var(--line);border-radius:10px}
+  .stk-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .stk-name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--txt)}
+  .stk-tk{font-size:10px;color:var(--txt-faint);letter-spacing:.06em}
+  .stk-perf{font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace}
+  .stk-sub{font-size:10px;color:var(--txt-faint);margin-bottom:8px}
+  .stk-chart svg{display:block;width:100%}
+  .stk-fund{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line-soft)}
+  .stk-f{min-width:0}
+  .stk-f .k{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint)}
+  .stk-f .v{font-size:13px;color:var(--txt);margin-top:2px;font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .stk-close{font-size:10px;color:var(--txt-faint);cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .stk-close:hover{color:var(--txt);border-color:var(--blue)}
   .tm-date{font-size:10.5px;color:var(--txt-dim);text-align:right;white-space:nowrap}
   .tm-date.fresh{color:var(--green);font-weight:700}
   .tm-date .wk{color:var(--txt-faint);font-size:9px}
@@ -211,18 +227,22 @@ const SECTOR_STOCKS={
 const UNIVERSE_URL='./data/universe_data.json?_='+Date.now();
 const DESK_URL='./data/sector_data.json?_='+Date.now();
 const PERF_URL='./data/universe_perf.json?_='+Date.now();
+const STKDET_URL='./data/universe_stock_detail.json?_='+Date.now();
 let PERF_DATA={};   // {SEC:{entry_date, perf, series:[...]}}
+let STKDET={};      // {NomeTitolo:{ticker,series,perf_1y,cap,pe,...}}
 
 async function loadTrendMap(){
   const el=document.getElementById('trendmap-body');
   try{
     // carico ENTRAMBE le fonti: settori extra (universo) + settori operativi (desk)
-    const [uni, desk, stk] = await Promise.all([
+    const [uni, desk, stk, det] = await Promise.all([
       fetch(UNIVERSE_URL).then(r=>r.json()).catch(()=>({sectors:[]})),
       fetch(DESK_URL).then(r=>r.json()).catch(()=>({ranking:{ranking:[]}})),
-      fetch(PERF_URL).then(r=>r.json()).catch(()=>({sectors:{}}))
+      fetch(PERF_URL).then(r=>r.json()).catch(()=>({sectors:{}})),
+      fetch(STKDET_URL).then(r=>r.json()).catch(()=>({stocks:{}}))
     ]);
     PERF_DATA = stk.sectors || {};
+    STKDET = det.stocks || {};
     const extra = uni.sectors || [];
     const deskRows = (desk.ranking && desk.ranking.ranking) || [];
     // data dell'ultima settimana disponibile (per evidenziare i "nuovi")
@@ -321,7 +341,7 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
         <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
       </div>
-      <div class="trend-legend"><span class="legend-hint">Clicca un settore per vedere i suoi titoli; passa poi il mouse su un titolo per il grafico e la performance dalla data d'ingresso del settore. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
+      <div class="trend-legend"><span class="legend-hint">Clicca un settore (in rafforzamento o leader) per vederne performance e grafico dalla data d'ingresso; clicca poi un titolo per la sua scheda con grafico a 1 anno e dati fondamentali. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
 
     attachSectorClicks();
   }catch(e){
@@ -366,9 +386,62 @@ function sectorPanelHTML(secTicker){
   }
   const titoli=names.length
     ? `<div class="sec-stocks-h">titoli del settore (esemplificativi)</div>
-       <div class="stock-list">${names.map(n=>`<span class="stock-chip">${n}</span>`).join('')}</div>`
+       <div class="stock-list">${names.map(n=>`<span class="stock-chip" data-stock="${n.replace(/"/g,'&quot;')}">${n}</span>`).join('')}</div>`
     : '';
   return `<div class="stock-panel">${chartBlock}${titoli}</div>`;
+}
+
+// scheda dettaglio di un titolo: grafico 1 anno + fondamentali
+function stockCardHTML(name){
+  const d=STKDET[name];
+  if(!d) return `<div class="stk-card"><div class="stk-top"><span class="stk-name">${name}</span>
+    <span class="stk-close" data-close="1">chiudi</span></div>
+    <div class="stk-sub">Dati non ancora disponibili. Lancia il workflow "Update Universe Stock Detail".</div></div>`;
+  const p=d.perf_1y;
+  const col=(p==null)?'var(--txt-dim)':(p>=0?'var(--green)':'var(--red)');
+  const chart=d.series&&d.series.length>1?`<div class="stk-chart">${sectorChartSVG(d.series)}</div>`:'';
+  const f=[];
+  if(d.cap) f.push(['capitalizzazione',d.cap]);
+  if(d.pe!=null) f.push(['P/E',d.pe.toFixed(1)]);
+  if(d.div_yield!=null) f.push(['dividendo',d.div_yield.toFixed(2)+'%']);
+  if(d.last!=null) f.push(['ultimo',d.last.toFixed(2)+(d.currency?' '+d.currency:'')]);
+  if(d.range52) f.push(['range 52s',`${d.range52[0].toFixed(0)} – ${d.range52[1].toFixed(0)}`]);
+  if(d.industry) f.push(['industria',d.industry]);
+  const fund=f.length?`<div class="stk-fund">${f.map(([k,v])=>`<div class="stk-f"><div class="k">${k}</div><div class="v" title="${v}">${v}</div></div>`).join('')}</div>`:'';
+  return `<div class="stk-card">
+    <div class="stk-top">
+      <span><span class="stk-name">${name}</span> <span class="stk-tk">${d.ticker||''}</span></span>
+      <span style="display:flex;align-items:center;gap:10px">
+        ${p!=null?`<span class="stk-perf" style="color:${col}">${p>=0?'+':''}${p.toFixed(1)}%</span>`:''}
+        <span class="stk-close" data-close="1">chiudi</span>
+      </span>
+    </div>
+    <div class="stk-sub">andamento ultimi 12 mesi${d.sector?' · '+d.sector:''}</div>
+    ${chart}${fund}
+  </div>`;
+}
+
+// click sui titoli dentro il pannello settore: apre/chiude la scheda del titolo
+function attachStockClicks(panel){
+  panel.querySelectorAll('.stock-chip').forEach(chip=>{
+    chip.addEventListener('click',ev=>{
+      ev.stopPropagation();          // non chiudere il pannello del settore
+      const name=chip.dataset.stock||chip.textContent.trim();
+      const existing=panel.querySelector('.stk-card');
+      const wasActive=chip.classList.contains('active');
+      if(existing) existing.remove();
+      panel.querySelectorAll('.stock-chip.active').forEach(c=>c.classList.remove('active'));
+      if(wasActive) return;          // toggle: era aperto, ora chiuso
+      chip.classList.add('active');
+      panel.insertAdjacentHTML('beforeend', stockCardHTML(name));
+      const close=panel.querySelector('[data-close]');
+      if(close) close.addEventListener('click',e=>{
+        e.stopPropagation();
+        panel.querySelector('.stk-card')?.remove();
+        chip.classList.remove('active');
+      });
+    });
+  });
 }
 
 // click sul settore: apre/chiude il pannello (grafico settore + titoli)
@@ -383,7 +456,12 @@ function attachSectorClicks(){
       document.querySelectorAll('.stock-panel').forEach(p=>p.remove());
       document.querySelectorAll('.tm-row.open-sec').forEach(r=>r.classList.remove('open-sec'));
       const html=sectorPanelHTML(sec);
-      if(html){row.insertAdjacentHTML('afterend',html);row.classList.add('open-sec');}
+      if(html){
+        row.insertAdjacentHTML('afterend',html);
+        row.classList.add('open-sec');
+        const panel=row.nextElementSibling;
+        if(panel&&panel.classList.contains('stock-panel')) attachStockClicks(panel);
+      }
     });
   });
 }
