@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-07T22:07:42.013373+00:00",
+  "updated_at": "2026-07-10T23:41:06.780677+00:00",
   "last_data_date": "2026-07-06",
   "note": "Universo esteso: settori extra oltre i 13 del desk. Stesse formule e benchmark del motore ufficiale.",
   "benchmarks": {
@@ -13,14 +13,14 @@
       "name": "Automotive / EV",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 109.39,
+      "rsRatio": 109.41,
       "rsMom": 100.43,
       "state": "Leader",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2025-07-28",
       "weeks_in_trend": 50,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "ICLN",
@@ -28,29 +28,14 @@
       "name": "Clean Energy",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 107.45,
+      "rsRatio": 107.41,
       "rsMom": 99.37,
       "state": "In rallentamento",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2025-04-28",
       "weeks_in_trend": 63,
-      "history_weeks": 158
-    },
-    {
-      "ticker": "EXV6",
-      "ticker_raw": "EXV6.DE",
-      "name": "Materiali EU",
-      "region": "EU",
-      "group": "Settore EU",
-      "rsRatio": 107.07,
-      "rsMom": 97.9,
-      "state": "In rallentamento",
-      "stage": "2",
-      "opSignal": "IN",
-      "trend_start_date": "2025-08-04",
-      "weeks_in_trend": 49,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "EXV3",
@@ -58,14 +43,29 @@
       "name": "Tecnologia EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 107.01,
-      "rsMom": 110.99,
+      "rsRatio": 107.22,
+      "rsMom": 111.02,
       "state": "Leader",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-05-25",
       "weeks_in_trend": 7,
-      "history_weeks": 158
+      "history_weeks": 157
+    },
+    {
+      "ticker": "EXV6",
+      "ticker_raw": "EXV6.DE",
+      "name": "Materiali EU",
+      "region": "EU",
+      "group": "Settore EU",
+      "rsRatio": 107.09,
+      "rsMom": 97.91,
+      "state": "In rallentamento",
+      "stage": "2",
+      "opSignal": "IN",
+      "trend_start_date": "2025-08-04",
+      "weeks_in_trend": 49,
+      "history_weeks": 157
     },
     {
       "ticker": "EXH9",
@@ -80,7 +80,7 @@
       "opSignal": "IN",
       "trend_start_date": "2025-04-14",
       "weeks_in_trend": 65,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "HACK",
@@ -88,14 +88,14 @@
       "name": "Cybersecurity",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 99.53,
-      "rsMom": 106.27,
+      "rsRatio": 99.44,
+      "rsMom": 106.26,
       "state": "Emergente",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-04-27",
       "weeks_in_trend": 11,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "EXV7",
@@ -103,14 +103,14 @@
       "name": "Chimica EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 97.0,
-      "rsMom": 101.97,
+      "rsRatio": 96.97,
+      "rsMom": 101.96,
       "state": "Emergente",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-03-23",
       "weeks_in_trend": 16,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "EXH3",
@@ -118,14 +118,14 @@
       "name": "Telecom EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 94.15,
-      "rsMom": 100.21,
+      "rsRatio": 94.09,
+      "rsMom": 100.2,
       "state": "Emergente",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-04-13",
       "weeks_in_trend": 13,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "XLB",
@@ -133,14 +133,14 @@
       "name": "Materiali USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 99.68,
-      "rsMom": 96.12,
+      "rsRatio": 99.51,
+      "rsMom": 96.1,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "ITA",
@@ -148,14 +148,14 @@
       "name": "Aerospazio / Difesa",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 99.29,
-      "rsMom": 94.45,
+      "rsRatio": 99.02,
+      "rsMom": 94.41,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "XLRE",
@@ -163,14 +163,14 @@
       "name": "Immobiliare USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 96.03,
-      "rsMom": 99.43,
+      "rsRatio": 95.9,
+      "rsMom": 99.41,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "BOTZ",
@@ -178,14 +178,14 @@
       "name": "AI / Robotica",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 91.86,
+      "rsRatio": 91.84,
       "rsMom": 92.42,
       "state": "Debole",
       "stage": "1",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "EXV5",
@@ -193,14 +193,14 @@
       "name": "Automotive EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 90.86,
-      "rsMom": 101.3,
+      "rsRatio": 90.79,
+      "rsMom": 101.29,
       "state": "Emergente",
       "stage": "4",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "EXH7",
@@ -208,14 +208,14 @@
       "name": "Beni di base EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 89.89,
-      "rsMom": 100.0,
+      "rsRatio": 89.84,
+      "rsMom": 99.99,
       "state": "Debole",
       "stage": "3",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "XLU",
@@ -223,14 +223,14 @@
       "name": "Utilities USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 88.72,
-      "rsMom": 91.6,
+      "rsRatio": 88.52,
+      "rsMom": 91.57,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "XLY",
@@ -238,14 +238,14 @@
       "name": "Beni voluttuari USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 87.79,
-      "rsMom": 99.97,
+      "rsRatio": 87.69,
+      "rsMom": 99.95,
       "state": "Debole",
       "stage": "3",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "EXV4",
@@ -253,14 +253,14 @@
       "name": "Sanità EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 86.91,
-      "rsMom": 92.71,
+      "rsRatio": 86.63,
+      "rsMom": 92.67,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     },
     {
       "ticker": "XLC",
@@ -268,14 +268,14 @@
       "name": "Comunicazioni USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 82.32,
-      "rsMom": 90.57,
+      "rsRatio": 82.28,
+      "rsMom": 90.56,
       "state": "Debole",
       "stage": "4",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
-      "history_weeks": 158
+      "history_weeks": 157
     }
   ],
   "count": 18
