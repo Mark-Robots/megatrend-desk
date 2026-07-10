@@ -311,14 +311,14 @@ async function loadTrendMap(){
       if(!items.length) return '<p class="crypto-note" style="opacity:.6">Nessun settore in questa area.</p>';
       return items.map((d,i)=>{
         const pct=Math.max(6,(d.n/5)*100);
-        // mostro data + rendo cliccabile SOLO per stati di forza crescente
+        // TUTTI i settori con titoli sono cliccabili; la data resta solo per i forti
         const isStrong=(d.state==='Emergente'||d.state==='Leader');
-        const canOpen=(isStrong&&SECTOR_STOCKS[d.ticker])?' clickable':'';
+        const canOpen=SECTOR_STOCKS[d.ticker]?' clickable':'';
         const fresh=(isStrong&&d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
         const dateHTML=(isStrong&&d.entry)
           ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}</div>`
           : `<div class="tm-date"></div>`;
-        return `<div class="tm-row${canOpen}" data-sec="${d.ticker}">
+        return `<div class="tm-row${canOpen}" data-sec="${d.ticker}" data-strong="${isStrong?1:0}">
           <div class="tm-rank">${i+1}</div>
           <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span></div>
           ${dateHTML}
@@ -341,7 +341,7 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
         <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
       </div>
-      <div class="trend-legend"><span class="legend-hint">Clicca un settore (in rafforzamento o leader) per vederne performance e grafico dalla data d'ingresso; clicca poi un titolo per la sua scheda con grafico a 1 anno e dati fondamentali. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
+      <div class="trend-legend"><span class="legend-hint">Clicca un settore per vederne i titoli; per quelli in rafforzamento o leader compare anche performance e grafico dalla data d'ingresso. Clicca un titolo per la sua scheda con grafico a 1 anno e dati fondamentali. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
 
     attachSectorClicks();
   }catch(e){
@@ -370,19 +370,22 @@ function sectorChartSVG(series){
 }
 
 // pannello del settore: grafico+performance del SETTORE, e titoli come elenco informativo
-function sectorPanelHTML(secTicker){
+function sectorPanelHTML(secTicker, strong){
   const perf=PERF_DATA[secTicker];
   const names=SECTOR_STOCKS[secTicker]||[];
   const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
   const fp=iso=>{if(!iso)return'';const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0]}`;};
   let chartBlock='';
-  if(perf&&perf.series&&perf.series.length>1){
-    const col=perf.perf>=0?'var(--green)':'var(--red)';
-    chartBlock=`<div class="sec-perf-row"><span class="sec-perf-lbl">performance dal ${fp(perf.entry_date)}</span>
-      <span class="sec-perf-val" style="color:${col}">${perf.perf>=0?'+':''}${perf.perf.toFixed(1)}%</span></div>
-      <div class="sec-chart">${sectorChartSVG(perf.series)}</div>`;
-  }else{
-    chartBlock=`<div class="sub" style="font-size:9px;color:var(--txt-faint)">Grafico disponibile dopo l'aggiornamento dati.</div>`;
+  // il grafico del settore dalla data d'ingresso ha senso SOLO per i settori in trend
+  if(strong){
+    if(perf&&perf.series&&perf.series.length>1){
+      const col=perf.perf>=0?'var(--green)':'var(--red)';
+      chartBlock=`<div class="sec-perf-row"><span class="sec-perf-lbl">performance dal ${fp(perf.entry_date)}</span>
+        <span class="sec-perf-val" style="color:${col}">${perf.perf>=0?'+':''}${perf.perf.toFixed(1)}%</span></div>
+        <div class="sec-chart">${sectorChartSVG(perf.series)}</div>`;
+    }else{
+      chartBlock=`<div class="sub" style="font-size:9px;color:var(--txt-faint)">Grafico disponibile dopo l'aggiornamento dati.</div>`;
+    }
   }
   const titoli=names.length
     ? `<div class="sec-stocks-h">titoli del settore (esemplificativi)</div>
@@ -455,7 +458,7 @@ function attachSectorClicks(){
       }
       document.querySelectorAll('.stock-panel').forEach(p=>p.remove());
       document.querySelectorAll('.tm-row.open-sec').forEach(r=>r.classList.remove('open-sec'));
-      const html=sectorPanelHTML(sec);
+      const html=sectorPanelHTML(sec, row.dataset.strong==='1');
       if(html){
         row.insertAdjacentHTML('afterend',html);
         row.classList.add('open-sec');
