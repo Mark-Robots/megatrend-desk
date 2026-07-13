@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-12T07:57:05Z",
+  "updated_at": "2026-07-13T08:45:18Z",
   "mode": "long_only_dmi_d1d2",
   "assets": {
     "BTC": {
@@ -10,14 +10,14 @@
       "n_trades": 11
     },
     "ETH": {
-      "perf_week": 1.75,
-      "perf_month": 2.89,
-      "perf_ytd": 2.52,
+      "perf_week": 1.72,
+      "perf_month": 2.34,
+      "perf_ytd": 1.97,
       "in_position": true,
       "n_trades": 9
     },
     "SOL": {
-      "perf_week": -2.82,
+      "perf_week": -2.31,
       "perf_month": 0.18,
       "perf_ytd": 1.91,
       "in_position": false,
@@ -25,9 +25,9 @@
     }
   },
   "portfolio": {
-    "perf_week": -0.36,
-    "perf_month": 1.02,
-    "perf_ytd": 2.69,
+    "perf_week": -0.2,
+    "perf_month": 0.84,
+    "perf_ytd": 2.5,
     "n_assets": 3
   }
 }
