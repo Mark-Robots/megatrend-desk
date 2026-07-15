@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-07-15T16:31:48.254277+00:00",
+ "updated_at": "2026-07-15T18:31:41.645925+00:00",
  "last_bar": "2026-07-10",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -22,13 +22,13 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "CSCO",
-     "ticker_name": "Cisco",
+     "ticker": "AMD",
+     "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 0.55,
-     "roc13": 48.1,
-     "score": 61.7,
+     "roc4": 9.05,
+     "roc13": 127.67,
+     "score": 189.0,
      "tag": "top_momentum"
     },
     {
@@ -180,13 +180,13 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "TXN",
-     "ticker_name": "Texas Instruments",
+     "ticker": "AMD",
+     "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 3.43,
-     "roc13": 45.78,
-     "score": 16.1,
+     "roc4": 9.05,
+     "roc13": 127.67,
+     "score": 44.6,
      "tag": "top_momentum"
     },
     {
@@ -198,13 +198,13 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "AMAT",
-     "ticker_name": "Applied Materials",
+     "ticker": "AMD",
+     "ticker_name": "AMD",
      "held_ticker": "MU",
      "held_name": "Micron",
-     "roc4": 6.21,
-     "roc13": 51.0,
-     "score": 19.6,
+     "roc4": 9.05,
+     "roc13": 127.67,
+     "score": 44.6,
      "tag": "top_momentum"
     },
     {
