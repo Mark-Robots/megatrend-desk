@@ -1,6 +1,6 @@
 {
- "updated_at": "2026-07-16T18:31:25.655719+00:00",
- "last_bar": "2026-07-10",
+ "updated_at": "2026-07-17T14:31:13.192259+00:00",
+ "last_bar": "2026-07-17",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
   "balanced": {
@@ -9,6 +9,7 @@
     "EXV1.DE",
     "SOXX",
     "XLE",
+    "XLF",
     "XLI",
     "XLK"
    ],
@@ -26,9 +27,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 9.05,
-     "roc13": 127.67,
-     "score": 189.0,
+     "roc4": -9.1,
+     "roc13": 75.45,
+     "score": 129.7,
      "tag": "top_momentum"
     },
     {
@@ -44,28 +45,28 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": -0.22,
-     "roc13": 132.88,
-     "score": 354.8,
+     "roc4": -23.32,
+     "roc13": 91.09,
+     "score": 319.2,
      "tag": "top_momentum"
     },
     {
      "sector": "XLF",
      "name": "Finanziari USA",
-     "in_now": false,
-     "was_in": false,
+     "in_now": true,
+     "was_in": true,
      "move": null,
      "borderline": false,
-     "state": "Debole",
+     "state": "Emergente",
      "stage": "2",
-     "ticker": "MS",
-     "ticker_name": "Morgan Stanley",
-     "held_ticker": null,
-     "held_name": null,
-     "roc4": 3.85,
-     "roc13": 25.8,
-     "score": 39.5,
-     "tag": "top_momentum"
+     "ticker": "GS",
+     "ticker_name": "Goldman Sachs",
+     "held_ticker": "GS",
+     "held_name": "Goldman Sachs",
+     "roc4": -1.66,
+     "roc13": 16.98,
+     "score": 32.3,
+     "tag": "premium_ok"
     },
     {
      "sector": "XLV",
@@ -80,9 +81,9 @@
      "ticker_name": "UnitedHealth",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 4.53,
-     "roc13": 40.32,
-     "score": 41.5,
+     "roc4": 6.76,
+     "roc13": 32.62,
+     "score": 41.8,
      "tag": "top_momentum"
     },
     {
@@ -98,9 +99,9 @@
      "ticker_name": "Caterpillar",
      "held_ticker": "CAT",
      "held_name": "Caterpillar",
-     "roc4": 4.59,
-     "roc13": 20.69,
-     "score": 67.3,
+     "roc4": -11.17,
+     "roc13": 10.41,
+     "score": 51.8,
      "tag": "premium_ok"
     },
     {
@@ -116,10 +117,10 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 8.51,
-     "roc13": 18.09,
-     "score": 46.1,
-     "tag": "premium_ok"
+     "roc4": 29.23,
+     "roc13": 37.18,
+     "score": 68.0,
+     "tag": "top_momentum"
     },
     {
      "sector": "EXV1.DE",
@@ -134,9 +135,9 @@
      "ticker_name": "Monte dei Paschi",
      "held_ticker": "UCG.MI",
      "held_name": "UniCredit",
-     "roc4": 5.15,
-     "roc13": 53.55,
-     "score": 63.9,
+     "roc4": 1.72,
+     "roc13": 33.99,
+     "score": 50.3,
      "tag": "top_momentum"
     },
     {
@@ -152,9 +153,9 @@
      "ticker_name": "Poste Italiane",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 4.74,
-     "roc13": 37.14,
-     "score": 49.3,
+     "roc4": -1.28,
+     "roc13": 27.32,
+     "score": 41.6,
      "tag": "top_momentum"
     }
    ],
@@ -167,6 +168,7 @@
     "EXV1.DE",
     "SOXX",
     "XLE",
+    "XLF",
     "XLI",
     "XLK"
    ],
@@ -180,14 +182,14 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "AMD",
-     "ticker_name": "AMD",
+     "ticker": "AAPL",
+     "ticker_name": "Apple",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 9.05,
-     "roc13": 127.67,
-     "score": 44.6,
-     "tag": "top_momentum"
+     "roc4": 11.65,
+     "roc13": 23.24,
+     "score": 15.1,
+     "tag": "premium_ok"
     },
     {
      "sector": "SOXX",
@@ -202,28 +204,28 @@
      "ticker_name": "AMD",
      "held_ticker": "MU",
      "held_name": "Micron",
-     "roc4": 9.05,
-     "roc13": 127.67,
-     "score": 44.6,
+     "roc4": -9.1,
+     "roc13": 75.45,
+     "score": 16.3,
      "tag": "top_momentum"
     },
     {
      "sector": "XLF",
      "name": "Finanziari USA",
-     "in_now": false,
-     "was_in": false,
+     "in_now": true,
+     "was_in": true,
      "move": null,
      "borderline": false,
-     "state": "Debole",
+     "state": "Emergente",
      "stage": "2",
-     "ticker": "MS",
-     "ticker_name": "Morgan Stanley",
-     "held_ticker": null,
-     "held_name": null,
-     "roc4": 3.85,
-     "roc13": 25.8,
-     "score": 10.4,
-     "tag": "top_momentum"
+     "ticker": "BAC",
+     "ticker_name": "Bank of America",
+     "held_ticker": "BAC",
+     "held_name": "Bank of America",
+     "roc4": 10.11,
+     "roc13": 15.38,
+     "score": 11.7,
+     "tag": "premium_ok"
     },
     {
      "sector": "XLV",
@@ -234,14 +236,14 @@
      "borderline": false,
      "state": "Debole",
      "stage": "2",
-     "ticker": "UNH",
-     "ticker_name": "UnitedHealth",
+     "ticker": "ABBV",
+     "ticker_name": "AbbVie",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 4.53,
-     "roc13": 40.32,
-     "score": 15.3,
-     "tag": "top_momentum"
+     "roc4": 19.89,
+     "roc13": 24.55,
+     "score": 21.3,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLI",
@@ -252,14 +254,14 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "GE",
-     "ticker_name": "General Electric",
+     "ticker": "UNP",
+     "ticker_name": "Union Pacific",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 7.28,
-     "roc13": 16.66,
-     "score": 10.1,
-     "tag": "premium_ok"
+     "roc4": 17.68,
+     "roc13": 21.0,
+     "score": 18.7,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLE",
@@ -274,9 +276,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 7.65,
-     "roc13": 27.94,
-     "score": 13.7,
+     "roc4": 28.32,
+     "roc13": 46.42,
+     "score": 33.8,
      "tag": "top_momentum"
     },
     {
@@ -292,9 +294,9 @@
      "ticker_name": "Mediobanca",
      "held_ticker": "UCG.MI",
      "held_name": "UniCredit",
-     "roc4": 5.47,
-     "roc13": 55.1,
-     "score": 20.4,
+     "roc4": 2.17,
+     "roc13": 33.93,
+     "score": 11.7,
      "tag": "top_momentum"
     },
     {
@@ -310,10 +312,10 @@
      "ticker_name": "Unipol",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 9.42,
-     "roc13": 29.06,
-     "score": 15.3,
-     "tag": "top_momentum"
+     "roc4": 6.61,
+     "roc13": 21.21,
+     "score": 11.0,
+     "tag": "premium_ok"
     }
    ],
    "ingressi": [],
