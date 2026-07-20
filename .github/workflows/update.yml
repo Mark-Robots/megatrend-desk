@@ -24,73 +24,47 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install yfinance pandas numpy
-      - name: Show working directory before scripts
-        run: |
-          echo "=== Working directory ==="
-          pwd
-          echo "=== Repo structure ==="
-          ls -la
-          echo "=== data/ contents ==="
-          ls -la data/ 2>&1 || echo "data/ does not exist"
-          echo "=== scripts/ contents ==="
-          ls -la scripts/
       - name: Run ETF sector update script
         run: |
           echo "=== Running update_data.py ==="
           python scripts/update_data.py
-          echo "=== After update_data.py: data/ contents ==="
-          ls -la data/ 2>&1 || echo "data/ does not exist"
       - name: Run stocks update script
         run: |
           echo "=== Running update_stocks.py ==="
           python scripts/update_stocks.py
           echo "=== EXIT CODE: $? ==="
-          echo "=== After update_stocks.py: data/ contents ==="
-          ls -la data/ 2>&1 || echo "data/ does not exist"
       - name: Final check generated files
         run: |
-          echo "=== Final data/ contents ==="
-          ls -la data/ 2>&1
           echo "=== Sizes ==="
-          for f in data/sector_data.json data/stocks_data.json data/ranking_history.json data/stocks_state.json; do
+          for f in data/sector_data.json data/stocks_data.json data/ranking_history.json; do
             if [ -f "$f" ]; then
               echo "EXISTS: $f ($(wc -c < "$f") bytes)"
             else
               echo "MISSING: $f"
             fi
           done
-          echo "=== Git status ==="
-          git status
       - name: Commit and push changes
         run: |
           echo "=== Commit and push ==="
           git config --global user.name 'Megatrend Bot'
           git config --global user.email 'bot@users.noreply.github.com'
-          echo "Files before add:"
-          git status --short
           git add data/*.json 2>/dev/null || true
-          echo "Files staged after add:"
-          git status --short
           if git diff --staged --quiet; then
-            echo "ATTENZIONE: Nessuna modifica staged dopo git add!"
-            echo "Verifico se i file esistono fisicamente:"
-            ls -la data/ 2>&1
+            echo "Nessuna modifica da committare."
             exit 0
           fi
           git commit -m "Auto-update: $(date -u +'%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
             if git push; then
-              echo "✓ Push riuscito al tentativo $i"
+              echo "OK push al tentativo $i"
               exit 0
             fi
-            echo "✗ Push tentativo $i fallito"
-            git fetch origin main
-            git reset --hard origin/main
-            git add data/*.json 2>/dev/null || true
-            if ! git diff --staged --quiet; then
-              git commit -m "Auto-update retry $i"
-            fi
-            sleep $((i * 2))
+            echo "Push $i fallito: riallineo SENZA perdere i file generati"
+            git pull --rebase -X ours origin main || {
+              echo "rebase fallito, provo merge preservando i miei file"
+              git merge -X ours origin/main -m "merge auto-update"
+            }
+            sleep $((i * 3))
           done
-          echo "ERROR: push fallito"
+          echo "ERROR: push fallito dopo 5 tentativi"
           exit 1
