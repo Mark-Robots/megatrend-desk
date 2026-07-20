@@ -2597,11 +2597,52 @@ function renderPieChart(opens, cashPct) {
   if (cashPct > 0.1) {
     labels.push('Cash');
     data.push(cashPct);
-    colors.push('#6b7280');
+    colors.push('#ffcf3a');
   }
+
+  // Plugin: rende TUTTA la fetta cash luminosa (glow) e scrive "Cash NN%" centrato
+  const cashLabelPlugin = {
+    id: 'cashLabel',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      const meta = chart.getDatasetMeta(0);
+      const idx = chart.data.labels.indexOf('Cash');
+      if (idx < 0 || !meta.data[idx]) return;
+      const arc = meta.data[idx];
+      const val = chart.data.datasets[0].data[idx];
+      const cx = arc.x, cy = arc.y, rIn = arc.innerRadius, rOut = arc.outerRadius;
+      const a0 = arc.startAngle, a1 = arc.endAngle, mid = (a0 + a1) / 2, rMid = (rIn + rOut) / 2;
+      const lx = cx + Math.cos(mid) * rMid, ly = cy + Math.sin(mid) * rMid;
+      // bagliore attorno all'intera fetta
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, rOut, a0, a1); ctx.arc(cx, cy, rIn, a1, a0, true); ctx.closePath();
+      ctx.shadowColor = 'rgba(255,214,90,0.9)'; ctx.shadowBlur = 22;
+      ctx.fillStyle = '#ffd24a'; ctx.fill(); ctx.fill();
+      ctx.restore();
+      // gradiente oro brillante
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, rOut, a0, a1); ctx.arc(cx, cy, rIn, a1, a0, true); ctx.closePath();
+      const g = ctx.createRadialGradient(cx, cy, rIn, cx, cy, rOut);
+      g.addColorStop(0, '#ffe89a'); g.addColorStop(1, '#ffcf3a');
+      ctx.fillStyle = g; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#11151c'; ctx.stroke();
+      ctx.restore();
+      // testo centrato nella fetta
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#3a2a05';
+      ctx.font = "700 11px 'JetBrains Mono', monospace";
+      ctx.fillText('Cash', lx, ly - 6);
+      ctx.font = "700 12px 'JetBrains Mono', monospace";
+      ctx.fillText(val.toFixed(1) + '%', lx, ly + 7);
+      ctx.restore();
+    }
+  };
 
   pieChartInstance = new Chart(canvas.getContext('2d'), {
     type: 'doughnut',
+    plugins: [cashLabelPlugin],
     data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#11151c' }] },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '62%',
