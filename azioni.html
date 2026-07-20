@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Megatrend Sentinel Azioni · Report Cliente</title>
+<title>Megatrend Equity · Report Cliente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -1564,7 +1564,7 @@ body.modal-open { overflow: hidden; }
   <div class="header">
     <div class="header-left">
       <div class="header-brand">
-        <svg class="logo-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Megatrend Sentinel">
+        <svg class="logo-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Megatrend Equity">
           <!-- 3 esagoni pointy-top concentrici -->
           <g fill="none" stroke-linejoin="round" stroke-linecap="round">
             <polygon points="100,15 173.6,57.5 173.6,142.5 100,185 26.4,142.5 26.4,57.5" stroke="#cfd5de" stroke-width="1.6"/>
@@ -1582,7 +1582,7 @@ body.modal-open { overflow: hidden; }
           <circle cx="100" cy="100" r="13" fill="none" stroke="#6e9ed1" stroke-width="2.2"/>
           <circle cx="100" cy="100" r="5" fill="#2d3a52"/>
         </svg>
-        <h1>Megatrend Sentinel <span class="accent">Azioni</span></h1>
+        <h1>Megatrend <span class="accent">Equity</span></h1>
       </div>
     </div>
     <div class="header-right">
@@ -1602,7 +1602,7 @@ body.modal-open { overflow: hidden; }
     <div class="storico-modal" role="dialog" aria-modal="true" aria-labelledby="funzionamento-modal-title">
       <div class="storico-modal-header">
         <div>
-          <div class="storico-modal-title" id="funzionamento-modal-title">Come funziona il sistema Megatrend Sentinel Azioni</div>
+          <div class="storico-modal-title" id="funzionamento-modal-title">Come funziona il sistema Megatrend Equity</div>
           <div class="storico-modal-subtitle">
             Spiegazione completa della logica: timing settoriale ereditato, selezione automatica della migliore azione del settore, doppia modalità Aggressive/Adaptive.
           </div>
@@ -1611,14 +1611,14 @@ body.modal-open { overflow: hidden; }
       </div>
       <div class="storico-modal-body">
         <p class="how-intro">
-          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing degli <b>8 settori operativi</b> del sistema Megatrend Sentinel ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
+          Il sistema seleziona automaticamente <b>la migliore azione di ogni settore</b> tra ~250 titoli (S&P 500 + FTSE MIB), seguendo il timing degli <b>8 settori operativi</b> del sistema Megatrend ETF. Quando un settore entra in fase IN → compra la migliore azione del settore; quando esce → vende.
         </p>
         <div class="how-steps">
           <div class="how-step">
             <div class="how-step-num">1</div>
             <div class="how-step-body">
               <div class="how-step-title">Timing settoriale ereditato dal sistema ETF</div>
-              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend Sentinel ETF sugli 8 settori operativi: 6 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
+              <div class="how-step-text">Il sistema azioni utilizza gli <b>stessi segnali</b> del Megatrend ETF sugli 8 settori operativi: 6 USA (XLK Tecnologia, SOXX Semi, XLF Finanziari, XLV Sanità, XLI Industriali, XLE Energia) + 2 EU (EXV1 Banche EU, EXH5 Assicurazioni). Quando un settore è IN → si compra; quando esce → si vende. Identici giorni di entrata/uscita.</div>
             </div>
           </div>
           <div class="how-step">
@@ -1933,7 +1933,7 @@ body.modal-open { overflow: hidden; }
       <b>Disclaimer.</b> Le informazioni contenute in questa dashboard hanno natura puramente illustrativa e tecnico-quantitativa: <b>non costituiscono consulenza finanziaria personalizzata</b>, sollecitazione all'investimento, né raccomandazione di acquisto o vendita di strumenti finanziari ai sensi della normativa MiFID II / Regolamento Consob. I dati storici e le simulazioni mostrate non garantiscono risultati futuri. Le performance del backtest sono <b>al lordo di commissioni e tassazione</b> e assumono un cash al rendimento impostato durante i periodi di disinvestimento. Ogni decisione di investimento è di esclusiva responsabilità del cliente, che deve valutare attentamente il proprio profilo di rischio, l'orizzonte temporale e gli obiettivi finanziari prima di operare sui mercati. Le scelte di portafoglio e le configurazioni mostrate riflettono il sistema personale di supporto operativo del consulente.
     </div>
     <div class="footer-meta">
-      <span>Megatrend Sentinel Azioni · © MarkRobots</span>
+      <span>Megatrend Equity · © MarkRobots</span>
       <span>Dashboard aggiornata automaticamente · dati Yahoo Finance</span>
     </div>
     <div class="official-badge">
@@ -2399,7 +2399,7 @@ function renderEquityChart(st) {
       labels: labels,
       datasets: [
         {
-          label: 'Sistema Megatrend Sentinel',
+          label: 'Megatrend Equity',
           data: sysData,
           borderColor: '#5b9dff',
           backgroundColor: 'rgba(91,157,255,0.06)',
