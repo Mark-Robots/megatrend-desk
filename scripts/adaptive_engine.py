@@ -287,6 +287,11 @@ def main():
                       auto_adjust=True, progress=False)
     prices = raw['Close']
     dollar_vol = raw['Close'] * raw['Volume']
+    # Allineo alla STESSA griglia W-FRI + remap calendari di update_stocks,
+    # così Adaptio, Azioni ed ETF condividono ESATTAMENTE gli stessi giorni IN/OUT.
+    print("[ADAPTIVE] allineo date alla griglia settimanale di update_stocks...")
+    prices = us.align_weekly_index(prices, us.BACKTEST_START)
+    dollar_vol = us.align_weekly_index(dollar_vol, us.BACKTEST_START)
     print(f"[ADAPTIVE] prezzi: {prices.shape[1]} x {prices.shape[0]} settimane")
 
     out = {

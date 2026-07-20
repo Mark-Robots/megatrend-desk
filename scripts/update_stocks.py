@@ -238,6 +238,45 @@ def is_operational_in_base(state, stage):
     return state in ('Leader', 'Emergente', 'In rallentamento') and stage in ('1', '2', '3')
 
 
+def align_weekly_index(df, start=BACKTEST_START):
+    """Allinea un DataFrame settimanale alla griglia W-FRI + remap calendari USA+IT.
+    Estratto da fetch_all_prices per essere riusato da adaptive_engine (stessa griglia
+    date → ETF, Azioni e Adaptive condividono ESATTAMENTE gli stessi giorni IN/OUT)."""
+    if df is None or df.empty:
+        return df
+    if df.index.tz is not None:
+        df.index = df.index.tz_localize(None)
+    df = df.resample('W-FRI').last().dropna(how='all')
+    # scarto le settimane in corso (W-FRI label > oggi)
+    today = pd.Timestamp.now().normalize()
+    df = df[df.index <= today]
+    # ri-etichetto all'ultimo giorno di trading USA o IT (unione calendari)
+    try:
+        cal_usa = yf.download(US_BENCHMARK, start=start, interval='1d',
+                              auto_adjust=True, progress=False)
+        cal_it = yf.download('ENI.MI', start=start, interval='1d',
+                             auto_adjust=True, progress=False)
+
+        def normalize_idx(d):
+            if d.empty: return pd.DatetimeIndex([])
+            if d.index.tz is not None: d.index = d.index.tz_localize(None)
+            col = d['Close'] if 'Close' in d.columns else d.iloc[:, 0]
+            return col.dropna().index if hasattr(col, 'dropna') else col.index
+
+        usa_dates = set(normalize_idx(cal_usa))
+        it_dates = set(normalize_idx(cal_it))
+        union_dates = sorted(usa_dates | it_dates)
+        if union_dates:
+            union_series = pd.Series(1, index=pd.DatetimeIndex(union_dates))
+            last_td_per_week = (union_series.groupby(pd.Grouper(freq='W-FRI'))
+                                            .apply(lambda x: x.index.max() if len(x) > 0 else pd.NaT))
+            mapping = {fri: ltd for fri, ltd in last_td_per_week.items() if pd.notna(ltd)}
+            df.index = pd.DatetimeIndex([mapping.get(d, d) for d in df.index])
+    except Exception as e:
+        print(f"[ALIGN] ⚠ Impossibile rimappare festivi (uso venerdì calendario): {e}")
+    return df
+
+
 def fetch_all_prices(start=BACKTEST_START):
     all_tickers = set()
     for tks in US_UNIVERSE.values():
@@ -262,64 +301,8 @@ def fetch_all_prices(start=BACKTEST_START):
         except KeyError:
             close = df['Close']
     close = close.dropna(how='all')
-    # Allinea l'indice al VENERDÌ (close della settimana) — stesso comportamento di update_data.py
-    if close.index.tz is not None:
-        close.index = close.index.tz_localize(None)
-    close = close.resample('W-FRI').last().dropna(how='all')
-    
-    # PRIMA del rimapping ai trading days: scarta le settimane con W-FRI label > oggi.
-    # Esempio: oggi è giovedì 04/06 → la W-FRI 05/06 è ancora futura (mercato non ha chiuso il venerdì)
-    # → quella settimana NON deve essere inclusa nel backtest, perché il prezzo è intra-settimana.
-    # Includiamo solo settimane il cui venerdì è già passato (o è oggi se è venerdì).
-    today = pd.Timestamp.now().normalize()
-    mask_completed = close.index <= today
-    n_future = (~mask_completed).sum()
-    if n_future > 0:
-        last_future = close.index[-1]
-        print(f"[FETCH] Scarto {n_future} settimana/e in corso (W-FRI > oggi): ultima = {last_future.date()}")
-        close = close[mask_completed]
-    
-    # Ri-etichetta l'indice all'ULTIMO GIORNO EFFETTIVO DI TRADING della settimana,
-    # combinando i calendari USA (SPY) e IT (ENI.MI). Una settimana viene etichettata
-    # all'ultimo giorno in cui ALMENO UNA delle due borse era aperta.
-    # Esempi:
-    #   - Good Friday (USA e IT entrambe chiuse) → settimana mappata a giovedì
-    #   - 1 maggio venerdì (IT chiusa, USA aperta) → settimana mappata a venerdì
-    #   - 4 luglio venerdì (USA chiusa, IT aperta) → settimana mappata a venerdì
     print("[FETCH] Allineo date all'ultimo giorno di trading USA o IT (unione calendari)...")
-    try:
-        # Calendario USA (SPY) + Calendario IT (ENI.MI super liquido)
-        cal_usa = yf.download(US_BENCHMARK, start=start, interval='1d',
-                              auto_adjust=True, progress=False)
-        cal_it = yf.download('ENI.MI', start=start, interval='1d',
-                             auto_adjust=True, progress=False)
-        
-        def normalize_idx(df):
-            if df.empty: return pd.DatetimeIndex([])
-            if df.index.tz is not None: df.index = df.index.tz_localize(None)
-            col = df['Close'] if 'Close' in df.columns else df.iloc[:, 0]
-            return col.dropna().index if hasattr(col, 'dropna') else col.index
-        
-        usa_dates = set(normalize_idx(cal_usa))
-        it_dates = set(normalize_idx(cal_it))
-        # Unione: settimana è aperta se almeno una delle due borse ha trading quel giorno
-        union_dates = sorted(usa_dates | it_dates)
-        
-        if union_dates:
-            union_series = pd.Series(1, index=pd.DatetimeIndex(union_dates))
-            last_td_per_week = (union_series.groupby(pd.Grouper(freq='W-FRI'))
-                                            .apply(lambda x: x.index.max() if len(x) > 0 else pd.NaT))
-            mapping = {fri: ltd for fri, ltd in last_td_per_week.items() if pd.notna(ltd)}
-            new_index = [mapping.get(d, d) for d in close.index]
-            
-            shifted = sum(1 for orig, new in zip(close.index, new_index)
-                          if new != orig)
-            close.index = pd.DatetimeIndex(new_index)
-            print(f"[FETCH] ✓ Calendari: USA {len(usa_dates)} giorni, IT {len(it_dates)} giorni, "
-                  f"unione {len(union_dates)} giorni. Settimane shiftate: {shifted}")
-    except Exception as e:
-        print(f"[FETCH] ⚠ Impossibile rimappare festivi (uso venerdì calendario): {e}")
-    
+    close = align_weekly_index(close, start)
     missing = [t for t in all_tickers if t not in close.columns]
     if missing:
         print(f"[FETCH] ⚠ Mancanti: {missing}")
