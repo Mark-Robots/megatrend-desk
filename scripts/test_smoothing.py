@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-TEST SMOOTHING — confronta il backtest Adaptive CON smoothing (3 settimane, come
-l'ETF) vs SENZA smoothing (anticipa, come le azioni "prima").
+TEST SMOOTHING SWEEP — gira il backtest Adaptive per OGNI tolleranza di smoothing
+da 0 (anticipa, nessun liscio) a 5 settimane, e stampa la tabella completa.
 
-Gira l'engine due volte cambiando SOLO lo smoothing e stampa le metriche affiancate.
-NON modifica nessun file di produzione: intercetta la funzione di smoothing a runtime.
-Mettilo nella cartella scripts/ accanto a update_stocks.py e lancia:
-    python test_smoothing.py
+Serve a vedere se il sistema e' STABILE intorno al valore scelto (altopiano = buono)
+o se un solo valore svetta (picco fragile = sospetto curve-fitting).
+
+NON modifica file di produzione: intercetta lo smoothing a runtime.
+Mettilo in scripts/ e lancia:  python scripts/test_smoothing.py
 """
 import os
 import sys
@@ -17,6 +18,9 @@ import update_stocks as us
 import sector_baskets as sb
 import adaptive_engine as ae
 
+# la funzione di smoothing originale (per ripristino)
+_ORIG_SMOOTH = us.smooth_signal_binary
+
 
 def scarica_dati():
     tickers = set()
@@ -26,7 +30,7 @@ def scarica_dati():
     tickers.add(us.US_BENCHMARK); tickers.add(us.EU_BENCHMARK)
     tickers.add(us.CASH_TICKER); tickers.add(us.WORLD_TICKER)
     tickers = sorted(tickers)
-    print(f"Scarico {len(tickers)} ticker una volta sola...")
+    print(f"Scarico {len(tickers)} ticker una volta sola...\n")
     raw = yf.download(tickers, start=us.BACKTEST_START, interval='1wk',
                       auto_adjust=True, progress=False)
     prices = raw['Close']
@@ -36,62 +40,60 @@ def scarica_dati():
     return prices, dollar_vol
 
 
-def gira(prices, dollar_vol, smoothing_on):
-    originale = us.smooth_signal_binary
-    if not smoothing_on:
-        us.smooth_signal_binary = lambda signals, tolerance_weeks=3: list(signals)
+def gira_con_tolleranza(prices, dollar_vol, tol):
+    # forzo lo smoothing alla tolleranza data (tol=0 => nessun liscio)
+    us.smooth_signal_binary = (lambda signals, tolerance_weeks=3, _t=tol:
+                               _ORIG_SMOOTH(signals, tolerance_weeks=_t))
     try:
         r = ae.build_full_output(prices, dollar_vol, 'aggressive')
     finally:
-        us.smooth_signal_binary = originale
+        us.smooth_signal_binary = _ORIG_SMOOTH
     return r['stats'], len(r['current_positions'])
 
 
 def main():
-    print("=" * 66)
-    print("TEST SMOOTHING — Adaptive: CON (3 sett, come ETF) vs SENZA (anticipa)")
-    print("=" * 66)
+    print("=" * 78)
+    print("TEST SMOOTHING SWEEP — Adaptive, tolleranza 0..5 settimane")
+    print("(0 = anticipa / nessun liscio ; 3 = attuale)")
+    print("=" * 78)
     prices, dollar_vol = scarica_dati()
 
-    print("Giro CON smoothing...")
-    on, pos_on = gira(prices, dollar_vol, True)
-    print("Giro SENZA smoothing (anticipa)...")
-    off, pos_off = gira(prices, dollar_vol, False)
+    rows = []
+    for tol in range(0, 6):
+        print(f"Giro tolleranza {tol}...")
+        st, pos = gira_con_tolleranza(prices, dollar_vol, tol)
+        rows.append((tol, st, pos))
 
-    def r(lbl, k, fmt="{:+.2f}", sfx=""):
-        try:
-            a = fmt.format(on.get(k, 0)) + sfx
-            b = fmt.format(off.get(k, 0)) + sfx
-        except Exception:
-            a, b = str(on.get(k)), str(off.get(k))
-        print(f"  {lbl:24} {a:>15} {b:>15}")
-
-    print("\n" + "=" * 66)
-    print(f"  {'METRICA':24} {'CON smoothing':>15} {'SENZA (antic.)':>15}")
-    print("-" * 66)
-    r("Rendimento totale", "total_return", "{:+.2f}", "%")
-    r("CAGR", "cagr", "{:+.2f}", "%")
-    r("Sharpe", "sharpe", "{:.2f}")
-    r("Max Drawdown", "max_drawdown", "{:.2f}", "%")
-    r("Win Rate", "win_rate", "{:.1f}", "%")
-    r("Profit/Loss ratio", "profit_loss_ratio", "{:.2f}")
-    r("Operazioni totali", "n_operations_total", "{:.0f}")
-    print(f"  {'Posizioni aperte ora':24} {pos_on:>15} {pos_off:>15}")
-    print("=" * 66)
-
-    dr = off.get('total_return', 0) - on.get('total_return', 0)
-    dd = off.get('max_drawdown', 0) - on.get('max_drawdown', 0)
-    dop = off.get('n_operations_total', 0) - on.get('n_operations_total', 0)
-    sh_on, sh_off = on.get('sharpe', 0), off.get('sharpe', 0)
-    print("\nLETTURA (anticipare rispetto a tenere lo smoothing):")
-    print(f"  rendimento: {dr:+.1f} punti")
-    print(f"  max drawdown: {dd:+.1f} punti (negativo = peggiora)")
-    print(f"  operazioni: {dop:+.0f} (i whipsaw brevi che rientrano)")
-    print(f"  Sharpe: {sh_on:.2f} vs {sh_off:.2f} -> "
-          f"{'ANTICIPARE meglio' if sh_off > sh_on + 0.03 else 'SMOOTHING meglio' if sh_on > sh_off + 0.03 else 'sostanzialmente pari'}")
+    print("\n" + "=" * 78)
+    print(f"  {'TOL':>4} {'Rend.tot':>10} {'CAGR':>8} {'Sharpe':>8} "
+          f"{'MaxDD':>9} {'WinR':>7} {'P/L':>6} {'Op':>5} {'Pos':>5}")
+    print("-" * 78)
+    for tol, st, pos in rows:
+        star = " *" if tol == 3 else "  "
+        print(f"  {tol:>4}{star}"
+              f"{st.get('total_return',0):>9.1f}%"
+              f"{st.get('cagr',0):>7.1f}%"
+              f"{st.get('sharpe',0):>8.2f}"
+              f"{st.get('max_drawdown',0):>8.1f}%"
+              f"{st.get('win_rate',0):>6.1f}%"
+              f"{(st.get('profit_loss_ratio') or 0):>6.2f}"
+              f"{st.get('n_operations_total',0):>5.0f}"
+              f"{pos:>5}")
+    print("=" * 78)
+    print("* = valore attuale in produzione (3)")
     print()
-    print("Ricorda il principio: se i numeri sono simili, la scelta piu robusta")
-    print("e quella con meno operazioni e drawdown minore (meno whipsaw).")
+
+    # trovo il miglior Sharpe e il miglior rendimento
+    best_sharpe = max(rows, key=lambda x: x[1].get('sharpe', 0))
+    best_ret = max(rows, key=lambda x: x[1].get('total_return', 0))
+    print(f"Miglior Sharpe:     tolleranza {best_sharpe[0]} "
+          f"(Sharpe {best_sharpe[1].get('sharpe',0):.2f})")
+    print(f"Miglior rendimento: tolleranza {best_ret[0]} "
+          f"(+{best_ret[1].get('total_return',0):.1f}%)")
+    print()
+    print("COME LEGGERE: cerca un ALTOPIANO, non un picco. Se 2-3-4 danno")
+    print("valori simili, il sistema e' robusto e 3 va bene. Se un solo")
+    print("valore svetta e gli altri crollano, e' fortuna, non segnale.")
 
 
 if __name__ == '__main__':
