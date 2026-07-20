@@ -1,0 +1,24 @@
+name: Test Smoothing (diagnostica)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install yfinance pandas numpy
+      - name: Run smoothing comparison
+        run: |
+          echo "=== TEST SMOOTHING ON vs OFF ==="
+          python scripts/test_smoothing.py
