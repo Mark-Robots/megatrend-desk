@@ -353,7 +353,7 @@ const SECTOR_STOCKS={
   EXH4:['Siemens','Schneider Electric','ABB','Airbus'],
   XLF:['JPMorgan','Bank of America','Goldman Sachs','Visa']
 };
-const AZ_SECTORS=8;  // settori operativi Azioni (senza Consumi)
+const AZ_SECTORS=9;  // settori operativi Azioni (allineati agli ETF, con Consumi essenziali)
 
 function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');
   const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];return `${d} ${M[+m-1]} ${y}`;}
