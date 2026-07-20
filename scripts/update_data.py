@@ -388,11 +388,11 @@ def classify_quadrant(rs, mom):
     return 'Debole'
 
 
-def find_signal_dates(rrg_df, current_state, tolerance_weeks=3):
+def find_signal_dates(rrg_df, current_state, tolerance_weeks=4):
     """
     Trova la data di entrata nello stato corrente, con TOLLERANZA AI MICRO-RIMBALZI.
     
-    Un segnale si considera "continuativo" anche se attraversa brevemente (≤3 settimane
+    Un segnale si considera "continuativo" anche se attraversa brevemente (≤4 settimane
     consecutive) uno stato diverso. Questo evita che oscillazioni statistiche di RS-Momentum
     attorno alla soglia 100 facciano "resettare" segnali di lungo periodo (es. un settore
     stabilmente sopra RS-Ratio 100 ma con RS-Mom che oscilla 99-101 non perde l'etichetta
@@ -1536,7 +1536,7 @@ def compute_portfolio_equity(all_metrics, prices_df, ma_weeks=30):
 # ============================================================
 # Tolleranza temporale per smoothing del segnale base: ignora oscillazioni di durata
 # ≤ tolerance_weeks settimane consecutive (riduce whipsaw sulle soglie RS 100/100).
-SIGNAL_SMOOTHING_TOLERANCE_WEEKS = 3
+SIGNAL_SMOOTHING_TOLERANCE_WEEKS = 4
 TS_OPTIONS = ['off', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
