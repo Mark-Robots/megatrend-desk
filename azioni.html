@@ -1631,8 +1631,8 @@ body.modal-open { overflow: hidden; }
           <div class="how-step">
             <div class="how-step-num">3</div>
             <div class="how-step-body">
-              <div class="how-step-title">Doppia modalità Aggressive / Adaptive</div>
-              <div class="how-step-text">Tutti gli indicatori sono calcolati su <b>candela settimanale</b> (chiusura del venerdì). <b style="color:var(--accent-lag);">Aggressive</b> (default): per ogni settore in segnale sceglie l'azione col miglior momentum (score = ROC4w×0.7 + ROC13w×0.3), caccia i rally più freschi su panieri fissi di candidati. <b style="color:var(--accent-lead);">Adaptive</b>: stessa filosofia momentum, ma con due differenze — l'universo dei titoli candidati si <b>auto-aggiorna ogni 6 mesi</b> (i più liquidi per dollar-volume con ROC a 13 settimane positivo) e ogni posizione ha uno <b>stop-loss fisso −20%</b> sul prezzo di chiusura. Cambia la modalità nel riquadro Allocazione sopra al pie chart per confrontare i due scenari.</div>
+              <div class="how-step-title">Modalità Adaptive</div>
+              <div class="how-step-text">Tutti gli indicatori sono calcolati su <b>candela settimanale</b> (chiusura del venerdì). Per ogni settore in segnale, la modalità <b style="color:var(--accent-lead);">Adaptive</b> sceglie l'azione col miglior momentum (score = ROC4w×0.7 + ROC13w×0.3), con due caratteristiche distintive: l'universo dei titoli candidati si <b>auto-aggiorna ogni 6 mesi</b> (i più liquidi per dollar-volume con ROC a 13 settimane positivo) e ogni posizione ha uno <b>stop-loss fisso −20%</b> sul prezzo di chiusura.</div>
             </div>
           </div>
           <div class="how-step">
@@ -1662,9 +1662,7 @@ body.modal-open { overflow: hidden; }
     <div class="composition-grid">
       <div class="pie-container">
         <div class="pie-header pie-header-mode">
-          <span class="pie-mode-label">Modalità portafoglio</span>
-          <button class="preset-btn active pie-mode-btn" data-mode="aggressive">Aggressive</button>
-          <button class="preset-btn pie-mode-btn" data-mode="adaptive">Adaptive</button>
+          <span class="pie-mode-label">Portafoglio Adaptive</span>
         </div>
         <div class="pie-canvas-wrapper">
           <canvas id="pie-chart"></canvas>
@@ -1743,7 +1741,7 @@ body.modal-open { overflow: hidden; }
       <span class="window-badge" id="equity-window-badge"></span>
     </div>
     <div class="section-subtitle">
-      Simulazione su capitale iniziale di <b>100</b>. Ogni settore in segnale apre una posizione del <b>12.5% (1/8)</b> con la migliore azione del settore. La quota dei settori fuori segnale viene <b>parcheggiata in cash</b> al tasso annuo impostato qui sotto. La <b>modalità portafoglio</b> (Aggressive/Adaptive) determina quale azione viene scelta all'interno di ciascun settore in segnale. Confronto con <b style="color:var(--accent-world);">MSCI World</b>. Tutti gli indicatori (Sharpe, Max Drawdown, Win Rate, ecc.) sono <b>aggiornati in base alla finestra temporale selezionata</b>.
+      Simulazione su capitale iniziale di <b>100</b>. Ogni settore in segnale apre una posizione del <b>12.5% (1/8)</b> con la migliore azione del settore. La quota dei settori fuori segnale viene <b>parcheggiata in cash</b> al tasso annuo impostato qui sotto. Il portafoglio <b style="color:var(--accent-lead);">Adaptive</b> seleziona i titoli con universo auto-aggiornato e stop-loss −20%. Confronto con <b style="color:var(--accent-world);">MSCI World</b>. Tutti gli indicatori (Sharpe, Max Drawdown, Win Rate, ecc.) sono <b>aggiornati in base alla finestra temporale selezionata</b>.
     </div>
 
     <div class="controls-bar">
@@ -1954,7 +1952,7 @@ body.modal-open { overflow: hidden; }
 let DATA = null;          // Root JSON completo (modes.balanced + modes.aggressive)
 let DATA_ADAPTIVE = null; // Root JSON adaptive_data.json (modes.aggressive)
 let DATA_VIEW = null;     // Vista corrente: punta a DATA.modes[CURRENT_MODE]
-let CURRENT_MODE = 'aggressive';
+let CURRENT_MODE = 'adaptive';
 let DATE_RANGE = { start_idx: null, end_idx: null, preset: 'all' };
 let equityChartInstance = null;
 let cashChartInstance = null;
@@ -2060,17 +2058,14 @@ async function loadData() {
       if (ra.ok) DATA_ADAPTIVE = await ra.json();
     } catch (e) { console.warn('adaptive_data non disponibile:', e); }
 
-    // Vista iniziale: Aggressive statico
-    if (DATA.modes && DATA.modes.aggressive) {
-      DATA_VIEW = DATA.modes[CURRENT_MODE === 'adaptive'
-        ? null
-        : 'aggressive'] || DATA.modes.aggressive;
-      if (CURRENT_MODE === 'adaptive' && DATA_ADAPTIVE) {
-        DATA_VIEW = DATA_ADAPTIVE.modes.aggressive;
-      }
+    // Vista unica: Adaptive (da adaptive_data.json)
+    if (DATA_ADAPTIVE && DATA_ADAPTIVE.modes && DATA_ADAPTIVE.modes.aggressive) {
+      DATA_VIEW = DATA_ADAPTIVE.modes.aggressive;
+    } else if (DATA && DATA.modes && DATA.modes.aggressive) {
+      // fallback se adaptive_data non è disponibile
+      DATA_VIEW = DATA.modes.aggressive;
     } else {
       DATA_VIEW = DATA;
-      document.querySelectorAll('.preset-btn[data-mode]').forEach(b => b.style.display = 'none');
     }
     if (!DATA_VIEW.equity_curve || DATA_VIEW.equity_curve.length === 0) {
       console.error('Nessun dato equity_curve nel JSON');
