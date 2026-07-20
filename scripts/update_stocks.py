@@ -218,6 +218,30 @@ SECTORS_SYSTEM = (
 )
 
 
+def smooth_signal_binary(signals, tolerance_weeks=3):
+    """Liscia una serie binaria ignorando transizioni che durano ≤ tolerance_weeks
+    settimane consecutive. IDENTICA a smooth_signal_binary di update_data.py (ETF):
+    così le azioni entrano/escono QUANDO entra/esce l'ETF, non prima.
+    Tolerance=3: [F,F,T,T,F,F,...] (ingresso breve) → tutto F (cancellato).
+    Un ingresso vero viene confermato con ~3 settimane di ritardo, come nell'ETF."""
+    if not signals or len(signals) <= 1:
+        return list(signals)
+    smoothed = []
+    current = signals[0]
+    pending_count = 0
+    for s in signals:
+        if s == current:
+            pending_count = 0
+            smoothed.append(current)
+        else:
+            pending_count += 1
+            if pending_count > tolerance_weeks:
+                current = s
+                pending_count = 0
+            smoothed.append(current)
+    return smoothed
+
+
 def is_operational_in_base(state, stage):
     """
     REGOLA NO_BAD BASE: stessa di update_data.py · matrice 4×4.
@@ -402,7 +426,14 @@ def extract_signal_history_full(rrg_df, prices, ma_weeks=30):
     
     if not weekly_records:
         return []
-    
+
+    # SMOOTHING come l'ETF: liscio la serie binaria dei segnali con tolleranza 3 settimane.
+    # Così le azioni entrano/escono QUANDO entra/esce l'ETF (stesso timing), non prima.
+    raw_signals = [r['in'] for r in weekly_records]
+    smoothed_signals = smooth_signal_binary(raw_signals, tolerance_weeks=3)
+    for r, sm in zip(weekly_records, smoothed_signals):
+        r['in'] = sm
+
     # Raggruppa in periodi consecutivi (questo è cruciale: 1 periodo IN = 1 operazione)
     periods = []
     current = {
