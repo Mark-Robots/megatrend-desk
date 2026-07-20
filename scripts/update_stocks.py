@@ -213,7 +213,7 @@ STOCK_NAMES = {
 # Gli altri 24 settori sono "INFO_ONLY": niente operazioni nel backtest.
 # ============================================================
 SECTORS_SYSTEM = (
-    'XLK', 'SOXX', 'XLF', 'XLV', 'XLI', 'XLE',          # USA (6)
+    'XLK', 'SOXX', 'XLF', 'XLV', 'XLI', 'XLP', 'XLE',  # USA (7)
     'EXV1.DE', 'EXH5.DE',                               # EU (2)
 )
 
@@ -531,19 +531,26 @@ def select_best_at_week(sector_etf, prices_df, w_idx, universe, mode='balanced')
         if any_pos:
             any_pos.sort(key=lambda x: x['score'], reverse=True)
             return any_pos[0]
-        return None
-    
+        # Fallback finale: settore IN → compra comunque il "meno peggio"
+        # (score più alto anche se negativo). Così a ogni ingresso settoriale
+        # dell'ETF corrisponde sempre un ingresso azione in Equity.
+        scored.sort(key=lambda x: x['score'], reverse=True)
+        return scored[0]
+
     # Balanced: tutti i tag positivi
     positives = [s for s in scored if s['tag'] in POSITIVE_TAGS]
     if positives:
         positives.sort(key=lambda x: x['score'], reverse=True)
         return positives[0]
-    # Fallback finale: non disqualifying con score > 0
+    # Fallback: non disqualifying con score > 0
     fallback = [s for s in scored if s['tag'] not in DISQUALIFYING_TAGS and s['score'] > 0]
     if fallback:
         fallback.sort(key=lambda x: x['score'], reverse=True)
         return fallback[0]
-    return None
+    # Fallback finale: settore IN → compra comunque il "meno peggio"
+    # (score più alto anche se negativo). Garantisce un'azione per ogni settore IN.
+    scored.sort(key=lambda x: x['score'], reverse=True)
+    return scored[0]
 
 
 def run_backtest(prices, sector_etfs, mode='balanced'):
