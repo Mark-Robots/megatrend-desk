@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-07-17T18:31:21.093294+00:00",
+ "updated_at": "2026-07-20T14:31:16.041328+00:00",
  "last_bar": "2026-07-17",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -27,9 +27,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": -7.42,
-     "roc13": 78.71,
-     "score": 134.0,
+     "roc4": -7.74,
+     "roc13": 78.08,
+     "score": 133.2,
      "tag": "top_momentum"
     },
     {
@@ -45,9 +45,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": -22.54,
-     "roc13": 93.04,
-     "score": 323.4,
+     "roc4": -25.12,
+     "roc13": 86.58,
+     "score": 309.3,
      "tag": "top_momentum"
     },
     {
@@ -59,13 +59,13 @@
      "borderline": false,
      "state": "Emergente",
      "stage": "2",
-     "ticker": "GS",
-     "ticker_name": "Goldman Sachs",
-     "held_ticker": "GS",
-     "held_name": "Goldman Sachs",
-     "roc4": -2.19,
-     "roc13": 16.35,
-     "score": 31.6,
+     "ticker": "MS",
+     "ticker_name": "Morgan Stanley",
+     "held_ticker": "MS",
+     "held_name": "Morgan Stanley",
+     "roc4": -3.44,
+     "roc13": 14.74,
+     "score": 31.5,
      "tag": "premium_ok"
     },
     {
@@ -81,9 +81,9 @@
      "ticker_name": "UnitedHealth",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 8.34,
-     "roc13": 34.58,
-     "score": 43.9,
+     "roc4": 6.27,
+     "roc13": 32.0,
+     "score": 41.1,
      "tag": "top_momentum"
     },
     {
@@ -99,9 +99,9 @@
      "ticker_name": "Caterpillar",
      "held_ticker": "CAT",
      "held_name": "Caterpillar",
-     "roc4": -10.0,
-     "roc13": 11.87,
-     "score": 53.8,
+     "roc4": -10.71,
+     "roc13": 10.99,
+     "score": 52.6,
      "tag": "premium_ok"
     },
     {
@@ -117,9 +117,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 29.74,
-     "roc13": 37.73,
-     "score": 68.7,
+     "roc4": 31.04,
+     "roc13": 39.11,
+     "score": 70.4,
      "tag": "top_momentum"
     },
     {
@@ -186,9 +186,9 @@
      "ticker_name": "Apple",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 11.5,
-     "roc13": 23.08,
-     "score": 15.0,
+     "roc4": 11.99,
+     "roc13": 23.62,
+     "score": 15.5,
      "tag": "premium_ok"
     },
     {
@@ -204,9 +204,9 @@
      "ticker_name": "AMD",
      "held_ticker": "MU",
      "held_name": "Micron",
-     "roc4": -7.42,
-     "roc13": 78.71,
-     "score": 18.4,
+     "roc4": -7.74,
+     "roc13": 78.08,
+     "score": 18.0,
      "tag": "top_momentum"
     },
     {
@@ -222,9 +222,9 @@
      "ticker_name": "Bank of America",
      "held_ticker": "BAC",
      "held_name": "Bank of America",
-     "roc4": 8.89,
-     "roc13": 14.1,
-     "score": 10.5,
+     "roc4": 9.02,
+     "roc13": 14.24,
+     "score": 10.6,
      "tag": "premium_ok"
     },
     {
@@ -240,9 +240,9 @@
      "ticker_name": "AbbVie",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 18.97,
-     "roc13": 23.6,
-     "score": 20.4,
+     "roc4": 18.39,
+     "roc13": 23.0,
+     "score": 19.8,
      "tag": "value_momentum"
     },
     {
@@ -258,9 +258,9 @@
      "ticker_name": "Union Pacific",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 16.85,
-     "roc13": 20.14,
-     "score": 17.8,
+     "roc4": 17.47,
+     "roc13": 20.78,
+     "score": 18.5,
      "tag": "value_momentum"
     },
     {
@@ -276,9 +276,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 28.47,
-     "roc13": 46.6,
-     "score": 33.9,
+     "roc4": 28.69,
+     "roc13": 46.84,
+     "score": 34.1,
      "tag": "top_momentum"
     },
     {
