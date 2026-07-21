@@ -275,6 +275,13 @@ def build_full_output(prices, dollar_vol, mode):
 
 def main():
     import yfinance as yf
+    # Deduplica i panieri PRIMA di usarli: nessun titolo in due settori operativi
+    # (stessa dedup di update_stocks; pulisce sb.BASKETS usati qui sotto).
+    removed = us.deduplicate_universes()
+    if removed:
+        print(f"[DEDUP] {len(removed)} titoli rimossi da settori duplicati:")
+        for tk, tolto_da, tenuto_da in removed:
+            print(f"  {tk}: rimosso da {tolto_da} (resta in {tenuto_da})")
     tickers = set()
     for tks in sb.BASKETS.values():
         tickers.update(tks)

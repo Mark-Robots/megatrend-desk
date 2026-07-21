@@ -218,6 +218,56 @@ SECTORS_SYSTEM = (
 )
 
 
+def deduplicate_universes():
+    """Evita che uno stesso titolo finisca in DUE settori operativi contemporaneamente
+    (es. NVDA/AVGO/AMD sono sia in XLK che in SOXX → verrebbero comprati doppi,
+    concentrando il rischio e gonfiando il backtest).
+
+    Regola generale e deterministica: ogni titolo condiviso resta SOLO nel primo
+    settore operativo in cui compare (ordine di SECTORS_SYSTEM) e viene rimosso dagli
+    altri panieri operativi. Funziona per qualunque sovrapposizione presente o futura.
+
+    Deduplica SIA i panieri fissi (US_UNIVERSE/IT_UNIVERSE, usati da update_stocks)
+    SIA i bacini dell'Adaptive (sector_baskets.BASKETS), così stocks e adaptio sono
+    entrambi coerenti. Ritorna la lista dei titoli riassegnati, per log."""
+    removed = []
+
+    # 1) panieri fissi di update_stocks
+    seen_us = {}
+    for sec in SECTORS_SYSTEM:
+        uni = US_UNIVERSE if sec in US_SECTORS_ETF else IT_UNIVERSE
+        if sec not in uni:
+            continue
+        nuovo = []
+        for tk in uni[sec]:
+            if tk in seen_us:
+                removed.append((tk, sec, seen_us[tk]))
+            else:
+                seen_us[tk] = sec
+                nuovo.append(tk)
+        uni[sec] = nuovo
+
+    # 2) bacini dell'Adaptive (sector_baskets.BASKETS), se importabili
+    try:
+        import sector_baskets as _sb
+        seen_ad = {}
+        for sec in SECTORS_SYSTEM:
+            if sec not in _sb.BASKETS:
+                continue
+            nuovo = []
+            for tk in _sb.BASKETS[sec]:
+                if tk in seen_ad:
+                    removed.append((tk, sec + '(adaptive)', seen_ad[tk]))
+                else:
+                    seen_ad[tk] = sec
+                    nuovo.append(tk)
+            _sb.BASKETS[sec] = nuovo
+    except Exception as e:
+        print(f"[DEDUP] ⚠ Adaptive baskets non deduplicati: {e}")
+
+    return removed
+
+
 def smooth_signal_binary(signals, tolerance_weeks=4):
     """Liscia una serie binaria ignorando transizioni che durano ≤ tolerance_weeks
     settimane consecutive. IDENTICA a smooth_signal_binary di update_data.py (ETF):
@@ -979,7 +1029,14 @@ def main():
     print("=" * 70)
     print(f"Time: {datetime.now(timezone.utc).isoformat()}")
     print(f"Backtest start: {BACKTEST_START}")
-    
+
+    # Deduplica i panieri: nessun titolo in due settori operativi (evita doppioni)
+    removed = deduplicate_universes()
+    if removed:
+        print(f"[DEDUP] {len(removed)} titoli rimossi da settori duplicati:")
+        for tk, tolto_da, tenuto_da in removed:
+            print(f"  {tk}: rimosso da {tolto_da} (resta in {tenuto_da})")
+
     prices = fetch_all_prices()
     if prices.empty:
         print("ERROR: nessun dato")
