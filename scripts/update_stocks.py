@@ -213,8 +213,8 @@ STOCK_NAMES = {
 # Gli altri 24 settori sono "INFO_ONLY": niente operazioni nel backtest.
 # ============================================================
 SECTORS_SYSTEM = (
-    'XLK', 'SOXX', 'XLF', 'XLV', 'XLI', 'XLP', 'XLE',  # USA (7)
-    'EXV1.DE', 'EXH5.DE',                               # EU (2)
+    'SOXX', 'XLK', 'XLF', 'XLV', 'XLI', 'XLP', 'XLE',  # USA (7) — SOXX prima di XLK:
+    'EXV1.DE', 'EXH5.DE',                               # i chip (MU/NVDA/AMD) restano nei Semiconduttori
 )
 
 
