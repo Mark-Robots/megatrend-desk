@@ -114,6 +114,27 @@ def is_operational_in_base(state, stage):
     return True
 
 
+def score_universe(state, rs_ratio, alpha, weeks, stage):
+    """Punteggio di forza 0-200+.
+    STESSA formula di score_sector in update_data.py (il desk), così gli score
+    dell'universo sono confrontabili e la freccia settimanale ha lo stesso metro.
+    alpha = perf settore - perf benchmark dalla data di inizio trend (%).
+    weeks = settimane di trend ininterrotto (weeks_in_trend)."""
+    score = 0
+    if state == 'Leader': score = 100
+    elif state == 'Emergente': score = 70
+    elif state == 'In rallentamento': score = 40
+    else: score = 10
+    score += max(0, (rs_ratio or 100) - 100) * 2
+    score += max(-30, min(30, (alpha or 0) * 0.6))
+    if state == 'Leader':
+        if (weeks or 0) > 60: score -= 20
+        elif (weeks or 0) > 40: score -= 10
+    if '2' in str(stage): score += 5
+    elif '4' in str(stage): score -= 5
+    return round(score, 1)
+
+
 # ── DOWNLOAD + CALCOLO ──────────────────────────────────────────────────
 def fetch_weekly(tickers):
     """Scarica prezzi settimanali (Close) per i ticker dati."""
@@ -187,6 +208,20 @@ def process_region(close, bench_ticker, sector_dict, region_label):
             op_entry_str = None
             weeks_in_trend = 0
 
+        # Alpha vs benchmark dalla data di inizio trend (per lo score).
+        # Se il settore non è in trend, alpha=0: pesa solo stato/rsRatio/fase.
+        alpha = 0.0
+        if op_entry is not None:
+            try:
+                b_al = bench.reindex(sec.index, method='ffill')
+                p0, p1 = sec.loc[op_entry], sec.iloc[-1]
+                b0, b1 = b_al.loc[op_entry], b_al.iloc[-1]
+                if not (pd.isna(p0) or pd.isna(b0) or p0 == 0 or b0 == 0):
+                    alpha = (p1 / p0 - 1) * 100 - (b1 / b0 - 1) * 100
+            except Exception:
+                alpha = 0.0
+        score = score_universe(state, rs, alpha, weeks_in_trend, stage)
+
         rows.append({
             'ticker': ticker.replace('.DE', ''),
             'ticker_raw': ticker,
@@ -201,6 +236,7 @@ def process_region(close, bench_ticker, sector_dict, region_label):
             'trend_start_date': op_entry_str,
             'weeks_in_trend': weeks_in_trend,
             'history_weeks': len(sec),
+            'score': score,
         })
         print(f"  [ok] {ticker:9} {name:24} {state:16} F{stage}  rs={rs:.1f} mom={mom:.1f}")
     return rows
@@ -221,6 +257,65 @@ def main():
     all_rows = us_rows + eu_rows
     # ordino per forza: prima gli operativi (IN), poi per rsRatio decrescente
     all_rows.sort(key=lambda r: (r['opSignal'] != 'IN', -r['rsRatio']))
+
+    # ── STORICO SCORE + variazione settimanale (per la freccia della pagina) ──
+    # Stessa logica di update_data.py: snapshot giornaliero in universe_history.json,
+    # confronto con quello di 5-9 giorni fa (fallback 5-14 se c'è un buco nei run).
+    HIST_PATH = os.path.join('data', 'universe_history.json')
+    history = []
+    try:
+        if os.path.exists(HIST_PATH):
+            with open(HIST_PATH, 'r') as f:
+                history = json.load(f)
+    except Exception as e:
+        print(f"  Storico universo non disponibile: {e}", file=sys.stderr)
+        history = []
+
+    today = datetime.now(timezone.utc).date()
+    prev_scores = {}
+    prev_date = None
+    fallback_snap = None
+    for snap in reversed(history):
+        try:
+            snap_date = datetime.fromisoformat(snap['date']).date()
+            days_diff = (today - snap_date).days
+            if 5 <= days_diff <= 9:
+                prev_scores = {r['ticker']: r.get('score') for r in snap.get('ranks', [])}
+                prev_date = snap['date']
+                break
+            if fallback_snap is None and 5 <= days_diff <= 14:
+                fallback_snap = snap
+        except Exception:
+            continue
+    else:
+        if fallback_snap is not None:
+            prev_scores = {r['ticker']: r.get('score') for r in fallback_snap.get('ranks', [])}
+            prev_date = fallback_snap['date']
+
+    for r in all_rows:
+        ps = prev_scores.get(r['ticker'])
+        if ps is not None:
+            r['score_prev'] = ps
+            r['score_change'] = round(r['score'] - ps, 1)
+        else:
+            r['score_prev'] = None
+            r['score_change'] = None
+
+    today_snapshot = {
+        'date': datetime.now(timezone.utc).isoformat(),
+        'ranks': [{'ticker': r['ticker'], 'score': r['score']} for r in all_rows],
+    }
+    history = [h for h in history if not h.get('date', '').startswith(today.isoformat())]
+    history.append(today_snapshot)
+    if len(history) > 35:
+        history = history[-35:]
+    try:
+        os.makedirs('data', exist_ok=True)
+        with open(HIST_PATH, 'w') as f:
+            json.dump(history, f, indent=2)
+        print(f"  Snapshot universo salvato in {HIST_PATH} (prev: {prev_date})")
+    except Exception as e:
+        print(f"  Impossibile salvare lo storico universo: {e}", file=sys.stderr)
 
     last_date = None
     for c in (close_us, close_eu):
