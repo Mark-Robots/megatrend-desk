@@ -35,8 +35,9 @@ SECTOR_ETF = {
     'EXV5':'EXV5.DE','EXV7':'EXV7.DE','EXH3':'EXH3.DE',
 }
 
-# stati per cui mostrare grafico/perf: solo forza crescente
-SHOW_STATES = {'Emergente','Leader'}
+# Grafico/perf per TUTTI i settori operativamente IN (segnale lisciato 4 settimane),
+# non solo Emergente/Leader: anche un settore in rallentamento ma ancora in trend
+# confermato mostra il suo percorso dalla data d'ingresso.
 
 
 def load_states_and_dates():
@@ -46,17 +47,20 @@ def load_states_and_dates():
     try:
         u=json.load(open(UNIVERSE_DATA,encoding='utf-8'))
         for s in u.get('sectors',[]):
-            info[s['ticker']]={'state':s.get('state'),'entry':s.get('trend_start_date')}
+            info[s['ticker']]={'state':s.get('state'),'sig':s.get('opSignal'),
+                               'entry':s.get('trend_start_date')}
     except Exception as e:
         print(f"[!] universe_data non letto: {e}",file=sys.stderr)
-    # desk
+    # desk: la data d'ingresso vale SOLO se il segnale operativo e' IN
+    # (opCurrent.start_date esiste anche per i periodi OUT e non va graficato)
     try:
         sd=json.load(open(SECTOR_DATA,encoding='utf-8'))
         for r in sd.get('ranking',{}).get('ranking',[]):
             oc=r.get('opCurrent') or {}
             info.setdefault(r['ticker'],{})
             info[r['ticker']]['state']=r.get('state')
-            if oc.get('start_date'):
+            info[r['ticker']]['sig']=r.get('opSignal')
+            if r.get('opSignal')=='IN' and oc.get('start_date'):
                 info[r['ticker']]['entry']=oc['start_date']
     except Exception:
         pass
@@ -65,10 +69,10 @@ def load_states_and_dates():
 
 def main():
     info = load_states_and_dates()
-    # settori da elaborare: solo quelli in stato Emergente/Leader con data
+    # settori da elaborare: tutti quelli operativamente IN con data d'ingresso
     todo = {sec:d for sec,d in info.items()
-            if d.get('state') in SHOW_STATES and d.get('entry')}
-    print(f"Settori in rafforzamento/leader con data: {len(todo)}")
+            if d.get('sig')=='IN' and d.get('entry')}
+    print(f"Settori operativamente IN con data d'ingresso: {len(todo)}")
     if not todo:
         json.dump({'updated_at':datetime.now(timezone.utc).isoformat(),'sectors':{}},
                   open(OUT_PATH,'w',encoding='utf-8'))
@@ -97,7 +101,7 @@ def main():
         print(f"  {sec:8} da {d['entry']}: {out[sec]['perf']:+.1f}%")
 
     json.dump({'updated_at':datetime.now(timezone.utc).isoformat(),
-               'note':'Performance ETF settore da ingresso trend. Solo Emergente/Leader.',
+               'note':'Performance ETF settore da ingresso trend (segnale lisciato 4 settimane). Tutti i settori IN.',
                'sectors':out},
               open(OUT_PATH,'w',encoding='utf-8'),ensure_ascii=False,separators=(',',':'))
     print(f"\n[salvato] {OUT_PATH} — {len(out)} settori")
