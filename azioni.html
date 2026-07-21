@@ -2617,7 +2617,7 @@ function renderPieChart(opens, cashPct) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, rOut, a0, a1); ctx.arc(cx, cy, rIn, a1, a0, true); ctx.closePath();
-      ctx.shadowColor = 'rgba(255,214,90,0.9)'; ctx.shadowBlur = 22;
+      ctx.shadowColor = 'rgba(255,214,90,0.85)'; ctx.shadowBlur = 7;
       ctx.fillStyle = '#ffd24a'; ctx.fill(); ctx.fill();
       ctx.restore();
       // gradiente oro brillante
@@ -2646,6 +2646,7 @@ function renderPieChart(opens, cashPct) {
     data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#11151c' }] },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '62%',
+      layout: { padding: 10 },
       plugins: {
         legend: { display: false },
         tooltip: {

@@ -3031,7 +3031,7 @@ function renderPieChart(comp) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, rOut, a0, a1); ctx.arc(cx, cy, rIn, a1, a0, true); ctx.closePath();
-      ctx.shadowColor = 'rgba(255,214,90,0.9)'; ctx.shadowBlur = 22;
+      ctx.shadowColor = 'rgba(255,214,90,0.85)'; ctx.shadowBlur = 7;
       ctx.fillStyle = '#ffd24a'; ctx.fill(); ctx.fill();
       ctx.restore();
       ctx.save();
@@ -3076,6 +3076,7 @@ function renderPieChart(comp) {
         }
       },
       cutout: '55%',
+      layout: { padding: 10 },
     }
   });
   
