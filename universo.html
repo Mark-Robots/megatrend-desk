@@ -113,6 +113,17 @@
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
   .tm-row{display:grid;grid-template-columns:22px 1fr 96px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
+  /* MOBILE: due righe — nome a tutta larghezza sopra, data+barra sotto —
+     altrimenti le colonne fisse schiacciano il nome a una lettera */
+  @media(max-width:600px){
+    .tm-row{grid-template-columns:18px 1fr 22px;gap:4px 10px;
+      grid-template-areas:"rank name mom" "rank date mom" "rank track track"}
+    .tm-rank{grid-area:rank}
+    .tm-name{grid-area:name;min-width:0}
+    .tm-date{grid-area:date;text-align:left}
+    .tm-track{grid-area:track}
+    .tm-mom{grid-area:mom}
+  }
   /* pannello titoli del settore (si apre al click) */
   .tm-row.clickable{cursor:pointer}
   .tm-row.clickable:hover{background:rgba(255,255,255,0.02);border-radius:6px}
@@ -344,7 +355,7 @@ async function loadTrendMap(){
         <span class="tm-leg"><span class="tm-dot q-lead"></span>Leader</span>
         <span class="tm-leg"><span class="tm-dot q-weak"></span>In indebolimento</span>
         <span class="tm-leg"><span class="tm-dot q-lag"></span>Debole</span>
-        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; score in aumento (vs sett. prec.)</span>
+        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; score in aumento</span>
         <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
         <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
       </div>
