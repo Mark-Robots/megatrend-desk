@@ -2,7 +2,7 @@ name: Update MyValue
 
 on:
   schedule:
-    # Sabato alle 07:00 UTC (dopo che ETF e Azioni si sono aggiornati venerdì sera)
+    # Sabato alle 07:00 UTC (dopo che ETF, Azioni e Crypto si sono aggiornati)
     - cron: '0 7 * * 6'
   workflow_dispatch:   # consente il Run workflow manuale dal tab Actions
 
@@ -29,5 +29,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/myvalue.json
-          git diff --staged --quiet || git commit -m "MyValue: aggiornamento settimanale"
+          if git diff --staged --quiet; then
+            echo "Nessuna modifica da committare"
+            exit 0
+          fi
+          git commit -m "MyValue: aggiornamento settimanale"
+          # push con retry: se nel frattempo un altro workflow ha pushato,
+          # riallineo con pull --rebase e riprovo (fino a 3 volte)
+          for i in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rifiutato (tentativo $i), riallineo con rebase..."
+            git pull --rebase origin main
+          done
           git push
