@@ -264,7 +264,6 @@
   .tm-badge{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
     padding:2px 7px;border-radius:6px;white-space:nowrap;flex:none;font-family:'JetBrains Mono',monospace}
   .tm-badge.in{background:rgba(61,220,132,.14);color:var(--green);border:1px solid rgba(61,220,132,.35)}
-  .tm-badge.info{background:transparent;color:var(--txt-faint);border:1px solid var(--line-soft);font-weight:500;text-transform:none;letter-spacing:.03em}
   .q-lead{background:var(--green)} .q-weak{background:var(--red)}
   .q-impr{background:var(--blue,#469cdf)} .q-lag{background:#dba32f}
   .tm-dot{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
@@ -311,7 +310,7 @@
   </div>
 
   <h2 class="sec-title mt" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-    <span>Mappa dei trend</span>
+    <span>Mappa dei trend principali</span>
     <a href="./universo.html" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:400;color:var(--txt-dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 14px;transition:.15s;letter-spacing:.02em" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--txt)'" onmouseout="this.style.borderColor='var(--line)';this.style.color='var(--txt-dim)'">vedi tutti i settori (universo completo) →</a>
   </h2>
   <div class="card trendmap">
@@ -530,9 +529,8 @@ async function loadTrendMap(){
       return `<div class="sct-tip"><div class="tip-h">titoli rappresentativi</div>${list.map(x=>`<span class="tip-x">${x}</span>`).join('')}</div>`;
     };
     const opBadge=d=>{
-      if(d.sig==='IN')   return '<span class="tm-badge in">IN</span>';
-      if(d.sig==='INFO') return '<span class="tm-badge info">solo analisi</span>';
-      return '';  // OUT operativo: nessun badge (assente dal portafoglio)
+      if(d.sig==='IN') return '<span class="tm-badge in">IN</span>';
+      return '';  // OUT o solo-analisi: nessun badge (assente dal portafoglio)
     };
     const colHTML=(area)=>{
       const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
@@ -562,7 +560,7 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
         <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
       </div>
-      <div class="trend-legend">Il badge <b>IN</b> è il segnale operativo del sistema (lo stesso della card Portafoglio ETF): entra e esce con la conferma di 4 settimane, quindi può differire dalla fotografia RRG istantanea. Un settore <b>IN</b> ma colorato in rosso è in portafoglio ma si sta raffreddando; un settore verde/blu senza badge non è (ancora) operativo. I settori "solo analisi" non fanno parte del sistema.<span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
+      <div class="trend-legend">Il badge <b>IN</b> è il segnale operativo del sistema (lo stesso della card Portafoglio ETF): entra e esce con la conferma di 4 settimane, quindi può differire dalla fotografia RRG istantanea. Un settore <b>IN</b> ma colorato in rosso è in portafoglio ma si sta raffreddando; un settore verde/blu senza badge non è (ancora) operativo.<span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
   }
