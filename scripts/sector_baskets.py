@@ -76,7 +76,7 @@ BASKETS = {
 
     # Banche EU (Borsa Italiana, .MI)
     'EXV1.DE': ['ISP.MI','UCG.MI','BAMI.MI','BMPS.MI','MB.MI','BPSO.MI','BPER.MI','FBK.MI',
-                'BGN.MI','UNI.MI','BMED.MI','BPE.MI','CE.MI','CASS.MI','ILTY.MI'],
+                'BGN.MI','BMED.MI','BPE.MI','CE.MI','ILTY.MI'],
 
     # Assicurazioni (Borsa Italiana, .MI)
     'EXH5.DE': ['G.MI','UNI.MI','PST.MI','CASS.MI','VAS.MI','NET.MI'],
