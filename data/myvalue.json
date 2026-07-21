@@ -1,51 +1,133 @@
 {
   "name": "MyValue",
   "base": 100.0,
+  "seed_date": "2026-05-01",
   "systems": [
     "ETF",
-    "Azioni"
+    "Azioni",
+    "Crypto"
   ],
-  "note": "Indice equipesato: media dei rendimenti settimanali dei sistemi Megatrend. Parte da 100.",
+  "note": "Indice dimostrativo equipesato: media dei rendimenti settimanali dei tre sistemi Megatrend (ETF, Azioni, Crypto DMI), composta da 100 dal 2026-05-01. Ricostruito integralmente a ogni aggiornamento.",
   "history": [
     {
-      "date": "2026-06-26",
-      "value": 96.7059,
-      "weekly_pct": -3.2941,
-      "parts": {
-        "azioni": -1.5376,
-        "etf": -5.0505
-      },
+      "date": "2026-05-01",
+      "value": 100.0,
+      "weekly_pct": 0.0,
+      "parts": {},
       "seed": true
     },
     {
-      "date": "2026-07-03",
-      "value": 95.8331,
-      "weekly_pct": -0.9026,
+      "date": "2026-05-08",
+      "value": 103.8916,
+      "weekly_pct": 3.8916,
       "parts": {
-        "azioni": 0.0246,
-        "etf": -1.8297
+        "etf": 5.5594,
+        "azioni": 3.3271,
+        "crypto": 2.7883
+      }
+    },
+    {
+      "date": "2026-05-15",
+      "value": 102.1958,
+      "weekly_pct": -1.6323,
+      "parts": {
+        "etf": -0.5594,
+        "azioni": -1.5311,
+        "crypto": -2.8064
+      }
+    },
+    {
+      "date": "2026-05-22",
+      "value": 103.7913,
+      "weekly_pct": 1.5612,
+      "parts": {
+        "etf": 3.1085,
+        "azioni": 2.5495,
+        "crypto": -0.9744
+      }
+    },
+    {
+      "date": "2026-05-29",
+      "value": 105.542,
+      "weekly_pct": 1.6868,
+      "parts": {
+        "etf": 2.9738,
+        "azioni": 2.0865,
+        "crypto": 0.0
+      }
+    },
+    {
+      "date": "2026-06-05",
+      "value": 103.8302,
+      "weekly_pct": -1.6219,
+      "parts": {
+        "etf": -2.9518,
+        "azioni": -1.914,
+        "crypto": 0.0
+      }
+    },
+    {
+      "date": "2026-06-12",
+      "value": 105.7795,
+      "weekly_pct": 1.8774,
+      "parts": {
+        "etf": 4.952,
+        "azioni": 0.6802,
+        "crypto": 0.0
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "value": 106.704,
+      "weekly_pct": 0.874,
+      "parts": {
+        "etf": 3.7713,
+        "azioni": -1.1492,
+        "crypto": 0.0
+      }
+    },
+    {
+      "date": "2026-06-26",
+      "value": 104.0761,
+      "weekly_pct": -2.4628,
+      "parts": {
+        "etf": -4.1319,
+        "azioni": -3.2566,
+        "crypto": 0.0
+      }
+    },
+    {
+      "date": "2026-07-03",
+      "value": 104.4914,
+      "weekly_pct": 0.399,
+      "parts": {
+        "etf": -1.1542,
+        "azioni": 0.3467,
+        "crypto": 2.0047
       }
     },
     {
       "date": "2026-07-10",
-      "value": 96.8413,
-      "weekly_pct": 1.0521,
+      "value": 104.9171,
+      "weekly_pct": 0.4074,
       "parts": {
-        "azioni": 0.2046,
-        "etf": 1.8995
+        "etf": 1.434,
+        "azioni": 0.7196,
+        "crypto": -0.9313
       }
     },
     {
       "date": "2026-07-17",
-      "value": 92.2537,
-      "weekly_pct": -4.7372,
+      "value": 102.4572,
+      "weekly_pct": -2.3446,
       "parts": {
-        "azioni": -2.7412,
-        "etf": -6.7333
+        "etf": -4.8937,
+        "azioni": -2.9765,
+        "crypto": 0.8363
       }
     }
   ],
-  "updated_at": "2026-07-18T08:47:07.740331+00:00",
-  "last_value": 92.2537,
+  "updated_at": "2026-07-21T20:54:28.753999+00:00",
+  "last_value": 102.4572,
   "last_date": "2026-07-17"
 }
