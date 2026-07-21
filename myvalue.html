@@ -88,7 +88,7 @@
     </div>
   </div>
   <footer>
-    MyValue &egrave; un indice dimostrativo equipesato: ogni settimana vale la media dei rendimenti settimanali dei sistemi Megatrend, composta a partire da 100.
+    MyValue &egrave; un indice dimostrativo equipesato: ogni settimana vale la media dei rendimenti settimanali dei tre sistemi Megatrend &mdash; ETF, Azioni e Crypto DMI &mdash; composta a partire da 100 dal 1&deg; maggio 2026.
     Ha finalit&agrave; illustrative e non costituisce consulenza finanziaria n&eacute; indicazione di risultati reali. Le performance passate non sono indicative di quelle future.
   </footer>
 </div>
@@ -220,6 +220,7 @@ function render(data){
     const pp=[];
     if('etf' in last.parts)pp.push(`ETF <b>${last.parts.etf>=0?'+':''}${last.parts.etf.toFixed(2)}%</b>`);
     if('azioni' in last.parts)pp.push(`Azioni <b>${last.parts.azioni>=0?'+':''}${last.parts.azioni.toFixed(2)}%</b>`);
+    if('crypto' in last.parts)pp.push(`Crypto <b>${last.parts.crypto>=0?'+':''}${last.parts.crypto.toFixed(2)}%</b>`);
     partsTxt=`<div class="parts">Ultima settimana &middot; ${pp.join(' &middot; ')}</div>`;
   }
   box.innerHTML=`<div class="value-big ${cls}">${val.toFixed(2)}</div>
