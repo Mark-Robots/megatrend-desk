@@ -259,6 +259,7 @@
   .tm-mom .mom-up{display:inline-block;color:var(--green)}
   .tm-mom .mom-dn{display:inline-block;color:var(--red)}
   .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint)}
+  .tm-mom .mom-eq{display:inline-block;color:#f5b301;font-size:12px}
   /* badge segnale operativo: coerenza con la card Portafoglio ETF */
   .tm-badge{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
     padding:2px 7px;border-radius:6px;white-space:nowrap;flex:none;font-family:'JetBrains Mono',monospace}
@@ -501,13 +502,14 @@ async function loadTrendMap(){
       if(s.includes('debole'))        return sg===3?'weak':'lag';
       return 'lag';
     };
-    const momentum=(state,stage)=>{
-      const s=(state||'').toLowerCase(); const sg=parseInt(stage)||0;
-      if(sg===4) return -1;
-      if(s.includes('leader'))        return 1;
-      if(s.includes('emergente'))     return 1;
-      if(s.includes('rallentamento')) return -1;
-      if(s.includes('debole'))        return sg===2?1:-1;
+    // Freccia momentum: variazione dello SCORE vs snapshot della settimana precedente
+    // (campo score_change calcolato da update_data.py su ranking_history.json).
+    // ▲ score in aumento · ▼ in calo · ◆ invariato · — confronto non disponibile.
+    const momentum=(s)=>{
+      const d=s.score_change;
+      if(d==null) return null;
+      if(d>0.05)  return 1;
+      if(d<-0.05) return -1;
       return 0;
     };
     const rows=r.map(s=>({
@@ -518,10 +520,10 @@ async function loadTrendMap(){
       verdict:verdict(s.state,s.stage),
       n:starCount(s.state,s.stage),
       q:quadrant(s.state,s.stage),
-      m:momentum(s.state,s.stage)
+      m:momentum(s)
     }));
 
-    const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
+    const momHTML=m=> m===null?'<span class="mom-fl" title="confronto non disponibile">&mdash;</span>':m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-eq" title="score invariato">&#9670;</span>';
     const tip=tk=>{
       const list=SECTOR_STOCKS[tk];
       if(!list||!list.length) return '';
@@ -556,9 +558,9 @@ async function loadTrendMap(){
         <span class="tm-leg"><span class="tm-dot q-lead"></span>Leader</span>
         <span class="tm-leg"><span class="tm-dot q-weak"></span>In indebolimento</span>
         <span class="tm-leg"><span class="tm-dot q-lag"></span>Debole</span>
-        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; sale</span>
-        <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
-        <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
+        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; score in aumento (vs sett. prec.)</span>
+        <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
+        <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
       </div>
       <div class="trend-legend">Il badge <b>IN</b> è il segnale operativo del sistema (lo stesso della card Portafoglio ETF): entra e esce con la conferma di 4 settimane, quindi può differire dalla fotografia RRG istantanea. Un settore <b>IN</b> ma colorato in rosso è in portafoglio ma si sta raffreddando; un settore verde/blu senza badge non è (ancora) operativo. I settori "solo analisi" non fanno parte del sistema.<span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
   }catch(e){
