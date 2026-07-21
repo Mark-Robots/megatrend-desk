@@ -680,6 +680,19 @@ def extract_signal_history(rrg_df, prices, bench_prices, ma_weeks=30, lookback_w
             'in': signal_in,
         })
     
+    # SMOOTHING (tolleranza 4 settimane) PRIMA del time-stop.
+    # Stessa pipeline validata di compute_weekly_base_records + griglia TS,
+    # e stesso timing di update_stocks.py: un flip del segnale base diventa
+    # operativo solo se persiste oltre la tolleranza. Ordine: base → smoothing → TS.
+    # Senza questo passo, opSignal/opHistory (e quindi ranking e portfolio_equity)
+    # giravano su segnali non lisciati, divergendo dal sistema azioni.
+    if len(weekly_records) > 1:
+        raw_signals = [r['in'] for r in weekly_records]
+        smoothed = smooth_signal_binary(raw_signals,
+                                        tolerance_weeks=SIGNAL_SMOOTHING_TOLERANCE_WEEKS)
+        for r, sm in zip(weekly_records, smoothed):
+            r['in'] = sm
+
     # Applica time-stop sui settori del sistema (TS3 o TS6 a seconda del cluster)
     ts_weeks = get_time_stop_weeks(ticker) if ticker else None
     if ts_weeks is not None:
