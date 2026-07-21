@@ -114,6 +114,28 @@ def is_operational_in_base(state, stage):
     return True
 
 
+def smooth_signal_binary(signals, tolerance_weeks=4):
+    """Liscia una serie binaria ignorando transizioni che durano ≤ tolerance_weeks
+    settimane consecutive. IDENTICA a update_data.py / update_stocks.py:
+    un flip del segnale base diventa effettivo solo se persiste oltre la tolleranza."""
+    if not signals:
+        return signals
+    current = signals[0]
+    pending_count = 0
+    smoothed = []
+    for v in signals:
+        if v == current:
+            pending_count = 0
+            smoothed.append(current)
+        else:
+            pending_count += 1
+            if pending_count > tolerance_weeks:
+                current = v
+                pending_count = 0
+            smoothed.append(current)
+    return smoothed
+
+
 def score_universe(state, rs_ratio, alpha, weeks, stage):
     """Punteggio di forza 0-200+.
     STESSA formula di score_sector in update_data.py (il desk), così gli score
@@ -173,40 +195,46 @@ def process_region(close, bench_ticker, sector_dict, region_label):
         mom = float(rrg['rsMom'].iloc[-1])
         state = classify_quadrant(rs, mom)
         stage = classify_stage(sec)
-        op = is_operational_in_base(state, stage)
 
-        # data di inizio OPERATIVITÀ (da quando il settore è "in trend", cioè IN
-        # senza interruzioni): risalgo la serie calcolando stato+fase settimana per
-        # settimana e mi fermo quando NON era operativo. Questo riflette da quanto
-        # il settore è cavalcabile, non solo l'ultimo scalino di stato RRG.
+        # Segnale operativo con SMOOTHING 4 (stessa regola del desk):
+        # serie settimanale base (stato+fase) → smooth_signal_binary(4).
+        # opSignal, data d'ingresso e settimane di trend derivano dalla serie
+        # LISCIATA, non dall'ultima fotografia: un flip deve persistere oltre
+        # 4 settimane per diventare operativo, esattamente come nel desk.
+        op = False
         op_entry = None
         weeks_in_trend = 0
         try:
             rrg_hist = rrg.dropna()
-            # preparo la MA30 per valutare la fase a ritroso
             sec_al = sec.reindex(rrg_hist.index, method='ffill')
             ma30 = sec.rolling(30).mean().reindex(rrg_hist.index, method='ffill')
-            for k in range(len(rrg_hist) - 1, -1, -1):
+            base_in = []
+            for k in range(len(rrg_hist)):
                 rk = float(rrg_hist['rsRatio'].iloc[k])
                 mk = float(rrg_hist['rsMom'].iloc[k])
                 st_k = classify_quadrant(rk, mk)
-                # fase a quella settimana
                 pk = sec_al.iloc[k]; mak = ma30.iloc[k]
                 if pd.isna(mak):
                     stg_k = '—'
                 else:
-                    mak_prev = ma30.iloc[k-5] if k >= 5 else mak
+                    mak_prev = ma30.iloc[k - 5] if k >= 5 else mak
                     up = mak > mak_prev; above = pk > mak
                     stg_k = '2' if (above and up) else '3' if (above and not up) else '4' if (not above and not up) else '1'
-                if is_operational_in_base(st_k, stg_k):
+                base_in.append(is_operational_in_base(st_k, stg_k))
+            smoothed = smooth_signal_binary(base_in, tolerance_weeks=4)
+            if smoothed:
+                op = bool(smoothed[-1])
+            if op:
+                k = len(smoothed) - 1
+                while k >= 0 and smoothed[k]:
                     op_entry = rrg_hist.index[k]
                     weeks_in_trend += 1
-                else:
-                    break
+                    k -= 1
             op_entry_str = op_entry.strftime('%Y-%m-%d') if op_entry is not None else None
         except Exception:
             op_entry_str = None
             weeks_in_trend = 0
+            op = is_operational_in_base(state, stage)  # fallback: fotografia grezza
 
         # Alpha vs benchmark dalla data di inizio trend (per lo score).
         # Se il settore non è in trend, alpha=0: pesa solo stato/rsRatio/fase.
