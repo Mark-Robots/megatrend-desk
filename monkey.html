@@ -488,10 +488,23 @@ $("fileInput").addEventListener("change",ev=>{
 $("runBtn").onclick=run;
 
 setData(genDemo(),'<span class="badge-demo">DEMO</span>');
-// se ospitato nel repo, carica automaticamente l'ultimo risultato del workflow
-fetch("data/monkey_test.json").then(r=>r.ok?r.json():null).then(d=>{
-  if(d&&d.modes)setResults(d,"Auto: data/monkey_test.json");
-}).catch(()=>{});
+// carica automaticamente l'ultimo risultato del workflow:
+// 1) percorso relativo (pagina ospitata nel repo), con cache-buster anti service-worker
+// 2) fallback su raw.githubusercontent (funziona anche aprendo il file in locale)
+(async()=>{
+  const urls=[
+    "data/monkey_test.json?t="+Date.now(),
+    "https://raw.githubusercontent.com/Mark-Robots/megatrend-desk/main/data/monkey_test.json?t="+Date.now()
+  ];
+  for(const u of urls){
+    try{
+      const r=await fetch(u,{cache:"no-store"});
+      if(!r.ok)continue;
+      const d=await r.json();
+      if(d&&d.modes){setResults(d,"Auto: monkey_test.json");return;}
+    }catch(e){}
+  }
+})();
 </script>
 </body>
 </html>
