@@ -1,0 +1,37 @@
+name: Monkey Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      n_monkeys:
+        description: 'Numero di scimmie'
+        default: '10000'
+      seed:
+        description: 'Seed RNG'
+        default: '42'
+
+permissions:
+  contents: write
+
+jobs:
+  monkey:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install yfinance pandas numpy
+      - name: Run permutation test
+        env:
+          MT_N: ${{ github.event.inputs.n_monkeys }}
+          MT_SEED: ${{ github.event.inputs.seed }}
+        run: python scripts/monkey_test.py
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/monkey_test.json
+          git diff --staged --quiet || git commit -m "Monkey Test: $(date -u +%Y-%m-%d\ %H:%M\ UTC)"
+          git push
