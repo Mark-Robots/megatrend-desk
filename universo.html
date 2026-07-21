@@ -156,6 +156,8 @@
   .tm-mom .mom-up{display:inline-block;color:var(--green)}
   .tm-mom .mom-dn{display:inline-block;color:var(--red)}
   .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint)}
+  .tm-mom .mom-eq{display:inline-block;color:#f5b301;font-size:12px}
+  .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint)}
   .q-lead{background:var(--green)} .q-weak{background:var(--red)}
   .q-impr{background:var(--blue,#469cdf)} .q-lag{background:#dba32f}
   .tm-dot{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
@@ -280,13 +282,15 @@ async function loadTrendMap(){
       if(s.includes('debole'))        return sg===3?'weak':'lag';
       return 'lag';
     };
-    const momentum=(state,stage)=>{
-      const s=(state||'').toLowerCase(); const sg=parseInt(stage)||0;
-      if(sg===4) return -1;
-      if(s.includes('leader'))        return 1;
-      if(s.includes('emergente'))     return 1;
-      if(s.includes('rallentamento')) return -1;
-      if(s.includes('debole'))        return sg===2?1:-1;
+    // Freccia: variazione dello SCORE vs snapshot della settimana precedente.
+    // I 13 settori del desk portano score_change da sector_data.json,
+    // gli extra da universe_data.json (stessa formula di score, stesso metro).
+    // ▲ in aumento · ▼ in calo · ◆ invariato · — confronto non disponibile.
+    const momentum=(s)=>{
+      const d=s.score_change;
+      if(d==null) return null;
+      if(d>0.05)  return 1;
+      if(d<-0.05) return -1;
       return 0;
     };
     const cleanName=n=>(n||'').replace(/\s+(USA|EU|Europa)$/i,'').trim();
@@ -299,13 +303,13 @@ async function loadTrendMap(){
       region:(s.region==='USA')?'USA':'EU',
       n:starCount(s.state,s.stage),
       q:quadrant(s.state,s.stage),
-      m:momentum(s.state,s.stage),
+      m:momentum(s),
       state:s.state||'',
       entry:(s.opCurrent&&s.opCurrent.start_date)||s.trend_start_date||null,
       weeks:(s.opCurrent&&s.opCurrent.weeks)||(s.weeks_in_trend!=null?s.weeks_in_trend:null)
     }));
 
-    const momHTML=m=> m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-fl">&mdash;</span>';
+    const momHTML=m=> m===null?'<span class="mom-fl" title="confronto non disponibile">&mdash;</span>':m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-eq" title="score invariato">&#9670;</span>';
     const colHTML=(area)=>{
       const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
       if(!items.length) return '<p class="crypto-note" style="opacity:.6">Nessun settore in questa area.</p>';
@@ -337,9 +341,9 @@ async function loadTrendMap(){
         <span class="tm-leg"><span class="tm-dot q-lead"></span>Leader</span>
         <span class="tm-leg"><span class="tm-dot q-weak"></span>In indebolimento</span>
         <span class="tm-leg"><span class="tm-dot q-lag"></span>Debole</span>
-        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; sale</span>
-        <span class="tm-leg" style="color:var(--red)">&#9660; scende</span>
-        <span class="tm-leg" style="color:var(--txt-faint)">&mdash; piatto</span>
+        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; score in aumento (vs sett. prec.)</span>
+        <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
+        <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
       </div>
       <div class="trend-legend"><span class="legend-hint">Clicca un settore per vederne i titoli; per quelli in rafforzamento o leader compare anche performance e grafico dalla data d'ingresso. Clicca un titolo per la sua scheda con grafico a 1 anno e dati fondamentali. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
 
