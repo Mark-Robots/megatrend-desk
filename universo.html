@@ -305,6 +305,7 @@ async function loadTrendMap(){
       q:quadrant(s.state,s.stage),
       m:momentum(s),
       state:s.state||'',
+      sig:s.opSignal||'',
       entry:(s.opCurrent&&s.opCurrent.start_date)||s.trend_start_date||null,
       weeks:(s.opCurrent&&s.opCurrent.weeks)||(s.weeks_in_trend!=null?s.weeks_in_trend:null)
     }));
@@ -317,9 +318,11 @@ async function loadTrendMap(){
         const pct=Math.max(6,(d.n/5)*100);
         // TUTTI i settori con titoli sono cliccabili; la data resta solo per i forti
         const isStrong=(d.state==='Emergente'||d.state==='Leader');
+        const isIn=(d.sig==='IN');
         const canOpen=SECTOR_STOCKS[d.ticker]?' clickable':'';
-        const fresh=(isStrong&&d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
-        const dateHTML=(isStrong&&d.entry)
+        const fresh=(isIn&&d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
+        // data d'ingresso su TUTTI i settori operativamente IN (segnale con conferma 4 settimane)
+        const dateHTML=(isIn&&d.entry)
           ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}</div>`
           : `<div class="tm-date"></div>`;
         return `<div class="tm-row${canOpen}" data-sec="${d.ticker}" data-strong="${isStrong?1:0}">
@@ -345,7 +348,7 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
         <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
       </div>
-      <div class="trend-legend"><span class="legend-hint">Clicca un settore per vederne i titoli; per quelli in rafforzamento o leader compare anche performance e grafico dalla data d'ingresso. Clicca un titolo per la sua scheda con grafico a 1 anno e dati fondamentali. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; in trend; <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
+      <div class="trend-legend"><span class="legend-hint">Clicca un settore per vederne i titoli; per quelli in rafforzamento o leader compare anche performance e grafico dalla data d'ingresso. Clicca un titolo per la sua scheda con grafico a 1 anno e dati fondamentali. La colonna &laquo;dal&raquo; indica da quando il settore &egrave; operativamente in trend (segnale confermato con la regola delle 4 settimane, come il desk); <b style="color:var(--green)">in verde</b> i settori entrati nell'ultima settimana.</span></div>`;
 
     attachSectorClicks();
   }catch(e){
