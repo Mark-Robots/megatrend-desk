@@ -332,7 +332,8 @@
 </div>
 
 <script>
-const AZ_URL='./data/stocks_data.json';
+const AZ_URL='./data/adaptive_data.json';        // Adaptio: stessa vista di azioni.html (default 'adaptive')
+const AZ_FALLBACK_URL='./data/stocks_data.json'; // fallback: sistema statico se adaptive non disponibile
 const ETF_URL='./data/sector_data.json';
 const CRYPTO_URL='./data/crypto_data.json';
 const CYCLES_URL='./data/cycles_data.json';
@@ -373,7 +374,15 @@ function cashBar(inv,accent){const cash=100-inv;return `<div class="cashbar">
 async function loadAzioni(){
   const el=document.getElementById('az-body');
   try{
-    const d=await(await fetch(AZ_URL+'?_='+Date.now())).json();
+    let d;
+    try{
+      const r=await fetch(AZ_URL+'?_='+Date.now());
+      if(!r.ok) throw new Error('adaptive HTTP '+r.status);
+      d=await r.json();
+    }catch(eAd){
+      // adaptive_data.json non disponibile: ripiego sul sistema statico
+      d=await(await fetch(AZ_FALLBACK_URL+'?_='+Date.now())).json();
+    }
     const a=d.modes.aggressive, names=d.stock_names||{}, eq=a.equity_curve.map(e=>e.system);
     const eqDates=a.equity_curve.map(e=>e.date);
     const st=a.stats||{};
