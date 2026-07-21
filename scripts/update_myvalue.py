@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-MyValue · MarkRoboT.S.
-----------------------
-Indice unico che parte da 100 e cresce/cala ogni settimana come MEDIA dei
-rendimenti settimanali dei sistemi Megatrend. Per ora combina due sistemi
-(ETF + Azioni); il DMI crypto verrà aggiunto in seguito.
+MyValue · MarkRoboT.S.  (v2 — tre sistemi, ricostruzione completa)
+------------------------------------------------------------------
+Indice dimostrativo equipesato che parte da 100 il venerdì 2026-05-01 e
+compone ogni settimana la MEDIA dei rendimenti settimanali dei tre sistemi
+del Megatrend Desk:
 
-Logica:
-  - Ogni settimana leggo l'ultimo rendimento settimanale di ciascun sistema
-    dalla sua equity curve ufficiale (gli stessi numeri mostrati sul desk).
-  - Rendimento MyValue della settimana = media dei rendimenti disponibili.
-  - Valore composto: value_new = value_old * (1 + media/100).
-  - Salvo la storia in data/myvalue.json. Se un certo venerdì è già presente,
-    non lo duplico (idempotente: si può lanciare più volte senza danni).
+  - ETF     data/sector_data.json → portfolio_equity.dates / equity_system
+  - Azioni  data/stocks_data.json → modes.aggressive.equity_curve[].system
+  - Crypto  data/crypto_data.json → weekly[] (serie venerdì→venerdì
+            generata da update_crypto.py, equipesata BTC/ETH/SOL)
 
-Fonti (raw GitHub, stessi file del desk):
-  - Azioni: data/stocks_data.json  → modes.aggressive.equity_curve[].system
-  - ETF:    data/sector_data.json  → portfolio_equity.dates / equity_system
+Logica (v2): a ogni esecuzione la storia viene RICOSTRUITA da zero a
+partire dal seed. Niente stato incrementale: idempotente per costruzione,
+e se un feed sorgente viene corretto MyValue si riallinea da solo.
+
+Il calendario settimanale è quello dei venerdì del sistema ETF (il più
+lungo). Se per un venerdì manca il dato di un sistema, la media usa i
+sistemi disponibili e la cosa resta tracciata in "parts".
 """
 
 import json, os, sys, urllib.request
@@ -26,13 +27,15 @@ from datetime import datetime
 REPO = "https://raw.githubusercontent.com/Mark-Robots/megatrend-desk/main"
 STOCKS_URL = f"{REPO}/data/stocks_data.json"
 SECTOR_URL = f"{REPO}/data/sector_data.json"
+CRYPTO_URL = f"{REPO}/data/crypto_data.json"
 OUT_PATH   = os.path.join("data", "myvalue.json")
 
-BASE_VALUE = 100.0   # il valore di partenza
+BASE_VALUE = 100.0
+SEED_DATE  = "2026-05-01"   # venerdì di partenza (MyValue = 100)
 
 
 def _get_json(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "myvalue/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "myvalue/2.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.loads(r.read().decode("utf-8"))
 
@@ -46,108 +49,94 @@ def _local_or_remote(local_name, url):
     return _get_json(url)
 
 
-def weekly_return_stocks(d):
-    """Ultimo rendimento settimanale del sistema Azioni + data del venerdì."""
-    eq = d["modes"]["aggressive"]["equity_curve"]
-    if len(eq) < 2:
-        return None, None
-    last, prev = eq[-1], eq[-2]
-    if not prev.get("system"):
-        return None, None
-    r = (last["system"] / prev["system"] - 1) * 100.0
-    return r, last["date"]
-
-
-def weekly_return_etf(d):
-    """Ultimo rendimento settimanale del sistema ETF + data del venerdì."""
+def series_etf(d):
+    """dict {venerdì -> equity} del sistema ETF."""
     pe = d.get("portfolio_equity", {})
-    es = pe.get("equity_system", [])
     dates = pe.get("dates", [])
-    if len(es) < 2 or len(dates) < 2:
-        return None, None
-    r = (es[-1] / es[-2] - 1) * 100.0
-    return r, dates[-1]
+    es = pe.get("equity_system", [])
+    return {dt: v for dt, v in zip(dates, es) if v}
 
 
-def load_history():
-    if os.path.exists(OUT_PATH):
-        with open(OUT_PATH, encoding="utf-8") as f:
-            return json.load(f)
-    return {
-        "name": "MyValue",
-        "base": BASE_VALUE,
-        "systems": ["ETF", "Azioni"],
-        "note": "Indice equipesato: media dei rendimenti settimanali dei sistemi Megatrend. Parte da 100.",
-        "history": []   # [{date, value, weekly_pct, parts:{etf, azioni}}]
-    }
+def series_azioni(d):
+    """dict {venerdì -> equity} del sistema Azioni."""
+    eq = d["modes"]["aggressive"]["equity_curve"]
+    return {row["date"]: row["system"] for row in eq if row.get("system")}
+
+
+def weekly_crypto(d):
+    """dict {venerdì -> rendimento settimanale %} del sistema Crypto."""
+    return {row["date"]: row["pct"] for row in d.get("weekly", [])}
 
 
 def main():
     stocks = _local_or_remote("stocks_data.json", STOCKS_URL)
     sector = _local_or_remote("sector_data.json", SECTOR_URL)
+    crypto = _local_or_remote("crypto_data.json", CRYPTO_URL)
 
-    r_az, d_az = weekly_return_stocks(stocks)
-    r_etf, d_etf = weekly_return_etf(sector)
+    etf_eq = series_etf(sector)
+    az_eq  = series_azioni(stocks)
+    cr_wk  = weekly_crypto(crypto)
 
-    parts = {}
-    rets = []
-    if r_az is not None:
-        parts["azioni"] = round(r_az, 4)
-        rets.append(r_az)
-    if r_etf is not None:
-        parts["etf"] = round(r_etf, 4)
-        rets.append(r_etf)
-
-    if not rets:
-        print("[errore] nessun rendimento disponibile dai sistemi, esco")
+    if SEED_DATE not in etf_eq or SEED_DATE not in az_eq:
+        print(f"[errore] seed {SEED_DATE} assente dalle equity ETF/Azioni, esco")
         sys.exit(1)
+    if not cr_wk:
+        print("[avviso] serie settimanale crypto assente: MyValue userà solo ETF+Azioni "
+              "finché update_crypto.py non pubblica 'weekly' in crypto_data.json")
 
-    weekly = sum(rets) / len(rets)   # media equipesata
+    # calendario: i venerdì ETF dal seed in poi
+    fridays = sorted(dt for dt in etf_eq if dt >= SEED_DATE)
 
-    # la data di riferimento è il venerdì più recente tra i due
-    ref_date = max([d for d in [d_az, d_etf] if d])
+    history = [{
+        "date": SEED_DATE,
+        "value": BASE_VALUE,
+        "weekly_pct": 0.0,
+        "parts": {},
+        "seed": True
+    }]
+    value = BASE_VALUE
 
-    hist = load_history()
-    H = hist["history"]
+    for prev, cur in zip(fridays, fridays[1:]):
+        parts, rets = {}, []
+        if etf_eq.get(prev) and etf_eq.get(cur):
+            r = (etf_eq[cur] / etf_eq[prev] - 1) * 100.0
+            parts["etf"] = round(r, 4); rets.append(r)
+        if az_eq.get(prev) and az_eq.get(cur):
+            r = (az_eq[cur] / az_eq[prev] - 1) * 100.0
+            parts["azioni"] = round(r, 4); rets.append(r)
+        if cur in cr_wk:
+            parts["crypto"] = round(cr_wk[cur], 4); rets.append(cr_wk[cur])
+        if not rets:
+            print(f"[salto] {cur}: nessun rendimento disponibile")
+            continue
+        weekly = sum(rets) / len(rets)
+        value *= (1 + weekly / 100.0)
+        history.append({
+            "date": cur,
+            "value": round(value, 4),
+            "weekly_pct": round(weekly, 4),
+            "parts": parts
+        })
+        print(f"[ok] {cur}: media {weekly:+.2f}% su {len(rets)} sistemi → MyValue {value:.2f}")
 
-    # idempotenza: se l'ultima settimana registrata è già ref_date, aggiorno; non duplico
-    if H and H[-1]["date"] == ref_date:
-        print(f"[info] settimana {ref_date} già presente: nessun nuovo punto aggiunto")
-        # aggiorno comunque i valori nel caso i dati fonte siano cambiati
-        prev_value = H[-2]["value"] if len(H) > 1 else BASE_VALUE
-        H[-1]["value"] = round(prev_value * (1 + weekly / 100.0), 4)
-        H[-1]["weekly_pct"] = round(weekly, 4)
-        H[-1]["parts"] = parts
-    else:
-        prev_value = H[-1]["value"] if H else BASE_VALUE
-        # il primo punto in assoluto è il seme = 100 (nessuna variazione applicata)
-        if not H:
-            H.append({
-                "date": ref_date,
-                "value": BASE_VALUE,
-                "weekly_pct": 0.0,
-                "parts": parts,
-                "seed": True
-            })
-            print(f"[seed] MyValue inizializzato a {BASE_VALUE} il {ref_date}")
-        else:
-            new_value = prev_value * (1 + weekly / 100.0)
-            H.append({
-                "date": ref_date,
-                "value": round(new_value, 4),
-                "weekly_pct": round(weekly, 4),
-                "parts": parts
-            })
-            print(f"[ok] {ref_date}: media {weekly:+.2f}%  →  MyValue {new_value:.2f}")
-
-    hist["updated_at"] = datetime.now().astimezone().isoformat()
-    hist["last_value"] = H[-1]["value"]
-    hist["last_date"] = H[-1]["date"]
+    out = {
+        "name": "MyValue",
+        "base": BASE_VALUE,
+        "seed_date": SEED_DATE,
+        "systems": ["ETF", "Azioni", "Crypto"],
+        "note": ("Indice dimostrativo equipesato: media dei rendimenti settimanali dei tre "
+                 "sistemi Megatrend (ETF, Azioni, Crypto DMI), composta da 100 dal "
+                 f"{SEED_DATE}. Ricostruito integralmente a ogni aggiornamento."),
+        "history": history,
+        "updated_at": datetime.now().astimezone().isoformat(),
+        "last_value": history[-1]["value"],
+        "last_date": history[-1]["date"],
+    }
 
     os.makedirs("data", exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(hist, f, indent=2, ensure_ascii=False)
-    print(f"[salvato] {OUT_PATH} — {len(H)} settimane, valore attuale {H[-1]['value']}")
+        json.dump(out, f, indent=2, ensure_ascii=False)
+    print(f"[salvato] {OUT_PATH} — {len(history)} punti, valore attuale {history[-1]['value']}")
 
 
 if __name__ == "__main__":

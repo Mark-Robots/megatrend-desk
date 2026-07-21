@@ -283,6 +283,61 @@ def run_backtest(klines, asset, dmi_by_time):
     return times, equity, (pos == 'LONG'), trades
 
 
+# ── SERIE SETTIMANALE PER MYVALUE ──────────────────────────────────────
+# MyValue parte da 100 il venerdì 2026-05-01 (seed) e compone i rendimenti
+# settimanali venerdì→venerdì. Qui campiono l'equity di ogni asset alla
+# chiusura del venerdì (ultima candela oraria prima di sabato 00:00 UTC)
+# e salvo i rendimenti settimanali del portafoglio equipesato in
+# crypto_data.json → 'weekly'. I rapporti tra punti equity non dipendono
+# dalla normalizzazione, quindi la serie è stabile anche se la finestra
+# di backtest (365g) scorre nel tempo.
+MYVALUE_SEED = datetime.date(2026, 5, 1)   # venerdì seed di MyValue
+
+
+def friday_equity(times, equity, start_friday=MYVALUE_SEED):
+    """dict {'YYYY-MM-DD' (venerdì) -> equity a fine venerdì}."""
+    import bisect
+    out = {}
+    if not times:
+        return out
+    f = start_friday
+    last_ts = times[-1]
+    while True:
+        # fine del venerdì f = sabato 00:00 UTC
+        end_ts = int(datetime.datetime(f.year, f.month, f.day, tzinfo=datetime.timezone.utc)
+                     .timestamp()) + 86400
+        if end_ts > last_ts + 3600:
+            break   # settimana non ancora completa
+        i = bisect.bisect_left(times, end_ts) - 1
+        if i >= 0:
+            out[f.isoformat()] = equity[i]
+        f = f + datetime.timedelta(days=7)
+    return out
+
+
+def weekly_portfolio_returns(fri_eq_by_asset):
+    """media equipesata dei rendimenti settimanali venerdì→venerdì.
+    Ritorna lista [{'date': venerdì, 'pct': rendimento %}], dal primo
+    venerdì successivo al seed."""
+    # venerdì comuni a tutti gli asset, in ordine
+    common = None
+    for eq in fri_eq_by_asset.values():
+        ds = set(eq.keys())
+        common = ds if common is None else (common & ds)
+    if not common:
+        return []
+    fridays = sorted(common)
+    out = []
+    for prev, cur in zip(fridays, fridays[1:]):
+        rets = []
+        for eq in fri_eq_by_asset.values():
+            if eq.get(prev) and eq[prev] > 0:
+                rets.append((eq[cur] / eq[prev] - 1) * 100.0)
+        if rets:
+            out.append({'date': cur, 'pct': round(sum(rets) / len(rets), 4)})
+    return out
+
+
 def perf_from(times, equity, start_ts):
     """rendimento % dall'inizio finestra: equity normalizzata al primo punto >= start_ts."""
     if not equity:
@@ -307,6 +362,7 @@ def main():
     fetch_start = int((now - datetime.timedelta(days=600)).timestamp() * 1000)
 
     per_asset = {}
+    fri_eq_by_asset = {}
     for asset, sym in SYMBOLS.items():
         print(f"[{asset}] scarico klines 1h...")
         kl = fetch_klines(sym, fetch_start)
@@ -316,6 +372,7 @@ def main():
             continue
         dmi = compute_rolling_dmi(kl, DMI_PERIOD)
         times, equity, in_pos, trades = run_backtest(kl, asset, dmi)
+        fri_eq_by_asset[asset] = friday_equity(times, equity)
         per_asset[asset] = {
             'perf_week': round(perf_from(times, equity, week_ts), 2),
             'perf_month': round(perf_from(times, equity, month_ts), 2),
@@ -331,6 +388,13 @@ def main():
         vals = [per_asset[a][key] for a in per_asset]
         return round(sum(vals) / len(vals), 2) if vals else 0.0
 
+    weekly = weekly_portfolio_returns(fri_eq_by_asset)
+    if weekly:
+        print(f"[weekly] {len(weekly)} settimane per MyValue "
+              f"(seed {MYVALUE_SEED.isoformat()}, ultima {weekly[-1]['date']}: {weekly[-1]['pct']:+.2f}%)")
+    else:
+        print("[weekly] serie settimanale vuota (dati insufficienti)")
+
     out = {
         'updated_at': now.isoformat(timespec='seconds') + 'Z',
         'mode': 'long_only_dmi_d1d2',
@@ -341,6 +405,9 @@ def main():
             'perf_ytd': avg('perf_ytd'),
             'n_assets': len(per_asset),
         },
+        # serie settimanale venerdì→venerdì per MyValue (equipesata BTC/ETH/SOL)
+        'weekly_seed': MYVALUE_SEED.isoformat(),
+        'weekly': weekly,
     }
     os.makedirs('data', exist_ok=True)
     with open('data/crypto_data.json', 'w') as f:
