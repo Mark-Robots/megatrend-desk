@@ -1294,18 +1294,30 @@ def compute_sector_ranking(us_metrics, eu_metrics, history_path='data/ranking_hi
         print(f"  Storico ranking non disponibile: {e}", file=sys.stderr)
         history = []
     
-    # Trova snapshot 5-9 giorni fa
+    # Trova snapshot 5-9 giorni fa; se il buco nei run lo impedisce,
+    # ripiega sul più recente tra 5 e 14 giorni (meglio un confronto
+    # leggermente più vecchio che nessun confronto).
     today = datetime.now(timezone.utc).date()
+    prev_scores = {}
+    fallback_snap = None
     for snap in reversed(history):
         try:
             snap_date = datetime.fromisoformat(snap['date']).date()
             days_diff = (today - snap_date).days
             if 5 <= days_diff <= 9:
                 prev_ranks = {r['ticker']: r['rank'] for r in snap.get('ranks', [])}
+                prev_scores = {r['ticker']: r.get('score') for r in snap.get('ranks', [])}
                 prev_date = snap['date']
                 break
+            if fallback_snap is None and 5 <= days_diff <= 14:
+                fallback_snap = snap
         except Exception:
             continue
+    else:
+        if fallback_snap is not None:
+            prev_ranks = {r['ticker']: r['rank'] for r in fallback_snap.get('ranks', [])}
+            prev_scores = {r['ticker']: r.get('score') for r in fallback_snap.get('ranks', [])}
+            prev_date = fallback_snap['date']
     
     # Aggiungi delta vs snapshot precedente
     for s in all_sectors:
@@ -1326,6 +1338,14 @@ def compute_sector_ranking(us_metrics, eu_metrics, history_path='data/ranking_hi
             s['rank_change'] = None
             s['rank_direction'] = 'new'
             s['prev_rank'] = None
+        # Variazione dello SCORE vs snapshot precedente (per la freccia della mappa trend)
+        ps = prev_scores.get(s['ticker'])
+        if ps is not None:
+            s['score_prev'] = ps
+            s['score_change'] = round(s['score'] - ps, 1)
+        else:
+            s['score_prev'] = None
+            s['score_change'] = None
     
     # Salva snapshot odierno (max 35 giorni di storia)
     today_snapshot = {
