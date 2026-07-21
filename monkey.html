@@ -293,12 +293,21 @@ function setResults(data,label){
   RESULTS=data;DATA=null;PREP=null;toggleResultsUI(true);
   const sel=$("modeSel");sel.innerHTML="";
   Object.keys(data.modes).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=k;sel.appendChild(o);});
-  const c=data.config||{};
-  $("dsInfo").innerHTML=label+" — <b>Monkey Test · sistema Azioni</b> · generato "+(data.generated_at||"").slice(0,10)
-    +" · "+(c.n_monkeys||"?").toLocaleString("it-IT")+" scimmie · seed "+(c.seed??"?")
-    +" · paniere top-"+(c.top_n??"?")+" · quality "+(c.quality??"—")+(c.quality==="roc"?" ≥ "+c.roc_min+"%":"");
+  RESULTS._label=label;
+  updateDsInfo(sel.value);
   renderResults(sel.value);
-  sel.onchange=()=>renderResults(sel.value);
+  sel.onchange=()=>{updateDsInfo(sel.value);renderResults(sel.value);};
+}
+
+function updateDsInfo(mode){
+  const r=RESULTS.modes[mode];if(!r)return;
+  const c=r._cfg||RESULTS.config||{};
+  let extra="";
+  if(c.stop_loss_pct!=null)extra=" · stop-loss -"+c.stop_loss_pct+"%";
+  else if(c.quality)extra=" · quality "+c.quality+(c.quality==="roc"?" ≥ "+(c.roc_min??0)+"%":"");
+  $("dsInfo").innerHTML=(RESULTS._label||"Risultati")+" — <b>Monkey Test · "+mode+"</b> · generato "
+    +(RESULTS.generated_at||"").slice(0,10)+" · "+(c.n_monkeys||r.monkeys.n||"?").toLocaleString("it-IT")
+    +" scimmie · seed "+(c.seed??r.monkeys.seed??"?")+" · paniere top-"+(c.top_n??"?")+extra;
 }
 
 function renderResults(mode){
@@ -488,22 +497,28 @@ $("fileInput").addEventListener("change",ev=>{
 $("runBtn").onclick=run;
 
 setData(genDemo(),'<span class="badge-demo">DEMO</span>');
-// carica automaticamente l'ultimo risultato del workflow:
-// 1) percorso relativo (pagina ospitata nel repo), con cache-buster anti service-worker
-// 2) fallback su raw.githubusercontent (funziona anche aprendo il file in locale)
+// carica e UNISCE i risultati dei due workflow (Azioni + Adaptive) in un unico
+// selettore di mode. Percorso relativo prima, fallback raw.githubusercontent
+// (funziona anche aprendo il file in locale). Cache-buster anti service-worker.
 (async()=>{
-  const urls=[
-    "data/monkey_test.json?t="+Date.now(),
-    "https://raw.githubusercontent.com/Mark-Robots/megatrend-desk/main/data/monkey_test.json?t="+Date.now()
-  ];
-  for(const u of urls){
-    try{
-      const r=await fetch(u,{cache:"no-store"});
-      if(!r.ok)continue;
-      const d=await r.json();
-      if(d&&d.modes){setResults(d,"Auto: monkey_test.json");return;}
-    }catch(e){}
+  const files=["monkey_test.json","monkey_adaptive.json"];
+  const bases=["data/","https://raw.githubusercontent.com/Mark-Robots/megatrend-desk/main/data/"];
+  const merged={modes:{},generated_at:""};
+  for(const f of files){
+    for(const b of bases){
+      try{
+        const r=await fetch(b+f+"?t="+Date.now(),{cache:"no-store"});
+        if(!r.ok)continue;
+        const d=await r.json();
+        if(d&&d.modes){
+          for(const[k,v]of Object.entries(d.modes)){v._cfg=d.config;merged.modes[k]=v;}
+          if((d.generated_at||"")>merged.generated_at)merged.generated_at=d.generated_at;
+        }
+        break;
+      }catch(e){}
+    }
   }
+  if(Object.keys(merged.modes).length)setResults(merged,"Auto: risultati workflow");
 })();
 </script>
 </body>
