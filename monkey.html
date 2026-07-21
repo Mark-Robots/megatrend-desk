@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monkey Test — Permutation Engine · MarkRoboT.S.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600;9..144,900&family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0B0B0C; --panel:#131316; --panel2:#18181C; --line:#26262C;
+    --ink:#E8E4DA; --ink-dim:#8D8A80; --ink-faint:#55534C;
+    --gold:#C9A227; --green:#3FB68B; --red:#E05252; --blue:#5B8DB8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'JetBrains Mono', monospace; font-size:14px; line-height:1.55;
+    padding:0 0 80px;
+  }
+  .wrap{max-width:980px; margin:0 auto; padding:0 20px;}
+
+  header{border-bottom:1px solid var(--line); padding:28px 0 22px; margin-bottom:32px;}
+  .brand{font-size:11px; letter-spacing:.22em; color:var(--ink-dim); text-transform:uppercase;}
+  .brand b{color:var(--gold); font-weight:600;}
+  h1{
+    font-family:'Fraunces', serif; font-weight:900; font-size:clamp(30px,5vw,46px);
+    letter-spacing:-.01em; margin-top:10px; line-height:1.05;
+  }
+  h1 .q{color:var(--gold);}
+  .sub{color:var(--ink-dim); margin-top:10px; max-width:640px; font-size:13px;}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:22px; margin-bottom:22px;}
+  .card h2{
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px; margin-bottom:14px;
+  }
+  .eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px;}
+
+  .controls{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-dim);}
+  select,input[type=number]{
+    background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+    border-radius:4px; padding:9px 12px; font-family:inherit; font-size:13px; min-width:130px;
+  }
+  select:focus,input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--gold); outline-offset:1px;}
+  button{
+    font-family:inherit; cursor:pointer; border-radius:4px; font-size:13px;
+    padding:10px 20px; border:1px solid var(--line); background:var(--panel2); color:var(--ink);
+  }
+  button.primary{background:var(--gold); border-color:var(--gold); color:#151204; font-weight:700; letter-spacing:.04em;}
+  button.primary:hover{filter:brightness(1.08);}
+  button:disabled{opacity:.45; cursor:default;}
+
+  .datasrc{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+  .pill{
+    font-size:11px; padding:6px 14px; border:1px solid var(--line); border-radius:99px;
+    color:var(--ink-dim); background:transparent; cursor:pointer;
+  }
+  .pill.on{border-color:var(--gold); color:var(--gold);}
+  textarea{
+    width:100%; min-height:130px; background:var(--panel2); color:var(--ink);
+    border:1px solid var(--line); border-radius:4px; padding:12px; font-family:inherit; font-size:12px;
+    display:none;
+  }
+  .dataset-info{font-size:12px; color:var(--ink-dim); margin-top:10px;}
+  .dataset-info b{color:var(--ink);}
+  .badge-demo{
+    display:inline-block; font-size:10px; letter-spacing:.15em; color:#151204; background:var(--gold);
+    padding:2px 8px; border-radius:3px; font-weight:700; vertical-align:1px;
+  }
+
+  .progress{height:6px; background:var(--panel2); border-radius:3px; overflow:hidden; margin-top:16px; display:none;}
+  .progress>div{height:100%; width:0%; background:var(--gold); transition:width .15s;}
+
+  /* verdict */
+  #verdict{display:none;}
+  .stamp{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:20px 36px; padding:8px 0 4px;
+  }
+  .stamp .big{
+    font-family:'Fraunces', serif; font-weight:900; font-size:clamp(64px,11vw,110px); line-height:.9;
+  }
+  .stamp .big small{font-size:.35em; font-weight:600; color:var(--ink-dim);}
+  .stamp .label{max-width:340px;}
+  .stamp .label .t{font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:8px;}
+  .stamp .label .v{font-family:'Fraunces',serif; font-size:20px; font-weight:600; line-height:1.25;}
+  .c-green{color:var(--green);} .c-gold{color:var(--gold);} .c-red{color:var(--red);}
+  .verdict-note{font-size:12px; color:var(--ink-dim); margin-top:14px; border-top:1px solid var(--line); padding-top:12px; max-width:720px;}
+
+  .chart-box{position:relative; height:340px;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{text-align:right; padding:9px 12px; border-bottom:1px solid var(--line);}
+  th:first-child,td:first-child{text-align:left; color:var(--ink-dim);}
+  th{font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-faint); font-weight:400;}
+  td.strategy{color:var(--gold); font-weight:600;}
+
+  details{border:1px solid var(--line); border-radius:6px; background:var(--panel); margin-bottom:14px;}
+  summary{padding:16px 22px; cursor:pointer; font-size:13px; color:var(--ink-dim); letter-spacing:.05em;}
+  summary:hover{color:var(--ink);}
+  details .inner{padding:0 22px 20px; font-size:12.5px; color:var(--ink-dim);}
+  details .inner p{margin-bottom:10px;}
+  pre{
+    background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:14px;
+    font-size:11.5px; overflow-x:auto; color:var(--ink); margin:10px 0;
+  }
+  code{color:var(--gold);}
+  ul{margin:8px 0 8px 18px;}
+  li{margin-bottom:6px;}
+
+  footer{margin-top:40px; font-size:11px; color:var(--ink-faint); letter-spacing:.05em;}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">MarkRoboT.S. <b>·</b> QUANT BENCH</div>
+  <h1>Monkey Test<span class="q">.</span></h1>
+  <div class="sub">Test di permutazione: stesso calendario, stesso universo point-in-time, selezioni casuali. Se il sistema non batte le scimmie, il filtro non esiste. Legge i risultati di <code>scripts/monkey_test.py</code> (selezione titoli del sistema Azioni) o un dataset settoriale generico.</div>
+</header>
+
+<div class="card">
+  <div class="eyebrow">01 — Dati</div>
+  <h2>Sorgente del backtest</h2>
+  <div class="datasrc">
+    <button class="pill on" id="srcDemo" type="button">Dataset demo</button>
+    <button class="pill" id="srcPaste" type="button">Incolla JSON</button>
+    <button class="pill" id="srcFile" type="button">Carica file</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none">
+  </div>
+  <textarea id="jsonPaste" placeholder='Incolla qui il JSON esportato dal backtest engine (formato documentato in fondo alla pagina)…'></textarea>
+  <div class="dataset-info" id="dsInfo"></div>
+</div>
+
+<div class="card">
+  <div class="eyebrow">02 — Simulazione</div>
+  <h2>Parametri</h2>
+  <div class="controls">
+    <div class="field" id="modeField" style="display:none">
+      <label for="modeSel">Mode</label>
+      <select id="modeSel"></select>
+    </div>
+    <div class="field" id="nField">
+      <label for="nRuns">Scimmie</label>
+      <select id="nRuns">
+        <option value="1000">1.000</option>
+        <option value="5000">5.000</option>
+        <option value="10000" selected>10.000</option>
+      </select>
+    </div>
+    <div class="field" id="seedField">
+      <label for="seed">Seed</label>
+      <input type="number" id="seed" value="42">
+    </div>
+    <button class="primary" id="runBtn" type="button">Esegui il test</button>
+  </div>
+  <div class="progress" id="progress"><div id="progressBar"></div></div>
+</div>
+
+<div class="card" id="verdict">
+  <div class="eyebrow">03 — Verdetto</div>
+  <div class="stamp">
+    <div class="big" id="pctBig">—<small>°</small></div>
+    <div class="label">
+      <div class="t">Percentile del sistema<br>vs gestori casuali</div>
+      <div class="v" id="verdictText">—</div>
+    </div>
+  </div>
+  <div class="verdict-note" id="verdictNote"></div>
+</div>
+
+<div class="card" id="chartCard" style="display:none">
+  <div class="eyebrow">04 — Distribuzione</div>
+  <h2>CAGR di <span id="nLabel">10.000</span> portafogli casuali</h2>
+  <div class="chart-box"><canvas id="hist"></canvas></div>
+</div>
+
+<div class="card" id="statsCard" style="display:none">
+  <div class="eyebrow">05 — Statistiche</div>
+  <h2>Sistema vs distribuzione</h2>
+  <table id="statsTable"></table>
+</div>
+
+<details>
+  <summary>Formato dati — esporta dal backtest engine v3</summary>
+  <div class="inner">
+    <p>Il tool si aspetta un JSON con rendimenti mensili per settore, universo point-in-time (con date di ingresso/uscita) e le selezioni effettive del sistema a ogni ribilanciamento:</p>
+<pre>{
+  "meta":   { "name": "Sector Rotation v3 — RRG+Weinstein" },
+  "months": ["2016-01", "2016-02", "..."],
+  "sectors": [
+    { "id": "XLK", "name": "Technology", "from": "2016-01", "to": "2025-12" },
+    { "id": "XLC", "name": "Comm. Services", "from": "2018-07", "to": "2025-12" }
+  ],
+  "returns": { "XLK": [0.012, -0.031, "..."], "XLC": [null, null, "..."] },
+  "rebalances": [
+    { "month": "2016-01", "selected": ["XLK","XLV","XLP"] },
+    { "month": "2016-04", "selected": ["XLK","XLE","XLI"] }
+  ]
+}</pre>
+    <p><code>returns[id]</code> è allineato a <code>months</code>; usa <code>null</code> dove il settore non esiste. I mesi di <code>rebalances</code> devono comparire in <code>months</code>.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Cosa testa (e cosa no)</summary>
+  <div class="inner">
+    <ul>
+      <li><b>Testa:</b> se la <i>selezione</i> dei settori aggiunge segnale rispetto al caso, a parità di calendario, numero di posizioni e universo point-in-time. Le scimmie pescano solo tra i settori esistenti a quella data: niente survivorship bias.</li>
+      <li><b>Metrica:</b> percentile empirico del CAGR del sistema nella distribuzione dei CAGR casuali. Equivale a un p-value: percentile 97° → p ≈ 0,03.</li>
+      <li><b>Assunzioni:</b> pesi uguali, ribilanciamento mensile interno alla selezione, nessun costo di transazione (uguale per sistema e scimmie, quindi neutrale al confronto), esecuzione a fine mese.</li>
+      <li><b>Non testa:</b> il timing di ingresso/uscita intra-mese, i time-stop (TS3/TS6), la scelta del <i>numero</i> di posizioni, la robustezza out-of-sample. Un percentile alto qui è condizione necessaria, non sufficiente.</li>
+      <li><b>Lettura onesta:</b> sotto l'80° percentile la selezione è indistinguibile dal caso. Tra 80° e 94° il segnale è debole: potrebbe non sopravvivere ai costi. Dal 95° in su c'è evidenza di skill nella selezione.</li>
+    </ul>
+  </div>
+</details>
+
+<footer>MONKEY TEST v1.0 · MarkRoboT.S. · honesty above brilliant backtests</footer>
+</div>
+
+<script>
+/* ---------- RNG ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(rng){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+/* ---------- demo dataset (sintetico, seeded) ---------- */
+function genDemo(){
+  const rng=mulberry32(20260721);
+  const months=[];
+  for(let y=2016;y<=2025;y++)for(let m=1;m<=12;m++)months.push(y+"-"+String(m).padStart(2,"0"));
+  const T=months.length;
+  const defs=[
+    ["XLK","Technology",0,T-1],["XLF","Financials",0,T-1],["XLE","Energy",0,T-1],
+    ["XLV","Health Care",0,T-1],["XLI","Industrials",0,T-1],["XLP","Staples",0,T-1],
+    ["XLY","Discretionary",0,T-1],["XLB","Materials",0,T-1],["XLU","Utilities",0,T-1],
+    ["TLS","Telecom (legacy)",0,29],          // esce dall'universo a metà 2018
+    ["XLRE","Real Estate",24,T-1],            // entra nel 2018
+    ["XLC","Comm. Services",30,T-1],          // entra a metà 2018
+    ["SMH","Semiconductors",36,T-1]
+  ];
+  // drift di regime annuale per settore -> crea persistenza sfruttabile
+  const drift={};
+  defs.forEach(d=>{drift[d[0]]=[];let cur=0;for(let t=0;t<T;t++){if(t%12===0)cur=0.005*gauss(rng);drift[d[0]].push(cur);}});
+  const returns={};
+  const mkt=[];for(let t=0;t<T;t++)mkt.push(0.007+0.035*gauss(rng));
+  defs.forEach(d=>{
+    const[id,,f,to]=d;returns[id]=[];
+    for(let t=0;t<T;t++){
+      returns[id].push(t<f||t>to?null:mkt[t]+drift[id][t]+0.025*gauss(rng));
+    }
+  });
+  // ribilanciamenti trimestrali, 3 settori, con skill sintetica (look-ahead parziale)
+  const rebalances=[];
+  for(let t=0;t<T;t+=3){
+    const elig=defs.filter(d=>t>=d[2]&&t<=d[3]&&returns[d[0]][t]!=null).map(d=>d[0]);
+    const scored=elig.map(id=>{
+      let s=0;for(let k=t;k<Math.min(t+3,T);k++){const r=returns[id][k];if(r!=null)s+=r;}
+      return[id,s];
+    }).sort((a,b)=>b[1]-a[1]);
+    const picked=[];
+    while(picked.length<3){
+      let id;
+      if(rng()<0.35){id=scored[Math.floor(rng()*Math.min(6,scored.length))][0];}
+      else{id=elig[Math.floor(rng()*elig.length)];}
+      if(!picked.includes(id))picked.push(id);
+    }
+    rebalances.push({month:months[t],selected:picked});
+  }
+  return{
+    meta:{name:"DEMO — dataset sintetico (12+1 settori, 2016–2025, skill simulata)"},
+    months,
+    sectors:defs.map(d=>({id:d[0],name:d[1],from:months[d[2]],to:months[d[3]]})),
+    returns,rebalances
+  };
+}
+
+/* ---------- data state ---------- */
+let DATA=null, PREP=null, chart=null, RESULTS=null;
+const $=id=>document.getElementById(id);
+
+function toggleResultsUI(on){
+  $("modeField").style.display=on?"flex":"none";
+  $("nField").style.display=on?"none":"flex";
+  $("seedField").style.display=on?"none":"flex";
+  $("runBtn").textContent=on?"Mostra il verdetto":"Esegui il test";
+}
+
+function setResults(data,label){
+  RESULTS=data;DATA=null;PREP=null;toggleResultsUI(true);
+  const sel=$("modeSel");sel.innerHTML="";
+  Object.keys(data.modes).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=k;sel.appendChild(o);});
+  const c=data.config||{};
+  $("dsInfo").innerHTML=label+" — <b>Monkey Test · sistema Azioni</b> · generato "+(data.generated_at||"").slice(0,10)
+    +" · "+(c.n_monkeys||"?").toLocaleString("it-IT")+" scimmie · seed "+(c.seed??"?")
+    +" · paniere top-"+(c.top_n??"?")+" · quality "+(c.quality??"—")+(c.quality==="roc"?" ≥ "+c.roc_min+"%":"");
+  renderResults(sel.value);
+  sel.onchange=()=>renderResults(sel.value);
+}
+
+function renderResults(mode){
+  const r=RESULTS.modes[mode];if(!r)return;
+  const sorted=Float64Array.from(r.monkey_cagrs.map(x=>x/100)).sort();
+  const strat={cagr:r.strategy.cagr/100,maxdd:Math.abs(r.strategy.max_drawdown)/100};
+  render(strat,{
+    sorted,N:sorted.length,
+    percentile:r.percentile,pval:r.p_value,
+    ddPct:r.monkeys.mdd_worse_than_system_pct,
+    med:r.monkeys.cagr_median/100,p5:r.monkeys.cagr_p05/100,p95:r.monkeys.cagr_p95/100
+  });
+}
+
+function prepare(data){
+  const mIdx={};data.months.forEach((m,i)=>mIdx[m]=i);
+  const T=data.months.length;
+  const rebs=data.rebalances.map(r=>{
+    if(!(r.month in mIdx))throw new Error("Mese di ribilanciamento non presente in months: "+r.month);
+    return{idx:mIdx[r.month],selected:r.selected,k:r.selected.length};
+  }).sort((a,b)=>a.idx-b.idx);
+  const secRange={};
+  data.sectors.forEach(s=>{
+    secRange[s.id]=[s.from in mIdx?mIdx[s.from]:0, s.to in mIdx?mIdx[s.to]:T-1];
+  });
+  const elig=rebs.map(r=>{
+    const t=r.idx;
+    return data.sectors.filter(s=>{
+      const[f,to]=secRange[s.id];
+      return t>=f&&t<=to&&data.returns[s.id]&&data.returns[s.id][t]!=null;
+    }).map(s=>s.id);
+  });
+  elig.forEach((e,i)=>{if(e.length<rebs[i].k)throw new Error("Universo più piccolo delle posizioni al ribilanciamento "+data.rebalances[i].month);});
+  return{rebs,elig,T,firstIdx:rebs[0].idx};
+}
+
+function runPath(pickFn){
+  const{rebs,T}=PREP;const R=DATA.returns;
+  let eq=1,peak=1,maxdd=0;
+  for(let ri=0;ri<rebs.length;ri++){
+    const start=rebs[ri].idx, end=ri+1<rebs.length?rebs[ri+1].idx:T;
+    const held=pickFn(ri);
+    for(let t=start;t<end;t++){
+      let s=0,c=0;
+      for(let j=0;j<held.length;j++){const r=R[held[j]][t];if(r!=null){s+=r;c++;}}
+      eq*=1+(c?s/c:0);
+      if(eq>peak)peak=eq;const dd=1-eq/peak;if(dd>maxdd)maxdd=dd;
+    }
+  }
+  const years=(T-PREP.firstIdx)/12;
+  return{cagr:Math.pow(eq,1/years)-1,maxdd,final:eq};
+}
+
+function monkeyPicker(rng){
+  return ri=>{
+    const pool=PREP.elig[ri].slice(),k=PREP.rebs[ri].k,out=[];
+    for(let i=0;i<k;i++){const j=Math.floor(rng()*pool.length);out.push(pool[j]);pool[j]=pool[pool.length-1];pool.pop();}
+    return out;
+  };
+}
+
+/* ---------- run ---------- */
+function pct(x){return(100*x).toFixed(2)+"%";}
+
+async function run(){
+  if(RESULTS){renderResults($("modeSel").value);return;}
+  if(!DATA)return;
+  const N=parseInt($("nRuns").value),seed=parseInt($("seed").value)||42;
+  $("runBtn").disabled=true;$("progress").style.display="block";$("progressBar").style.width="0%";
+
+  const strat=runPath(ri=>PREP.rebs[ri].selected);
+  const rng=mulberry32(seed);
+  const picker=monkeyPicker(rng);
+  const cagrs=new Float64Array(N),dds=new Float64Array(N);
+  const CH=500;let done=0;
+
+  await new Promise(res=>{
+    (function chunk(){
+      const end=Math.min(done+CH,N);
+      for(let i=done;i<end;i++){const r=runPath(picker);cagrs[i]=r.cagr;dds[i]=r.maxdd;}
+      done=end;$("progressBar").style.width=(100*done/N).toFixed(1)+"%";
+      done<N?setTimeout(chunk,0):res();
+    })();
+  });
+
+  const sorted=Float64Array.from(cagrs).sort();
+  let below=0,ddWorse=0;
+  for(let i=0;i<N;i++){if(cagrs[i]<strat.cagr)below++;if(dds[i]>strat.maxdd)ddWorse++;}
+  const percentile=100*below/N, pval=(N-below)/N;
+  const q=p=>sorted[Math.min(N-1,Math.floor(p*N))];
+
+  render(strat,{sorted,percentile,pval,ddPct:100*ddWorse/N,med:q(.5),p5:q(.05),p95:q(.95),N});
+  $("runBtn").disabled=false;$("progress").style.display="none";
+}
+
+function render(strat,r){
+  $("verdict").style.display="block";$("chartCard").style.display="block";$("statsCard").style.display="block";
+  $("nLabel").textContent=r.N.toLocaleString("it-IT");
+
+  const p=r.percentile;
+  let cls,txt,note;
+  if(p>=95){cls="c-green";txt="La selezione contiene segnale reale.";
+    note="Il sistema batte il "+p.toFixed(1)+"% dei gestori casuali (p ≈ "+r.pval.toFixed(3)+"). A parità di calendario e universo, la probabilità di ottenere questo CAGR per puro caso è bassa. Prossimo passo: verificare che l'edge sopravviva ai costi e all'out-of-sample.";}
+  else if(p>=80){cls="c-gold";txt="Segnale debole. Non ancora distinguibile con confidenza.";
+    note="Il sistema sta sopra la mediana ma dentro la zona in cui una selezione fortunata capita spesso (p ≈ "+r.pval.toFixed(3)+"). Con i costi di transazione reali questo margine potrebbe azzerarsi. Da approfondire prima di fidarsi.";}
+  else{cls="c-red";txt="Indistinguibile dalla selezione casuale.";
+    note="Un gestore che sceglie i settori a caso ottiene un risultato uguale o migliore nel "+(100-p).toFixed(1)+"% dei casi. Il rendimento del backtest è spiegato dal mercato e dal calendario, non dal filtro di selezione. Verdetto onesto: così com'è, il filtro non aggiunge valore.";}
+  $("pctBig").innerHTML=p.toFixed(1)+"<small>°</small>";
+  $("pctBig").className="big "+cls;
+  $("verdictText").textContent=txt;$("verdictText").className="v "+cls;
+  $("verdictNote").textContent=note;
+
+  // histogram
+  const NB=40,min=Math.min(r.sorted[0],strat.cagr),max=Math.max(r.sorted[r.N-1],strat.cagr);
+  const w=(max-min)/NB||1e-9,bins=new Array(NB).fill(0);
+  r.sorted.forEach(v=>{bins[Math.min(NB-1,Math.floor((v-min)/w))]++;});
+  const labels=bins.map((_,i)=>pct(min+(i+0.5)*w));
+  const stratBin=Math.min(NB-1,Math.floor((strat.cagr-min)/w));
+
+  const lineAt={
+    id:"lineAt",
+    afterDatasetsDraw(c){
+      const x=c.scales.x,y=c.scales.y,ctx=c.ctx;
+      const frac=(strat.cagr-min)/w - stratBin + 0.5;
+      const bw=x.getPixelForValue(1)-x.getPixelForValue(0);
+      const px=x.getPixelForValue(stratBin)+(frac-0.5)*bw;
+      ctx.save();ctx.strokeStyle="#C9A227";ctx.lineWidth=2;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(px,y.top);ctx.lineTo(px,y.bottom);ctx.stroke();
+      ctx.setLineDash([]);ctx.fillStyle="#C9A227";ctx.font="600 11px 'JetBrains Mono'";
+      ctx.textAlign=px>c.width*0.6?"right":"left";
+      ctx.fillText("SISTEMA "+pct(strat.cagr),px+(px>c.width*0.6?-8:8),y.top+14);
+      ctx.restore();
+    }
+  };
+
+  if(chart)chart.destroy();
+  chart=new Chart($("hist"),{
+    type:"bar",
+    data:{labels,datasets:[{data:bins,backgroundColor:"rgba(91,141,184,0.55)",borderColor:"rgba(91,141,184,0.9)",borderWidth:1,barPercentage:1,categoryPercentage:1}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>"CAGR ≈ "+i[0].label,label:i=>i.parsed.y+" scimmie"}}},
+      scales:{
+        x:{ticks:{color:"#8D8A80",font:{family:"'JetBrains Mono'",size:10},maxTicksLimit:9},grid:{display:false}},
+        y:{ticks:{color:"#55534C",font:{family:"'JetBrains Mono'",size:10}},grid:{color:"#1E1E23"}}
+      }
+    },
+    plugins:[lineAt]
+  });
+
+  $("statsTable").innerHTML=
+    "<tr><th>Metrica</th><th>Sistema</th><th>Mediana scimmie</th><th>5° pct</th><th>95° pct</th></tr>"+
+    "<tr><td>CAGR</td><td class='strategy'>"+pct(strat.cagr)+"</td><td>"+pct(r.med)+"</td><td>"+pct(r.p5)+"</td><td>"+pct(r.p95)+"</td></tr>"+
+    "<tr><td>Max drawdown</td><td class='strategy'>"+pct(strat.maxdd)+"</td><td colspan='3'>peggiore del sistema nel "+r.ddPct.toFixed(1)+"% dei casi</td></tr>"+
+    "<tr><td>Percentile CAGR</td><td class='strategy'>"+r.percentile.toFixed(1)+"°</td><td colspan='3'>p-value empirico ≈ "+r.pval.toFixed(4)+"</td></tr>";
+}
+
+/* ---------- data loading ---------- */
+function setData(data,label){
+  if(data&&data.modes&&Object.values(data.modes).some(m=>m&&m.monkey_cagrs)){setResults(data,label);return;}
+  RESULTS=null;toggleResultsUI(false);
+  try{
+    DATA=data;PREP=prepare(data);
+    const nSec=data.sectors.length,nReb=data.rebalances.length;
+    $("dsInfo").innerHTML=label+" — <b>"+data.meta.name+"</b> · "+data.months.length+" mesi · "+nSec+" settori (point-in-time) · "+nReb+" ribilanciamenti · "+PREP.rebs[0].k+" posizioni";
+    $("verdict").style.display="none";$("chartCard").style.display="none";$("statsCard").style.display="none";
+  }catch(e){DATA=null;PREP=null;$("dsInfo").innerHTML="<span style='color:var(--red)'>Errore nel dataset: "+e.message+"</span>";}
+}
+
+function selSrc(which){
+  ["srcDemo","srcPaste","srcFile"].forEach(id=>$(id).classList.toggle("on",id===which));
+  $("jsonPaste").style.display=which==="srcPaste"?"block":"none";
+}
+$("srcDemo").onclick=()=>{selSrc("srcDemo");setData(genDemo(),'<span class="badge-demo">DEMO</span>');};
+$("srcPaste").onclick=()=>selSrc("srcPaste");
+$("jsonPaste").addEventListener("change",()=>{
+  try{setData(JSON.parse($("jsonPaste").value),"JSON incollato");}
+  catch(e){$("dsInfo").innerHTML="<span style='color:var(--red)'>JSON non valido: "+e.message+"</span>";}
+});
+$("srcFile").onclick=()=>{selSrc("srcFile");$("fileInput").click();};
+$("fileInput").addEventListener("change",ev=>{
+  const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{setData(JSON.parse(rd.result),"File: "+f.name);}catch(e){$("dsInfo").innerHTML="<span style='color:var(--red)'>JSON non valido: "+e.message+"</span>";}};
+  rd.readAsText(f);
+});
+$("runBtn").onclick=run;
+
+setData(genDemo(),'<span class="badge-demo">DEMO</span>');
+// se ospitato nel repo, carica automaticamente l'ultimo risultato del workflow
+fetch("data/monkey_test.json").then(r=>r.ok?r.json():null).then(d=>{
+  if(d&&d.modes)setResults(d,"Auto: data/monkey_test.json");
+}).catch(()=>{});
+</script>
+</body>
+</html>
