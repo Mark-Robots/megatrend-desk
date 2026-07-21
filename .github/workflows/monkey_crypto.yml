@@ -1,0 +1,42 @@
+name: Monkey Test Crypto
+
+on:
+  workflow_dispatch:
+    inputs:
+      n_monkeys:
+        description: 'Numero di scimmie'
+        default: '10000'
+      seed:
+        description: 'Seed RNG'
+        default: '42'
+      start:
+        description: 'Inizio storia (YYYY-MM-DD)'
+        default: '2018-01-01'
+
+permissions:
+  contents: write
+
+jobs:
+  monkey-crypto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install numpy
+      - name: Run random-entry test (DMI Sentinel)
+        env:
+          MT_N: ${{ github.event.inputs.n_monkeys }}
+          MT_SEED: ${{ github.event.inputs.seed }}
+          MT_START: ${{ github.event.inputs.start }}
+        run: python scripts/monkey_crypto.py
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/monkey_crypto.json
+          git diff --staged --quiet || git commit -m "Monkey Test Crypto: $(date -u +%Y-%m-%d\ %H:%M\ UTC)"
+          git pull --rebase origin main
+          git push
