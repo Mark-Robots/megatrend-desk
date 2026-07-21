@@ -302,12 +302,16 @@ function setResults(data,label){
 function updateDsInfo(mode){
   const r=RESULTS.modes[mode];if(!r)return;
   const c=r._cfg||RESULTS.config||{};
+  const s=r.strategy||{};
   let extra="";
-  if(c.stop_loss_pct!=null)extra=" · stop-loss -"+c.stop_loss_pct+"%";
-  else if(c.quality)extra=" · quality "+c.quality+(c.quality==="roc"?" ≥ "+(c.roc_min??0)+"%":"");
+  if(s.exposure_pct!=null){
+    extra=" · random-entry · esposizione "+s.exposure_pct+"% · "+(s.n_operations??"?")+" trade"
+      +(s.buy_hold_cagr!=null?" · B&H "+s.buy_hold_cagr+"%":"");
+  }else if(c.stop_loss_pct!=null)extra=" · paniere top-"+(c.top_n??"?")+" · stop-loss -"+c.stop_loss_pct+"%";
+  else if(c.quality)extra=" · paniere top-"+(c.top_n??"?")+" · quality "+c.quality+(c.quality==="roc"?" ≥ "+(c.roc_min??0)+"%":"");
   $("dsInfo").innerHTML=(RESULTS._label||"Risultati")+" — <b>Monkey Test · "+mode+"</b> · generato "
     +(RESULTS.generated_at||"").slice(0,10)+" · "+(c.n_monkeys||r.monkeys.n||"?").toLocaleString("it-IT")
-    +" scimmie · seed "+(c.seed??r.monkeys.seed??"?")+" · paniere top-"+(c.top_n??"?")+extra;
+    +" scimmie · seed "+(c.seed??r.monkeys.seed??"?")+extra;
 }
 
 function renderResults(mode){
@@ -501,7 +505,7 @@ setData(genDemo(),'<span class="badge-demo">DEMO</span>');
 // selettore di mode. Percorso relativo prima, fallback raw.githubusercontent
 // (funziona anche aprendo il file in locale). Cache-buster anti service-worker.
 (async()=>{
-  const files=["monkey_test.json","monkey_adaptive.json"];
+  const files=["monkey_test.json","monkey_adaptive.json","monkey_crypto.json"];
   const bases=["data/","https://raw.githubusercontent.com/Mark-Robots/megatrend-desk/main/data/"];
   const merged={modes:{},generated_at:""};
   for(const f of files){
