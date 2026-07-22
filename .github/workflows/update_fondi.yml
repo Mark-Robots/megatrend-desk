@@ -22,7 +22,7 @@ jobs:
         run: pip install yfinance
 
       - name: Fetch NAV
-        run: python update_fondi.py
+        run: python script/update_fondi.py
 
       - name: Commit & push
         run: |
