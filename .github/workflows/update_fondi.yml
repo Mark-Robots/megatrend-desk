@@ -1,0 +1,41 @@
+name: Update NAV fondi
+
+on:
+  schedule:
+    - cron: "30 6 * * 1-5"   # 06:30 UTC, lun-ven: i NAV sono giornalieri, T-1
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install yfinance
+
+      - name: Fetch NAV
+        run: python update_fondi.py
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/fondi_nav.json
+          if git diff --cached --quiet; then
+            echo "Nessuna variazione NAV"
+            exit 0
+          fi
+          git commit -m "nav fondi $(date -u +'%Y-%m-%d %H:%M')"
+          # hardening anti push-conflict: retry con rebase (stesso pattern del Desk)
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase && sleep 5
+          done
