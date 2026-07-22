@@ -31,7 +31,7 @@ ISINS = [
 # (es. "LU0331289248": "0P0000WI3O.F") e rilanciare.
 SYMBOL_OVERRIDES: dict[str, str] = {}
 
-OUT = Path(__file__).parent / "data" / "fondi_nav.json"
+OUT = Path(__file__).resolve().parent.parent / "data" / "fondi_nav.json"
 
 
 def fetch_one(isin: str) -> dict | None:
