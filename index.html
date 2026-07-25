@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root{
     --bg:#0a0c10;--panel:#11151c;--panel-2:#161b24;--line:#222a35;--line-soft:#1a2029;
@@ -202,6 +203,14 @@
   .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--orange));opacity:.7}
   .card.azioni{--accent:var(--orange)} .card.etf{--accent:var(--blue)} .card.crypto{--accent:var(--green)}
   .card.combocard{--accent:#f5b301}
+  .combo-chart-wrap{position:relative;height:280px;margin-top:14px}
+  .combo-grid{display:grid;grid-template-columns:290px 1fr;gap:26px;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--line-soft)}
+  @media(max-width:680px){.combo-grid{grid-template-columns:1fr}}
+  .combo-donut{position:relative;height:250px}
+  .combo-list .cl-head{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-faint);margin:12px 0 4px}
+  .combo-list .cl-head:first-child{margin-top:0}
+  .combo-list .pos-row .dot2{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:9px;flex:none;vertical-align:middle}
+  .combo-list .pos-row{font-size:12px}
   .card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px}
   .card-name{font-weight:700;font-size:15px;letter-spacing:.03em}
   .card-tag{font-size:10px;color:var(--txt-faint);letter-spacing:.12em;text-transform:uppercase}
@@ -484,7 +493,8 @@ function loadCombined(){
   try{
     const az=window.__cmb_az, etf=window.__cmb_etf, cr=window.__cmb_cr;
     if(!az||!etf||!cr||!cr.weekly||!cr.weekly.length) throw new Error('dati incompleti');
-    const azm={}; (az.modes.aggressive.equity_curve||[]).forEach(e=>{azm[e.date]=e.system;});
+    const azAg=az.modes.aggressive;
+    const azm={}; (azAg.equity_curve||[]).forEach(e=>{azm[e.date]=e.system;});
     const pe=etf.portfolio_equity, em={};
     pe.dates.forEach((d,i)=>{em[d]=pe.equity_system[i];});
     const valAt=(m,ds)=>{let best=null;for(const k in m){if(k<=ds&&(best===null||k>best))best=k;}return best!==null?m[best]:null;};
@@ -493,71 +503,126 @@ function loadCombined(){
     const NE=pe.n_sectors||9, NA=9, NC=(cr.portfolio&&cr.portfolio.n_assets)||3;
     const TOT=NE+NA+NC, wE=NE/TOT, wA=NA/TOT, wC=NC/TOT;
 
+    // ── curva combinata: rendimenti settimanali composti ──
     const d0=new Date(cr.weekly[0].date+'T00:00:00');
     let prev=cr.weekly_seed||new Date(d0.getTime()-7*86400000).toISOString().slice(0,10);
-    let combo=100,sE=100,sA=100,sC=100,lastR=null;
-    const pts=[{date:prev,v:100,e:100,a:100,c:100}];
+    let combo=100,lastR=null;
+    const pts=[{date:prev,v:100}];
     for(const w of cr.weekly){
       const ds=w.date;
       const e1=valAt(em,ds),e0=valAt(em,prev),a1=valAt(azm,ds),a0=valAt(azm,prev);
       if(e1==null||e0==null||a1==null||a0==null){prev=ds;continue;}
-      const rE=e1/e0-1, rA=a1/a0-1, rC=(w.pct||0)/100;
-      lastR=wE*rE+wA*rA+wC*rC;
-      combo*=1+lastR; sE*=1+rE; sA*=1+rA; sC*=1+rC;
-      pts.push({date:ds,v:combo,e:sE,a:sA,c:sC});
+      lastR=wE*(e1/e0-1)+wA*(a1/a0-1)+wC*((w.pct||0)/100);
+      combo*=1+lastR;
+      pts.push({date:ds,v:combo});
       prev=ds;
     }
     if(pts.length<3) throw new Error('serie troppo corta');
-
     const wk=lastR*100;
     const mo=pts.length>5?(combo/pts[pts.length-5].v-1)*100:(combo/pts[0].v-1)*100;
     const tot=combo-100;
 
-    // ── grafico SVG: composito in oro, i tre sistemi in filigrana ──
-    const W=820,H=250,padL=40,padR=14,padT=16,padB=28;
-    const all=[]; pts.forEach(p=>{all.push(p.v,p.e,p.a,p.c);});
-    let mn=Math.min(...all),mx=Math.max(...all);
-    const span=Math.max(2,mx-mn); mn-=span*0.06; mx+=span*0.06;
-    const X=i=>padL+i/(pts.length-1)*(W-padL-padR);
-    const Y=v=>padT+(1-(v-mn)/(mx-mn))*(H-padT-padB);
-    const path=key=>pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(p[key]).toFixed(1)).join(' ');
-    const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-    let axis='',lastM=-1;
-    pts.forEach((p,i)=>{
-      const dt=new Date(p.date+'T00:00:00');
-      if(dt.getMonth()!==lastM){
-        lastM=dt.getMonth();
-        axis+=`<line x1="${X(i).toFixed(1)}" y1="${padT}" x2="${X(i).toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>`;
-        axis+=`<text x="${X(i).toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5e6675">${MESI[dt.getMonth()]} ${String(dt.getFullYear()).slice(2)}</text>`;
-      }
-    });
-    const y100=Y(100);
-    const endLbl=(key,col,bold)=>{
-      const v=pts[pts.length-1][key];
-      return `<text x="${(X(pts.length-1)+4).toFixed(1)}" y="${Y(v).toFixed(1)}" font-size="${bold?11:9}" font-weight="${bold?'800':'500'}" font-family="JetBrains Mono,monospace" fill="${col}" dominant-baseline="middle">${v.toFixed(1)}</text>`;
-    };
-    const svg=`<svg viewBox="0 0 ${W} ${H}" class="wave-svg" xmlns="http://www.w3.org/2000/svg">
-      ${axis}
-      <line x1="${padL}" y1="${y100.toFixed(1)}" x2="${W-padR}" y2="${y100.toFixed(1)}" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 4"/>
-      <text x="${padL-6}" y="${y100.toFixed(1)}" text-anchor="end" font-size="9" font-family="JetBrains Mono,monospace" fill="#5e6675" dominant-baseline="middle">100</text>
-      <path d="${path('e')}" fill="none" stroke="var(--blue)" stroke-width="1.3" opacity="0.5"/>
-      <path d="${path('a')}" fill="none" stroke="var(--orange)" stroke-width="1.3" opacity="0.5"/>
-      <path d="${path('c')}" fill="none" stroke="var(--green)" stroke-width="1.3" opacity="0.5"/>
-      <path d="${path('v')}" fill="none" stroke="#f5b301" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
-      ${endLbl('v','#f5b301',true)}
-    </svg>`;
+    // ── composizione: asset correnti dei tre sistemi ──
+    const names=az.stock_names||{};
+    const azPos=(azAg.current_positions||[]).map(p=>({
+      lab:p.ticker, nm:(names[p.ticker]||p.sector_name||'').slice(0,16), pf:p.perf_pct, tag:''}));
+    const etfPos=((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal==='IN').map(s=>({
+      lab:s.ticker, nm:(s.name||'').slice(0,16), pf:s.opCurrent?s.opCurrent.perf_sector:null, tag:''}));
+    const crPos=Object.entries(cr.assets||{}).filter(([a,v])=>v.in_position).map(([a,v])=>({
+      lab:a, nm:'in posizione', pf:v.perf_ytd, tag:'ytd'}));
+    const nCash=(NA-azPos.length)+(NE-etfPos.length)+(NC-crPos.length);
+    const wSlot=100/TOT;
+    const PAL_A=['#ff7a18','#ffa14d','#e8564a','#c73e3e','#b07d3a','#d4713b','#ff8f6b','#a85232','#e0763a'];
+    const PAL_E=['#5b9dff','#7fb4ff','#3f7fe0','#2f5fb0','#6fd0e0','#4a8fa8','#8aa8ff','#3568c4','#5cc0d4'];
+    const PAL_C=['#3ddc84','#2fae68','#6fe8a8'];
+    const slices=[], cols=[], groups=[];
+    azPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_A[i%PAL_A.length]); groups.push('az');});
+    etfPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_E[i%PAL_E.length]); groups.push('etf');});
+    crPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_C[i%PAL_C.length]); groups.push('cr');});
+    const liqPct=nCash*wSlot;
+    const investedPct=100-liqPct;
 
-    const pct=x=>x.toFixed(1).replace('.',',');
+    // ── markup ──
+    const pct1=x=>x.toFixed(1).replace('.',',');
+    const rowHTML=(p,c)=>`<div class="pos-row">
+      <span><span class="dot2" style="background:${c}"></span><span class="tk">${p.lab}</span><span class="nm">${p.nm}</span></span>
+      <span class="pf ${p.pf>=0?'pos':'neg'}">${p.pf!=null?sign(p.pf):'—'}${p.tag?' <span style="color:var(--txt-faint);font-weight:400;font-size:9px">YTD</span>':''}</span></div>`;
+    let list='';
+    list+=`<div class="cl-head">Azioni · ${pct1(wA*100)}% (${NA} asset)</div>`;
+    azPos.forEach((p,i)=>{list+=rowHTML(p,PAL_A[i%PAL_A.length]);});
+    list+=`<div class="cl-head">ETF · ${pct1(wE*100)}% (${NE} asset)</div>`;
+    etfPos.forEach((p,i)=>{list+=rowHTML(p,PAL_E[i%PAL_E.length]);});
+    list+=`<div class="cl-head">Crypto · ${pct1(wC*100)}% (${NC} asset)</div>`;
+    crPos.forEach((p,i)=>{list+=rowHTML(p,PAL_C[i%PAL_C.length]);});
+    if(!crPos.length) list+=`<div class="pos-row"><span class="nm">nessuna posizione aperta</span></div>`;
+    list+=`<div class="cl-head">Liquidità</div>
+      <div class="pos-row"><span><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="pf" style="color:var(--cash)">${pct1(liqPct)}%</span></div>`;
+
     el.innerHTML=`
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal via')}</div>
-      <div class="wave-wrap">${svg}</div>
-      <div class="wave-legend">
-        <span class="lg-item"><span class="lg-line" style="background:#f5b301"></span> combinato</span>
-        <span class="lg-item"><span class="lg-line" style="background:var(--blue)"></span> ETF ${pct(wE*100)}% (${NE} asset)</span>
-        <span class="lg-item"><span class="lg-line orange"></span> Azioni ${pct(wA*100)}% (${NA} asset)</span>
-        <span class="lg-item"><span class="lg-line green"></span> Crypto ${pct(wC*100)}% (${NC} asset)</span>
+      <div class="combo-chart-wrap"><canvas id="combo-line"></canvas></div>
+      <div class="combo-grid">
+        <div class="combo-donut"><canvas id="combo-pie"></canvas></div>
+        <div class="combo-list">${list}</div>
       </div>
-      <div class="ann-wave-note">${TOT} asset equipesati (100% / ${TOT} = ${pct(100/TOT)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve.</div>`;
+      <div class="ann-wave-note" style="margin-top:14px">${TOT} asset equipesati (100% / ${TOT} = ${pct1(wSlot)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve. Performance accanto agli asset: dalla data d'ingresso (crypto: da inizio anno).</div>`;
+
+    // ── grafico linea (stile dashboard: percentuale dal via, griglia fine) ──
+    if(window.__comboLine){window.__comboLine.destroy();}
+    if(window.__comboPie){window.__comboPie.destroy();}
+    const fmtDM=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y.slice(2)}`;};
+    const ctxL=document.getElementById('combo-line').getContext('2d');
+    window.__comboLine=new Chart(ctxL,{
+      type:'line',
+      data:{labels:pts.map(p=>fmtDM(p.date)),
+        datasets:[{label:'Portafoglio combinato',data:pts.map(p=>(p.v/100-1)*100),
+          borderColor:'#f5b301',borderWidth:2.2,pointRadius:0,pointHoverRadius:4,
+          pointHoverBackgroundColor:'#f5b301',tension:0.25,fill:false}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{legend:{display:false},
+          tooltip:{backgroundColor:'#161b24',borderColor:'#222a35',borderWidth:1,
+            titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},
+            callbacks:{label:c=>' '+(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2)+'%'}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,0.05)'},border:{color:'rgba(255,255,255,0.1)'},
+             ticks:{color:'#5e6675',font:{family:'JetBrains Mono',size:9},maxTicksLimit:8,maxRotation:0}},
+          y:{grid:{color:'rgba(255,255,255,0.05)'},border:{display:false},
+             ticks:{color:'#8a96a6',font:{family:'JetBrains Mono',size:10},
+               callback:v=>(v>=0?'+':'')+v+'%'}}}}
+    });
+
+    // ── torta composizione: uno spicchio per asset + liquidità dorata con alone ──
+    const glowLiq={id:'glowLiq',afterDatasetsDraw(c){
+      const i=c.data.labels.indexOf('Liquidità'); if(i<0)return;
+      const arc=c.getDatasetMeta(0).data[i]; if(!arc)return;
+      const ctx=c.ctx; ctx.save();
+      ctx.shadowColor='rgba(255,214,90,0.85)'; ctx.shadowBlur=7;
+      arc.draw(ctx); ctx.restore();
+    }};
+    const ctxP=document.getElementById('combo-pie').getContext('2d');
+    window.__comboPie=new Chart(ctxP,{
+      type:'doughnut',
+      data:{labels:[...slices.map(s=>s.lab),'Liquidità'],
+        datasets:[{data:[...slices.map(()=>wSlot),liqPct],
+          backgroundColor:[...cols,'#c9a14a'],
+          borderColor:'#11151c',borderWidth:2,hoverOffset:5}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+        layout:{padding:10},
+        plugins:{legend:{display:false},
+          tooltip:{backgroundColor:'#161b24',borderColor:'#222a35',borderWidth:1,
+            titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},
+            callbacks:{label:c=>' '+c.parsed.toFixed(1).replace('.',',')+'%'}}}},
+      plugins:[glowLiq,{id:'centerTxt',afterDraw(c){
+        const{ctx,chartArea:ar}=c; const cx=(ar.left+ar.right)/2, cy=(ar.top+ar.bottom)/2;
+        ctx.save(); ctx.textAlign='center';
+        ctx.font='500 10px JetBrains Mono'; ctx.fillStyle='#8a96a6';
+        ctx.fillText('investito',cx,cy-6);
+        ctx.font='800 17px JetBrains Mono'; ctx.fillStyle='#e8edf4';
+        ctx.fillText(pct1(investedPct)+'%',cx,cy+13);
+        ctx.restore();
+      }}]
+    });
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non ancora sufficienti per il portafoglio combinato.</p>';
     console.error('Combo',e);
