@@ -450,8 +450,13 @@ async function loadCrypto(){
         <span><span class="tk">${a}</span><span class="nm">${v.in_position?'in posizione':'flat'}</span></span>
         <span class="pf ${v.perf_ytd>=0?'pos':'neg'}">${sign(v.perf_ytd)}</span></div>`;
     }).join('');
+    // barra investito/liquidita': quota di asset in posizione sui 3 del sistema
+    const nTot=order.filter(a=>assets[a]).length||1;
+    const nIn=order.filter(a=>assets[a]&&assets[a].in_position).length;
+    const inv=nIn/nTot*100;
     el.innerHTML=`
       <div class="perf-row">${perfBox(pf.perf_week,'settimana')}${perfBox(pf.perf_month,'mese')}${perfBox(pf.perf_ytd,'da inizio anno')}</div>
+      ${cashBar(inv,'var(--green)')}
       <div class="positions"><div class="ptitle">portafoglio crypto · ${order.filter(a=>assets[a]).length} · media equipesata</div>
         ${rows}
       </div>
