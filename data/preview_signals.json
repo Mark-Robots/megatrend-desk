@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-07-27T16:31:08.736297+00:00",
+ "updated_at": "2026-07-27T18:31:20.386907+00:00",
  "last_bar": "2026-07-24",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -26,9 +26,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": -18.66,
-     "roc13": 85.43,
-     "score": 342.9,
+     "roc4": -12.54,
+     "roc13": 99.38,
+     "score": 376.2,
      "tag": "top_momentum"
     },
     {
@@ -44,9 +44,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 0.07,
-     "roc13": 50.07,
-     "score": 115.5,
+     "roc4": 3.47,
+     "roc13": 55.17,
+     "score": 122.8,
      "tag": "top_momentum"
     },
     {
@@ -62,9 +62,9 @@
      "ticker_name": "Morgan Stanley",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 1.16,
-     "roc13": 14.66,
-     "score": 30.2,
+     "roc4": 1.49,
+     "roc13": 15.03,
+     "score": 30.7,
      "tag": "premium_ok"
     },
     {
@@ -80,9 +80,9 @@
      "ticker_name": "Eli Lilly",
      "held_ticker": null,
      "held_name": null,
-     "roc4": -1.0,
-     "roc13": 35.54,
-     "score": 40.6,
+     "roc4": -1.84,
+     "roc13": 34.39,
+     "score": 39.4,
      "tag": "top_momentum"
     },
     {
@@ -98,9 +98,9 @@
      "ticker_name": "Caterpillar",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": -10.74,
-     "roc13": 7.17,
-     "score": 47.0,
+     "roc4": -10.15,
+     "roc13": 7.87,
+     "score": 48.0,
      "tag": "premium_ok"
     },
     {
@@ -111,14 +111,14 @@
      "move": null,
      "borderline": false,
      "state": "Debole",
-     "stage": "2",
+     "stage": "1",
      "ticker": "PM",
      "ticker_name": "Philip Morris",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 6.77,
-     "roc13": 18.51,
-     "score": 20.8,
+     "roc4": 5.73,
+     "roc13": 17.36,
+     "score": 19.6,
      "tag": "value_momentum"
     },
     {
@@ -134,9 +134,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 16.63,
-     "roc13": 28.87,
-     "score": 64.7,
+     "roc4": 17.69,
+     "roc13": 30.04,
+     "score": 66.2,
      "tag": "top_momentum"
     },
     {
@@ -202,9 +202,9 @@
      "ticker_name": "AMD",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": 0.07,
-     "roc13": 50.07,
-     "score": 15.1,
+     "roc4": 3.47,
+     "roc13": 55.17,
+     "score": 19.0,
      "tag": "top_momentum"
     },
     {
@@ -216,14 +216,14 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "AAPL",
-     "ticker_name": "Apple",
+     "ticker": "AMD",
+     "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 17.35,
-     "roc13": 22.97,
+     "roc4": 3.47,
+     "roc13": 55.17,
      "score": 19.0,
-     "tag": "premium_ok"
+     "tag": "top_momentum"
     },
     {
      "sector": "XLF",
@@ -238,9 +238,9 @@
      "ticker_name": "Bank of America",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 7.2,
-     "roc13": 19.83,
-     "score": 11.0,
+     "roc4": 5.87,
+     "roc13": 18.34,
+     "score": 9.6,
      "tag": "value_momentum"
     },
     {
@@ -256,9 +256,9 @@
      "ticker_name": "Thermo Fisher",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 10.77,
-     "roc13": 21.1,
-     "score": 13.9,
+     "roc4": 11.56,
+     "roc13": 21.97,
+     "score": 14.7,
      "tag": "value_momentum"
     },
     {
@@ -274,9 +274,9 @@
      "ticker_name": "RTX (Raytheon)",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 13.19,
-     "roc13": 22.62,
-     "score": 16.0,
+     "roc4": 11.26,
+     "roc13": 20.53,
+     "score": 14.0,
      "tag": "value_momentum"
     },
     {
@@ -287,14 +287,14 @@
      "move": null,
      "borderline": false,
      "state": "Debole",
-     "stage": "2",
+     "stage": "1",
      "ticker": "PM",
      "ticker_name": "Philip Morris",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 6.77,
-     "roc13": 18.51,
-     "score": 10.3,
+     "roc4": 5.73,
+     "roc13": 17.36,
+     "score": 9.2,
      "tag": "value_momentum"
     },
     {
@@ -310,9 +310,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 21.72,
-     "roc13": 38.49,
-     "score": 26.8,
+     "roc4": 22.91,
+     "roc13": 39.85,
+     "score": 28.0,
      "tag": "top_momentum"
     },
     {
