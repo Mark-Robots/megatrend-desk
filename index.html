@@ -210,7 +210,21 @@
   .combo-list .cl-head{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-faint);margin:12px 0 4px}
   .combo-list .cl-head:first-child{margin-top:0}
   .combo-list .pos-row .dot2{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:9px;flex:none;vertical-align:middle}
-  .combo-list .pos-row{font-size:12px}
+  .combo-list .pos-row{font-size:12px;display:grid;grid-template-columns:minmax(0,1fr) 96px 82px 74px;gap:8px;align-items:center;padding:4px 0}
+  .combo-list .cl-name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .combo-list .cl-val{font-size:11px;color:var(--txt-dim);text-align:right;font-variant-numeric:tabular-nums}
+  .combo-list .pos-row .pf{text-align:right}
+  .combo-list .cl-cols{display:grid;grid-template-columns:minmax(0,1fr) 96px 82px 74px;gap:8px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);padding:0 0 6px;border-bottom:1px solid var(--line-soft);margin-bottom:4px}
+  .combo-list .cl-cols span:not(:first-child){text-align:right}
+  @media(max-width:680px){
+    .combo-list .cl-cols{display:none}
+    .combo-list .pos-row{grid-template-columns:minmax(0,1fr) auto auto;row-gap:1px;
+      grid-template-areas:"name name perf" "date price price"}
+    .combo-list .cl-name{grid-area:name}
+    .combo-list .cl-date{grid-area:date;text-align:left}
+    .combo-list .cl-price{grid-area:price;text-align:left;color:var(--txt-faint)}
+    .combo-list .pos-row .pf{grid-area:perf}
+  }
   .card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px}
   .card-name{font-weight:700;font-size:15px;letter-spacing:.03em}
   .card-tag{font-size:10px;color:var(--txt-faint);letter-spacing:.12em;text-transform:uppercase}
@@ -524,12 +538,29 @@ function loadCombined(){
 
     // ── composizione: asset correnti dei tre sistemi ──
     const names=az.stock_names||{};
+    const fmtIT=s=>{if(!s)return null;const[y,m,d]=s.split('-');return `${d}/${m}/${y}`;};
     const azPos=(azAg.current_positions||[]).map(p=>({
-      lab:p.ticker, nm:(names[p.ticker]||p.sector_name||'').slice(0,16), pf:p.perf_pct, tag:''}));
-    const etfPos=((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal==='IN').map(s=>({
-      lab:s.ticker, nm:(s.name||'').slice(0,16), pf:s.opCurrent?s.opCurrent.perf_sector:null, tag:''}));
+      lab:p.ticker, nm:(names[p.ticker]||p.sector_name||'').slice(0,16), pf:p.perf_pct, tag:'',
+      dt:fmtIT(p.entry_date), px:p.entry_price!=null?p.entry_price.toFixed(2):null}));
+    // prezzo d'acquisto ETF: prezzo della serie di simulazione alla data d'ingresso
+    const sim=etf.portfolio_simulation||{};
+    const simDates=sim.dates||[];
+    const priceAt=(tk,ds)=>{
+      const sec=(sim.sectors||{})[tk]; if(!sec||!sec.prices)return null;
+      let best=null;
+      for(let i=0;i<simDates.length;i++){if(simDates[i]<=ds&&sec.prices[i]!=null)best=sec.prices[i];}
+      return best;
+    };
+    const etfPos=((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal==='IN').map(s=>{
+      const sd=s.opCurrent?s.opCurrent.start_date:null;
+      const px=sd?priceAt(s.ticker_raw||s.ticker,sd):null;
+      return {lab:s.ticker, nm:(s.name||'').slice(0,16), pf:s.opCurrent?s.opCurrent.perf_sector:null, tag:'',
+        dt:fmtIT(sd), px:px!=null?px.toFixed(2):null};});
     const crPos=Object.entries(cr.assets||{}).filter(([a,v])=>v.in_position).map(([a,v])=>({
-      lab:a, nm:'in posizione', pf:v.perf_ytd, tag:'ytd'}));
+      lab:a, nm:'in posizione',
+      pf:(v.perf_pos!=null?v.perf_pos:v.perf_ytd),
+      tag:(v.perf_pos!=null?'':'ytd'),
+      dt:fmtIT(v.entry_date), px:v.entry_price!=null?Number(v.entry_price).toFixed(2):null}));
     const nCash=(NA-azPos.length)+(NE-etfPos.length)+(NC-crPos.length);
     const wSlot=100/TOT;
     const PAL_A=['#ff7a18','#ffa14d','#e8564a','#c73e3e','#b07d3a','#d4713b','#ff8f6b','#a85232','#e0763a'];
@@ -545,9 +576,11 @@ function loadCombined(){
     // ── markup ──
     const pct1=x=>x.toFixed(1).replace('.',',');
     const rowHTML=(p,c)=>`<div class="pos-row">
-      <span><span class="dot2" style="background:${c}"></span><span class="tk">${p.lab}</span><span class="nm">${p.nm}</span></span>
+      <span class="cl-name"><span class="dot2" style="background:${c}"></span><span class="tk">${p.lab}</span><span class="nm">${p.nm}</span></span>
+      <span class="cl-val cl-date">${p.dt||'—'}</span>
+      <span class="cl-val cl-price">${p.px||'—'}</span>
       <span class="pf ${p.pf>=0?'pos':'neg'}">${p.pf!=null?sign(p.pf):'—'}${p.tag?' <span style="color:var(--txt-faint);font-weight:400;font-size:9px">YTD</span>':''}</span></div>`;
-    let list='';
+    let list=`<div class="cl-cols"><span>asset</span><span>in posizione da</span><span>prezzo acq.</span><span>perf</span></div>`;
     list+=`<div class="cl-head">Azioni · ${pct1(wA*100)}% (${NA} asset)</div>`;
     azPos.forEach((p,i)=>{list+=rowHTML(p,PAL_A[i%PAL_A.length]);});
     list+=`<div class="cl-head">ETF · ${pct1(wE*100)}% (${NE} asset)</div>`;
@@ -556,7 +589,7 @@ function loadCombined(){
     crPos.forEach((p,i)=>{list+=rowHTML(p,PAL_C[i%PAL_C.length]);});
     if(!crPos.length) list+=`<div class="pos-row"><span class="nm">nessuna posizione aperta</span></div>`;
     list+=`<div class="cl-head">Liquidità</div>
-      <div class="pos-row"><span><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="pf" style="color:var(--cash)">${pct1(liqPct)}%</span></div>`;
+      <div class="pos-row"><span class="cl-name"><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="cl-val cl-date"></span><span class="cl-val cl-price"></span><span class="pf" style="color:var(--cash)">${pct1(liqPct)}%</span></div>`;
 
     el.innerHTML=`
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal via')}</div>
