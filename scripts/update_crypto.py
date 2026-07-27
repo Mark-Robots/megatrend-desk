@@ -280,7 +280,18 @@ def run_backtest(klines, asset, dmi_by_time):
             trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100))
             pos = 'FLAT'
 
-    return times, equity, (pos == 'LONG'), trades
+    # dettagli posizione aperta (per la scheda del desk): data ingresso,
+    # prezzo di acquisto, prezzo corrente e performance della posizione
+    open_pos = None
+    if pos == 'LONG' and ep > 0:
+        last_close = closes[-1]
+        open_pos = {
+            'entry_date': entry_date,
+            'entry_price': round(ep, 4),
+            'current_price': round(last_close, 4),
+            'perf_pos': round((last_close / ep - 1) * 100, 2),
+        }
+    return times, equity, (pos == 'LONG'), trades, open_pos
 
 
 # ── SERIE SETTIMANALE PER MYVALUE ──────────────────────────────────────
@@ -371,7 +382,7 @@ def main():
             print(f"[{asset}] dati insufficienti, skip")
             continue
         dmi = compute_rolling_dmi(kl, DMI_PERIOD)
-        times, equity, in_pos, trades = run_backtest(kl, asset, dmi)
+        times, equity, in_pos, trades, open_pos = run_backtest(kl, asset, dmi)
         fri_eq_by_asset[asset] = friday_equity(times, equity)
         per_asset[asset] = {
             'perf_week': round(perf_from(times, equity, week_ts), 2),
@@ -379,6 +390,10 @@ def main():
             'perf_ytd': round(perf_from(times, equity, ytd_ts), 2),
             'in_position': in_pos,
             'n_trades': len(trades),
+            'entry_date': open_pos['entry_date'] if open_pos else None,
+            'entry_price': open_pos['entry_price'] if open_pos else None,
+            'current_price': open_pos['current_price'] if open_pos else None,
+            'perf_pos': open_pos['perf_pos'] if open_pos else None,
         }
         a = per_asset[asset]
         print(f"[{asset}] sett {a['perf_week']}% mese {a['perf_month']}% YTD {a['perf_ytd']}% in_pos={in_pos} ({len(trades)} trade)")
