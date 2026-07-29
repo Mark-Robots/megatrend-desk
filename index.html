@@ -510,8 +510,35 @@ function loadCombined(){
     if(!az||!etf||!cr||!cr.weekly||!cr.weekly.length) throw new Error('dati incompleti');
     const azAg=az.modes.aggressive;
     const azm={}; (azAg.equity_curve||[]).forEach(e=>{azm[e.date]=e.system;});
-    const pe=etf.portfolio_equity, em={};
-    pe.dates.forEach((d,i)=>{em[d]=pe.equity_system[i];});
+    const pe=etf.portfolio_equity;
+    // Componente ETF ricostruita sugli strumenti UCITS in EUR (stessi segnali
+    // lisciati, stesso algoritmo non ribilanciato del sistema; fallback
+    // sull'indice USA nelle settimane senza prezzo EUR): il combinato include
+    // così l'effetto cambio del portafoglio reale.
+    const sim0=etf.portfolio_simulation||{};
+    const sDates=sim0.dates||[];
+    // solo i 9 settori di SISTEMA (esclusi i solo-analisi presenti nella griglia)
+    const SYS=((etf.ranking&&etf.ranking.ranking)||[])
+      .filter(s=>s.opSignal!=='INFO')
+      .map(s=>s.ticker_raw||s.ticker)
+      .filter(t=>(sim0.sectors||{})[t]);
+    const em={};
+    {
+      const sub={}; SYS.forEach(t=>{sub[t]=100.0/SYS.length;});
+      for(let i=0;i<sDates.length;i++){
+        if(i){
+          for(const t of SYS){
+            const sec=sim0.sectors[t];
+            const sig=sec.signals_by_ts[String(sec.default_ts)]||[];
+            let p0=(sec.prices_eur&&sec.prices_eur[i-1]>0)?sec.prices_eur[i-1]:null;
+            let p1=(sec.prices_eur&&sec.prices_eur[i]!=null&&sec.prices_eur[i]>0)?sec.prices_eur[i]:null;
+            if(p0==null||p1==null){p0=sec.prices[i-1];p1=sec.prices[i];}
+            if(p0&&p1!=null&&sig[i-1]) sub[t]*=p1/p0;
+          }
+        }
+        em[sDates[i]]=Object.values(sub).reduce((s,v)=>s+v,0);
+      }
+    }
     const valAt=(m,ds)=>{let best=null;for(const k in m){if(k<=ds&&(best===null||k>best))best=k;}return best!==null?m[best]:null;};
 
     // pesi per asset: 100% / numero totale di asset dei tre sistemi
@@ -612,7 +639,7 @@ function loadCombined(){
         <div class="combo-donut"><canvas id="combo-pie"></canvas></div>
         <div class="combo-list">${list}</div>
       </div>
-      <div class="ann-wave-note" style="margin-top:14px">${TOT} asset equipesati (100% / ${TOT} = ${pct1(wSlot)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve. Performance accanto agli asset: dalla data d'ingresso (crypto: da inizio anno).</div>`;
+      <div class="ann-wave-note" style="margin-top:14px">${TOT} asset equipesati (100% / ${TOT} = ${pct1(wSlot)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve. Componente ETF su strumenti UCITS in EUR (effetto cambio incluso); azioni ai prezzi dei rispettivi listini; crypto in USD. Performance accanto agli asset: dalla data d'ingresso.</div>`;
 
     // ── grafico linea (stile dashboard: percentuale dal via, griglia fine) ──
     if(window.__comboLine){window.__comboLine.destroy();}
