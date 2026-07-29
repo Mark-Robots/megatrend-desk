@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-07-29T16:31:16.185957+00:00",
+ "updated_at": "2026-07-29T18:31:25.574219+00:00",
  "last_bar": "2026-07-24",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -62,9 +62,9 @@
      "ticker_name": "Morgan Stanley",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 1.49,
-     "roc13": 15.03,
-     "score": 30.7,
+     "roc4": 1.16,
+     "roc13": 14.66,
+     "score": 30.2,
      "tag": "premium_ok"
     },
     {
@@ -111,7 +111,7 @@
      "move": null,
      "borderline": false,
      "state": "Debole",
-     "stage": "1",
+     "stage": "2",
      "ticker": "PM",
      "ticker_name": "Philip Morris",
      "held_ticker": null,
@@ -134,9 +134,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 17.69,
-     "roc13": 30.04,
-     "score": 66.2,
+     "roc4": 16.63,
+     "roc13": 28.87,
+     "score": 64.7,
      "tag": "top_momentum"
     },
     {
@@ -256,9 +256,9 @@
      "ticker_name": "Thermo Fisher",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 11.56,
-     "roc13": 21.97,
-     "score": 14.7,
+     "roc4": 10.77,
+     "roc13": 21.1,
+     "score": 13.9,
      "tag": "value_momentum"
     },
     {
@@ -287,7 +287,7 @@
      "move": null,
      "borderline": false,
      "state": "Debole",
-     "stage": "1",
+     "stage": "2",
      "ticker": "PM",
      "ticker_name": "Philip Morris",
      "held_ticker": null,
@@ -310,9 +310,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 22.91,
-     "roc13": 39.85,
-     "score": 28.0,
+     "roc4": 21.72,
+     "roc13": 38.49,
+     "score": 26.8,
      "tag": "top_momentum"
     },
     {
