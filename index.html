@@ -533,6 +533,7 @@ function loadCombined(){
       prev=ds;
     }
     if(pts.length<3) throw new Error('serie troppo corta');
+    const fmtDM=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y.slice(2)}`;};
     const wk=lastR*100;
     const mo=pts.length>5?(combo/pts[pts.length-5].v-1)*100:(combo/pts[0].v-1)*100;
     const tot=combo-100;
@@ -543,20 +544,32 @@ function loadCombined(){
     const azPos=(azAg.current_positions||[]).map(p=>({
       lab:p.ticker, nm:(names[p.ticker]||p.sector_name||'').slice(0,16), pf:p.perf_pct, tag:'',
       dt:fmtIT(p.entry_date), px:p.entry_price!=null?p.entry_price.toFixed(2):null}));
-    // prezzo d'acquisto ETF: prezzo della serie di simulazione alla data d'ingresso
+    // ETF: strumenti UCITS reali (stesso metodo del pannello Allocazione di cliente.html):
+    // ticker iShares/Lyxor, prezzo EUR alla data d'ingresso e performance sulla stessa
+    // serie (mai mischiare valute); fallback su indice USA marcato con *.
     const sim=etf.portfolio_simulation||{};
     const simDates=sim.dates||[];
-    const priceAt=(tk,ds)=>{
-      const sec=(sim.sectors||{})[tk]; if(!sec||!sec.prices)return null;
-      let best=null;
-      for(let i=0;i<simDates.length;i++){if(simDates[i]<=ds&&sec.prices[i]!=null)best=sec.prices[i];}
-      return best;
-    };
+    const lastIdx=simDates.length-1;
     const etfPos=((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal==='IN').map(s=>{
-      const sd=s.opCurrent?s.opCurrent.start_date:null;
-      const px=sd?priceAt(s.ticker_raw||s.ticker,sd):null;
-      return {lab:s.ticker, nm:(s.name||'').slice(0,16), pf:s.opCurrent?s.opCurrent.perf_sector:null, tag:'',
-        dt:fmtIT(sd), px:px!=null?px.toFixed(2):null};});
+      const raw=s.ticker_raw||s.ticker;
+      const sec=(sim.sectors||{})[raw];
+      const ei=s.etfInfo||{};
+      let dt=null,px=null,pf=null;
+      if(sec&&sec.signals_by_ts){
+        const sig=sec.signals_by_ts[String(sec.default_ts)]||[];
+        let entry=lastIdx;
+        for(let i=lastIdx;i>0;i--){
+          if(sig[i]&&!sig[i-1]){entry=i;break;}
+          if(i===1&&sig[0])entry=0;
+        }
+        dt=simDates[entry];
+        const pe=sec.prices_eur;
+        let p0=(pe&&pe[entry]>0)?pe[entry]:null, p1=(pe&&pe[lastIdx]>0)?pe[lastIdx]:null, fb=false;
+        if(p0==null||p1==null){p0=sec.prices[entry];p1=sec.prices[lastIdx];fb=true;}
+        if(p0>0&&p1!=null){pf=(p1/p0-1)*100;px=(fb?'':'\u20ac')+Number(p0).toFixed(2)+(fb?'*':'');}
+      }
+      return {lab:ei.ticker_short||s.ticker, nm:(s.name||'').slice(0,16), pf:pf, tag:'',
+        dt:fmtIT(dt), px:px};});
     const crPos=Object.entries(cr.assets||{}).filter(([a,v])=>v.in_position).map(([a,v])=>({
       lab:a, nm:'in posizione',
       pf:(v.perf_pos!=null?v.perf_pos:v.perf_ytd),
@@ -593,7 +606,7 @@ function loadCombined(){
       <div class="pos-row"><span class="cl-name"><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="cl-val cl-date"></span><span class="cl-val cl-price"></span><span class="pf" style="color:var(--cash)">${pct1(liqPct)}%</span></div>`;
 
     el.innerHTML=`
-      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal via')}</div>
+      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal '+fmtDM(pts[0].date))}</div>
       <div class="combo-chart-wrap"><canvas id="combo-line"></canvas></div>
       <div class="combo-grid">
         <div class="combo-donut"><canvas id="combo-pie"></canvas></div>
@@ -604,7 +617,6 @@ function loadCombined(){
     // ── grafico linea (stile dashboard: percentuale dal via, griglia fine) ──
     if(window.__comboLine){window.__comboLine.destroy();}
     if(window.__comboPie){window.__comboPie.destroy();}
-    const fmtDM=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y.slice(2)}`;};
     const ctxL=document.getElementById('combo-line').getContext('2d');
     window.__comboLine=new Chart(ctxL,{
       type:'line',
