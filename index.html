@@ -1185,7 +1185,15 @@ async function loadCycles(url, targetId){
       const pct=Math.max(8, Math.round(Math.sqrt(len/maxLen)*100)); // radice: comprime il range enorme (22gg..1000gg)
       const barCls = dir.key==='rialzista' ? 'up' : dir.key==='ribassista' ? 'dn' : 'fl';
       const nome=c.label.replace('Ciclo ','');
-      const badges = af ? `<span class="aff-badge ${af.regCls}" title="quanto il ciclo è puntuale rispetto alla sua durata">affidabilità ${af.reg}</span>` : '';
+      let badges = af ? `<span class="aff-badge ${af.regCls}" title="quanto il ciclo è puntuale rispetto alla sua durata">affidabilità ${af.reg}</span>` : '';
+      // verifica storica walk-forward: proiezione fatta PRIMA dell'evento vs data reale
+      if(c.track_mae_low!=null||c.track_mae_high!=null){
+        const fmtE=t=>`att ${fmtCycDate(t.attesa)} \u2192 reale ${fmtCycDate(t.reale)} (${t.err_gg>=0?'+':''}${t.err_gg}g)`;
+        const det=[...(c.track_lows||[]).map(t=>'min: '+fmtE(t)),...(c.track_highs||[]).map(t=>'max: '+fmtE(t))].join('\u000A');
+        const lbl=[c.track_mae_low!=null?`minimi \u00b1${c.track_mae_low}g`:null,
+                   c.track_mae_high!=null?`massimi \u00b1${c.track_mae_high}g`:null].filter(Boolean).join(' \u00b7 ');
+        badges+=`<span class="aff-badge t" title="Ultime proiezioni verificate (fatte prima dell'evento, stessa regola del live):\u000A${det}">verifica storica: ${lbl}</span>`;
+      }
       return `<div class="cyc-row">
         <div class="cyc-rank">${i+1}</div>
         <div class="cyc-rname"><span class="cyc-racc ${barCls}"></span><span class="cyc-rlabel">${nome}</span></div>
