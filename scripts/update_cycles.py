@@ -337,6 +337,30 @@ def find_nested_lows(prices, cycle_len, parent_lows=None, tol_frac=0.35):
     return cleaned
 
 
+def _track_record(extremes, dates, cl, bias_off, n_last=4):
+    """Verifica walk-forward della precisione: per ogni estremo realizzato,
+    la data che il sistema avrebbe proiettato PRIMA dell'evento (ancora
+    precedente + passo effettivo stimato solo sugli estremi gia' visti + bias,
+    stessa regola del live) contro la data reale. err_gg > 0 = arrivato in
+    ritardo rispetto alla proiezione. Nessun dato futuro entra nella stima."""
+    out = []
+    for k in range(2, len(extremes)):
+        prior = extremes[:k]
+        gaps = [prior[i+1] - prior[i] for i in range(len(prior)-1)]
+        eff = statistics.mean(gaps)
+        eff = max(cl * 0.6, min(cl * 1.6, eff))
+        try:
+            anchor = datetime.date.fromisoformat(dates[prior[-1]])
+            pred = anchor + datetime.timedelta(days=int(round(eff)) + bias_off)
+            actual = datetime.date.fromisoformat(dates[extremes[k]])
+            out.append({"attesa": pred.strftime("%Y-%m-%d"),
+                        "reale": actual.strftime("%Y-%m-%d"),
+                        "err_gg": (actual - pred).days})
+        except Exception:
+            continue
+    return out[-n_last:]
+
+
 def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
     cl = spec["len"]
     lows = find_nested_lows(prices, cl, parent_lows=parent_lows)
@@ -369,6 +393,12 @@ def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
         else:
             cl_eff = cl
         res["len_effective"] = cl_eff
+        # verifica storica walk-forward sui minimi (stessa regola di proiezione del live)
+        _off_low = BIAS_OFFSET.get(spec["key"], {}).get("low", 0) if apply_bias else 0
+        _tl = _track_record(lows, dates, cl, _off_low)
+        if _tl:
+            res["track_lows"] = _tl
+            res["track_mae_low"] = round(statistics.mean(abs(t["err_gg"]) for t in _tl), 0)
         # ricalcolo la fase sul passo reale
         prog = elapsed / cl_eff
         if prog < 0.5:
@@ -419,6 +449,12 @@ def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
         else:
             cl_eff_h = res.get("len_effective", cl)
         res["len_effective_high"] = cl_eff_h
+        # verifica storica walk-forward sui massimi
+        _off_high = BIAS_OFFSET.get(spec["key"], {}).get("high", 0) if apply_bias else 0
+        _th = _track_record(highs, dates, cl, _off_high)
+        if _th:
+            res["track_highs"] = _th
+            res["track_mae_high"] = round(statistics.mean(abs(t["err_gg"]) for t in _th), 0)
         prog_h = elapsed_h / cl_eff_h
         res["progress_high_pct"] = round(min(prog_h, 1.5) * 100, 0)
         res["days_to_high_est"] = max(0, cl_eff_h - elapsed_h)
