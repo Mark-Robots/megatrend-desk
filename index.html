@@ -204,6 +204,17 @@
   .card.azioni{--accent:var(--orange)} .card.etf{--accent:var(--blue)} .card.crypto{--accent:var(--green)}
   .card.combocard{--accent:#f5b301}
   .combo-chart-wrap{position:relative;height:280px;margin-top:14px}
+  .combo-bars{position:relative;height:80px;margin-top:2px}
+  .combo-months{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .cm-chip{display:flex;flex-direction:column;gap:2px;align-items:center;min-width:74px;
+    padding:7px 12px;border-radius:9px;background:#0d1117;border:1px solid var(--line-soft)}
+  .cm-chip .cm-m{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint)}
+  .cm-chip .cm-v{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px}
+  .cm-chip.pos{border-color:rgba(61,220,132,.3);background:rgba(61,220,132,.06)}
+  .cm-chip.pos .cm-v{color:var(--green)}
+  .cm-chip.neg{border-color:rgba(255,92,92,.3);background:rgba(255,92,92,.06)}
+  .cm-chip.neg .cm-v{color:var(--red)}
+  .cm-chip .cm-t{font-size:8px;color:var(--txt-faint);letter-spacing:.04em}
   .combo-grid{display:grid;grid-template-columns:470px 1fr;gap:30px;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--line-soft)}
   @media(max-width:860px){.combo-grid{grid-template-columns:1fr}.combo-donut{height:280px}}
   .combo-donut{position:relative;height:420px}
@@ -549,14 +560,14 @@ function loadCombined(){
     const d0=new Date(cr.weekly[0].date+'T00:00:00');
     let prev=cr.weekly_seed||new Date(d0.getTime()-7*86400000).toISOString().slice(0,10);
     let combo=100,lastR=null;
-    const pts=[{date:prev,v:100}];
+    const pts=[{date:prev,v:100,r:0}];
     for(const w of cr.weekly){
       const ds=w.date;
       const e1=valAt(em,ds),e0=valAt(em,prev),a1=valAt(azm,ds),a0=valAt(azm,prev);
       if(e1==null||e0==null||a1==null||a0==null){prev=ds;continue;}
       lastR=wE*(e1/e0-1)+wA*(a1/a0-1)+wC*((w.pct||0)/100);
       combo*=1+lastR;
-      pts.push({date:ds,v:combo});
+      pts.push({date:ds,v:combo,r:lastR*100});
       prev=ds;
     }
     if(pts.length<3) throw new Error('serie troppo corta');
@@ -616,6 +627,23 @@ function loadCombined(){
 
     // ── markup ──
     const pct1=x=>x.toFixed(1).replace('.',',');
+    // rendimenti mensili composti dalle settimane (mese della data di chiusura settimanale)
+    const MESI_N=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+    const months=[];
+    for(let i=1;i<pts.length;i++){
+      const dt=new Date(pts[i].date+'T00:00:00');
+      const key=dt.getFullYear()+'-'+dt.getMonth();
+      let m=months[months.length-1];
+      if(!m||m.key!==key){m={key,lab:MESI_N[dt.getMonth()]+' '+String(dt.getFullYear()).slice(2),f:1};months.push(m);}
+      m.f*=1+pts[i].r/100;
+    }
+    const lastMonthKey=months.length?months[months.length-1].key:null;
+    const monthChips=months.map(m=>{
+      const v=(m.f-1)*100;
+      const cls=v>=0?'pos':'neg';
+      const corso=(m.key===lastMonthKey)?'<span class="cm-t">in corso</span>':'';
+      return `<div class="cm-chip ${cls}"><span class="cm-m">${m.lab}</span><span class="cm-v">${(v>=0?'+':'')+v.toFixed(1).replace('.',',')}%</span>${corso}</div>`;
+    }).join('');
     const rowHTML=(p,c)=>`<div class="pos-row">
       <span class="cl-name"><span class="dot2" style="background:${c}"></span><span class="tk">${p.lab}</span><span class="nm">${p.nm}</span></span>
       <span class="cl-val cl-date">${p.dt||'—'}</span>
@@ -635,6 +663,8 @@ function loadCombined(){
     el.innerHTML=`
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal '+fmtDM(pts[0].date))}</div>
       <div class="combo-chart-wrap"><canvas id="combo-line"></canvas></div>
+      <div class="combo-bars"><canvas id="combo-bars"></canvas></div>
+      <div class="combo-months">${monthChips}</div>
       <div class="combo-grid">
         <div class="combo-donut"><canvas id="combo-pie"></canvas></div>
         <div class="combo-list">${list}</div>
@@ -643,26 +673,69 @@ function loadCombined(){
 
     // ── grafico linea (stile dashboard: percentuale dal via, griglia fine) ──
     if(window.__comboLine){window.__comboLine.destroy();}
+    if(window.__comboBars){window.__comboBars.destroy();}
     if(window.__comboPie){window.__comboPie.destroy();}
     const ctxL=document.getElementById('combo-line').getContext('2d');
+    // plugin: linea guida verticale al passaggio del mouse
+    const crosshair={id:'crosshair',afterDraw(c){
+      const a=c.tooltip;if(!a||!a.getActiveElements().length)return;
+      const x=a.getActiveElements()[0].element.x,ar=c.chartArea,ctx=c.ctx;
+      ctx.save();ctx.strokeStyle='rgba(232,237,244,0.25)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(x,ar.top);ctx.lineTo(x,ar.bottom);ctx.stroke();ctx.restore();}};
+    // plugin: marcatore finale con pillola del valore
+    const endDot={id:'endDot',afterDatasetsDraw(c){
+      const m=c.getDatasetMeta(0);const el2=m.data[m.data.length-1];if(!el2)return;
+      const ctx=c.ctx,v=(pts[pts.length-1].v/100-1)*100;
+      ctx.save();
+      ctx.beginPath();ctx.arc(el2.x,el2.y,4.5,0,7);ctx.fillStyle='#f5b301';ctx.fill();
+      ctx.strokeStyle='#0a0c10';ctx.lineWidth=2;ctx.stroke();
+      const txt=(v>=0?'+':'')+v.toFixed(1)+'%';
+      ctx.font='800 11px JetBrains Mono';
+      const w2=ctx.measureText(txt).width+14;
+      const bx=Math.min(el2.x+10,c.chartArea.right-w2),by=el2.y-24;
+      ctx.fillStyle='#161b24';ctx.strokeStyle='rgba(245,179,1,.5)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.roundRect(bx,by,w2,19,5);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#f5b301';ctx.textAlign='left';ctx.fillText(txt,bx+7,by+13.5);
+      ctx.restore();}};
+    const grad=ctxL.createLinearGradient(0,0,0,280);
+    grad.addColorStop(0,'rgba(245,179,1,0.22)');grad.addColorStop(1,'rgba(245,179,1,0)');
+    const tt={backgroundColor:'#161b24',borderColor:'#222a35',borderWidth:1,padding:10,
+      titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},displayColors:false};
     window.__comboLine=new Chart(ctxL,{
       type:'line',
       data:{labels:pts.map(p=>fmtDM(p.date)),
-        datasets:[{label:'Portafoglio combinato',data:pts.map(p=>(p.v/100-1)*100),
-          borderColor:'#f5b301',borderWidth:2.2,pointRadius:0,pointHoverRadius:4,
-          pointHoverBackgroundColor:'#f5b301',tension:0.25,fill:false}]},
+        datasets:[{data:pts.map(p=>(p.v/100-1)*100),
+          borderColor:'#f5b301',borderWidth:2.4,pointRadius:0,pointHoverRadius:5,
+          pointHoverBackgroundColor:'#f5b301',pointHoverBorderColor:'#0a0c10',pointHoverBorderWidth:2,
+          tension:0.3,fill:true,backgroundColor:grad}]},
       options:{responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:false},
-          tooltip:{backgroundColor:'#161b24',borderColor:'#222a35',borderWidth:1,
-            titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},
-            callbacks:{label:c=>' '+(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2)+'%'}}},
+          tooltip:{...tt,callbacks:{
+            title:i=>i[0].label,
+            label:i=>{const k=i.dataIndex;return ['cumulato  '+(i.parsed.y>=0?'+':'')+i.parsed.y.toFixed(2)+'%',
+              'settimana '+(pts[k].r>=0?'+':'')+pts[k].r.toFixed(2)+'%'];}}}},
         scales:{
           x:{grid:{color:'rgba(255,255,255,0.05)'},border:{color:'rgba(255,255,255,0.1)'},
              ticks:{color:'#5e6675',font:{family:'JetBrains Mono',size:9},maxTicksLimit:8,maxRotation:0}},
           y:{grid:{color:'rgba(255,255,255,0.05)'},border:{display:false},
              ticks:{color:'#8a96a6',font:{family:'JetBrains Mono',size:10},
-               callback:v=>(v>=0?'+':'')+v+'%'}}}}
+               callback:v=>(v>=0?'+':'')+v+'%'}}}},
+      plugins:[crosshair,endDot]
+    });
+    // pannello dei rendimenti settimanali
+    window.__comboBars=new Chart(document.getElementById('combo-bars'),{
+      type:'bar',
+      data:{labels:pts.map(p=>fmtDM(p.date)),
+        datasets:[{data:pts.map(p=>p.r),
+          backgroundColor:pts.map(p=>p.r>=0?'rgba(61,220,132,0.75)':'rgba(255,92,92,0.75)'),
+          borderRadius:2,barPercentage:.65}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          tooltip:{...tt,callbacks:{label:i=>'settimana '+(i.parsed.y>=0?'+':'')+i.parsed.y.toFixed(2)+'%'}}},
+        scales:{x:{display:false},
+          y:{grid:{color:'rgba(255,255,255,0.04)'},border:{display:false},
+             ticks:{color:'#5a6573',font:{family:'JetBrains Mono',size:8},maxTicksLimit:3,callback:v=>(v>=0?'+':'')+v+'%'}}}}
     });
 
     // ── torta composizione: uno spicchio per asset + liquidità dorata con alone ──
