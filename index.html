@@ -205,7 +205,11 @@
   .card.combocard{--accent:#f5b301}
   .combo-chart-wrap{position:relative;height:280px;margin-top:14px}
   .combo-bars{position:relative;height:80px;margin-top:2px}
-  .combo-months{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .combo-months{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .cm-toggle{background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--txt-dim);
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:7px 14px;cursor:pointer;
+    letter-spacing:.02em;transition:.15s}
+  .cm-toggle:hover{border-color:#f5b301;color:var(--txt)}
   .cm-chip{display:flex;flex-direction:column;gap:2px;align-items:center;min-width:74px;
     padding:7px 12px;border-radius:9px;background:#0d1117;border:1px solid var(--line-soft)}
   .cm-chip .cm-m{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint)}
@@ -664,7 +668,10 @@ function loadCombined(){
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal '+fmtDM(pts[0].date))}</div>
       <div class="combo-chart-wrap"><canvas id="combo-line"></canvas></div>
       <div class="combo-bars"><canvas id="combo-bars"></canvas></div>
-      <div class="combo-months">${monthChips}</div>
+      <div style="margin-top:12px">
+        <button id="combo-months-btn" class="cm-toggle" onclick="var m=document.getElementById('combo-months');var open=m.style.display!=='none';m.style.display=open?'none':'flex';this.textContent=open?'mostra rendimenti mensili ▾':'nascondi rendimenti mensili ▴';">mostra rendimenti mensili ▾</button>
+      </div>
+      <div class="combo-months" id="combo-months" style="display:none">${monthChips}</div>
       <div class="combo-grid">
         <div class="combo-donut"><canvas id="combo-pie"></canvas></div>
         <div class="combo-list">${list}</div>
