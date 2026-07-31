@@ -476,6 +476,10 @@ def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
             pass
 
         # --- COERENZA DI FASE: gli estremi si alternano sempre ---
+        # SOLO per i cicli brevi (mensile, intermedio): sui cicli lunghi
+        # comanda la catena dei minimi, perche' nei cicli annidati i minimi
+        # sono i punti di sincronizzazione (il minimo annuale deve cadere
+        # col minimo biennale, non a meta' strada dal massimo).
         # Le due catene (minimi e massimi) proiettate indipendentemente possono
         # sfasarsi fino a produrre un massimo e un minimo attesi a un giorno di
         # distanza (onda impossibile: 21 giorni di salita e 1 di discesa).
@@ -485,6 +489,8 @@ def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
         # pieno della propria catena. Ordine garantito: dopo un minimo viene
         # un massimo, dopo un massimo un minimo.
         try:
+            if spec["key"] not in ("mensile", "intermedio"):
+                raise StopIteration  # cicli lunghi: nessun override, catena dei minimi
             _dl = datetime.date.fromisoformat(dates[last])
             _dh0 = datetime.date.fromisoformat(dates[last_h])
             _today = datetime.date.fromisoformat(dates[-1])
@@ -518,6 +524,8 @@ def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
                     _nl2 = _today + datetime.timedelta(days=1)
                 res["next_low_date_est"] = _nl2.strftime("%Y-%m-%d")
                 res["days_to_low_est"] = (_nl2 - _today).days
+        except StopIteration:
+            pass
         except Exception:
             pass
         # fase inversa: prima meta' dopo il top = discesa, seconda = risalita verso nuovo top
