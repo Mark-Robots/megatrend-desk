@@ -474,6 +474,52 @@ def analyze_cycle(prices, dates, spec, apply_bias=False, parent_lows=None):
             res["days_to_high_est"] = (_nxh_adj - _last_date).days
         except Exception:
             pass
+
+        # --- COERENZA DI FASE: gli estremi si alternano sempre ---
+        # Le due catene (minimi e massimi) proiettate indipendentemente possono
+        # sfasarsi fino a produrre un massimo e un minimo attesi a un giorno di
+        # distanza (onda impossibile: 21 giorni di salita e 1 di discesa).
+        # Qui il PRIMO evento futuro viene riancorato all'ultimo estremo
+        # confermato, alla semidistanza media MISURATA tra estremi opposti
+        # (clampata a 25-75% del passo); il secondo evento resta sul passo
+        # pieno della propria catena. Ordine garantito: dopo un minimo viene
+        # un massimo, dopo un massimo un minimo.
+        try:
+            _dl = datetime.date.fromisoformat(dates[last])
+            _dh0 = datetime.date.fromisoformat(dates[last_h])
+            _today = datetime.date.fromisoformat(dates[-1])
+            _off_l2 = BIAS_OFFSET.get(spec["key"], {}).get("low", 0) if apply_bias else 0
+            _off_h2 = BIAS_OFFSET.get(spec["key"], {}).get("high", 0) if apply_bias else 0
+
+            def _mean_gap(a_list, b_list):
+                g = []
+                for ai in a_list:
+                    nb = [bi for bi in b_list if bi > ai]
+                    if nb:
+                        g.append(nb[0] - ai)
+                return statistics.mean(g) if g else None
+
+            if _dl >= _dh0:
+                # ultimo estremo = MINIMO: il prossimo evento e' un massimo,
+                # a distanza media minimo->massimo dall'ancora
+                up = _mean_gap(lows, highs) or cl / 2
+                up = max(cl * 0.25, min(cl * 0.75, up))
+                _nh2 = _dl + datetime.timedelta(days=int(round(up)) + _off_h2)
+                if _nh2 <= _today:
+                    _nh2 = _today + datetime.timedelta(days=1)
+                res["next_high_date_est"] = _nh2.strftime("%Y-%m-%d")
+                res["days_to_high_est"] = (_nh2 - _today).days
+            else:
+                # ultimo estremo = MASSIMO: il prossimo evento e' un minimo
+                dn = _mean_gap(highs, lows) or cl / 2
+                dn = max(cl * 0.25, min(cl * 0.75, dn))
+                _nl2 = _dh0 + datetime.timedelta(days=int(round(dn)) + _off_l2)
+                if _nl2 <= _today:
+                    _nl2 = _today + datetime.timedelta(days=1)
+                res["next_low_date_est"] = _nl2.strftime("%Y-%m-%d")
+                res["days_to_low_est"] = (_nl2 - _today).days
+        except Exception:
+            pass
         # fase inversa: prima meta' dopo il top = discesa, seconda = risalita verso nuovo top
         if prog_h < 0.5:
             res["inv_phase"] = "post-top"
