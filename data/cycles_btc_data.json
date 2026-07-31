@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-07-31T04:48:04.438348+00:00",
+  "updated_at": "2026-07-31T04:54:55.026299+00:00",
   "instrument": "Bitcoin",
   "last_date": "2026-07-31",
-  "last_close": 64325.0,
+  "last_close": 64320.0,
   "n_days": 3271,
   "cycles": [
     {
@@ -63,9 +63,9 @@
       "track_mae_low": 55.0,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 56,
+      "days_to_low_est": 80,
       "next_low_date_est_raw": "2026-10-19",
-      "next_low_date_est": "2026-09-25",
+      "next_low_date_est": "2026-10-19",
       "n_highs": 12,
       "highs_dates": [
         "2021-03-13",
@@ -422,9 +422,9 @@
       ],
       "track_mae_high": 237.0,
       "progress_high_pct": 63.0,
-      "days_to_high_est": 61,
+      "days_to_high_est": 177,
       "next_high_date_est_raw": "2027-01-24",
-      "next_high_date_est": "2026-09-30",
+      "next_high_date_est": "2027-01-24",
       "inv_phase": "verso-top",
       "inv_note": "in avvicinamento al prossimo massimo"
     },
@@ -496,9 +496,9 @@
       ],
       "track_mae_high": 464,
       "progress_high_pct": 38.0,
-      "days_to_high_est": 469,
+      "days_to_high_est": 580,
       "next_high_date_est_raw": "2028-03-02",
-      "next_high_date_est": "2027-11-12",
+      "next_high_date_est": "2028-03-02",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     }
