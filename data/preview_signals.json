@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-08-04T14:31:22.066385+00:00",
+ "updated_at": "2026-08-04T16:31:23.441098+00:00",
  "last_bar": "2026-07-31",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -152,9 +152,9 @@
      "ticker_name": "Monte dei Paschi",
      "held_ticker": "BAMI.MI",
      "held_name": "Banco BPM",
-     "roc4": 3.66,
-     "roc13": 40.51,
-     "score": 53.9,
+     "roc4": 3.8,
+     "roc13": 40.71,
+     "score": 54.1,
      "tag": "top_momentum"
     },
     {
@@ -170,9 +170,9 @@
      "ticker_name": "Unipol",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 1.13,
-     "roc13": 27.48,
-     "score": 42.8,
+     "roc4": 1.88,
+     "roc13": 28.43,
+     "score": 43.9,
      "tag": "top_momentum"
     }
    ],
@@ -324,13 +324,13 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "BMPS.MI",
-     "ticker_name": "Monte dei Paschi",
+     "ticker": "MB.MI",
+     "ticker_name": "Mediobanca",
      "held_ticker": "ISP.MI",
      "held_name": "Intesa Sanpaolo",
-     "roc4": 3.66,
-     "roc13": 40.51,
-     "score": 14.7,
+     "roc4": 4.57,
+     "roc13": 40.69,
+     "score": 15.4,
      "tag": "top_momentum"
     },
     {
@@ -346,9 +346,9 @@
      "ticker_name": "Unipol",
      "held_ticker": "UNI.MI",
      "held_name": "Unipol",
-     "roc4": 1.13,
-     "roc13": 27.48,
-     "score": 9.0,
+     "roc4": 1.88,
+     "roc13": 28.43,
+     "score": 9.8,
      "tag": "top_momentum"
     }
    ],
