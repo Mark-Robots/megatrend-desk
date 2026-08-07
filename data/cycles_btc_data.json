@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-08-07T01:35:54.231723+00:00",
+  "updated_at": "2026-08-07T23:02:04.001974+00:00",
   "instrument": "Bitcoin",
   "last_date": "2026-08-07",
-  "last_close": 64425.0,
+  "last_close": 64884.0,
   "n_days": 3278,
   "cycles": [
     {
@@ -275,9 +275,9 @@
       "track_mae_low": 3.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 9,
+      "days_to_low_est": 11,
       "next_low_date_est_raw": "2026-08-21",
-      "next_low_date_est": "2026-08-16",
+      "next_low_date_est": "2026-08-18",
       "n_highs": 154,
       "highs_dates": [
         "2026-03-16",
@@ -287,11 +287,11 @@
         "2026-06-15",
         "2026-07-06",
         "2026-07-21",
-        "2026-08-05"
+        "2026-08-07"
       ],
       "high_gap_avg": 21.4,
-      "elapsed_from_high": 2,
-      "last_high_date": "2026-08-05",
+      "elapsed_from_high": 0,
+      "last_high_date": "2026-08-07",
       "len_effective_high": 21,
       "track_highs": [
         {
@@ -311,15 +311,15 @@
         },
         {
           "attesa": "2026-08-11",
-          "reale": "2026-08-05",
-          "err_gg": -6
+          "reale": "2026-08-07",
+          "err_gg": -4
         }
       ],
-      "track_mae_high": 3,
-      "progress_high_pct": 10.0,
-      "days_to_high_est": 19,
-      "next_high_date_est_raw": "2026-08-26",
-      "next_high_date_est": "2026-08-26",
+      "track_mae_high": 2.0,
+      "progress_high_pct": 0.0,
+      "days_to_high_est": 21,
+      "next_high_date_est_raw": "2026-08-28",
+      "next_high_date_est": "2026-08-28",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
