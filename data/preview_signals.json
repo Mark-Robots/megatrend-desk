@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-08-07T18:31:13.380571+00:00",
+ "updated_at": "2026-08-10T14:31:18.489333+00:00",
  "last_bar": "2026-08-07",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -26,9 +26,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": -11.27,
-     "roc13": 16.37,
-     "score": 262.6,
+     "roc4": -10.39,
+     "roc13": 17.53,
+     "score": 266.2,
      "tag": "premium_ok"
     },
     {
@@ -44,9 +44,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": -14.08,
-     "roc13": 5.31,
-     "score": 74.2,
+     "roc4": -13.36,
+     "roc13": 6.19,
+     "score": 75.6,
      "tag": "premium_ok"
     },
     {
@@ -62,9 +62,9 @@
      "ticker_name": "Bank of America",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 5.66,
-     "roc13": 23.51,
-     "score": 30.1,
+     "roc4": 5.87,
+     "roc13": 23.75,
+     "score": 30.4,
      "tag": "value_momentum"
     },
     {
@@ -80,10 +80,10 @@
      "ticker_name": "Eli Lilly",
      "held_ticker": null,
      "held_name": null,
-     "roc4": -0.76,
-     "roc13": 24.58,
-     "score": 50.7,
-     "tag": "premium_ok"
+     "roc4": -0.24,
+     "roc13": 25.23,
+     "score": 51.5,
+     "tag": "top_momentum"
     },
     {
      "sector": "XLI",
@@ -98,9 +98,9 @@
      "ticker_name": "RTX (Raytheon)",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 13.5,
-     "roc13": 26.81,
-     "score": 34.4,
+     "roc4": 13.83,
+     "roc13": 27.18,
+     "score": 34.8,
      "tag": "top_momentum"
     },
     {
@@ -116,9 +116,9 @@
      "ticker_name": "Philip Morris",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 4.17,
-     "roc13": 11.57,
-     "score": 13.0,
+     "roc4": 4.38,
+     "roc13": 11.79,
+     "score": 13.2,
      "tag": "value_momentum"
     },
     {
@@ -134,10 +134,10 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 7.09,
-     "roc13": 25.29,
-     "score": 66.9,
-     "tag": "top_momentum"
+     "roc4": 6.69,
+     "roc13": 24.82,
+     "score": 66.3,
+     "tag": "premium_ok"
     },
     {
      "sector": "EXV1.DE",
@@ -202,9 +202,9 @@
      "ticker_name": "NVIDIA",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": 5.19,
-     "roc13": 3.24,
-     "score": 4.6,
+     "roc4": 6.16,
+     "roc13": 4.19,
+     "score": 5.6,
      "tag": "stagnant"
     },
     {
@@ -220,9 +220,9 @@
      "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 29.76,
-     "roc13": 20.64,
-     "score": 27.0,
+     "roc4": 29.83,
+     "roc13": 20.71,
+     "score": 27.1,
      "tag": "value_momentum"
     },
     {
@@ -238,8 +238,8 @@
      "ticker_name": "Blackstone",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 12.6,
-     "roc13": 11.98,
+     "roc4": 12.54,
+     "roc13": 11.92,
      "score": 12.4,
      "tag": "value_momentum"
     },
@@ -256,9 +256,9 @@
      "ticker_name": "Abbott",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 15.06,
-     "roc13": 28.17,
-     "score": 19.0,
+     "roc4": 15.6,
+     "roc13": 28.77,
+     "score": 19.6,
      "tag": "top_momentum"
     },
     {
@@ -274,9 +274,9 @@
      "ticker_name": "RTX (Raytheon)",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 13.5,
-     "roc13": 26.81,
-     "score": 17.5,
+     "roc4": 13.83,
+     "roc13": 27.18,
+     "score": 17.8,
      "tag": "top_momentum"
     },
     {
@@ -288,14 +288,14 @@
      "borderline": false,
      "state": "Debole",
      "stage": "2",
-     "ticker": "KO",
-     "ticker_name": "Coca-Cola",
+     "ticker": "PM",
+     "ticker_name": "Philip Morris",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 4.31,
-     "roc13": 11.77,
-     "score": 6.5,
-     "tag": null
+     "roc4": 4.38,
+     "roc13": 11.79,
+     "score": 6.6,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLE",
@@ -310,10 +310,10 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 7.09,
-     "roc13": 25.29,
-     "score": 12.5,
-     "tag": "top_momentum"
+     "roc4": 6.69,
+     "roc13": 24.82,
+     "score": 12.1,
+     "tag": "premium_ok"
     },
     {
      "sector": "EXV1.DE",
