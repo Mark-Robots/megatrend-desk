@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-13T07:09:19Z",
+  "updated_at": "2026-08-14T07:06:23Z",
   "mode": "long_only_dmi_d1d2",
   "assets": {
     "BTC": {
@@ -14,22 +14,22 @@
       "perf_pos": null
     },
     "ETH": {
-      "perf_week": -3.01,
-      "perf_month": 1.81,
-      "perf_ytd": 3.64,
-      "in_position": true,
-      "n_trades": 11,
-      "entry_date": "2026-08-12",
-      "entry_price": 1911.32,
-      "current_price": 1897.29,
-      "perf_pos": -0.73
+      "perf_week": -3.88,
+      "perf_month": -4.39,
+      "perf_ytd": 2.41,
+      "in_position": false,
+      "n_trades": 12,
+      "entry_date": null,
+      "entry_price": null,
+      "current_price": null,
+      "perf_pos": null
     },
     "SOL": {
       "perf_week": 0.0,
       "perf_month": 0.0,
       "perf_ytd": 1.91,
       "in_position": false,
-      "n_trades": 14,
+      "n_trades": 13,
       "entry_date": null,
       "entry_price": null,
       "current_price": null,
@@ -37,9 +37,9 @@
     }
   },
   "portfolio": {
-    "perf_week": -1.0,
-    "perf_month": 0.6,
-    "perf_ytd": 3.06,
+    "perf_week": -1.29,
+    "perf_month": -1.46,
+    "perf_ytd": 2.65,
     "n_assets": 3
   },
   "weekly_seed": "2026-05-01",
