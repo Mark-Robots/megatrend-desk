@@ -1,6 +1,6 @@
 {
- "updated_at": "2026-08-20T18:31:25.009386+00:00",
- "last_bar": "2026-08-14",
+ "updated_at": "2026-08-21T14:31:08.827885+00:00",
+ "last_bar": "2026-08-21",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
   "balanced": {
@@ -27,9 +27,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": 14.45,
-     "roc13": 34.11,
-     "score": 302.5,
+     "roc4": 4.85,
+     "roc13": 28.6,
+     "score": 305.9,
      "tag": "top_momentum"
     },
     {
@@ -41,14 +41,14 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "AMD",
-     "ticker_name": "AMD",
+     "ticker": "MSFT",
+     "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 3.76,
-     "roc13": 21.29,
-     "score": 88.7,
-     "tag": "premium_ok"
+     "roc4": 26.93,
+     "roc13": 15.75,
+     "score": 7.9,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLF",
@@ -63,10 +63,10 @@
      "ticker_name": "Bank of America",
      "held_ticker": "BAC",
      "held_name": "Bank of America",
-     "roc4": 5.26,
-     "roc13": 30.25,
-     "score": 34.3,
-     "tag": "top_momentum"
+     "roc4": 0.31,
+     "roc13": 20.79,
+     "score": 23.9,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLV",
@@ -75,16 +75,16 @@
      "was_in": false,
      "move": null,
      "borderline": false,
-     "state": "Debole",
+     "state": "Emergente",
      "stage": "2",
      "ticker": "MRK",
      "ticker_name": "Merck",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 6.54,
-     "roc13": 22.84,
-     "score": 40.4,
-     "tag": "premium_ok"
+     "roc4": 17.44,
+     "roc13": 26.65,
+     "score": 48.8,
+     "tag": "top_momentum"
     },
     {
      "sector": "XLI",
@@ -99,10 +99,10 @@
      "ticker_name": "RTX (Raytheon)",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 15.61,
-     "roc13": 31.23,
-     "score": 37.5,
-     "tag": "top_momentum"
+     "roc4": -0.12,
+     "roc13": 20.07,
+     "score": 27.1,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLP",
@@ -113,14 +113,14 @@
      "borderline": false,
      "state": "Debole",
      "stage": "2",
-     "ticker": "KMB",
-     "ticker_name": "Kimberly-Clark",
+     "ticker": "KO",
+     "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 1.88,
-     "roc13": 16.68,
-     "score": 4.8,
-     "tag": "value_momentum"
+     "roc4": 10.44,
+     "roc13": 12.21,
+     "score": 20.6,
+     "tag": "premium_ok"
     },
     {
      "sector": "XLE",
@@ -135,9 +135,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 10.77,
-     "roc13": 37.44,
-     "score": 84.5,
+     "roc4": 15.6,
+     "roc13": 41.6,
+     "score": 82.8,
      "tag": "top_momentum"
     },
     {
@@ -153,9 +153,9 @@
      "ticker_name": "Monte dei Paschi",
      "held_ticker": "BAMI.MI",
      "held_name": "Banco BPM",
-     "roc4": 7.72,
-     "roc13": 41.37,
-     "score": 49.5,
+     "roc4": -0.84,
+     "roc13": 32.33,
+     "score": 40.6,
      "tag": "top_momentum"
     },
     {
@@ -171,9 +171,9 @@
      "ticker_name": "Unipol",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 10.75,
-     "roc13": 37.14,
-     "score": 49.2,
+     "roc4": 3.26,
+     "roc13": 29.07,
+     "score": 41.5,
      "tag": "top_momentum"
     }
    ],
@@ -204,9 +204,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": 14.45,
-     "roc13": 34.11,
-     "score": 20.3,
+     "roc4": 4.85,
+     "roc13": 28.6,
+     "score": 12.0,
      "tag": "top_momentum"
     },
     {
@@ -222,9 +222,9 @@
      "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 25.79,
-     "roc13": 17.67,
-     "score": 23.4,
+     "roc4": 26.93,
+     "roc13": 15.75,
+     "score": 23.6,
      "tag": "value_momentum"
     },
     {
@@ -240,9 +240,9 @@
      "ticker_name": "Blackstone",
      "held_ticker": "BX",
      "held_name": "Blackstone",
-     "roc4": 14.57,
-     "roc13": 23.33,
-     "score": 17.2,
+     "roc4": 12.18,
+     "roc13": 23.06,
+     "score": 15.4,
      "tag": "value_momentum"
     },
     {
@@ -252,15 +252,15 @@
      "was_in": false,
      "move": null,
      "borderline": false,
-     "state": "Debole",
+     "state": "Emergente",
      "stage": "2",
-     "ticker": "TMO",
-     "ticker_name": "Thermo Fisher",
+     "ticker": "MRK",
+     "ticker_name": "Merck",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 10.48,
-     "roc13": 34.34,
-     "score": 17.6,
+     "roc4": 17.44,
+     "roc13": 26.65,
+     "score": 20.2,
      "tag": "top_momentum"
     },
     {
@@ -276,10 +276,10 @@
      "ticker_name": "RTX (Raytheon)",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 15.61,
-     "roc13": 31.23,
-     "score": 20.3,
-     "tag": "top_momentum"
+     "roc4": -0.12,
+     "roc13": 20.07,
+     "score": 5.9,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLP",
@@ -290,14 +290,14 @@
      "borderline": false,
      "state": "Debole",
      "stage": "2",
-     "ticker": "KMB",
-     "ticker_name": "Kimberly-Clark",
+     "ticker": "KO",
+     "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 1.88,
-     "roc13": 16.68,
-     "score": 6.3,
-     "tag": "value_momentum"
+     "roc4": 10.44,
+     "roc13": 12.21,
+     "score": 11.0,
+     "tag": "premium_ok"
     },
     {
      "sector": "XLE",
@@ -312,9 +312,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 13.7,
-     "roc13": 39.9,
-     "score": 21.6,
+     "roc4": 18.42,
+     "roc13": 43.81,
+     "score": 26.0,
      "tag": "top_momentum"
     },
     {
@@ -326,13 +326,13 @@
      "borderline": false,
      "state": "Leader",
      "stage": "2",
-     "ticker": "BMPS.MI",
-     "ticker_name": "Monte dei Paschi",
+     "ticker": "BAMI.MI",
+     "ticker_name": "Banco BPM",
      "held_ticker": "ISP.MI",
      "held_name": "Intesa Sanpaolo",
-     "roc4": 7.72,
-     "roc13": 41.37,
-     "score": 17.8,
+     "roc4": 6.26,
+     "roc13": 25.11,
+     "score": 11.9,
      "tag": "top_momentum"
     },
     {
@@ -348,9 +348,9 @@
      "ticker_name": "Unipol",
      "held_ticker": "UNI.MI",
      "held_name": "Unipol",
-     "roc4": 10.75,
-     "roc13": 37.14,
-     "score": 18.7,
+     "roc4": 3.26,
+     "roc13": 29.07,
+     "score": 11.0,
      "tag": "top_momentum"
     }
    ],
