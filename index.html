@@ -90,6 +90,10 @@
   .cyc-legend .lg-dot.min{background:#5b9dff} .cyc-legend .lg-dot.max{background:#f5b301}
   .cyc-legend .lg-bar{width:16px;height:9px;border-radius:3px;display:inline-block}
   .cyc-legend .lg-bar.up{background:rgba(34,224,107,.5)} .cyc-legend .lg-bar.dn{background:rgba(255,80,60,.5)}
+  .cyc-ai{margin-top:16px;padding:15px 18px;background:rgba(245,179,1,.04);border:1px solid rgba(245,179,1,.22);
+    border-left:3px solid var(--gold, #f5b301);border-radius:10px;font-size:12px;line-height:1.75;color:var(--txt)}
+  .cyc-ai .ai-tag{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#f5b301;margin-bottom:7px;font-weight:700}
+  .cyc-ai b{color:#f5b301}
   .cyc-foot{font-size:10px;color:var(--txt-faint);margin-top:12px;line-height:1.6}
   .sin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
   .sin-pill{background:#0d1117;border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:4px}
@@ -1286,10 +1290,61 @@ async function loadCycles(url, targetId){
 
     const chart=waveChart(cyc, d.last_date);
 
+    // ── LETTURA AUTOMATICA: commento in prosa generato dai dati, si riscrive a ogni run ──
+    const cyComment=(()=>{try{
+      const G=k=>cyc.find(c=>c.key===k)||{};
+      const an=G('annuale'), im=G('intermedio'), me=G('mensile'), bi=G('biennale');
+      const Fd=s=>{if(!s)return null;const p=s.split('-');return `${+p[2]} ${MESI[+p[1]-1]}`;};
+      const anUp=(an.last_low_date||'')>(an.last_high_date||'');
+      const frasi=[];
+      // 1) dove siamo (fase annuale)
+      if(anUp){
+        frasi.push(`Il ciclo annuale è ripartito dal minimo del <b>${Fd(an.last_low_date)}</b> e sale verso il massimo atteso intorno al ${Fd(an.next_high_date_est)}.`);
+      }else{
+        frasi.push(`Il massimo annuale in carica è del <b>${Fd(an.last_high_date)}</b>: da lì è in corso la fase correttiva verso il minimo atteso intorno al <b>${Fd(an.next_low_date_est)}</b>.`);
+      }
+      // 2) la mappa breve (mensile + intermedio, in ordine temporale)
+      const eventi=[];
+      const push=(giorni,txt)=>{if(giorni!=null&&giorni>=0)eventi.push([giorni,txt]);};
+      push(me.days_to_high_est, `massimo mensile ~${Fd(me.next_high_date_est)}`);
+      push(me.days_to_low_est,  `minimo mensile ~${Fd(me.next_low_date_est)}`);
+      push(im.days_to_high_est, `massimo intermedio ~${Fd(im.next_high_date_est)}`);
+      push(im.days_to_low_est,  `minimo intermedio ~${Fd(im.next_low_date_est)}`);
+      eventi.sort((x,y)=>x[0]-y[0]);
+      if(eventi.length) frasi.push(`Prossime tappe: ${eventi.slice(0,3).map(e=>e[1]).join(', poi ')}.`);
+      // 3) sincronia col biennale se i minimi maggiori sono vicini (<60 giorni)
+      if(!anUp&&bi.days_to_low_est!=null&&an.days_to_low_est!=null&&Math.abs(bi.days_to_low_est-an.days_to_low_est)<60){
+        frasi.push(`Il minimo annuale cadrebbe in sincronia con quello biennale: appuntamento di grado superiore.`);
+      }
+      // 3bis) riancoraggio in corso: un ciclo superiore ha gia' confermato un
+      // massimo piu' recente di quello annuale -> la linea di controllo risulta
+      // di fatto superata e l'annuale sta per aggiornare la sua ancora
+      const riancoraggio=(!anUp&&bi.last_high_date&&an.last_high_date&&bi.last_high_date>an.last_high_date);
+      if(riancoraggio){
+        frasi.push(`<b>Nota</b>: il ciclo biennale ha già confermato un massimo più recente (${Fd(bi.last_high_date)}): la linea di controllo risulta superata e il massimo annuale è in corso di riancoraggio — le proiezioni si aggiorneranno ai prossimi run.`);
+      }
+      // 4) linea di controllo (falsificazione)
+      if(anUp){
+        frasi.push(`Linea di controllo: il minimo del ${Fd(an.last_low_date)} — una violazione riscriverebbe lo scenario al ribasso.`);
+      }else if(!riancoraggio){
+        frasi.push(`Linea di controllo: i massimi del ${Fd(an.last_high_date)} — un superamento riscriverebbe lo scenario al rialzo (traslazione a destra).`);
+      }
+      // 5) margini misurati dal track record
+      const mae=c=>{const v=[c.track_mae_low,c.track_mae_high].filter(x=>x!=null);return v.length?Math.round(v.reduce((s,x)=>s+x,0)/v.length):null;};
+      const mm=mae(me), mi=mae(im), ma=mae(an);
+      const parts=[];
+      if(mm!=null)parts.push(`mensile ±${mm}g`);
+      if(mi!=null)parts.push(`intermedio ±${mi}g`);
+      if(ma!=null)parts.push(`annuale ±${ma}g`);
+      if(parts.length) frasi.push(`Margini misurati sugli ultimi estremi: ${parts.join(' · ')} — le date sono stagioni, la sequenza è l'informazione.`);
+      return `<div class="cyc-ai"><span class="ai-tag">◆ lettura automatica · generata dai dati · si aggiorna a ogni run</span>${frasi.join(' ')}</div>`;
+    }catch(_e){return '';}})();
+
     el.innerHTML=`<div class="wave-wrap">${chart}</div>`
       + `<div class="wave-legend"><span class="lg-item"><span class="lg-line green"></span> tendenza di fondo in salita (verso il massimo)</span><span class="lg-item"><span class="lg-line red"></span> tendenza di fondo in discesa (verso il minimo)</span><span class="lg-item"><span class="lg-tri up"></span> minimo annuale</span><span class="lg-item"><span class="lg-tri dn"></span> massimo annuale</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
       + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. ${targetId==='cycles-body' ? "Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza)." : "Le date sono grezze (la calibrazione del bias è specifica per l'S&P; per Bitcoin servono statistiche proprie, non ancora applicate)."} I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
       + `<div class="cyc-rows">${cycSummary}</div>`
+      + cyComment
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
   }catch(e){
