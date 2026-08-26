@@ -1095,6 +1095,13 @@ def compute_sector_metrics(prices_df, bench_ticker, sector_dict):
         tail_rs = [round(float(x), 2) for x in rrg['rsRatio'].iloc[-5:].tolist()]
         tail_mom = [round(float(x), 2) for x in rrg['rsMom'].iloc[-5:].tolist()]
         
+        # Serie 52 settimane per i grafici della mappa: prezzo e score storico
+        price_series = [
+            {'date': idx.strftime('%Y-%m-%d'), 'value': round(float(v), 2)}
+            for idx, v in sec_prices.iloc[-52:].items()
+        ]
+        score_series = compute_score_series(rrg, sec_prices, bench_series, weeks=52)
+
         # Serie completa RS-Ratio (ultime 26 settimane = 6 mesi)
         rs_series = [
             {'date': idx.strftime('%Y-%m-%d'), 'value': round(float(val), 2)}
@@ -1187,6 +1194,8 @@ def compute_sector_metrics(prices_df, bench_ticker, sector_dict):
             'tailRS': tail_rs,
             'tailMom': tail_mom,
             'rsRatioSeries': rs_series,
+            'priceSeries': price_series,
+            'scoreSeries': score_series,
             'signal': signal_info,
             'etfInfo': etf_info,
             '_base_records': base_records_full,  # interno, rimosso prima del JSON
@@ -1198,6 +1207,67 @@ def compute_sector_metrics(prices_df, bench_ticker, sector_dict):
 # ============================================================
 # CLASSIFICA DI FORZA con Δ vs snapshot precedente
 # ============================================================
+def compute_score_series(rrg, sec_prices, bench_series, weeks=52):
+    """Score storico settimanale, ricalcolato a ritroso con la STESSA formula di
+    score_sector: per ogni settimana usa solo informazioni note a quella data
+    (stato, rsRatio, alpha dall'ingresso nello stato, maturita', fase).
+    Nota: l'ingresso nello stato e' individuato per contiguita' semplice, quindi
+    l'ultimo punto puo' differire di poco dallo score ufficiale quando ci sono
+    stati flicker recenti — differenza cosmetica, il profilo e' fedele."""
+    try:
+        rrg_v = rrg.dropna()
+        idxs = rrg_v.index
+        if len(idxs) < 10:
+            return []
+        sec_al = sec_prices.reindex(idxs, method='ffill')
+        b = bench_series.copy()
+        if b.index.tz is not None:
+            b.index = b.index.tz_localize(None)
+        ben_al = b.reindex(idxs, method='ffill')
+        ma30 = sec_prices.rolling(30).mean().reindex(idxs, method='ffill')
+        states, stages = [], []
+        for k in range(len(idxs)):
+            rs = float(rrg_v['rsRatio'].iloc[k]); mo = float(rrg_v['rsMom'].iloc[k])
+            states.append(classify_quadrant(rs, mo))
+            pk = sec_al.iloc[k]; mk = ma30.iloc[k]
+            if mk != mk:
+                stages.append('—')
+            else:
+                mk_prev = ma30.iloc[k-5] if k >= 5 else mk
+                up = mk > mk_prev; above = pk > mk
+                stages.append('2' if (above and up) else '3' if (above and not up)
+                              else '4' if (not above and not up) else '1')
+        out = []
+        start = max(0, len(idxs) - weeks)
+        for k in range(start, len(idxs)):
+            st = states[k]
+            rs = float(rrg_v['rsRatio'].iloc[k])
+            e = k
+            while e > 0 and states[e-1] == st:
+                e -= 1
+            wk_in_state = k - e
+            p0, p1 = sec_al.iloc[e], sec_al.iloc[k]
+            b0, b1 = ben_al.iloc[e], ben_al.iloc[k]
+            alpha = 0.0
+            if p0 == p0 and b0 == b0 and p0 and b0:
+                alpha = (p1/p0 - 1) * 100 - (b1/b0 - 1) * 100
+            if st == 'Leader': sc = 100
+            elif st == 'Emergente': sc = 70
+            elif st == 'In rallentamento': sc = 40
+            else: sc = 10
+            sc += max(0, rs - 100) * 2
+            sc += max(-30, min(30, alpha * 0.6))
+            if st == 'Leader':
+                if wk_in_state > 60: sc -= 20
+                elif wk_in_state > 40: sc -= 10
+            if '2' in stages[k]: sc += 5
+            elif '4' in stages[k]: sc -= 5
+            out.append({'date': idxs[k].strftime('%Y-%m-%d'), 'value': round(sc, 1)})
+        return out
+    except Exception:
+        return []
+
+
 def score_sector(sector):
     """Punteggio di forza 0-200+."""
     state = sector.get('state')

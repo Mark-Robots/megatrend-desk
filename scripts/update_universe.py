@@ -209,6 +209,7 @@ def process_region(close, bench_ticker, sector_dict, region_label):
             sec_al = sec.reindex(rrg_hist.index, method='ffill')
             ma30 = sec.rolling(30).mean().reindex(rrg_hist.index, method='ffill')
             base_in = []
+            states_w, stages_w = [], []
             for k in range(len(rrg_hist)):
                 rk = float(rrg_hist['rsRatio'].iloc[k])
                 mk = float(rrg_hist['rsMom'].iloc[k])
@@ -220,6 +221,7 @@ def process_region(close, bench_ticker, sector_dict, region_label):
                     mak_prev = ma30.iloc[k - 5] if k >= 5 else mak
                     up = mak > mak_prev; above = pk > mak
                     stg_k = '2' if (above and up) else '3' if (above and not up) else '4' if (not above and not up) else '1'
+                states_w.append(st_k); stages_w.append(stg_k)
                 base_in.append(is_operational_in_base(st_k, stg_k))
             smoothed = smooth_signal_binary(base_in, tolerance_weeks=4)
             if smoothed:
@@ -250,6 +252,38 @@ def process_region(close, bench_ticker, sector_dict, region_label):
                 alpha = 0.0
         score = score_universe(state, rs, alpha, weeks_in_trend, stage)
 
+        # ── Serie 52 settimane per i grafici della pagina universo:
+        #    prezzo, segnale lisciato (per le bande IN) e score storico
+        #    ricalcolato a ritroso con la stessa formula (walk-forward:
+        #    ogni punto usa solo informazioni note a quella settimana). ──
+        price_series, in_series, score_series = [], [], []
+        try:
+            n_hist = len(rrg_hist)
+            s0 = max(0, n_hist - 52)
+            b_al2 = bench.reindex(rrg_hist.index, method='ffill')
+            for k in range(s0, n_hist):
+                pv = sec_al.iloc[k]
+                price_series.append({'date': rrg_hist.index[k].strftime('%Y-%m-%d'),
+                                     'value': round(float(pv), 2) if pv == pv else None})
+                in_series.append(bool(smoothed[k]))
+                # streak lisciata corrente alla settimana k
+                wk_k = 0; e = k
+                if smoothed[k]:
+                    while e >= 0 and smoothed[e]:
+                        wk_k += 1; e -= 1
+                    e += 1
+                a_k = 0.0
+                if smoothed[k]:
+                    p0, p1 = sec_al.iloc[e], sec_al.iloc[k]
+                    b0, b1 = b_al2.iloc[e], b_al2.iloc[k]
+                    if p0 == p0 and b0 == b0 and p0 and b0:
+                        a_k = (p1 / p0 - 1) * 100 - (b1 / b0 - 1) * 100
+                rk = float(rrg_hist['rsRatio'].iloc[k])
+                score_series.append({'date': rrg_hist.index[k].strftime('%Y-%m-%d'),
+                                     'value': score_universe(states_w[k], rk, a_k, wk_k, stages_w[k])})
+        except Exception:
+            price_series, in_series, score_series = [], [], []
+
         rows.append({
             'ticker': ticker.replace('.DE', ''),
             'ticker_raw': ticker,
@@ -265,6 +299,9 @@ def process_region(close, bench_ticker, sector_dict, region_label):
             'weeks_in_trend': weeks_in_trend,
             'history_weeks': len(sec),
             'score': score,
+            'priceSeries': price_series,
+            'scoreSeries': score_series,
+            'inSeries': in_series,
         })
         print(f"  [ok] {ticker:9} {name:24} {state:16} F{stage}  rs={rs:.1f} mom={mom:.1f}")
     return rows
