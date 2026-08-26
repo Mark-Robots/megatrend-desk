@@ -112,14 +112,20 @@
   .tm-colhead{display:flex;align-items:baseline;justify-content:center;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
-  .tm-row{display:grid;grid-template-columns:22px 1fr 96px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-row{display:grid;grid-template-columns:22px 1fr 44px 96px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-scoreval{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    color:var(--txt-dim);text-align:right;font-variant-numeric:tabular-nums}
+  .sec-charts{margin:4px 0 14px}
+  .sec-charts svg{width:100%;height:auto;display:block}
+  .sec-charts .chp-note{font-size:9.5px;color:var(--txt-faint);margin-top:7px;line-height:1.6}
   /* MOBILE: due righe — nome a tutta larghezza sopra, data+barra sotto —
      altrimenti le colonne fisse schiacciano il nome a una lettera */
   @media(max-width:600px){
-    .tm-row{grid-template-columns:18px 1fr 22px;gap:4px 10px;
-      grid-template-areas:"rank name mom" "rank date mom" "rank track track"}
+    .tm-row{grid-template-columns:18px 1fr 40px 22px;gap:4px 10px;
+      grid-template-areas:"rank name score mom" "rank date date mom" "rank track track track"}
     .tm-rank{grid-area:rank}
     .tm-name{grid-area:name;min-width:0}
+    .tm-scoreval{grid-area:score}
     .tm-date{grid-area:date;text-align:left}
     .tm-track{grid-area:track}
     .tm-mom{grid-area:mom}
@@ -318,8 +324,14 @@ async function loadTrendMap(){
       state:s.state||'',
       sig:s.opSignal||'',
       entry:(s.opCurrent&&s.opCurrent.start_date)||s.trend_start_date||null,
-      weeks:(s.opCurrent&&s.opCurrent.weeks)||(s.weeks_in_trend!=null?s.weeks_in_trend:null)
+      weeks:(s.opCurrent&&s.opCurrent.weeks)||(s.weeks_in_trend!=null?s.weeks_in_trend:null),
+      score:(s.score!=null?s.score:null),
+      ps:s.priceSeries||null,
+      ss:s.scoreSeries||null,
+      ins:s.inSeries||null,
+      oh:s.opHistory||null
     }));
+    window.__unRows=rows;
 
     const momHTML=m=> m===null?'<span class="mom-fl" title="confronto non disponibile">&mdash;</span>':m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-eq" title="score invariato">&#9670;</span>';
     const colHTML=(area)=>{
@@ -339,6 +351,7 @@ async function loadTrendMap(){
         return `<div class="tm-row${canOpen}" data-sec="${d.ticker}" data-strong="${isStrong?1:0}" data-in="${isIn?1:0}">
           <div class="tm-rank">${i+1}</div>
           <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span></div>
+          <div class="tm-scoreval" title="score attuale">${d.score!=null?Math.round(d.score):''}</div>
           ${dateHTML}
           <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
           <div class="tm-mom">${momHTML(d.m)}</div>
@@ -388,22 +401,79 @@ function sectorChartSVG(series){
 }
 
 // pannello del settore: grafico+performance del SETTORE, e titoli come elenco informativo
+function yearChartsSVG(d){
+  // prezzo 1 anno con bande IN + score storico sotto (stesso stile della home)
+  const ps=d.ps, ss=d.ss;
+  if(!ps||ps.length<4||!ss||ss.length<4) return '';
+  const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const W=640,H1=112,H2=70,padL=46,padR=10,padT=8,gap=30,padB=20;
+  const H=padT+H1+gap+H2+padB;
+  const n=ps.length, X=i=>padL+i/(n-1)*(W-padL-padR);
+  // bande IN: da opHistory (settori desk) oppure da inSeries (settori extra)
+  let bands=[];
+  if(d.oh&&d.oh.length){
+    const d0=ps[0].date,d1=ps[n-1].date;
+    const di=s=>{let b=0;for(let i=0;i<n;i++){if(ps[i].date<=s)b=i;}return b;};
+    d.oh.forEach(pr=>{
+      if(pr.signal!=='IN'||pr.end_date<d0||pr.start_date>d1)return;
+      bands.push([pr.start_date<=d0?0:di(pr.start_date), pr.end_date>=d1?n-1:di(pr.end_date)]);
+    });
+  }else if(d.ins&&d.ins.length===n){
+    let s0=null;
+    for(let i=0;i<n;i++){
+      if(d.ins[i]&&s0===null)s0=i;
+      if((!d.ins[i]||i===n-1)&&s0!==null){bands.push([s0,d.ins[i]?i:i-1]);s0=null;}
+    }
+  }
+  const vals=ps.map(p=>p.value).filter(v=>v!=null);
+  let mn=Math.min(...vals),mx=Math.max(...vals),sp=Math.max(1e-6,mx-mn);mn-=sp*.07;mx+=sp*.07;
+  const Y1=v=>padT+(1-(v-mn)/(mx-mn))*H1;
+  const path1=ps.map((p,i)=>p.value==null?'':((i&&ps[i-1].value!=null)?'L':'M')+X(i).toFixed(1)+','+Y1(p.value).toFixed(1)).join(' ');
+  const sv=ss.map(p=>p.value);
+  let smn=Math.min(...sv),smx=Math.max(...sv),ssp=Math.max(1,smx-smn);smn-=ssp*.12;smx+=ssp*.12;
+  const T2=padT+H1+gap, ns=ss.length, X2=i=>padL+i/(ns-1)*(W-padL-padR);
+  const Y2=v=>T2+(1-(v-smn)/(smx-smn))*H2;
+  const path2=ss.map((p,i)=>(i?'L':'M')+X2(i).toFixed(1)+','+Y2(p.value).toFixed(1)).join(' ');
+  const rects=h0=>bands.map(([a2,b2])=>`<rect x="${X(a2).toFixed(1)}" y="${h0===1?padT:T2}" width="${Math.max(1,(X(b2)-X(a2))).toFixed(1)}" height="${h0===1?H1:H2}" fill="rgba(61,220,132,0.10)"/>`).join('');
+  let ax='',lastM=-1;
+  ps.forEach((p,i)=>{
+    const dt=new Date(p.date+'T00:00:00');
+    if(dt.getMonth()!==lastM&&i%9===0){lastM=dt.getMonth();
+      ax+=`<text x="${X(i).toFixed(1)}" y="${(T2+H2+14).toFixed(1)}" text-anchor="middle" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#5e6675">${M[dt.getMonth()]} ${String(dt.getFullYear()).slice(2)}</text>`;}
+  });
+  const lastP=ps[n-1].value, lastS=ss[ns-1].value;
+  return `<div class="sec-charts"><svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    ${rects(1)}${rects(2)}
+    <text x="${padL-6}" y="${(padT+9).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#5e6675">${mx>1000?Math.round(mx):mx.toFixed(0)}</text>
+    <text x="${padL-6}" y="${(padT+H1).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#5e6675">${mn>1000?Math.round(mn):mn.toFixed(0)}</text>
+    <text x="${W-padR}" y="${(Y1(lastP)-6).toFixed(1)}" text-anchor="end" font-size="9" font-weight="800" font-family="JetBrains Mono,monospace" fill="#e8edf4">${lastP}</text>
+    <path d="${path1}" fill="none" stroke="#5b9dff" stroke-width="1.8" stroke-linejoin="round"/>
+    <text x="${padL}" y="${(T2-8).toFixed(1)}" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#8a96a6" letter-spacing="1">SCORE</text>
+    <text x="${padL-6}" y="${(T2+9).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#f5b301">${Math.round(smx)}</text>
+    <text x="${padL-6}" y="${(T2+H2).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#f5b301">${Math.round(smn)}</text>
+    <text x="${W-padR}" y="${(Y2(lastS)-6).toFixed(1)}" text-anchor="end" font-size="9" font-weight="800" font-family="JetBrains Mono,monospace" fill="#f5b301">${Math.round(lastS)}</text>
+    <path d="${path2}" fill="none" stroke="#f5b301" stroke-width="1.8" stroke-linejoin="round"/>
+    ${ax}
+  </svg><div class="chp-note">bande verdi = periodi IN del segnale lisciato · linea blu = indice, 1 anno · linea oro = score storico (nessuna soglia di score decreta entrata/uscita: decidono stato+fase con la conferma a 4 settimane)</div></div>`;
+}
+
 function sectorPanelHTML(secTicker, isIn){
   const perf=PERF_DATA[secTicker];
   const names=SECTOR_STOCKS[secTicker]||[];
   const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
   const fp=iso=>{if(!iso)return'';const p=iso.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0]}`;};
-  let chartBlock='';
+  const rowData=(window.__unRows||[]).find(x=>x.ticker===secTicker);
+  let chartBlock=rowData?yearChartsSVG(rowData):'';
   // grafico dalla data d'ingresso per TUTTI i settori operativamente IN
   // (segnale lisciato 4 settimane): anche quelli in rallentamento ma ancora in trend
   if(isIn){
     if(perf&&perf.series&&perf.series.length>1){
       const col=perf.perf>=0?'var(--green)':'var(--red)';
-      chartBlock=`<div class="sec-perf-row"><span class="sec-perf-lbl">performance dal ${fp(perf.entry_date)}</span>
+      chartBlock+=`<div class="sec-perf-row"><span class="sec-perf-lbl">performance dal ${fp(perf.entry_date)}</span>
         <span class="sec-perf-val" style="color:${col}">${perf.perf>=0?'+':''}${perf.perf.toFixed(1)}%</span></div>
         <div class="sec-chart">${sectorChartSVG(perf.series)}</div>`;
     }else{
-      chartBlock=`<div class="sub" style="font-size:9px;color:var(--txt-faint)">Grafico disponibile dopo l'aggiornamento dati.</div>`;
+      chartBlock+=`<div class="sub" style="font-size:9px;color:var(--txt-faint)">Grafico dalla data d'ingresso disponibile dopo l'aggiornamento dati.</div>`;
     }
   }
   const titoli=names.length

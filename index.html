@@ -292,7 +292,13 @@
   .tm-colhead{display:flex;align-items:baseline;justify-content:center;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
-  .tm-row{display:grid;grid-template-columns:22px 1fr 120px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-row{display:grid;grid-template-columns:22px 1fr 44px 120px 22px;gap:12px;align-items:center;padding:7px 4px}
+  @media(max-width:600px){
+    .tm-row{grid-template-columns:18px 1fr 40px 22px;gap:6px 10px;
+      grid-template-areas:"rank name score mom" "rank track track track"}
+    .tm-rank{grid-area:rank}.tm-name{grid-area:name}
+    .tm-scoreval{grid-area:score}.tm-track{grid-area:track}.tm-mom{grid-area:mom}
+  }
   .tm-rank{font-size:11px;color:var(--txt-faint);text-align:right}
   .tm-name{display:flex;align-items:center;gap:10px;min-width:0;position:relative}
   .tm-acc{width:4px;height:22px;border-radius:2px;flex:none}
@@ -303,6 +309,13 @@
   .tm-mom .mom-up{display:inline-block;color:var(--green)}
   .tm-mom .mom-dn{display:inline-block;color:var(--red)}
   .tm-mom .mom-fl{display:inline-block;color:var(--txt-faint)}
+  .tm-scoreval{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    color:var(--txt-dim);text-align:right;font-variant-numeric:tabular-nums}
+  .tm-row.openable{cursor:pointer}
+  .tm-row.open-ch{background:rgba(255,255,255,.02);border-radius:8px}
+  .tm-chpanel{grid-column:1/-1;padding:10px 4px 14px;border-bottom:1px solid var(--line-soft)}
+  .tm-chpanel svg{width:100%;height:auto;display:block}
+  .tm-chpanel .chp-note{font-size:9.5px;color:var(--txt-faint);margin-top:8px;line-height:1.6}
   .tm-mom .mom-eq{display:inline-block;color:#f5b301;font-size:12px}
   /* badge segnale operativo: coerenza con la card Portafoglio ETF */
   .tm-badge{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
@@ -841,8 +854,13 @@ async function loadTrendMap(){
       verdict:verdict(s.state,s.stage),
       n:starCount(s.state,s.stage),
       q:quadrant(s.state,s.stage),
-      m:momentum(s)
+      m:momentum(s),
+      score:(s.score!=null?s.score:null),
+      ps:s.priceSeries||null,
+      ss:s.scoreSeries||null,
+      oh:s.opHistory||null
     }));
+    window.__tmRows=rows;
 
     const momHTML=m=> m===null?'<span class="mom-fl" title="confronto non disponibile">&mdash;</span>':m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-eq" title="score invariato">&#9670;</span>';
     const tip=tk=>{
@@ -859,15 +877,65 @@ async function loadTrendMap(){
       return items.map((d,i)=>{
         const pct=Math.max(6,(d.n/5)*100);
         const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
-        return `<div class="tm-row${hasTip}">
+        const canOpen=(d.ps&&d.ps.length>3&&d.ss&&d.ss.length>3)?' openable':'';
+        return `<div class="tm-row${hasTip}${canOpen}" data-tk="${d.ticker}">
           <div class="tm-rank">${i+1}</div>
           <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${opBadge(d)}${tip(d.ticker)}</div>
+          <div class="tm-scoreval" title="score attuale">${d.score!=null?Math.round(d.score):''}</div>
           <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
           <div class="tm-mom">${momHTML(d.m)}</div>
         </div>`;
       }).join('');
     };
 
+    // ── pannello grafici: prezzo 1 anno con bande IN + score sotto ──
+    const sectorChartsSVG=(d)=>{
+      const ps=d.ps, ss=d.ss;
+      const W=640,H1=118,H2=74,padL=46,padR=10,padT=8,gap=30,padB=20;
+      const H=padT+H1+gap+H2+padB;
+      const n=ps.length, X=i=>padL+i/(n-1)*(W-padL-padR);
+      // bande IN dentro la finestra (da opHistory)
+      const d0=ps[0].date, d1=ps[n-1].date;
+      const di=s=>{let best=0;for(let i=0;i<n;i++){if(ps[i].date<=s)best=i;}return best;};
+      let bands=[];
+      (d.oh||[]).forEach(pr=>{
+        if(pr.signal!=='IN')return;
+        if(pr.end_date<d0||pr.start_date>d1)return;
+        bands.push([pr.start_date<=d0?0:di(pr.start_date), pr.end_date>=d1?n-1:di(pr.end_date)]);
+      });
+      const vals=ps.map(p=>p.value).filter(v=>v!=null);
+      let mn=Math.min(...vals),mx=Math.max(...vals),sp=Math.max(1e-6,mx-mn);mn-=sp*.07;mx+=sp*.07;
+      const Y1=v=>padT+(1-(v-mn)/(mx-mn))*H1;
+      const path1=ps.map((p,i)=>p.value==null?'':((i&&ps[i-1].value!=null)?'L':'M')+X(i).toFixed(1)+','+Y1(p.value).toFixed(1)).join(' ');
+      const sv=ss.map(p=>p.value);
+      let smn=Math.min(...sv),smx=Math.max(...sv),ssp=Math.max(1,smx-smn);smn-=ssp*.12;smx+=ssp*.12;
+      const T2=padT+H1+gap, ns=ss.length, X2=i=>padL+i/(ns-1)*(W-padL-padR);
+      const Y2=v=>T2+(1-(v-smn)/(smx-smn))*H2;
+      const path2=ss.map((p,i)=>(i?'L':'M')+X2(i).toFixed(1)+','+Y2(p.value).toFixed(1)).join(' ');
+      const rects=h0=>bands.map(([a2,b2])=>`<rect x="${X(a2).toFixed(1)}" y="${h0===1?padT:T2}" width="${Math.max(1,(X(b2)-X(a2))).toFixed(1)}" height="${h0===1?H1:H2}" fill="rgba(61,220,132,0.10)"/>`).join('');
+      // etichette mesi (~5)
+      let ax='',lastM=-1;
+      ps.forEach((p,i)=>{
+        const dt=new Date(p.date+'T00:00:00');
+        if(dt.getMonth()!==lastM&&i%9===0){lastM=dt.getMonth();
+          ax+=`<text x="${X(i).toFixed(1)}" y="${(padT+H1+gap+H2+14).toFixed(1)}" text-anchor="middle" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#5e6675">${MESI[dt.getMonth()]} ${String(dt.getFullYear()).slice(2)}</text>`;}
+      });
+      const lastP=ps[n-1].value, lastS=ss[ns-1].value;
+      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+        ${rects(1)}${rects(2)}
+        <text x="${padL-6}" y="${(padT+9).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#5e6675">${mx>1000?Math.round(mx):mx.toFixed(0)}</text>
+        <text x="${padL-6}" y="${(padT+H1).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#5e6675">${mn>1000?Math.round(mn):mn.toFixed(0)}</text>
+        <text x="${padL-6}" y="${(T2+9).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#f5b301">${Math.round(smx)}</text>
+        <text x="${padL-6}" y="${(T2+H2).toFixed(1)}" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#f5b301">${Math.round(smn)}</text>
+        <text x="${padL}" y="${(padT-1)<8?9:padT+0}" font-size="0"> </text>
+        <text x="${W-padR}" y="${(Y1(lastP)-6).toFixed(1)}" text-anchor="end" font-size="9" font-weight="800" font-family="JetBrains Mono,monospace" fill="#e8edf4">${lastP}</text>
+        <path d="${path1}" fill="none" stroke="#5b9dff" stroke-width="1.8" stroke-linejoin="round"/>
+        <text x="${padL}" y="${(T2-8).toFixed(1)}" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#8a96a6" letter-spacing="1">SCORE</text>
+        <text x="${W-padR}" y="${(Y2(lastS)-6).toFixed(1)}" text-anchor="end" font-size="9" font-weight="800" font-family="JetBrains Mono,monospace" fill="#f5b301">${Math.round(lastS)}</text>
+        <path d="${path2}" fill="none" stroke="#f5b301" stroke-width="1.8" stroke-linejoin="round"/>
+        ${ax}
+      </svg>`;
+    };
     el.innerHTML=`<div class="tm-grid">
         <div class="tm-col"><div class="tm-colhead"><span class="tm-area">USA</span><span class="tm-areasub">S&amp;P 500</span></div>${colHTML('USA')}</div>
         <div class="tm-col"><div class="tm-colhead"><span class="tm-area">Europa</span><span class="tm-areasub">STOXX 600</span></div>${colHTML('EU')}</div>
@@ -882,7 +950,21 @@ async function loadTrendMap(){
         <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
         <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
       </div>
-      <div class="trend-legend">Il badge <b>IN</b> è il segnale operativo del sistema (lo stesso della card Portafoglio ETF): entra e esce con la conferma di 4 settimane, quindi può differire dalla fotografia RRG istantanea. Un settore <b>IN</b> ma colorato in rosso è in portafoglio ma si sta raffreddando; un settore verde/blu senza badge non è (ancora) operativo.<span class="legend-hint">Passa il mouse su un settore per vedere i titoli rappresentativi.</span></div>`;
+      <div class="trend-legend">Il badge <b>IN</b> è il segnale operativo del sistema (lo stesso della card Portafoglio ETF): entra e esce con la conferma di 4 settimane, quindi può differire dalla fotografia RRG istantanea. Un settore <b>IN</b> ma colorato in rosso è in portafoglio ma si sta raffreddando; un settore verde/blu senza badge non è (ancora) operativo.<span class="legend-hint">Passa il mouse su un settore per i titoli rappresentativi · clicca per prezzo e score a 1 anno.</span></div>`;
+
+    // ── click sui settori: apre/chiude il pannello grafici ──
+    el.querySelectorAll('.tm-row.openable').forEach(rw=>{
+      rw.addEventListener('click',ev=>{
+        const wasOpen=rw.classList.contains('open-ch');
+        el.querySelectorAll('.tm-chpanel').forEach(x=>x.remove());
+        el.querySelectorAll('.tm-row.open-ch').forEach(x=>x.classList.remove('open-ch'));
+        if(wasOpen)return;
+        const d=(window.__tmRows||[]).find(r=>r.ticker===rw.dataset.tk);
+        if(!d||!d.ps||!d.ss)return;
+        rw.classList.add('open-ch');
+        rw.insertAdjacentHTML('afterend',`<div class="tm-chpanel">${sectorChartsSVG(d)}<div class="chp-note">bande verdi = periodi IN del segnale lisciato (le entrate/uscite reali del sistema) · linea blu = indice settoriale, 1 anno · linea oro = score storico. Lo score misura la forza per la classifica: nessuna soglia di score decreta entrata o uscita — decidono stato+fase con la conferma a 4 settimane.</div></div>`);
+      });
+    });
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
   }
