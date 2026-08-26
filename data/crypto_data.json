@@ -1,45 +1,45 @@
 {
-  "updated_at": "2026-08-25T06:25:13Z",
+  "updated_at": "2026-08-26T06:27:39Z",
   "mode": "long_only_dmi_d1d2",
   "assets": {
     "BTC": {
-      "perf_week": 22.49,
-      "perf_month": 22.49,
-      "perf_ytd": 26.93,
+      "perf_week": 19.73,
+      "perf_month": 19.73,
+      "perf_ytd": 24.08,
       "in_position": true,
       "n_trades": 9,
       "entry_date": "2026-08-19",
       "entry_price": 65923.21,
-      "current_price": 80750.01,
-      "perf_pos": 22.49
+      "current_price": 78932.23,
+      "perf_pos": 19.73
     },
     "ETH": {
-      "perf_week": 32.31,
-      "perf_month": 25.19,
-      "perf_ytd": 34.25,
+      "perf_week": 28.28,
+      "perf_month": 17.3,
+      "perf_ytd": 31.34,
       "in_position": true,
       "n_trades": 13,
       "entry_date": "2026-08-17",
       "entry_price": 1902.36,
-      "current_price": 2512.45,
-      "perf_pos": 32.07
+      "current_price": 2457.87,
+      "perf_pos": 29.2
     },
     "SOL": {
-      "perf_week": 29.51,
-      "perf_month": 29.51,
-      "perf_ytd": 31.98,
+      "perf_week": 23.49,
+      "perf_month": 23.49,
+      "perf_ytd": 25.85,
       "in_position": true,
       "n_trades": 13,
       "entry_date": "2026-08-19",
       "entry_price": 78.41,
-      "current_price": 101.55,
-      "perf_pos": 29.51
+      "current_price": 96.83,
+      "perf_pos": 23.49
     }
   },
   "portfolio": {
-    "perf_week": 28.1,
-    "perf_month": 25.73,
-    "perf_ytd": 31.05,
+    "perf_week": 23.83,
+    "perf_month": 20.17,
+    "perf_ytd": 27.09,
     "n_assets": 3
   },
   "weekly_seed": "2026-05-01",
