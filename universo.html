@@ -107,12 +107,33 @@
   footer .orange{color:var(--orange)}
   @media (max-width:560px){.wrap{padding:24px 14px 60px}.updated{margin-left:0;width:100%;text-align:left;margin-top:4px}}
   /* ===== Mappa dei trend · animata ===== */
+  .sec-overlay{position:fixed;inset:0;background:rgba(6,8,11,.88);backdrop-filter:blur(4px);
+    z-index:200;display:flex;align-items:center;justify-content:center;padding:22px}
+  .sec-modal{background:linear-gradient(160deg,var(--panel),#161b24);
+    border:1px solid var(--line);border-radius:16px;max-width:1080px;width:100%;
+    max-height:92vh;overflow-y:auto;padding:24px 26px;position:relative}
+  .sec-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#f5b301;opacity:.7;border-radius:16px 16px 0 0}
+  .sec-close{position:absolute;top:14px;right:16px;background:transparent;border:1px solid var(--line);
+    border-radius:8px;color:var(--txt-dim);font-family:'JetBrains Mono',monospace;font-size:13px;
+    padding:5px 11px;cursor:pointer}
+  .sec-close:hover{border-color:#f5b301;color:var(--txt)}
+  .sec-mtitle{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:2px;padding-right:60px}
+  .sec-msub{font-size:10px;color:var(--txt-faint);letter-spacing:.05em;margin-bottom:14px}
+  .sec-mstats{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px}
+  .sec-mstat{font-size:10.5px;color:var(--txt-dim)}
+  .sec-mstat b{color:var(--txt);font-size:13px;display:block;font-variant-numeric:tabular-nums}
+  .sec-mchart svg{width:100%;height:auto;display:block}
+  .sec-mnote{font-size:9.5px;color:var(--txt-faint);margin-top:10px;line-height:1.6}
+  .sec-hist-btn{display:inline-block;margin:2px 0 12px;background:transparent;border:1px solid var(--line);
+    border-radius:8px;color:var(--txt-dim);font-family:'JetBrains Mono',monospace;font-size:10.5px;
+    padding:6px 12px;cursor:pointer;letter-spacing:.02em}
+  .sec-hist-btn:hover{border-color:#f5b301;color:var(--txt)}
   .tm-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:14px}
   @media(max-width:760px){.tm-grid{grid-template-columns:1fr;gap:22px}}
   .tm-colhead{display:flex;align-items:baseline;justify-content:center;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
   .tm-area{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--txt);letter-spacing:.5px}
   .tm-areasub{font-size:10px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.2em}
-  .tm-row{display:grid;grid-template-columns:22px 1fr 96px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
+  .tm-row{display:grid;grid-template-columns:22px 1fr 156px 90px 22px;gap:12px;align-items:center;padding:7px 4px}
   /* MOBILE: due righe — nome a tutta larghezza sopra, data+barra sotto —
      altrimenti le colonne fisse schiacciano il nome a una lettera */
   @media(max-width:600px){
@@ -256,6 +277,8 @@ async function loadTrendMap(){
     ]);
     PERF_DATA = stk.sectors || {};
     STKDET = det.stocks || {};
+    window.__sdFull = desk;
+    window.__unFull = uni;
     const extra = uni.sectors || [];
     const deskRows = (desk.ranking && desk.ranking.ranking) || [];
     // data dell'ultima settimana disponibile (per evidenziare i "nuovi")
@@ -334,7 +357,7 @@ async function loadTrendMap(){
         const fresh=(isIn&&d.entry&&LAST_DATE&&d.entry===LAST_DATE)?' fresh':'';
         // data d'ingresso su TUTTI i settori operativamente IN (segnale con conferma 4 settimane)
         const dateHTML=(isIn&&d.entry)
-          ? `<div class="tm-date${fresh}">dal ${fmtShort(d.entry)}</div>`
+          ? `<div class="tm-date${fresh}">investito dal ${fmtShort(d.entry)}</div>`
           : `<div class="tm-date"></div>`;
         return `<div class="tm-row${canOpen}" data-sec="${d.ticker}" data-strong="${isStrong?1:0}" data-in="${isIn?1:0}">
           <div class="tm-rank">${i+1}</div>
@@ -388,6 +411,92 @@ function sectorChartSVG(series){
 }
 
 // pannello del settore: grafico+performance del SETTORE, e titoli come elenco informativo
+function openSectorHistory(raw){
+  // due percorsi: settore di sistema (storia completa dalla simulazione)
+  // oppure settore extra dell'universo (ultimo anno da priceSeries/inSeries)
+  const sim=(window.__sdFull&&window.__sdFull.portfolio_simulation)||{};
+  const deskRank=((window.__sdFull||{}).ranking||{}).ranking||[];
+  const deskRow=deskRank.find(s=>(s.ticker_raw||s.ticker)===raw);
+  const isSystem=!!(sim.sectors&&sim.sectors[raw]&&deskRow&&deskRow.opSignal!=='INFO');
+  let pts=[], titolo=raw, sub='', noteBande='';
+  if(isSystem){
+    const sec=sim.sectors[raw], dts=sim.dates||[];
+    const sig=(sec.signals_by_ts&&sec.signals_by_ts[String(sec.default_ts)])||[];
+    for(let i=0;i<dts.length;i++){
+      if(sec.prices[i]!=null&&sec.prices[i]>0)pts.push({d:dts[i],v:sec.prices[i],s:!!sig[i]});
+    }
+    titolo=(deskRow&&deskRow.name)||raw;
+    sub=`storico completo · ${pts.length?pts[0].d.slice(0,4):''} → ${pts.length?pts[pts.length-1].d.slice(0,4):''} · segnale lisciato 4 settimane`;
+    noteBande='bande verdi = sistema in posizione sul settore · sfondo scuro = fuori, in liquidità';
+  }else{
+    const u=((window.__unFull||{}).sectors||[]).find(s=>s.ticker===raw);
+    if(!u||!u.priceSeries||u.priceSeries.length<10)return;
+    const ins=u.inSeries||[];
+    u.priceSeries.forEach((p,i)=>{if(p.value!=null&&p.value>0)pts.push({d:p.date,v:p.value,s:!!ins[i]});});
+    titolo=u.name||raw;
+    sub='ultimo anno · settore di monitoraggio (fuori dai portafogli)';
+    noteBande='bande verdi = segnale della matrice acceso · qui il sistema NON muove capitale: solo monitoraggio';
+  }
+  if(pts.length<10)return;
+  const bands=[];let s0=null;
+  pts.forEach((p,k)=>{
+    if(p.s&&s0===null)s0=k;
+    if((!p.s||k===pts.length-1)&&s0!==null){bands.push([s0,p.s?k:k-1]);s0=null;}
+  });
+  const wIn=pts.filter(p=>p.s).length;
+  const W=1000,H=430,padL=58,padR=14,padT=16,padB=34;
+  const X=k=>padL+k/(pts.length-1)*(W-padL-padR);
+  let mn=Infinity,mx=-Infinity;
+  pts.forEach(p=>{mn=Math.min(mn,p.v);mx=Math.max(mx,p.v);});
+  const lg=Math.log,lmn=lg(mn*0.96),lmx=lg(mx*1.04);
+  const Y=v=>padT+(1-(lg(v)-lmn)/(lmx-lmn))*(H-padT-padB);
+  const path=pts.map((p,k)=>(k?'L':'M')+X(k).toFixed(1)+','+Y(p.v).toFixed(1)).join(' ');
+  const rects=bands.map(([a2,b2])=>`<rect x="${X(a2).toFixed(1)}" y="${padT}" width="${Math.max(1,(X(b2)-X(a2))).toFixed(1)}" height="${H-padT-padB}" fill="rgba(61,220,132,0.13)"/>`).join('');
+  let ax='',lastLbl='';
+  pts.forEach((p,k)=>{
+    const lbl=pts.length>120?p.d.slice(0,4):p.d.slice(0,7);
+    const show=pts.length>120?(+p.d.slice(0,4)%2===0):(k%9===0);
+    if(lbl!==lastLbl&&show){lastLbl=lbl;
+      ax+=`<line x1="${X(k).toFixed(1)}" y1="${padT}" x2="${X(k).toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>
+           <text x="${X(k).toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="#5e6675">${lbl}</text>`;}
+    else if(lbl!==lastLbl){lastLbl=lbl;}
+  });
+  let ylab='';
+  for(let f=0;f<=3;f++){
+    const v=Math.exp(lmn+(lmx-lmn)*f/3);
+    ylab+=`<text x="${padL-8}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" font-family="JetBrains Mono,monospace" fill="#5e6675">${v>=100?Math.round(v):v.toFixed(1)}</text>
+           <line x1="${padL}" y1="${Y(v).toFixed(1)}" x2="${W-padR}" y2="${Y(v).toFixed(1)}" stroke="rgba(255,255,255,0.04)"/>`;
+  }
+  const ov=document.createElement('div');
+  ov.className='sec-overlay';
+  ov.innerHTML=`<div class="sec-modal">
+    <button class="sec-close">✕ chiudi</button>
+    <div class="sec-mtitle">${titolo}</div>
+    <div class="sec-msub">${sub}</div>
+    <div class="sec-mstats">
+      <div class="sec-mstat">tempo col segnale attivo<b>${(wIn/pts.length*100).toFixed(0)}%</b></div>
+      <div class="sec-mstat">periodi accesi<b>${bands.length}</b></div>
+      <div class="sec-mstat">settimane osservate<b>${pts.length}</b></div>
+    </div>
+    <div class="sec-mchart"><svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      ${rects}${ylab}${ax}
+      <path d="${path}" fill="none" stroke="#5b9dff" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg></div>
+    <div class="sec-mnote">${noteBande} · prezzo in scala logaritmica · segnale = stato+fase con conferma a 4 settimane.</div>
+  </div>`;
+  const close=()=>{ov.remove();document.removeEventListener('keydown',esc);};
+  const esc=e=>{if(e.key==='Escape')close();};
+  ov.addEventListener('click',e=>{if(e.target===ov)close();});
+  ov.querySelector('.sec-close').addEventListener('click',close);
+  document.addEventListener('keydown',esc);
+  document.body.appendChild(ov);
+}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.sec-hist-btn');
+  if(b){e.stopPropagation();openSectorHistory(b.dataset.hist);}
+});
+
 function sectorPanelHTML(secTicker, isIn){
   const perf=PERF_DATA[secTicker];
   const names=SECTOR_STOCKS[secTicker]||[];
@@ -410,7 +519,8 @@ function sectorPanelHTML(secTicker, isIn){
     ? `<div class="sec-stocks-h">titoli del settore (esemplificativi)</div>
        <div class="stock-list">${names.map(n=>`<span class="stock-chip" data-stock="${n.replace(/"/g,'&quot;')}">${n}</span>`).join('')}</div>`
     : '';
-  return `<div class="stock-panel">${chartBlock}${titoli}</div>`;
+  const histBtn=`<button class="sec-hist-btn" data-hist="${secTicker}">storico del segnale ⤢</button>`;
+  return `<div class="stock-panel">${histBtn}${chartBlock}${titoli}</div>`;
 }
 
 // scheda dettaglio di un titolo: grafico 1 anno + fondamentali
