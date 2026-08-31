@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-08-28T18:31:21.341004+00:00",
+ "updated_at": "2026-08-31T14:31:23.853587+00:00",
  "last_bar": "2026-08-28",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -27,9 +27,9 @@
      "ticker_name": "ASML",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": 4.67,
-     "roc13": 5.86,
-     "score": 56.0,
+     "roc4": 4.12,
+     "roc13": 5.31,
+     "score": 55.1,
      "tag": "premium_ok"
     },
     {
@@ -45,9 +45,9 @@
      "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 10.87,
-     "roc13": 14.44,
-     "score": 9.6,
+     "roc4": 10.71,
+     "roc13": 14.27,
+     "score": 9.4,
      "tag": "value_momentum"
     },
     {
@@ -63,9 +63,9 @@
      "ticker_name": "Bank of America",
      "held_ticker": "BAC",
      "held_name": "Bank of America",
-     "roc4": 0.62,
-     "roc13": 21.43,
-     "score": 23.1,
+     "roc4": 0.6,
+     "roc13": 21.4,
+     "score": 23.0,
      "tag": "value_momentum"
     },
     {
@@ -81,9 +81,9 @@
      "ticker_name": "Merck",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 13.38,
-     "roc13": 25.24,
-     "score": 47.7,
+     "roc4": 13.94,
+     "roc13": 25.86,
+     "score": 48.4,
      "tag": "top_momentum"
     },
     {
@@ -99,9 +99,9 @@
      "ticker_name": "Union Pacific",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 5.3,
-     "roc13": 17.13,
-     "score": 26.2,
+     "roc4": 5.23,
+     "roc13": 17.05,
+     "score": 26.1,
      "tag": "premium_ok"
     },
     {
@@ -117,8 +117,8 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 2.37,
-     "roc13": 14.22,
+     "roc4": 2.36,
+     "roc13": 14.21,
      "score": 22.0,
      "tag": "premium_ok"
     },
@@ -135,9 +135,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 11.89,
-     "roc13": 43.55,
-     "score": 80.2,
+     "roc4": 12.61,
+     "roc13": 44.48,
+     "score": 81.4,
      "tag": "top_momentum"
     },
     {
@@ -204,9 +204,9 @@
      "ticker_name": "ASML",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": 4.67,
-     "roc13": 5.86,
-     "score": 5.0,
+     "roc4": 4.12,
+     "roc13": 5.31,
+     "score": 4.5,
      "tag": "premium_ok"
     },
     {
@@ -222,9 +222,9 @@
      "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 10.87,
-     "roc13": 14.44,
-     "score": 11.9,
+     "roc4": 10.71,
+     "roc13": 14.27,
+     "score": 11.8,
      "tag": "value_momentum"
     },
     {
@@ -240,9 +240,9 @@
      "ticker_name": "Blackstone",
      "held_ticker": "BX",
      "held_name": "Blackstone",
-     "roc4": 13.17,
-     "roc13": 23.6,
-     "score": 16.3,
+     "roc4": 12.6,
+     "roc13": 22.97,
+     "score": 15.7,
      "tag": "value_momentum"
     },
     {
@@ -258,9 +258,9 @@
      "ticker_name": "Merck",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 13.38,
-     "roc13": 25.24,
-     "score": 16.9,
+     "roc4": 13.94,
+     "roc13": 25.86,
+     "score": 17.5,
      "tag": "top_momentum"
     },
     {
@@ -272,13 +272,13 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "UNP",
-     "ticker_name": "Union Pacific",
+     "ticker": "DE",
+     "ticker_name": "John Deere",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 5.3,
-     "roc13": 17.13,
-     "score": 8.8,
+     "roc4": 6.35,
+     "roc13": 16.56,
+     "score": 9.4,
      "tag": "premium_ok"
     },
     {
@@ -294,8 +294,8 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 2.37,
-     "roc13": 14.22,
+     "roc4": 2.36,
+     "roc13": 14.21,
      "score": 5.9,
      "tag": "premium_ok"
     },
@@ -312,9 +312,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 15.17,
-     "roc13": 46.51,
-     "score": 24.6,
+     "roc4": 16.86,
+     "roc13": 48.67,
+     "score": 26.4,
      "tag": "top_momentum"
     },
     {
