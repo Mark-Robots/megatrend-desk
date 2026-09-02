@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>In Trend · Megatrend Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c10;--panel:#11151c;--panel2:#161b24;--line:#222a35;--soft:#1a2029;
+--txt:#e8edf4;--dim:#8a96a6;--faint:#5a6573;--gold:#f5b301;--green:#3ddc84;--blue:#5b9dff}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--txt);font-family:'JetBrains Mono',monospace;line-height:1.5;
+padding:34px 20px 60px;background-image:radial-gradient(circle at 80% 0%, rgba(61,220,132,.05), transparent 45%)}
+.wrap{max-width:640px;margin:0 auto}
+.kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+h1{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,38px);font-weight:600;line-height:1.15}
+h1 .g{color:var(--green)}
+.sub{font-size:11px;color:var(--dim);margin-top:8px}
+.card{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);
+border-radius:14px;padding:14px 20px;margin-top:22px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);opacity:.7}
+.row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--soft)}
+.row:last-child{border-bottom:none}
+.acc{width:3px;height:16px;border-radius:2px;flex:none}
+.acc.s{background:var(--green)} .acc.u{background:var(--blue)}
+.nm{font-size:13px;font-weight:500;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reg{font-size:8px;letter-spacing:.1em;color:var(--faint);border:1px solid var(--soft);border-radius:4px;padding:1px 5px;flex:none}
+.tag{font-size:8px;letter-spacing:.08em;border-radius:4px;padding:1px 6px;flex:none}
+.tag.s{color:var(--green);border:1px solid rgba(61,220,132,.35)}
+.tag.u{color:var(--blue);border:1px solid rgba(91,157,255,.35)}
+.new{font-size:8px;letter-spacing:.08em;color:var(--gold);border:1px solid rgba(245,179,1,.4);border-radius:4px;padding:1px 5px;flex:none}
+.dt{margin-left:auto;font-size:10.5px;color:var(--dim);white-space:nowrap}
+.empty{padding:14px 2px;font-size:11px;color:var(--faint)}
+.foot{margin-top:20px;font-size:9.5px;color:var(--faint);line-height:1.7}
+.foot a{color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Mark Desk · vista del venerdì</div>
+  <h1>Chi è <span class="g">in trend</span></h1>
+  <div class="sub" id="updated">caricamento…</div>
+
+  <div class="card"><div id="list"><div class="empty">caricamento…</div></div></div>
+
+  <div class="foot">
+    Solo i settori con la matrice stato+fase promossa e confermata (4 settimane); tutti gli
+    altri sono esclusi per costruzione. <span style="color:var(--green)">portafoglio</span> =
+    settori di sistema con capitale investito · <span style="color:var(--blue)">monitor</span> =
+    universo, segnale acceso senza capitale. Ordinati dal trend più giovane al più anziano.
+    · <a href="index.html">desk</a> · <a href="universo.html">universo</a>
+  </div>
+</div>
+<script>
+const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const fd=s=>{if(!s)return'—';const p=s.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0].slice(2)}`;};
+
+async function load(){
+  try{
+    const bust='?_='+Date.now();
+    const [sd,un]=await Promise.all([
+      fetch('data/sector_data.json'+bust).then(r=>r.json()),
+      fetch('data/universe_data.json'+bust).then(r=>r.json()).catch(()=>({sectors:[]}))
+    ]);
+    document.getElementById('updated').textContent=
+      'dati al '+fd(sd.last_data_date)+' · la lista si rinnova a ogni aggiornamento';
+
+    const rows=[];
+    ((sd.ranking&&sd.ranking.ranking)||[]).forEach(s=>{
+      if(s.opSignal!=='IN')return;
+      rows.push({name:s.name||s.ticker, region:(s.region==='USA')?'USA':'EU',
+        entry:(s.opCurrent&&s.opCurrent.start_date)||null,
+        weeks:(s.opCurrent&&s.opCurrent.weeks)!=null?s.opCurrent.weeks:null, kind:'s'});
+    });
+    (un.sectors||[]).forEach(s=>{
+      if(s.opSignal!=='IN')return;
+      rows.push({name:s.name||s.ticker, region:(s.region==='USA'||s.region==='US')?'USA':(s.region||'EU'),
+        entry:s.trend_start_date||null,
+        weeks:(s.weeks_in_trend!=null)?s.weeks_in_trend:null, kind:'u'});
+    });
+    rows.sort((a,b)=>(b.entry||'').localeCompare(a.entry||''));
+
+    document.getElementById('list').innerHTML = rows.length
+      ? rows.map(d=>`<div class="row">
+          <span class="acc ${d.kind}"></span>
+          <span class="nm">${d.name}</span>
+          <span class="reg">${d.region}</span>
+          <span class="tag ${d.kind}">${d.kind==='s'?'portafoglio':'monitor'}</span>
+          ${(d.weeks!=null&&d.weeks<=5)?'<span class="new">nuovo</span>':''}
+          <span class="dt">dal ${fd(d.entry)}</span>
+        </div>`).join('')
+      : '<div class="empty">Nessun settore in trend: tutto in liquidità.</div>';
+  }catch(e){
+    document.getElementById('updated').textContent='errore dati: '+e.message;
+  }
+}
+load();
+</script>
+</body>
+</html>
