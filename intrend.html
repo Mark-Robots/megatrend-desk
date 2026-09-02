@@ -63,8 +63,9 @@ border-radius:4px;padding:1px 6px;flex:none;white-space:nowrap}
 <script>
 const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
 const fd=s=>{if(!s)return'—';const p=s.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0].slice(2)}`;};
-const TAG_IT={high_momentum:'alto momentum',steady_growth:'crescita solida',value_momentum:'value momentum',
-recovery:'in recupero',fresh_leader:'leader fresco',value_trap:'value trap',expensive_flat:'caro e fermo',
+const TAG_IT={top_momentum:'top momentum',premium_ok:'premium',high_momentum:'alto momentum',
+steady_growth:'crescita solida',value_momentum:'value momentum',recovery:'in recupero',
+fresh_leader:'leader fresco',value_trap:'value trap',expensive_flat:'caro e fermo',
 stagnant:'stagnante',mixed:'misto'};
 
 async function load(){
