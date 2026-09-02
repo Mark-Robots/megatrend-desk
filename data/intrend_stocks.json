@@ -1,0 +1,303 @@
+{
+ "updated_at": "2026-09-02T19:03:13Z",
+ "note": "top 3 per settore in trend · stesso metodo di selezione del sistema Azioni (aggressive)",
+ "sectors": {
+  "EXV1.DE": {
+   "name": "Banche",
+   "stocks": [
+    {
+     "ticker": "MB.MI",
+     "name": "Mediobanca",
+     "tag": "top_momentum",
+     "roc13": 27.3,
+     "score": 5.49
+    },
+    {
+     "ticker": "BMPS.MI",
+     "name": "Monte dei Paschi",
+     "tag": "top_momentum",
+     "roc13": 27.4,
+     "score": 5.24
+    },
+    {
+     "ticker": "UCG.MI",
+     "name": "UniCredit",
+     "tag": "premium_ok",
+     "roc13": 14.5,
+     "score": 3.83
+    }
+   ]
+  },
+  "XLK": {
+   "name": "Tecnologia USA",
+   "stocks": [
+    {
+     "ticker": "AAPL",
+     "name": "Apple",
+     "tag": "premium_ok",
+     "roc13": 5.9,
+     "score": 4.47
+    },
+    {
+     "ticker": "NVDA",
+     "name": "NVIDIA",
+     "tag": "premium_ok",
+     "roc13": 9.4,
+     "score": 2.94
+    }
+   ]
+  },
+  "EXH5.DE": {
+   "name": "Assicurazioni",
+   "stocks": [
+    {
+     "ticker": "UNI.MI",
+     "name": "Unipol",
+     "tag": "top_momentum",
+     "roc13": 34.2,
+     "score": 9.42
+    },
+    {
+     "ticker": "G.MI",
+     "name": "Generali",
+     "tag": "premium_ok",
+     "roc13": 13.7,
+     "score": 3.01
+    },
+    {
+     "ticker": "PST.MI",
+     "name": "Poste Italiane",
+     "tag": "premium_ok",
+     "roc13": 5.3,
+     "score": -0.79
+    }
+   ]
+  },
+  "XLF": {
+   "name": "Finanziari USA",
+   "stocks": [
+    {
+     "ticker": "BX",
+     "name": "Blackstone",
+     "tag": "value_momentum",
+     "roc13": 20.7,
+     "score": 6.6
+    }
+   ]
+  },
+  "XLE": {
+   "name": "Energia USA",
+   "stocks": [
+    {
+     "ticker": "MPC",
+     "name": "Marathon Petroleum",
+     "tag": "top_momentum",
+     "roc13": 49.4,
+     "score": 36.73
+    },
+    {
+     "ticker": "PSX",
+     "name": "Phillips 66",
+     "tag": "top_momentum",
+     "roc13": 41.2,
+     "score": 31.06
+    },
+    {
+     "ticker": "VLO",
+     "name": "Valero Energy",
+     "tag": "top_momentum",
+     "roc13": 44.5,
+     "score": 29.77
+    }
+   ]
+  },
+  "SOXX": {
+   "name": "Semiconduttori",
+   "stocks": [
+    {
+     "ticker": "MU",
+     "name": "Micron",
+     "tag": "premium_ok",
+     "roc13": 10.3,
+     "score": 9.11
+    },
+    {
+     "ticker": "NVDA",
+     "name": "NVIDIA",
+     "tag": "premium_ok",
+     "roc13": 9.4,
+     "score": 2.94
+    }
+   ]
+  },
+  "XLI": {
+   "name": "Industriali USA",
+   "stocks": [
+    {
+     "ticker": "DE",
+     "name": "John Deere",
+     "tag": "premium_ok",
+     "roc13": 17.8,
+     "score": 12.61
+    }
+   ]
+  },
+  "HACK": {
+   "name": "Cybersecurity",
+   "stocks": [
+    {
+     "ticker": "ZS",
+     "name": "Zscaler",
+     "tag": "top_momentum",
+     "roc13": 32.8,
+     "score": 11.93
+    }
+   ]
+  },
+  "EXV3": {
+   "name": "Tecnologia EU",
+   "stocks": [
+    {
+     "ticker": "REY.MI",
+     "name": "Reply",
+     "tag": "value_momentum",
+     "roc13": 16.0,
+     "score": 7.3
+    }
+   ]
+  },
+  "EXV6": {
+   "name": "Materiali EU",
+   "stocks": [
+    {
+     "ticker": "TEN.MI",
+     "name": "Tenaris",
+     "tag": null,
+     "roc13": -11.2,
+     "score": -0.62
+    }
+   ]
+  },
+  "DRIV": {
+   "name": "Automotive / EV",
+   "stocks": [
+    {
+     "ticker": "TSLA",
+     "name": "Tesla",
+     "tag": "stagnant",
+     "roc13": -8.9,
+     "score": 3.18
+    },
+    {
+     "ticker": "F",
+     "name": "Ford",
+     "tag": "stagnant",
+     "roc13": -5.3,
+     "score": -0.93
+    },
+    {
+     "ticker": "GM",
+     "name": "General Motors",
+     "tag": "expensive_flat",
+     "roc13": 3.0,
+     "score": -1.48
+    }
+   ]
+  },
+  "EXH9": {
+   "name": "Utilities EU",
+   "stocks": [
+    {
+     "ticker": "A2A.MI",
+     "name": "A2A",
+     "tag": "stagnant",
+     "roc13": 0.0,
+     "score": -2.5
+    },
+    {
+     "ticker": "HER.MI",
+     "name": "Hera",
+     "tag": "stagnant",
+     "roc13": 0.4,
+     "score": -3.21
+    },
+    {
+     "ticker": "TRN.MI",
+     "name": "Terna",
+     "tag": "stagnant",
+     "roc13": -2.8,
+     "score": -4.76
+    }
+   ]
+  },
+  "ICLN": {
+   "name": "Clean Energy",
+   "stocks": [
+    {
+     "ticker": "VWS.CO",
+     "name": "Vestas",
+     "tag": "premium_ok",
+     "roc13": 21.4,
+     "score": 19.23
+    }
+   ]
+  },
+  "EXV7": {
+   "name": "Chimica EU",
+   "stocks": [
+    {
+     "ticker": "ECNL.MI",
+     "name": "Eurocom Net Logic",
+     "tag": "stagnant",
+     "roc13": -0.7,
+     "score": -1.33
+    }
+   ]
+  },
+  "EXH3": {
+   "name": "Telecom EU",
+   "stocks": [
+    {
+     "ticker": "BGN.MI",
+     "name": "Banca Generali",
+     "tag": "premium_ok",
+     "roc13": 17.2,
+     "score": 3.6
+    },
+    {
+     "ticker": "AZM.MI",
+     "name": "Azimut",
+     "tag": "premium_ok",
+     "roc13": 8.8,
+     "score": 2.27
+    },
+    {
+     "ticker": "FBK.MI",
+     "name": "FinecoBank",
+     "tag": null,
+     "roc13": 10.3,
+     "score": -0.74
+    }
+   ]
+  },
+  "EXH7": {
+   "name": "Beni di base EU",
+   "stocks": [
+    {
+     "ticker": "DLG.MI",
+     "name": "De'Longhi",
+     "tag": "premium_ok",
+     "roc13": 12.6,
+     "score": 1.87
+    },
+    {
+     "ticker": "CPR.MI",
+     "name": "Davide Campari",
+     "tag": "stagnant",
+     "roc13": 5.0,
+     "score": -0.32
+    }
+   ]
+  }
+ }
+}
