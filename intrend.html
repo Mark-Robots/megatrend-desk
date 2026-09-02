@@ -25,11 +25,17 @@ border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
 .reg{font-size:8px;letter-spacing:.1em;color:var(--faint);border:1px solid var(--soft);border-radius:4px;padding:1px 5px;flex:none}
 .new{font-size:8px;letter-spacing:.08em;color:var(--gold);border:1px solid rgba(245,179,1,.4);border-radius:4px;padding:1px 5px;flex:none}
 .bdal{font-size:9.5px;color:var(--faint);margin-bottom:10px}
-.stk{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid var(--soft)}
+.stk{padding:7px 0 6px;border-top:1px solid var(--soft)}
+.sr1{display:flex;align-items:baseline;gap:8px}
 .snum{font-size:9px;color:var(--faint);flex:none;width:10px}
 .stick{font-size:12px;font-weight:700;flex:none}
 .snm{font-size:10px;color:var(--dim);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stag{margin-left:auto;font-size:8px;letter-spacing:.05em;color:var(--green);border:1px solid rgba(61,220,132,.3);
+.sperf{margin-left:auto;font-size:11.5px;font-weight:800;flex:none;font-variant-numeric:tabular-nums}
+.sperf.pos{color:var(--green)}.sperf.neg{color:#ff5c5c}
+.sr2{display:flex;align-items:center;gap:8px;margin-top:3px;padding-left:18px}
+.spark{flex:1;height:24px}
+.spark polyline{fill:none;stroke-width:1.5}
+.stag{font-size:8px;letter-spacing:.05em;color:var(--green);border:1px solid rgba(61,220,132,.3);
 border-radius:4px;padding:1px 6px;flex:none;white-space:nowrap}
 .pend{font-size:10px;color:var(--faint);padding:8px 0 2px;border-top:1px solid var(--soft)}
 .foot{margin-top:22px;font-size:9.5px;color:var(--faint);line-height:1.7}
@@ -48,7 +54,9 @@ border-radius:4px;padding:1px 6px;flex:none;white-space:nowrap}
     tutti gli altri sono esclusi per costruzione. Dentro: le migliori 3 azioni del settore
     selezionate con lo stesso metodo del sistema Azioni (momentum 4/13/52 settimane, tag di
     qualità, punteggio composito, filtro "chi corre adesso"). Classifica informativa:
-    il portafoglio ne compra una per settore. Ordinati dal trend più giovane.
+    il portafoglio ne compra una per settore. Grafico e performance di ciascun titolo partono
+    dalla data d'ingresso del settore in trend (se quotato dopo, dal primo dato disponibile).
+    Ordinati dal trend più giovane.
     · <a href="index.html">desk</a> · <a href="universo.html">universo</a>
   </div>
 </div>
@@ -95,10 +103,21 @@ async function load(){
 
     document.getElementById('grid').innerHTML = rows.length ? rows.map(d=>{
       const st=stocksOf(d.key);
+      const spark=x=>{
+        if(!x.series||x.series.length<2)return'';
+        const v=x.series, n=v.length, W=100, H=24;
+        let mn=Math.min(...v), mx=Math.max(...v); const sp=Math.max(1e-9,mx-mn);
+        const pts=v.map((y,i)=>`${(i/(n-1)*W).toFixed(1)},${(H-2-(y-mn)/sp*(H-4)).toFixed(1)}`).join(' ');
+        const col=(x.perf!=null&&x.perf<0)?'#ff5c5c':'#3ddc84';
+        return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline points="${pts}" stroke="${col}"/></svg>`;
+      };
       const body=st
-        ? st.map((x,i)=>`<div class="stk"><span class="snum">${i+1}</span>
-            <span class="stick">${x.ticker}</span><span class="snm">${x.name&&x.name!==x.ticker?x.name:''}</span>
-            <span class="stag">${TAG_IT[x.tag]||x.tag||''}</span></div>`).join('')
+        ? st.map((x,i)=>`<div class="stk">
+            <div class="sr1"><span class="snum">${i+1}</span>
+              <span class="stick">${x.ticker}</span><span class="snm">${x.name&&x.name!==x.ticker?x.name:''}</span>
+              ${x.perf!=null?`<span class="sperf ${x.perf>=0?'pos':'neg'}">${x.perf>=0?'+':''}${x.perf.toFixed(1)}%</span>`:''}</div>
+            <div class="sr2">${spark(x)}<span class="stag">${TAG_IT[x.tag]||x.tag||''}</span></div>
+          </div>`).join('')
         : `<div class="pend">titoli al prossimo aggiornamento</div>`;
       return `<div class="box">
         <div class="bh"><span class="bname">${d.name}</span><span class="reg">${d.region}</span>
