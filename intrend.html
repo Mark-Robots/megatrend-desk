@@ -11,56 +11,61 @@
 html,body{max-width:100%;overflow-x:hidden}
 body{background:var(--bg);color:var(--txt);font-family:'JetBrains Mono',monospace;line-height:1.5;
 padding:34px 20px 60px;background-image:radial-gradient(circle at 80% 0%, rgba(61,220,132,.05), transparent 45%)}
-.wrap{max-width:640px;margin:0 auto}
+.wrap{max-width:880px;margin:0 auto}
 .kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
 h1{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,38px);font-weight:600;line-height:1.15}
 h1 .g{color:var(--green)}
 .sub{font-size:11px;color:var(--dim);margin-top:8px}
-.card{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);
-border-radius:14px;padding:14px 20px;margin-top:22px;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);opacity:.7}
-.row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--soft)}
-.row:last-child{border-bottom:none}
-.acc{width:3px;height:16px;border-radius:2px;flex:none}
-.acc.s{background:var(--green)} .acc.u{background:var(--blue)}
-.nm{font-size:13px;font-weight:500;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:24px}
+.box{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);
+border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);opacity:.7}
+.bh{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.bname{font-size:13px;font-weight:700;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .reg{font-size:8px;letter-spacing:.1em;color:var(--faint);border:1px solid var(--soft);border-radius:4px;padding:1px 5px;flex:none}
-.tag{font-size:8px;letter-spacing:.08em;border-radius:4px;padding:1px 6px;flex:none}
-.tag.s{color:var(--green);border:1px solid rgba(61,220,132,.35)}
-.tag.u{color:var(--blue);border:1px solid rgba(91,157,255,.35)}
 .new{font-size:8px;letter-spacing:.08em;color:var(--gold);border:1px solid rgba(245,179,1,.4);border-radius:4px;padding:1px 5px;flex:none}
-.dt{margin-left:auto;font-size:10.5px;color:var(--dim);white-space:nowrap}
-.empty{padding:14px 2px;font-size:11px;color:var(--faint)}
-.foot{margin-top:20px;font-size:9.5px;color:var(--faint);line-height:1.7}
+.bdal{font-size:9.5px;color:var(--faint);margin-bottom:10px}
+.stk{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid var(--soft)}
+.snum{font-size:9px;color:var(--faint);flex:none;width:10px}
+.stick{font-size:12px;font-weight:700;flex:none}
+.snm{font-size:10px;color:var(--dim);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stag{margin-left:auto;font-size:8px;letter-spacing:.05em;color:var(--green);border:1px solid rgba(61,220,132,.3);
+border-radius:4px;padding:1px 6px;flex:none;white-space:nowrap}
+.pend{font-size:10px;color:var(--faint);padding:8px 0 2px;border-top:1px solid var(--soft)}
+.foot{margin-top:22px;font-size:9.5px;color:var(--faint);line-height:1.7}
 .foot a{color:var(--dim)}
+.empty{margin-top:24px;font-size:11px;color:var(--faint)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="kicker">Mark Desk · vista del venerdì</div>
-  <h1>Chi è <span class="g">in trend</span></h1>
+  <h1>Chi è <span class="g">in trend</span> · e i suoi cavalli</h1>
   <div class="sub" id="updated">caricamento…</div>
-
-  <div class="card"><div id="list"><div class="empty">caricamento…</div></div></div>
-
+  <div class="grid" id="grid"></div>
   <div class="foot">
-    Solo i settori con la matrice stato+fase promossa e confermata (4 settimane); tutti gli
-    altri sono esclusi per costruzione. <span style="color:var(--green)">portafoglio</span> =
-    settori di sistema con capitale investito · <span style="color:var(--blue)">monitor</span> =
-    universo, segnale acceso senza capitale. Ordinati dal trend più giovane al più anziano.
+    Un riquadro per ogni settore con la matrice stato+fase promossa e confermata (4 settimane);
+    tutti gli altri sono esclusi per costruzione. Dentro: le migliori 3 azioni del settore
+    selezionate con lo stesso metodo del sistema Azioni (momentum 4/13/52 settimane, tag di
+    qualità, punteggio composito, filtro "chi corre adesso"). Classifica informativa:
+    il portafoglio ne compra una per settore. Ordinati dal trend più giovane.
     · <a href="index.html">desk</a> · <a href="universo.html">universo</a>
   </div>
 </div>
 <script>
 const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
 const fd=s=>{if(!s)return'—';const p=s.split('-');return `${+p[2]} ${M[+p[1]-1]} ${p[0].slice(2)}`;};
+const TAG_IT={high_momentum:'alto momentum',steady_growth:'crescita solida',value_momentum:'value momentum',
+recovery:'in recupero',fresh_leader:'leader fresco',value_trap:'value trap',expensive_flat:'caro e fermo',
+stagnant:'stagnante',mixed:'misto'};
 
 async function load(){
   try{
     const bust='?_='+Date.now();
-    const [sd,un]=await Promise.all([
+    const [sd,un,ist]=await Promise.all([
       fetch('data/sector_data.json'+bust).then(r=>r.json()),
-      fetch('data/universe_data.json'+bust).then(r=>r.json()).catch(()=>({sectors:[]}))
+      fetch('data/universe_data.json'+bust).then(r=>r.json()).catch(()=>({sectors:[]})),
+      fetch('data/intrend_stocks.json'+bust).then(r=>r.json()).catch(()=>null)
     ]);
     document.getElementById('updated').textContent=
       'dati al '+fd(sd.last_data_date)+' · la lista si rinnova a ogni aggiornamento';
@@ -68,28 +73,40 @@ async function load(){
     const rows=[];
     ((sd.ranking&&sd.ranking.ranking)||[]).forEach(s=>{
       if(s.opSignal!=='IN')return;
-      rows.push({name:s.name||s.ticker, region:(s.region==='USA')?'USA':'EU',
+      rows.push({key:s.ticker_raw||s.ticker, name:s.name||s.ticker,
+        region:(s.region==='USA')?'USA':'EU',
         entry:(s.opCurrent&&s.opCurrent.start_date)||null,
-        weeks:(s.opCurrent&&s.opCurrent.weeks)!=null?s.opCurrent.weeks:null, kind:'s'});
+        weeks:(s.opCurrent&&s.opCurrent.weeks)!=null?s.opCurrent.weeks:null});
     });
     (un.sectors||[]).forEach(s=>{
       if(s.opSignal!=='IN')return;
-      rows.push({name:s.name||s.ticker, region:(s.region==='USA'||s.region==='US')?'USA':(s.region||'EU'),
+      rows.push({key:s.ticker, name:s.name||s.ticker,
+        region:(s.region==='USA'||s.region==='US')?'USA':(s.region||'EU'),
         entry:s.trend_start_date||null,
-        weeks:(s.weeks_in_trend!=null)?s.weeks_in_trend:null, kind:'u'});
+        weeks:(s.weeks_in_trend!=null)?s.weeks_in_trend:null});
     });
     rows.sort((a,b)=>(b.entry||'').localeCompare(a.entry||''));
 
-    document.getElementById('list').innerHTML = rows.length
-      ? rows.map(d=>`<div class="row">
-          <span class="acc ${d.kind}"></span>
-          <span class="nm">${d.name}</span>
-          <span class="reg">${d.region}</span>
-          <span class="tag ${d.kind}">${d.kind==='s'?'portafoglio':'monitor'}</span>
-          ${(d.weeks!=null&&d.weeks<=5)?'<span class="new">nuovo</span>':''}
-          <span class="dt">dal ${fd(d.entry)}</span>
-        </div>`).join('')
-      : '<div class="empty">Nessun settore in trend: tutto in liquidità.</div>';
+    const stocksOf=k=>{
+      if(!ist||!ist.sectors)return null;
+      const e=ist.sectors[k]||ist.sectors[String(k).replace('.DE','')];
+      return e&&e.stocks&&e.stocks.length?e.stocks:null;
+    };
+
+    document.getElementById('grid').innerHTML = rows.length ? rows.map(d=>{
+      const st=stocksOf(d.key);
+      const body=st
+        ? st.map((x,i)=>`<div class="stk"><span class="snum">${i+1}</span>
+            <span class="stick">${x.ticker}</span><span class="snm">${x.name&&x.name!==x.ticker?x.name:''}</span>
+            <span class="stag">${TAG_IT[x.tag]||x.tag||''}</span></div>`).join('')
+        : `<div class="pend">titoli al prossimo aggiornamento</div>`;
+      return `<div class="box">
+        <div class="bh"><span class="bname">${d.name}</span><span class="reg">${d.region}</span>
+          ${(d.weeks!=null&&d.weeks<=5)?'<span class="new">nuovo</span>':''}</div>
+        <div class="bdal">in trend dal ${fd(d.entry)}</div>
+        ${body}
+      </div>`;
+    }).join('') : '<div class="empty">Nessun settore in trend: tutto in liquidità.</div>';
   }catch(e){
     document.getElementById('updated').textContent='errore dati: '+e.message;
   }
