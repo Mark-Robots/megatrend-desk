@@ -1,75 +1,5 @@
 [
   {
-    "date": "2026-06-14T20:16:31.688055+00:00",
-    "ranks": [
-      {
-        "ticker": "SOXX",
-        "rank": 1,
-        "score": 138.2
-      },
-      {
-        "ticker": "XLK",
-        "rank": 2,
-        "score": 131.4
-      },
-      {
-        "ticker": "XLE",
-        "rank": 3,
-        "score": 120.0
-      },
-      {
-        "ticker": "EXH5",
-        "rank": 4,
-        "score": 75.8
-      },
-      {
-        "ticker": "EXH6",
-        "rank": 5,
-        "score": 68.6
-      },
-      {
-        "ticker": "EXH1",
-        "rank": 6,
-        "score": 66.1
-      },
-      {
-        "ticker": "EXV1",
-        "rank": 7,
-        "score": 60.0
-      },
-      {
-        "ticker": "XLI",
-        "rank": 8,
-        "score": 53.0
-      },
-      {
-        "ticker": "IBB",
-        "rank": 9,
-        "score": 42.1
-      },
-      {
-        "ticker": "XLV",
-        "rank": 10,
-        "score": 16.8
-      },
-      {
-        "ticker": "XLP",
-        "rank": 11,
-        "score": 15.0
-      },
-      {
-        "ticker": "EXH4",
-        "rank": 12,
-        "score": 13.6
-      },
-      {
-        "ticker": "XLF",
-        "rank": 13,
-        "score": 8.4
-      }
-    ]
-  },
-  {
     "date": "2026-06-15T21:39:13.272167+00:00",
     "ranks": [
       {
@@ -2446,6 +2376,76 @@
         "ticker": "XLP",
         "rank": 13,
         "score": 12.5
+      }
+    ]
+  },
+  {
+    "date": "2026-09-02T18:54:48.704040+00:00",
+    "ranks": [
+      {
+        "ticker": "EXV1",
+        "rank": 1,
+        "score": 128.0
+      },
+      {
+        "ticker": "XLK",
+        "rank": 2,
+        "score": 126.8
+      },
+      {
+        "ticker": "IBB",
+        "rank": 3,
+        "score": 114.9
+      },
+      {
+        "ticker": "EXH5",
+        "rank": 4,
+        "score": 80.1
+      },
+      {
+        "ticker": "EXH6",
+        "rank": 5,
+        "score": 76.8
+      },
+      {
+        "ticker": "XLF",
+        "rank": 6,
+        "score": 74.9
+      },
+      {
+        "ticker": "XLV",
+        "rank": 7,
+        "score": 73.5
+      },
+      {
+        "ticker": "XLE",
+        "rank": 8,
+        "score": 60.4
+      },
+      {
+        "ticker": "SOXX",
+        "rank": 9,
+        "score": 59.5
+      },
+      {
+        "ticker": "EXH1",
+        "rank": 10,
+        "score": 50.5
+      },
+      {
+        "ticker": "XLI",
+        "rank": 11,
+        "score": 48.3
+      },
+      {
+        "ticker": "EXH4",
+        "rank": 12,
+        "score": 15.2
+      },
+      {
+        "ticker": "XLP",
+        "rank": 13,
+        "score": 12.8
       }
     ]
   }
