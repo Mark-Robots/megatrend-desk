@@ -47,16 +47,17 @@ def main():
     sd = load('sector_data.json')
     un = load('universe_data.json')
 
-    sectors = []   # (key, nome)
+    sectors = []   # (key, nome, data ingresso trend)
     for s in ((sd.get('ranking') or {}).get('ranking') or []):
         if s.get('opSignal') == 'IN':
-            sectors.append((s.get('ticker_raw') or s.get('ticker'), s.get('name')))
+            entry = (s.get('opCurrent') or {}).get('start_date')
+            sectors.append((s.get('ticker_raw') or s.get('ticker'), s.get('name'), entry))
     for s in (un.get('sectors') or []):
         if s.get('opSignal') == 'IN':
-            sectors.append((s.get('ticker'), s.get('name')))
+            sectors.append((s.get('ticker'), s.get('name'), s.get('trend_start_date')))
 
     # ticker complessivi da scaricare
-    all_tk = sorted({tk for key, _ in sectors for tk in candidates_for(key)})
+    all_tk = sorted({tk for key, _, _ in sectors for tk in candidates_for(key)})
     if not all_tk:
         print('nessun settore in trend'); return
     print(f'{len(sectors)} settori in trend, {len(all_tk)} titoli da valutare')
@@ -74,7 +75,7 @@ def main():
            'note': 'top 3 per settore in trend · stesso metodo di selezione del sistema Azioni (aggressive)',
            'sectors': {}}
 
-    for key, nome in sectors:
+    for key, nome, entry in sectors:
         scored = []
         for tk in candidates_for(key):
             if tk not in px.columns: continue
@@ -98,7 +99,24 @@ def main():
         pool = rising if rising else scored
         pool.sort(key=lambda x: (x['score'] if x['score'] is not None else -1e9), reverse=True)
         top = [{k: v for k, v in x.items() if k != 'roc4'} for x in pool[:3]]
-        out['sectors'][key] = {'name': nome, 'stocks': top}
+        # serie dall'ingresso del settore in trend (per lo sparkline in pagina);
+        # se il titolo e' quotato dopo l'ingresso, parte dal primo dato disponibile
+        for x in top:
+            try:
+                s = px[x['ticker']].dropna()
+                if entry:
+                    s = s[s.index >= pd.Timestamp(entry)]
+                if len(s) >= 2:
+                    step = max(1, len(s) // 60)   # al massimo ~60 punti
+                    pts = s.iloc[::step]
+                    if pts.index[-1] != s.index[-1]:
+                        pts = pd.concat([pts, s.iloc[[-1]]])
+                    x['series'] = [round(float(v), 2) for v in pts.values]
+                    x['perf'] = round((float(s.iloc[-1]) / float(s.iloc[0]) - 1) * 100, 1)
+                    x['from'] = s.index[0].strftime('%Y-%m-%d')
+            except Exception:
+                pass
+        out['sectors'][key] = {'name': nome, 'entry': entry, 'stocks': top}
         print(f"  {key:8} -> " + ", ".join(f"{x['ticker']}({x['tag']})" for x in pool[:3]))
 
     dst = os.path.join(DATA_DIR, 'intrend_stocks.json')
