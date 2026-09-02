@@ -1,0 +1,29 @@
+name: Update InTrend Stocks
+on:
+  schedule:
+    # sabato mattina, a valle di tutti i run del venerdì
+    - cron: "0 7 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  intrend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install yfinance pandas numpy
+      - name: Top 3 azioni per settore in trend
+        run: python scripts/update_intrend_stocks.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/intrend_stocks.json
+          git diff --cached --quiet || git commit -m "top3 azioni settori in trend"
+          git pull --rebase
+          git push
