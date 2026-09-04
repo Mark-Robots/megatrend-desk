@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-09-04T14:31:14.483193+00:00",
+ "updated_at": "2026-09-04T16:31:06.035162+00:00",
  "last_bar": "2026-09-04",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -27,9 +27,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": 13.5,
-     "roc13": 15.3,
-     "score": 272.9,
+     "roc4": 14.64,
+     "roc13": 16.45,
+     "score": 276.7,
      "tag": "premium_ok"
     },
     {
@@ -45,9 +45,9 @@
      "ticker_name": "NVIDIA",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 4.47,
-     "roc13": 14.07,
-     "score": 24.6,
+     "roc4": 3.2,
+     "roc13": 12.69,
+     "score": 23.0,
      "tag": "premium_ok"
     },
     {
@@ -63,9 +63,9 @@
      "ticker_name": "Bank of America",
      "held_ticker": "BAC",
      "held_name": "Bank of America",
-     "roc4": -1.48,
-     "roc13": 15.61,
-     "score": 20.2,
+     "roc4": -0.89,
+     "roc13": 16.3,
+     "score": 20.9,
      "tag": "value_momentum"
     },
     {
@@ -81,9 +81,9 @@
      "ticker_name": "Merck",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 17.39,
-     "roc13": 25.86,
-     "score": 49.2,
+     "roc4": 17.1,
+     "roc13": 25.55,
+     "score": 48.8,
      "tag": "top_momentum"
     },
     {
@@ -99,9 +99,9 @@
      "ticker_name": "John Deere",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 13.04,
-     "roc13": 20.6,
-     "score": 32.4,
+     "roc4": 12.56,
+     "roc13": 20.08,
+     "score": 31.9,
      "tag": "premium_ok"
     },
     {
@@ -117,9 +117,9 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 1.76,
-     "roc13": 12.18,
-     "score": 20.9,
+     "roc4": 1.37,
+     "roc13": 11.74,
+     "score": 20.5,
      "tag": "premium_ok"
     },
     {
@@ -135,9 +135,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 23.75,
-     "roc13": 44.86,
-     "score": 83.1,
+     "roc4": 24.31,
+     "roc13": 45.52,
+     "score": 83.9,
      "tag": "top_momentum"
     },
     {
@@ -153,9 +153,9 @@
      "ticker_name": "Monte dei Paschi",
      "held_ticker": "BAMI.MI",
      "held_name": "Banco BPM",
-     "roc4": -2.59,
-     "roc13": 29.59,
-     "score": 47.4,
+     "roc4": -2.4,
+     "roc13": 29.84,
+     "score": 47.7,
      "tag": "top_momentum"
     },
     {
@@ -171,9 +171,9 @@
      "ticker_name": "Unipol",
      "held_ticker": "PST.MI",
      "held_name": "Poste Italiane",
-     "roc4": 0.63,
-     "roc13": 36.7,
-     "score": 51.8,
+     "roc4": 0.25,
+     "roc13": 36.18,
+     "score": 51.3,
      "tag": "top_momentum"
     }
    ],
@@ -204,9 +204,9 @@
      "ticker_name": "Micron",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": 13.5,
-     "roc13": 15.3,
-     "score": 14.0,
+     "roc4": 14.64,
+     "roc13": 16.45,
+     "score": 15.2,
      "tag": "premium_ok"
     },
     {
@@ -218,14 +218,14 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "2",
-     "ticker": "NVDA",
-     "ticker_name": "NVIDIA",
+     "ticker": "MSFT",
+     "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 4.47,
-     "roc13": 14.07,
-     "score": 7.3,
-     "tag": "premium_ok"
+     "roc4": 0.43,
+     "roc13": 20.51,
+     "score": 6.5,
+     "tag": "value_momentum"
     },
     {
      "sector": "XLF",
@@ -240,9 +240,9 @@
      "ticker_name": "S&P Global",
      "held_ticker": "BX",
      "held_name": "Blackstone",
-     "roc4": 8.31,
-     "roc13": 10.11,
-     "score": 8.8,
+     "roc4": 8.73,
+     "roc13": 10.53,
+     "score": 9.3,
      "tag": "value_momentum"
     },
     {
@@ -258,9 +258,9 @@
      "ticker_name": "Merck",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 17.39,
-     "roc13": 25.86,
-     "score": 19.9,
+     "roc4": 17.1,
+     "roc13": 25.55,
+     "score": 19.6,
      "tag": "top_momentum"
     },
     {
@@ -276,9 +276,9 @@
      "ticker_name": "John Deere",
      "held_ticker": "LMT",
      "held_name": "Lockheed Martin",
-     "roc4": 13.04,
-     "roc13": 20.6,
-     "score": 15.3,
+     "roc4": 12.56,
+     "roc13": 20.08,
+     "score": 14.8,
      "tag": "premium_ok"
     },
     {
@@ -294,9 +294,9 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 1.76,
-     "roc13": 12.18,
-     "score": 4.9,
+     "roc4": 1.37,
+     "roc13": 11.74,
+     "score": 4.5,
      "tag": "premium_ok"
     },
     {
@@ -312,9 +312,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 30.3,
-     "roc13": 48.3,
-     "score": 35.7,
+     "roc4": 30.72,
+     "roc13": 48.78,
+     "score": 36.1,
      "tag": "top_momentum"
     },
     {
@@ -330,9 +330,9 @@
      "ticker_name": "Mediobanca",
      "held_ticker": "ISP.MI",
      "held_name": "Intesa Sanpaolo",
-     "roc4": -1.78,
-     "roc13": 30.11,
-     "score": 7.8,
+     "roc4": -1.89,
+     "roc13": 29.97,
+     "score": 7.7,
      "tag": "top_momentum"
     },
     {
@@ -348,9 +348,9 @@
      "ticker_name": "Unipol",
      "held_ticker": "UNI.MI",
      "held_name": "Unipol",
-     "roc4": 0.63,
-     "roc13": 36.7,
-     "score": 11.5,
+     "roc4": 0.25,
+     "roc13": 36.18,
+     "score": 11.0,
      "tag": "top_momentum"
     }
    ],
