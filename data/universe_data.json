@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-29T03:54:39.624983+00:00",
-  "last_data_date": "2026-08-24",
+  "updated_at": "2026-09-05T00:24:44.140877+00:00",
+  "last_data_date": "2026-08-31",
   "note": "Universo esteso: settori extra oltre i 13 del desk. Stesse formule e benchmark del motore ufficiale.",
   "benchmarks": {
     "USA": "SPY",
@@ -13,20 +13,16 @@
       "name": "Cybersecurity",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 109.01,
-      "rsMom": 109.16,
+      "rsRatio": 109.34,
+      "rsMom": 109.19,
       "state": "Leader",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-05-25",
-      "weeks_in_trend": 14,
+      "weeks_in_trend": 15,
       "history_weeks": 157,
-      "score": 131.6,
+      "score": 129.3,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 84.88
-        },
         {
           "date": "2025-09-08",
           "value": 85.4
@@ -230,60 +226,60 @@
         {
           "date": "2026-08-24",
           "value": 115.54
+        },
+        {
+          "date": "2026-08-31",
+          "value": 110.75
         }
       ],
       "scoreSeries": [
         {
-          "date": "2025-09-01",
-          "value": 54.2
-        },
-        {
           "date": "2025-09-08",
-          "value": 52.0
+          "value": 48.8
         },
         {
           "date": "2025-09-15",
-          "value": 51.8
+          "value": 48.5
         },
         {
           "date": "2025-09-22",
-          "value": 50.1
+          "value": 46.8
         },
         {
           "date": "2025-09-29",
-          "value": 48.6
-        },
-        {
-          "date": "2025-10-06",
-          "value": 48.2
-        },
-        {
-          "date": "2025-10-13",
           "value": 45.3
         },
         {
+          "date": "2025-10-06",
+          "value": 44.9
+        },
+        {
+          "date": "2025-10-13",
+          "value": 42.2
+        },
+        {
           "date": "2025-10-20",
-          "value": 45.4
+          "value": 42.1
         },
         {
           "date": "2025-10-27",
-          "value": 43.0
+          "value": 39.8
         },
         {
           "date": "2025-11-03",
-          "value": 12.2
+          "value": 9.0
         },
         {
           "date": "2025-11-10",
-          "value": 11.1
+          "value": 8.1
         },
         {
           "date": "2025-11-17",
-          "value": 4.5
+          "value": 1.7
         },
         {
           "date": "2025-11-24",
-          "value": 4.4
+          "value": 1.4
         },
         {
           "date": "2025-12-01",
@@ -440,6 +436,10 @@
         {
           "date": "2026-08-24",
           "value": 131.6
+        },
+        {
+          "date": "2026-08-31",
+          "value": 129.3
         }
       ],
       "inSeries": [
@@ -455,32 +455,32 @@
         true,
         true,
         true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
         true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
         true,
         true,
         true,
@@ -505,20 +505,16 @@
       "name": "Tecnologia EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 109.0,
-      "rsMom": 106.69,
+      "rsRatio": 108.47,
+      "rsMom": 105.0,
       "state": "Leader",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-06-22",
-      "weeks_in_trend": 10,
+      "weeks_in_trend": 11,
       "history_weeks": 157,
-      "score": 122.1,
+      "score": 120.3,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 74.82
-        },
         {
           "date": "2025-09-08",
           "value": 74.8
@@ -722,13 +718,13 @@
         {
           "date": "2026-08-24",
           "value": 98.99
+        },
+        {
+          "date": "2026-08-31",
+          "value": 97.01
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 65.0
-        },
         {
           "date": "2025-09-08",
           "value": 65.0
@@ -932,6 +928,10 @@
         {
           "date": "2026-08-24",
           "value": 122.1
+        },
+        {
+          "date": "2026-08-31",
+          "value": 120.3
         }
       ],
       "inSeries": [
@@ -951,7 +951,6 @@
         false,
         false,
         false,
-        false,
         true,
         true,
         true,
@@ -977,6 +976,7 @@
         false,
         false,
         false,
+        true,
         true,
         true,
         true,
@@ -997,20 +997,16 @@
       "name": "Materiali EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 104.54,
-      "rsMom": 97.33,
+      "rsRatio": 104.31,
+      "rsMom": 97.39,
       "state": "In rallentamento",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2025-09-01",
-      "weeks_in_trend": 52,
+      "weeks_in_trend": 53,
       "history_weeks": 157,
-      "score": 84.1,
+      "score": 83.6,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 51.11
-        },
         {
           "date": "2025-09-08",
           "value": 52.3
@@ -1214,13 +1210,13 @@
         {
           "date": "2026-08-24",
           "value": 88.79
+        },
+        {
+          "date": "2026-08-31",
+          "value": 88.37
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 70.0
-        },
         {
           "date": "2025-09-08",
           "value": 70.8
@@ -1424,6 +1420,10 @@
         {
           "date": "2026-08-24",
           "value": 84.1
+        },
+        {
+          "date": "2026-08-31",
+          "value": 83.6
         }
       ],
       "inSeries": [
@@ -1489,20 +1489,16 @@
       "name": "Automotive / EV",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 104.07,
-      "rsMom": 96.97,
+      "rsRatio": 103.08,
+      "rsMom": 96.36,
       "state": "In rallentamento",
       "stage": "1",
       "opSignal": "IN",
       "trend_start_date": "2025-08-25",
-      "weeks_in_trend": 53,
+      "weeks_in_trend": 54,
       "history_weeks": 157,
-      "score": 56.1,
+      "score": 54.5,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 25.76
-        },
         {
           "date": "2025-09-08",
           "value": 26.16
@@ -1706,13 +1702,13 @@
         {
           "date": "2026-08-24",
           "value": 34.58
+        },
+        {
+          "date": "2026-08-31",
+          "value": 34.76
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 74.6
-        },
         {
           "date": "2025-09-08",
           "value": 74.6
@@ -1916,6 +1912,10 @@
         {
           "date": "2026-08-24",
           "value": 56.1
+        },
+        {
+          "date": "2026-08-31",
+          "value": 54.5
         }
       ],
       "inSeries": [
@@ -1981,20 +1981,16 @@
       "name": "Utilities EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 101.22,
-      "rsMom": 95.65,
+      "rsRatio": 100.72,
+      "rsMom": 95.79,
       "state": "In rallentamento",
       "stage": "1",
       "opSignal": "IN",
       "trend_start_date": "2025-05-12",
-      "weeks_in_trend": 68,
+      "weeks_in_trend": 69,
       "history_weeks": 157,
-      "score": 46.4,
+      "score": 44.1,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 43.28
-        },
         {
           "date": "2025-09-08",
           "value": 43.82
@@ -2198,13 +2194,13 @@
         {
           "date": "2026-08-24",
           "value": 56.35
+        },
+        {
+          "date": "2026-08-31",
+          "value": 54.99
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 59.0
-        },
         {
           "date": "2025-09-08",
           "value": 58.4
@@ -2408,6 +2404,10 @@
         {
           "date": "2026-08-24",
           "value": 46.4
+        },
+        {
+          "date": "2026-08-31",
+          "value": 44.1
         }
       ],
       "inSeries": [
@@ -2473,20 +2473,16 @@
       "name": "Clean Energy",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 100.92,
-      "rsMom": 95.64,
-      "state": "In rallentamento",
-      "stage": "1",
+      "rsRatio": 99.48,
+      "rsMom": 95.06,
+      "state": "Debole",
+      "stage": "4",
       "opSignal": "IN",
       "trend_start_date": "2025-05-26",
-      "weeks_in_trend": 66,
+      "weeks_in_trend": 67,
       "history_weeks": 157,
-      "score": 46.9,
+      "score": 11.4,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 14.53
-        },
         {
           "date": "2025-09-08",
           "value": 14.48
@@ -2690,13 +2686,13 @@
         {
           "date": "2026-08-24",
           "value": 17.48
+        },
+        {
+          "date": "2026-08-31",
+          "value": 17.77
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 79.2
-        },
         {
           "date": "2025-09-08",
           "value": 108.4
@@ -2900,6 +2896,10 @@
         {
           "date": "2026-08-24",
           "value": 46.9
+        },
+        {
+          "date": "2026-08-31",
+          "value": 11.4
         }
       ],
       "inSeries": [
@@ -2965,20 +2965,16 @@
       "name": "Chimica EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 97.76,
-      "rsMom": 100.88,
+      "rsRatio": 97.96,
+      "rsMom": 100.84,
       "state": "Emergente",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-04-20",
-      "weeks_in_trend": 19,
+      "weeks_in_trend": 20,
       "history_weeks": 157,
-      "score": 74.3,
+      "score": 74.7,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 113.77
-        },
         {
           "date": "2025-09-08",
           "value": 113.61
@@ -3182,13 +3178,13 @@
         {
           "date": "2026-08-24",
           "value": 128.08
+        },
+        {
+          "date": "2026-08-31",
+          "value": 127.76
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 5.0
-        },
         {
           "date": "2025-09-08",
           "value": 5.0
@@ -3392,6 +3388,10 @@
         {
           "date": "2026-08-24",
           "value": 74.3
+        },
+        {
+          "date": "2026-08-31",
+          "value": 74.7
         }
       ],
       "inSeries": [
@@ -3427,7 +3427,7 @@
         false,
         false,
         false,
-        false,
+        true,
         true,
         true,
         true,
@@ -3457,20 +3457,16 @@
       "name": "Telecom EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 94.37,
-      "rsMom": 100.7,
+      "rsRatio": 94.26,
+      "rsMom": 100.64,
       "state": "Emergente",
       "stage": "2",
       "opSignal": "IN",
       "trend_start_date": "2026-03-02",
-      "weeks_in_trend": 26,
+      "weeks_in_trend": 27,
       "history_weeks": 157,
       "score": 69.4,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 61.1
-        },
         {
           "date": "2025-09-08",
           "value": 59.49
@@ -3674,13 +3670,13 @@
         {
           "date": "2026-08-24",
           "value": 64.26
+        },
+        {
+          "date": "2026-08-31",
+          "value": 63.68
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 10.0
-        },
         {
           "date": "2025-09-08",
           "value": 10.0
@@ -3884,6 +3880,10 @@
         {
           "date": "2026-08-24",
           "value": 69.4
+        },
+        {
+          "date": "2026-08-31",
+          "value": 69.4
         }
       ],
       "inSeries": [
@@ -3912,7 +3912,7 @@
         false,
         false,
         false,
-        false,
+        true,
         true,
         true,
         true,
@@ -3949,20 +3949,16 @@
       "name": "Beni di base EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 92.32,
-      "rsMom": 103.36,
+      "rsRatio": 92.4,
+      "rsMom": 103.21,
       "state": "Emergente",
-      "stage": "3",
+      "stage": "4",
       "opSignal": "IN",
       "trend_start_date": "2026-08-10",
-      "weeks_in_trend": 3,
+      "weeks_in_trend": 4,
       "history_weeks": 157,
-      "score": 70.7,
+      "score": 64.3,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 95.08
-        },
         {
           "date": "2025-09-08",
           "value": 94.51
@@ -4166,13 +4162,13 @@
         {
           "date": "2026-08-24",
           "value": 95.53
+        },
+        {
+          "date": "2026-08-31",
+          "value": 92.61
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 70.0
-        },
         {
           "date": "2025-09-08",
           "value": 65.0
@@ -4376,6 +4372,10 @@
         {
           "date": "2026-08-24",
           "value": 70.7
+        },
+        {
+          "date": "2026-08-31",
+          "value": 64.3
         }
       ],
       "inSeries": [
@@ -4386,7 +4386,6 @@
         false,
         false,
         false,
-        false,
         true,
         true,
         true,
@@ -4428,6 +4427,7 @@
         false,
         false,
         false,
+        true,
         true,
         true,
         true
@@ -4441,8 +4441,8 @@
       "name": "Aerospazio / Difesa",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 99.31,
-      "rsMom": 97.66,
+      "rsRatio": 98.63,
+      "rsMom": 98.49,
       "state": "Debole",
       "stage": "1",
       "opSignal": "OUT",
@@ -4451,10 +4451,6 @@
       "history_weeks": 157,
       "score": 10.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 197.13
-        },
         {
           "date": "2025-09-08",
           "value": 198.41
@@ -4658,196 +4654,196 @@
         {
           "date": "2026-08-24",
           "value": 232.82
+        },
+        {
+          "date": "2026-08-31",
+          "value": 225.61
         }
       ],
       "scoreSeries": [
         {
-          "date": "2025-09-01",
-          "value": 73.9
-        },
-        {
           "date": "2025-09-08",
-          "value": 72.1
+          "value": 71.8
         },
         {
           "date": "2025-09-15",
-          "value": 72.2
+          "value": 71.9
         },
         {
           "date": "2025-09-22",
-          "value": 72.6
+          "value": 72.4
         },
         {
           "date": "2025-09-29",
-          "value": 72.8
+          "value": 72.5
         },
         {
           "date": "2025-10-06",
-          "value": 72.9
+          "value": 72.6
         },
         {
           "date": "2025-10-13",
-          "value": 71.0
+          "value": 70.8
         },
         {
           "date": "2025-10-20",
-          "value": 73.4
+          "value": 73.2
         },
         {
           "date": "2025-10-27",
-          "value": 72.0
+          "value": 71.7
         },
         {
           "date": "2025-11-03",
-          "value": 69.8
+          "value": 69.5
         },
         {
           "date": "2025-11-10",
-          "value": 67.8
-        },
-        {
-          "date": "2025-11-17",
-          "value": 65.5
-        },
-        {
-          "date": "2025-11-24",
-          "value": 65.0
-        },
-        {
-          "date": "2025-12-01",
-          "value": 62.8
-        },
-        {
-          "date": "2025-12-08",
-          "value": 65.6
-        },
-        {
-          "date": "2025-12-15",
-          "value": 67.1
-        },
-        {
-          "date": "2025-12-22",
           "value": 67.5
         },
         {
+          "date": "2025-11-17",
+          "value": 65.2
+        },
+        {
+          "date": "2025-11-24",
+          "value": 64.7
+        },
+        {
+          "date": "2025-12-01",
+          "value": 62.5
+        },
+        {
+          "date": "2025-12-08",
+          "value": 65.3
+        },
+        {
+          "date": "2025-12-15",
+          "value": 66.8
+        },
+        {
+          "date": "2025-12-22",
+          "value": 67.2
+        },
+        {
           "date": "2025-12-29",
-          "value": 69.8
+          "value": 69.6
         },
         {
           "date": "2026-01-05",
-          "value": 73.1
+          "value": 72.9
         },
         {
           "date": "2026-01-12",
-          "value": 78.3
+          "value": 78.1
         },
         {
           "date": "2026-01-19",
-          "value": 75.6
+          "value": 75.4
         },
         {
           "date": "2026-01-26",
-          "value": 74.2
+          "value": 74.0
         },
         {
           "date": "2026-02-02",
-          "value": 75.2
+          "value": 75.0
         },
         {
           "date": "2026-02-09",
-          "value": 77.1
+          "value": 76.9
         },
         {
           "date": "2026-02-16",
-          "value": 130.6
-        },
-        {
-          "date": "2026-02-23",
-          "value": 132.1
-        },
-        {
-          "date": "2026-03-02",
-          "value": 134.3
-        },
-        {
-          "date": "2026-03-09",
-          "value": 131.3
-        },
-        {
-          "date": "2026-03-16",
           "value": 130.4
         },
         {
+          "date": "2026-02-23",
+          "value": 132.0
+        },
+        {
+          "date": "2026-03-02",
+          "value": 134.1
+        },
+        {
+          "date": "2026-03-09",
+          "value": 131.1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 130.2
+        },
+        {
           "date": "2026-03-23",
-          "value": 124.6
+          "value": 124.4
         },
         {
           "date": "2026-03-30",
-          "value": 129.7
+          "value": 129.5
         },
         {
           "date": "2026-04-06",
-          "value": 130.0
+          "value": 129.7
         },
         {
           "date": "2026-04-13",
-          "value": 126.7
+          "value": 126.5
         },
         {
           "date": "2026-04-20",
-          "value": 113.0
+          "value": 112.7
         },
         {
           "date": "2026-04-27",
-          "value": 110.8
+          "value": 110.4
         },
         {
           "date": "2026-05-04",
-          "value": 115.4
+          "value": 115.0
         },
         {
           "date": "2026-05-11",
-          "value": 56.0
+          "value": 55.6
         },
         {
           "date": "2026-05-18",
-          "value": 61.6
+          "value": 61.3
         },
         {
           "date": "2026-05-25",
-          "value": 62.6
+          "value": 62.3
         },
         {
           "date": "2026-06-01",
-          "value": 60.3
+          "value": 60.0
         },
         {
           "date": "2026-06-08",
-          "value": 59.3
-        },
-        {
-          "date": "2026-06-15",
-          "value": 59.2
-        },
-        {
-          "date": "2026-06-22",
           "value": 59.0
         },
         {
+          "date": "2026-06-15",
+          "value": 58.9
+        },
+        {
+          "date": "2026-06-22",
+          "value": 58.7
+        },
+        {
           "date": "2026-06-29",
-          "value": 31.5
+          "value": 31.2
         },
         {
           "date": "2026-07-06",
-          "value": 26.8
+          "value": 26.5
         },
         {
           "date": "2026-07-13",
-          "value": 24.8
+          "value": 24.5
         },
         {
           "date": "2026-07-20",
-          "value": 29.0
+          "value": 28.7
         },
         {
           "date": "2026-07-27",
@@ -4867,6 +4863,10 @@
         },
         {
           "date": "2026-08-24",
+          "value": 10.0
+        },
+        {
+          "date": "2026-08-31",
           "value": 10.0
         }
       ],
@@ -4917,7 +4917,7 @@
         true,
         true,
         true,
-        true,
+        false,
         false,
         false,
         false,
@@ -4933,8 +4933,8 @@
       "name": "Materiali USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 98.06,
-      "rsMom": 96.62,
+      "rsRatio": 98.22,
+      "rsMom": 97.17,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
@@ -4943,10 +4943,6 @@
       "history_weeks": 157,
       "score": 15.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 45.16
-        },
         {
           "date": "2025-09-08",
           "value": 45.02
@@ -5150,13 +5146,13 @@
         {
           "date": "2026-08-24",
           "value": 53.18
+        },
+        {
+          "date": "2026-08-31",
+          "value": 52.44
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 15.0
-        },
         {
           "date": "2025-09-08",
           "value": 15.0
@@ -5360,6 +5356,10 @@
         {
           "date": "2026-08-24",
           "value": 15.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 15.0
         }
       ],
       "inSeries": [
@@ -5387,30 +5387,30 @@
         false,
         false,
         false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
         false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
         false,
         false,
         false,
@@ -5425,8 +5425,8 @@
       "name": "Immobiliare USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 95.12,
-      "rsMom": 99.0,
+      "rsRatio": 95.0,
+      "rsMom": 99.05,
       "state": "Debole",
       "stage": "2",
       "opSignal": "OUT",
@@ -5435,10 +5435,6 @@
       "history_weeks": 157,
       "score": 15.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 40.77
-        },
         {
           "date": "2025-09-08",
           "value": 40.94
@@ -5642,13 +5638,13 @@
         {
           "date": "2026-08-24",
           "value": 44.48
+        },
+        {
+          "date": "2026-08-31",
+          "value": 43.93
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 15.0
-        },
         {
           "date": "2025-09-08",
           "value": 15.0
@@ -5852,6 +5848,10 @@
         {
           "date": "2026-08-24",
           "value": 15.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 15.0
         }
       ],
       "inSeries": [
@@ -5869,39 +5869,39 @@
         false,
         false,
         false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
         false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
         false,
         false,
         false,
@@ -5917,7 +5917,7 @@
       "name": "Automotive EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 91.67,
+      "rsRatio": 91.82,
       "rsMom": 100.85,
       "state": "Emergente",
       "stage": "3",
@@ -5927,10 +5927,6 @@
       "history_weeks": 157,
       "score": 70.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 46.39
-        },
         {
           "date": "2025-09-08",
           "value": 45.92
@@ -6134,13 +6130,13 @@
         {
           "date": "2026-08-24",
           "value": 41.54
+        },
+        {
+          "date": "2026-08-31",
+          "value": 41.73
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 70.0
-        },
         {
           "date": "2025-09-08",
           "value": 65.0
@@ -6343,503 +6339,15 @@
         },
         {
           "date": "2026-08-24",
+          "value": 70.0
+        },
+        {
+          "date": "2026-08-31",
           "value": 70.0
         }
       ],
       "inSeries": [
         false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "score_prev": null,
-      "score_change": null
-    },
-    {
-      "ticker": "XLY",
-      "ticker_raw": "XLY",
-      "name": "Beni voluttuari USA",
-      "region": "USA",
-      "group": "GICS USA",
-      "rsRatio": 89.33,
-      "rsMom": 101.93,
-      "state": "Emergente",
-      "stage": "3",
-      "opSignal": "OUT",
-      "trend_start_date": null,
-      "weeks_in_trend": 0,
-      "history_weeks": 157,
-      "score": 70.0,
-      "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 116.65
-        },
-        {
-          "date": "2025-09-08",
-          "value": 118.4
-        },
-        {
-          "date": "2025-09-15",
-          "value": 119.76
-        },
-        {
-          "date": "2025-09-22",
-          "value": 119.14
-        },
-        {
-          "date": "2025-09-29",
-          "value": 118.22
-        },
-        {
-          "date": "2025-10-06",
-          "value": 113.69
-        },
-        {
-          "date": "2025-10-13",
-          "value": 116.51
-        },
-        {
-          "date": "2025-10-20",
-          "value": 118.12
-        },
-        {
-          "date": "2025-10-27",
-          "value": 119.25
-        },
-        {
-          "date": "2025-11-03",
-          "value": 117.23
-        },
-        {
-          "date": "2025-11-10",
-          "value": 114.76
-        },
-        {
-          "date": "2025-11-17",
-          "value": 112.08
-        },
-        {
-          "date": "2025-11-24",
-          "value": 117.53
-        },
-        {
-          "date": "2025-12-01",
-          "value": 119.02
-        },
-        {
-          "date": "2025-12-08",
-          "value": 119.98
-        },
-        {
-          "date": "2025-12-15",
-          "value": 121.12
-        },
-        {
-          "date": "2025-12-22",
-          "value": 121.56
-        },
-        {
-          "date": "2025-12-29",
-          "value": 117.88
-        },
-        {
-          "date": "2026-01-05",
-          "value": 123.91
-        },
-        {
-          "date": "2026-01-12",
-          "value": 121.81
-        },
-        {
-          "date": "2026-01-19",
-          "value": 122.64
-        },
-        {
-          "date": "2026-01-26",
-          "value": 120.69
-        },
-        {
-          "date": "2026-02-02",
-          "value": 117.52
-        },
-        {
-          "date": "2026-02-09",
-          "value": 115.72
-        },
-        {
-          "date": "2026-02-16",
-          "value": 116.98
-        },
-        {
-          "date": "2026-02-23",
-          "value": 116.39
-        },
-        {
-          "date": "2026-03-02",
-          "value": 113.98
-        },
-        {
-          "date": "2026-03-09",
-          "value": 110.42
-        },
-        {
-          "date": "2026-03-16",
-          "value": 107.31
-        },
-        {
-          "date": "2026-03-23",
-          "value": 105.47
-        },
-        {
-          "date": "2026-03-30",
-          "value": 107.93
-        },
-        {
-          "date": "2026-04-06",
-          "value": 112.67
-        },
-        {
-          "date": "2026-04-13",
-          "value": 120.17
-        },
-        {
-          "date": "2026-04-20",
-          "value": 118.45
-        },
-        {
-          "date": "2026-04-27",
-          "value": 118.39
-        },
-        {
-          "date": "2026-05-04",
-          "value": 119.96
-        },
-        {
-          "date": "2026-05-11",
-          "value": 116.3
-        },
-        {
-          "date": "2026-05-18",
-          "value": 118.94
-        },
-        {
-          "date": "2026-05-25",
-          "value": 120.63
-        },
-        {
-          "date": "2026-06-01",
-          "value": 114.63
-        },
-        {
-          "date": "2026-06-08",
-          "value": 116.37
-        },
-        {
-          "date": "2026-06-15",
-          "value": 116.93
-        },
-        {
-          "date": "2026-06-22",
-          "value": 114.37
-        },
-        {
-          "date": "2026-06-29",
-          "value": 117.12
-        },
-        {
-          "date": "2026-07-06",
-          "value": 117.24
-        },
-        {
-          "date": "2026-07-13",
-          "value": 115.44
-        },
-        {
-          "date": "2026-07-20",
-          "value": 109.41
-        },
-        {
-          "date": "2026-07-27",
-          "value": 116.09
-        },
-        {
-          "date": "2026-08-03",
-          "value": 119.86
-        },
-        {
-          "date": "2026-08-10",
-          "value": 118.2
-        },
-        {
-          "date": "2026-08-17",
-          "value": 118.02
-        },
-        {
-          "date": "2026-08-24",
-          "value": 117.21
-        }
-      ],
-      "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 16.5
-        },
-        {
-          "date": "2025-09-08",
-          "value": 15.0
-        },
-        {
-          "date": "2025-09-15",
-          "value": 15.0
-        },
-        {
-          "date": "2025-09-22",
-          "value": 15.0
-        },
-        {
-          "date": "2025-09-29",
-          "value": 15.0
-        },
-        {
-          "date": "2025-10-06",
-          "value": 15.0
-        },
-        {
-          "date": "2025-10-13",
-          "value": 15.0
-        },
-        {
-          "date": "2025-10-20",
-          "value": 15.0
-        },
-        {
-          "date": "2025-10-27",
-          "value": 15.0
-        },
-        {
-          "date": "2025-11-03",
-          "value": 15.0
-        },
-        {
-          "date": "2025-11-10",
-          "value": 15.0
-        },
-        {
-          "date": "2025-11-17",
-          "value": 15.0
-        },
-        {
-          "date": "2025-11-24",
-          "value": 15.0
-        },
-        {
-          "date": "2025-12-01",
-          "value": 15.0
-        },
-        {
-          "date": "2025-12-08",
-          "value": 15.0
-        },
-        {
-          "date": "2025-12-15",
-          "value": 15.0
-        },
-        {
-          "date": "2025-12-22",
-          "value": 15.0
-        },
-        {
-          "date": "2025-12-29",
-          "value": 15.0
-        },
-        {
-          "date": "2026-01-05",
-          "value": 15.0
-        },
-        {
-          "date": "2026-01-12",
-          "value": 15.0
-        },
-        {
-          "date": "2026-01-19",
-          "value": 15.0
-        },
-        {
-          "date": "2026-01-26",
-          "value": 15.0
-        },
-        {
-          "date": "2026-02-02",
-          "value": 15.0
-        },
-        {
-          "date": "2026-02-09",
-          "value": 10.0
-        },
-        {
-          "date": "2026-02-16",
-          "value": 10.0
-        },
-        {
-          "date": "2026-02-23",
-          "value": 10.0
-        },
-        {
-          "date": "2026-03-02",
-          "value": 70.0
-        },
-        {
-          "date": "2026-03-09",
-          "value": 70.0
-        },
-        {
-          "date": "2026-03-16",
-          "value": 10.0
-        },
-        {
-          "date": "2026-03-23",
-          "value": 5.0
-        },
-        {
-          "date": "2026-03-30",
-          "value": 5.0
-        },
-        {
-          "date": "2026-04-06",
-          "value": 5.0
-        },
-        {
-          "date": "2026-04-13",
-          "value": 10.0
-        },
-        {
-          "date": "2026-04-20",
-          "value": 10.0
-        },
-        {
-          "date": "2026-04-27",
-          "value": 10.0
-        },
-        {
-          "date": "2026-05-04",
-          "value": 15.0
-        },
-        {
-          "date": "2026-05-11",
-          "value": 10.0
-        },
-        {
-          "date": "2026-05-18",
-          "value": 15.0
-        },
-        {
-          "date": "2026-05-25",
-          "value": 15.0
-        },
-        {
-          "date": "2026-06-01",
-          "value": 10.0
-        },
-        {
-          "date": "2026-06-08",
-          "value": 10.0
-        },
-        {
-          "date": "2026-06-15",
-          "value": 10.0
-        },
-        {
-          "date": "2026-06-22",
-          "value": 10.0
-        },
-        {
-          "date": "2026-06-29",
-          "value": 10.0
-        },
-        {
-          "date": "2026-07-06",
-          "value": 10.0
-        },
-        {
-          "date": "2026-07-13",
-          "value": 65.0
-        },
-        {
-          "date": "2026-07-20",
-          "value": 65.0
-        },
-        {
-          "date": "2026-07-27",
-          "value": 65.0
-        },
-        {
-          "date": "2026-08-03",
-          "value": 70.0
-        },
-        {
-          "date": "2026-08-10",
-          "value": 70.0
-        },
-        {
-          "date": "2026-08-17",
-          "value": 70.0
-        },
-        {
-          "date": "2026-08-24",
-          "value": 70.0
-        }
-      ],
-      "inSeries": [
-        true,
         false,
         false,
         false,
@@ -6901,8 +6409,8 @@
       "name": "Sanità EU",
       "region": "EU",
       "group": "Settore EU",
-      "rsRatio": 89.32,
-      "rsMom": 100.16,
+      "rsRatio": 89.72,
+      "rsMom": 101.19,
       "state": "Emergente",
       "stage": "3",
       "opSignal": "OUT",
@@ -6911,10 +6419,6 @@
       "history_weeks": 157,
       "score": 70.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 104.37
-        },
         {
           "date": "2025-09-08",
           "value": 102.76
@@ -7118,13 +6622,13 @@
         {
           "date": "2026-08-24",
           "value": 113.94
+        },
+        {
+          "date": "2026-08-31",
+          "value": 113.3
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 70.0
-        },
         {
           "date": "2025-09-08",
           "value": 65.0
@@ -7328,6 +6832,10 @@
         {
           "date": "2026-08-24",
           "value": 70.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 70.0
         }
       ],
       "inSeries": [
@@ -7338,36 +6846,36 @@
         false,
         false,
         false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
         false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
         false,
         false,
         false,
@@ -7388,242 +6896,238 @@
       "score_change": null
     },
     {
-      "ticker": "XLU",
-      "ticker_raw": "XLU",
-      "name": "Utilities USA",
+      "ticker": "XLY",
+      "ticker_raw": "XLY",
+      "name": "Beni voluttuari USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 87.16,
-      "rsMom": 92.79,
-      "state": "Debole",
-      "stage": "1",
+      "rsRatio": 89.49,
+      "rsMom": 101.87,
+      "state": "Emergente",
+      "stage": "4",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
       "history_weeks": 157,
-      "score": 10.0,
+      "score": 65.0,
       "priceSeries": [
         {
-          "date": "2025-09-01",
-          "value": 40.6
-        },
-        {
           "date": "2025-09-08",
-          "value": 41.59
+          "value": 118.4
         },
         {
           "date": "2025-09-15",
-          "value": 41.32
+          "value": 119.76
         },
         {
           "date": "2025-09-22",
-          "value": 42.51
+          "value": 119.14
         },
         {
           "date": "2025-09-29",
-          "value": 43.54
+          "value": 118.22
         },
         {
           "date": "2025-10-06",
-          "value": 44.17
+          "value": 113.69
         },
         {
           "date": "2025-10-13",
-          "value": 44.84
+          "value": 116.51
         },
         {
           "date": "2025-10-20",
-          "value": 44.75
+          "value": 118.12
         },
         {
           "date": "2025-10-27",
-          "value": 43.63
+          "value": 119.25
         },
         {
           "date": "2025-11-03",
-          "value": 43.92
+          "value": 117.23
         },
         {
           "date": "2025-11-10",
-          "value": 43.47
+          "value": 114.76
         },
         {
           "date": "2025-11-17",
-          "value": 43.17
+          "value": 112.08
         },
         {
           "date": "2025-11-24",
-          "value": 44.38
+          "value": 117.53
         },
         {
           "date": "2025-12-01",
-          "value": 42.41
+          "value": 119.02
         },
         {
           "date": "2025-12-08",
-          "value": 41.95
+          "value": 119.98
         },
         {
           "date": "2025-12-15",
-          "value": 41.75
+          "value": 121.12
         },
         {
           "date": "2025-12-22",
-          "value": 42.21
+          "value": 121.56
         },
         {
           "date": "2025-12-29",
-          "value": 42.61
+          "value": 117.88
         },
         {
           "date": "2026-01-05",
-          "value": 41.95
+          "value": 123.91
         },
         {
           "date": "2026-01-12",
-          "value": 42.82
+          "value": 121.81
         },
         {
           "date": "2026-01-19",
-          "value": 42.0
+          "value": 122.64
         },
         {
           "date": "2026-01-26",
-          "value": 42.68
+          "value": 120.69
         },
         {
           "date": "2026-02-02",
-          "value": 42.78
+          "value": 117.52
         },
         {
           "date": "2026-02-09",
-          "value": 45.88
+          "value": 115.72
         },
         {
           "date": "2026-02-16",
-          "value": 45.72
+          "value": 116.98
         },
         {
           "date": "2026-02-23",
-          "value": 47.1
+          "value": 116.39
         },
         {
           "date": "2026-03-02",
-          "value": 46.12
+          "value": 113.98
         },
         {
           "date": "2026-03-09",
-          "value": 46.34
+          "value": 110.42
         },
         {
           "date": "2026-03-16",
-          "value": 44.06
+          "value": 107.31
         },
         {
           "date": "2026-03-23",
-          "value": 45.3
+          "value": 105.47
         },
         {
           "date": "2026-03-30",
-          "value": 46.05
+          "value": 107.93
         },
         {
           "date": "2026-04-06",
-          "value": 46.66
+          "value": 112.67
         },
         {
           "date": "2026-04-13",
-          "value": 45.87
+          "value": 120.17
         },
         {
           "date": "2026-04-20",
-          "value": 45.89
+          "value": 118.45
         },
         {
           "date": "2026-04-27",
-          "value": 46.25
+          "value": 118.39
         },
         {
           "date": "2026-05-04",
-          "value": 44.44
+          "value": 119.96
         },
         {
           "date": "2026-05-11",
-          "value": 43.59
+          "value": 116.3
         },
         {
           "date": "2026-05-18",
-          "value": 45.06
+          "value": 118.94
         },
         {
           "date": "2026-05-25",
-          "value": 44.14
+          "value": 120.63
         },
         {
           "date": "2026-06-01",
-          "value": 44.07
+          "value": 114.63
         },
         {
           "date": "2026-06-08",
-          "value": 44.25
+          "value": 116.37
         },
         {
           "date": "2026-06-15",
-          "value": 44.48
+          "value": 116.93
         },
         {
           "date": "2026-06-22",
-          "value": 46.2
+          "value": 114.37
         },
         {
           "date": "2026-06-29",
-          "value": 45.76
+          "value": 117.12
         },
         {
           "date": "2026-07-06",
-          "value": 45.41
+          "value": 117.24
         },
         {
           "date": "2026-07-13",
-          "value": 45.17
+          "value": 115.44
         },
         {
           "date": "2026-07-20",
-          "value": 46.29
+          "value": 109.41
         },
         {
           "date": "2026-07-27",
-          "value": 44.35
+          "value": 116.09
         },
         {
           "date": "2026-08-03",
-          "value": 43.61
+          "value": 119.86
         },
         {
           "date": "2026-08-10",
-          "value": 44.31
+          "value": 118.2
         },
         {
           "date": "2026-08-17",
-          "value": 42.77
+          "value": 118.02
         },
         {
           "date": "2026-08-24",
-          "value": 42.73
+          "value": 117.21
+        },
+        {
+          "date": "2026-08-31",
+          "value": 114.91
         }
       ],
       "scoreSeries": [
         {
-          "date": "2025-09-01",
-          "value": 10.4
-        },
-        {
           "date": "2025-09-08",
-          "value": 10.9
+          "value": 15.0
         },
         {
           "date": "2025-09-15",
-          "value": 9.6
+          "value": 15.0
         },
         {
           "date": "2025-09-22",
@@ -7667,15 +7171,15 @@
         },
         {
           "date": "2025-12-01",
-          "value": 75.0
+          "value": 15.0
         },
         {
           "date": "2025-12-08",
-          "value": 75.0
+          "value": 15.0
         },
         {
           "date": "2025-12-15",
-          "value": 10.0
+          "value": 15.0
         },
         {
           "date": "2025-12-22",
@@ -7687,7 +7191,7 @@
         },
         {
           "date": "2026-01-05",
-          "value": 10.0
+          "value": 15.0
         },
         {
           "date": "2026-01-12",
@@ -7695,7 +7199,7 @@
         },
         {
           "date": "2026-01-19",
-          "value": 10.0
+          "value": 15.0
         },
         {
           "date": "2026-01-26",
@@ -7707,125 +7211,126 @@
         },
         {
           "date": "2026-02-09",
-          "value": 15.0
+          "value": 10.0
         },
         {
           "date": "2026-02-16",
-          "value": 15.0
+          "value": 10.0
         },
         {
           "date": "2026-02-23",
-          "value": 15.0
+          "value": 10.0
         },
         {
           "date": "2026-03-02",
-          "value": 15.0
+          "value": 70.0
         },
         {
           "date": "2026-03-09",
-          "value": 15.0
+          "value": 70.0
         },
         {
           "date": "2026-03-16",
-          "value": 15.0
+          "value": 10.0
         },
         {
           "date": "2026-03-23",
-          "value": 75.0
+          "value": 5.0
         },
         {
           "date": "2026-03-30",
-          "value": 106.4
+          "value": 5.0
         },
         {
           "date": "2026-04-06",
-          "value": 108.8
+          "value": 5.0
         },
         {
           "date": "2026-04-13",
-          "value": 110.3
+          "value": 10.0
         },
         {
           "date": "2026-04-20",
-          "value": 111.0
+          "value": 10.0
         },
         {
           "date": "2026-04-27",
-          "value": 112.1
+          "value": 10.0
         },
         {
           "date": "2026-05-04",
-          "value": 107.5
+          "value": 15.0
         },
         {
           "date": "2026-05-11",
-          "value": 99.9
+          "value": 10.0
         },
         {
           "date": "2026-05-18",
-          "value": 103.3
+          "value": 15.0
         },
         {
           "date": "2026-05-25",
-          "value": 64.1
+          "value": 15.0
         },
         {
           "date": "2026-06-01",
-          "value": 60.6
+          "value": 10.0
         },
         {
           "date": "2026-06-08",
-          "value": 65.5
+          "value": 10.0
         },
         {
           "date": "2026-06-15",
-          "value": 10.2
+          "value": 10.0
         },
         {
           "date": "2026-06-22",
-          "value": 14.0
+          "value": 10.0
         },
         {
           "date": "2026-06-29",
-          "value": 12.1
+          "value": 10.0
         },
         {
           "date": "2026-07-06",
-          "value": 10.8
+          "value": 10.0
         },
         {
           "date": "2026-07-13",
-          "value": 15.0
+          "value": 65.0
         },
         {
           "date": "2026-07-20",
-          "value": 15.0
+          "value": 65.0
         },
         {
           "date": "2026-07-27",
-          "value": 10.0
+          "value": 65.0
         },
         {
           "date": "2026-08-03",
-          "value": 10.0
+          "value": 70.0
         },
         {
           "date": "2026-08-10",
-          "value": 10.0
+          "value": 70.0
         },
         {
           "date": "2026-08-17",
-          "value": 10.0
+          "value": 70.0
         },
         {
           "date": "2026-08-24",
-          "value": 10.0
+          "value": 70.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 65.0
         }
       ],
       "inSeries": [
-        true,
-        true,
-        true,
         false,
         false,
         false,
@@ -7856,18 +7361,21 @@
         false,
         false,
         false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
         false,
         false,
         false,
@@ -7885,20 +7393,16 @@
       "name": "Comunicazioni USA",
       "region": "USA",
       "group": "GICS USA",
-      "rsRatio": 87.14,
-      "rsMom": 104.14,
+      "rsRatio": 87.78,
+      "rsMom": 104.94,
       "state": "Emergente",
-      "stage": "3",
+      "stage": "4",
       "opSignal": "OUT",
       "trend_start_date": null,
       "weeks_in_trend": 0,
       "history_weeks": 157,
-      "score": 70.0,
+      "score": 65.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 113.27
-        },
         {
           "date": "2025-09-08",
           "value": 115.89
@@ -8102,96 +7606,96 @@
         {
           "date": "2026-08-24",
           "value": 112.99
+        },
+        {
+          "date": "2026-08-31",
+          "value": 112.03
         }
       ],
       "scoreSeries": [
         {
-          "date": "2025-09-01",
-          "value": 57.2
-        },
-        {
           "date": "2025-09-08",
-          "value": 58.0
+          "value": 58.1
         },
         {
           "date": "2025-09-15",
-          "value": 58.8
+          "value": 58.9
         },
         {
           "date": "2025-09-22",
-          "value": 58.8
+          "value": 58.9
         },
         {
           "date": "2025-09-29",
-          "value": 56.5
+          "value": 56.6
         },
         {
           "date": "2025-10-06",
-          "value": 55.6
-        },
-        {
-          "date": "2025-10-13",
           "value": 55.8
         },
         {
+          "date": "2025-10-13",
+          "value": 56.0
+        },
+        {
           "date": "2025-10-20",
-          "value": 54.7
+          "value": 54.9
         },
         {
           "date": "2025-10-27",
-          "value": 53.4
+          "value": 53.6
         },
         {
           "date": "2025-11-03",
-          "value": 52.2
+          "value": 52.5
         },
         {
           "date": "2025-11-10",
-          "value": 51.0
-        },
-        {
-          "date": "2025-11-17",
-          "value": 52.1
-        },
-        {
-          "date": "2025-11-24",
-          "value": 50.9
-        },
-        {
-          "date": "2025-12-01",
           "value": 51.3
         },
         {
+          "date": "2025-11-17",
+          "value": 52.3
+        },
+        {
+          "date": "2025-11-24",
+          "value": 51.2
+        },
+        {
+          "date": "2025-12-01",
+          "value": 51.5
+        },
+        {
           "date": "2025-12-08",
-          "value": 50.2
+          "value": 50.4
         },
         {
           "date": "2025-12-15",
-          "value": 48.6
+          "value": 48.8
         },
         {
           "date": "2025-12-22",
-          "value": 46.9
+          "value": 47.2
         },
         {
           "date": "2025-12-29",
-          "value": 45.3
+          "value": 45.5
         },
         {
           "date": "2026-01-05",
-          "value": 13.9
+          "value": 14.1
         },
         {
           "date": "2026-01-12",
-          "value": 12.4
+          "value": 12.7
         },
         {
           "date": "2026-01-19",
-          "value": 13.8
+          "value": 14.1
         },
         {
           "date": "2026-01-26",
-          "value": 15.5
+          "value": 15.6
         },
         {
           "date": "2026-02-02",
@@ -8312,6 +7816,10 @@
         {
           "date": "2026-08-24",
           "value": 70.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 65.0
         }
       ],
       "inSeries": [
@@ -8336,7 +7844,7 @@
         true,
         true,
         true,
-        true,
+        false,
         false,
         false,
         false,
@@ -8372,13 +7880,505 @@
       "score_change": null
     },
     {
+      "ticker": "XLU",
+      "ticker_raw": "XLU",
+      "name": "Utilities USA",
+      "region": "USA",
+      "group": "GICS USA",
+      "rsRatio": 87.64,
+      "rsMom": 94.58,
+      "state": "Debole",
+      "stage": "1",
+      "opSignal": "OUT",
+      "trend_start_date": null,
+      "weeks_in_trend": 0,
+      "history_weeks": 157,
+      "score": 10.0,
+      "priceSeries": [
+        {
+          "date": "2025-09-08",
+          "value": 41.59
+        },
+        {
+          "date": "2025-09-15",
+          "value": 41.32
+        },
+        {
+          "date": "2025-09-22",
+          "value": 42.51
+        },
+        {
+          "date": "2025-09-29",
+          "value": 43.54
+        },
+        {
+          "date": "2025-10-06",
+          "value": 44.17
+        },
+        {
+          "date": "2025-10-13",
+          "value": 44.84
+        },
+        {
+          "date": "2025-10-20",
+          "value": 44.75
+        },
+        {
+          "date": "2025-10-27",
+          "value": 43.63
+        },
+        {
+          "date": "2025-11-03",
+          "value": 43.92
+        },
+        {
+          "date": "2025-11-10",
+          "value": 43.47
+        },
+        {
+          "date": "2025-11-17",
+          "value": 43.17
+        },
+        {
+          "date": "2025-11-24",
+          "value": 44.38
+        },
+        {
+          "date": "2025-12-01",
+          "value": 42.41
+        },
+        {
+          "date": "2025-12-08",
+          "value": 41.95
+        },
+        {
+          "date": "2025-12-15",
+          "value": 41.75
+        },
+        {
+          "date": "2025-12-22",
+          "value": 42.21
+        },
+        {
+          "date": "2025-12-29",
+          "value": 42.61
+        },
+        {
+          "date": "2026-01-05",
+          "value": 41.95
+        },
+        {
+          "date": "2026-01-12",
+          "value": 42.82
+        },
+        {
+          "date": "2026-01-19",
+          "value": 42.0
+        },
+        {
+          "date": "2026-01-26",
+          "value": 42.68
+        },
+        {
+          "date": "2026-02-02",
+          "value": 42.78
+        },
+        {
+          "date": "2026-02-09",
+          "value": 45.88
+        },
+        {
+          "date": "2026-02-16",
+          "value": 45.72
+        },
+        {
+          "date": "2026-02-23",
+          "value": 47.1
+        },
+        {
+          "date": "2026-03-02",
+          "value": 46.12
+        },
+        {
+          "date": "2026-03-09",
+          "value": 46.34
+        },
+        {
+          "date": "2026-03-16",
+          "value": 44.06
+        },
+        {
+          "date": "2026-03-23",
+          "value": 45.3
+        },
+        {
+          "date": "2026-03-30",
+          "value": 46.05
+        },
+        {
+          "date": "2026-04-06",
+          "value": 46.66
+        },
+        {
+          "date": "2026-04-13",
+          "value": 45.87
+        },
+        {
+          "date": "2026-04-20",
+          "value": 45.89
+        },
+        {
+          "date": "2026-04-27",
+          "value": 46.25
+        },
+        {
+          "date": "2026-05-04",
+          "value": 44.44
+        },
+        {
+          "date": "2026-05-11",
+          "value": 43.59
+        },
+        {
+          "date": "2026-05-18",
+          "value": 45.06
+        },
+        {
+          "date": "2026-05-25",
+          "value": 44.14
+        },
+        {
+          "date": "2026-06-01",
+          "value": 44.07
+        },
+        {
+          "date": "2026-06-08",
+          "value": 44.25
+        },
+        {
+          "date": "2026-06-15",
+          "value": 44.48
+        },
+        {
+          "date": "2026-06-22",
+          "value": 46.2
+        },
+        {
+          "date": "2026-06-29",
+          "value": 45.76
+        },
+        {
+          "date": "2026-07-06",
+          "value": 45.41
+        },
+        {
+          "date": "2026-07-13",
+          "value": 45.17
+        },
+        {
+          "date": "2026-07-20",
+          "value": 46.29
+        },
+        {
+          "date": "2026-07-27",
+          "value": 44.35
+        },
+        {
+          "date": "2026-08-03",
+          "value": 43.61
+        },
+        {
+          "date": "2026-08-10",
+          "value": 44.31
+        },
+        {
+          "date": "2026-08-17",
+          "value": 42.77
+        },
+        {
+          "date": "2026-08-24",
+          "value": 42.73
+        },
+        {
+          "date": "2026-08-31",
+          "value": 43.08
+        }
+      ],
+      "scoreSeries": [
+        {
+          "date": "2025-09-08",
+          "value": 10.0
+        },
+        {
+          "date": "2025-09-15",
+          "value": 8.7
+        },
+        {
+          "date": "2025-09-22",
+          "value": 15.0
+        },
+        {
+          "date": "2025-09-29",
+          "value": 15.0
+        },
+        {
+          "date": "2025-10-06",
+          "value": 15.0
+        },
+        {
+          "date": "2025-10-13",
+          "value": 15.0
+        },
+        {
+          "date": "2025-10-20",
+          "value": 15.0
+        },
+        {
+          "date": "2025-10-27",
+          "value": 15.0
+        },
+        {
+          "date": "2025-11-03",
+          "value": 15.0
+        },
+        {
+          "date": "2025-11-10",
+          "value": 15.0
+        },
+        {
+          "date": "2025-11-17",
+          "value": 15.0
+        },
+        {
+          "date": "2025-11-24",
+          "value": 15.0
+        },
+        {
+          "date": "2025-12-01",
+          "value": 75.0
+        },
+        {
+          "date": "2025-12-08",
+          "value": 75.0
+        },
+        {
+          "date": "2025-12-15",
+          "value": 10.0
+        },
+        {
+          "date": "2025-12-22",
+          "value": 15.0
+        },
+        {
+          "date": "2025-12-29",
+          "value": 15.0
+        },
+        {
+          "date": "2026-01-05",
+          "value": 10.0
+        },
+        {
+          "date": "2026-01-12",
+          "value": 15.0
+        },
+        {
+          "date": "2026-01-19",
+          "value": 10.0
+        },
+        {
+          "date": "2026-01-26",
+          "value": 15.0
+        },
+        {
+          "date": "2026-02-02",
+          "value": 15.0
+        },
+        {
+          "date": "2026-02-09",
+          "value": 15.0
+        },
+        {
+          "date": "2026-02-16",
+          "value": 15.0
+        },
+        {
+          "date": "2026-02-23",
+          "value": 15.0
+        },
+        {
+          "date": "2026-03-02",
+          "value": 15.0
+        },
+        {
+          "date": "2026-03-09",
+          "value": 15.0
+        },
+        {
+          "date": "2026-03-16",
+          "value": 15.0
+        },
+        {
+          "date": "2026-03-23",
+          "value": 75.0
+        },
+        {
+          "date": "2026-03-30",
+          "value": 106.4
+        },
+        {
+          "date": "2026-04-06",
+          "value": 108.8
+        },
+        {
+          "date": "2026-04-13",
+          "value": 110.3
+        },
+        {
+          "date": "2026-04-20",
+          "value": 111.0
+        },
+        {
+          "date": "2026-04-27",
+          "value": 112.1
+        },
+        {
+          "date": "2026-05-04",
+          "value": 107.5
+        },
+        {
+          "date": "2026-05-11",
+          "value": 99.9
+        },
+        {
+          "date": "2026-05-18",
+          "value": 103.3
+        },
+        {
+          "date": "2026-05-25",
+          "value": 64.1
+        },
+        {
+          "date": "2026-06-01",
+          "value": 60.6
+        },
+        {
+          "date": "2026-06-08",
+          "value": 65.5
+        },
+        {
+          "date": "2026-06-15",
+          "value": 10.2
+        },
+        {
+          "date": "2026-06-22",
+          "value": 14.0
+        },
+        {
+          "date": "2026-06-29",
+          "value": 12.1
+        },
+        {
+          "date": "2026-07-06",
+          "value": 10.8
+        },
+        {
+          "date": "2026-07-13",
+          "value": 15.0
+        },
+        {
+          "date": "2026-07-20",
+          "value": 15.0
+        },
+        {
+          "date": "2026-07-27",
+          "value": 10.0
+        },
+        {
+          "date": "2026-08-03",
+          "value": 10.0
+        },
+        {
+          "date": "2026-08-10",
+          "value": 10.0
+        },
+        {
+          "date": "2026-08-17",
+          "value": 10.0
+        },
+        {
+          "date": "2026-08-24",
+          "value": 10.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 10.0
+        }
+      ],
+      "inSeries": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "score_prev": null,
+      "score_change": null
+    },
+    {
       "ticker": "BOTZ",
       "ticker_raw": "BOTZ",
       "name": "AI / Robotica",
       "region": "USA",
       "group": "Tematico",
-      "rsRatio": 82.94,
-      "rsMom": 89.33,
+      "rsRatio": 83.37,
+      "rsMom": 89.98,
       "state": "Debole",
       "stage": "4",
       "opSignal": "OUT",
@@ -8387,10 +8387,6 @@
       "history_weeks": 157,
       "score": 5.0,
       "priceSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 33.42
-        },
         {
           "date": "2025-09-08",
           "value": 33.88
@@ -8594,13 +8590,13 @@
         {
           "date": "2026-08-24",
           "value": 35.75
+        },
+        {
+          "date": "2026-08-31",
+          "value": 35.95
         }
       ],
       "scoreSeries": [
-        {
-          "date": "2025-09-01",
-          "value": 74.8
-        },
         {
           "date": "2025-09-08",
           "value": 74.7
@@ -8804,6 +8800,10 @@
         {
           "date": "2026-08-24",
           "value": 5.0
+        },
+        {
+          "date": "2026-08-31",
+          "value": 5.0
         }
       ],
       "inSeries": [
@@ -8849,7 +8849,7 @@
         true,
         true,
         true,
-        true,
+        false,
         false,
         false,
         false,
