@@ -233,6 +233,53 @@
   .pie-cv{position:relative;height:340px}
   @media(max-width:860px){.pie-cv{height:215px}}
   .pie-note{font-size:9.5px;color:var(--txt-faint);line-height:1.55;text-align:center;margin-top:10px;min-height:28px}
+  .combo-list .cl-euro{color:var(--txt);font-weight:600}
+  .nav-box{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:rgba(245,179,1,.04);border:1px solid rgba(245,179,1,.22);border-radius:12px;
+    padding:14px 18px;margin-bottom:16px}
+  .nav-lab{font-size:9px;letter-spacing:.18em;color:var(--txt-faint);text-transform:uppercase;display:block;margin-bottom:2px}
+  .nav-q{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:800;color:var(--gold,#f5b301);line-height:1}
+  .nav-meta{font-size:10.5px;color:var(--txt-dim);margin-left:10px}
+  .nav-side{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .nav-cap-w{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--txt-faint)}
+  .nav-cap-w input{width:92px;background:transparent;border:1px solid var(--line);border-radius:7px;
+    color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 8px;text-align:right}
+  .nav-tot{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--txt)}
+  .nav-csv{background:transparent;border:1px solid var(--line);border-radius:7px;color:var(--txt-dim);
+    font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;cursor:pointer}
+  .nav-csv:hover{border-color:rgba(245,179,1,.55);color:var(--gold,#f5b301)}
+  .jr-tabs{display:flex;gap:8px;margin:12px 0 10px}
+  .jr-list{max-height:400px;overflow-y:auto;border:1px solid var(--line-soft);border-radius:10px;padding:4px 12px}
+  .jr-row{display:grid;grid-template-columns:62px 34px 64px minmax(0,1fr) 84px 64px;gap:10px;align-items:center;
+    padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:11.5px}
+  .jr-head{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);
+    border-bottom:1px solid var(--line-soft);padding:6px 0 5px}
+  .jr-head span{text-align:left}
+  .jr-head .r{text-align:right}
+  .jr-px{text-align:right;font-variant-numeric:tabular-nums;font-size:11px;color:var(--txt-dim)}
+  .jr-row:last-child{border-bottom:none}
+  .jr-d{color:var(--txt-faint);font-size:10px;font-variant-numeric:tabular-nums}
+  .jr-sys{font-size:8px;letter-spacing:.08em;font-weight:800;border-radius:4px;padding:1px 0;text-align:center}
+  .jr-sys.az{color:#ff9a56;border:1px solid rgba(255,122,24,.4)}
+  .jr-sys.etf{color:#7fb4ff;border:1px solid rgba(91,157,255,.4)}
+  .jr-sys.cr{color:#6fe8a8;border:1px solid rgba(61,220,132,.4)}
+  .jr-op{font-size:9px;letter-spacing:.06em;font-weight:800;text-align:center;border-radius:4px;padding:2px 0}
+  .jr-op.in{color:var(--green);border:1px solid rgba(61,220,132,.35)}
+  .jr-op.out{color:var(--red);border:1px solid rgba(255,92,92,.35)}
+  .jr-asset{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .jr-asset .tk2{font-weight:800;color:var(--txt)}
+  .jr-asset .nm2{color:var(--txt-dim);font-size:10px;margin-left:6px}
+  .jr-asset .why{color:var(--txt-faint);font-size:9px;margin-left:6px}
+  .jr-det{text-align:right;font-variant-numeric:tabular-nums;font-size:11px}
+  .jr-det .pos{color:var(--green);font-weight:800}
+  .jr-det .neg{color:var(--red);font-weight:800}
+  .jr-det .px2{color:var(--txt-dim)}
+  .jr-note{font-size:9.5px;color:var(--txt-faint);line-height:1.6;margin-top:10px}
+  @media(max-width:680px){
+    .jr-row{grid-template-columns:52px 58px 1fr 70px 60px;font-size:10.5px;gap:6px}
+    .jr-sys{display:none}
+    .jr-asset .nm2{display:none}
+  }
   .cap-rules{display:flex;flex-direction:column;gap:12px;margin-top:14px}
   .cap-rule{display:flex;gap:12px;align-items:flex-start;font-size:12.5px;color:var(--txt-dim);line-height:1.6}
   .cap-rule b{color:var(--txt)}
@@ -253,16 +300,17 @@
   .combo-list .cl-head{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-faint);margin:12px 0 4px}
   .combo-list .cl-head:first-child{margin-top:0}
   .combo-list .pos-row .dot2{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:9px;flex:none;vertical-align:middle}
-  .combo-list .pos-row{font-size:12px;display:grid;grid-template-columns:minmax(0,1fr) 96px 82px 74px;gap:8px;align-items:center;padding:4px 0}
+  .combo-list .pos-row{font-size:12px;display:grid;grid-template-columns:minmax(0,1fr) 80px 74px 86px 64px;gap:8px;align-items:center;padding:4px 0}
   .combo-list .cl-name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .combo-list .cl-val{font-size:11px;color:var(--txt-dim);text-align:right;font-variant-numeric:tabular-nums}
   .combo-list .pos-row .pf{text-align:right}
-  .combo-list .cl-cols{display:grid;grid-template-columns:minmax(0,1fr) 96px 82px 74px;gap:8px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);padding:0 0 6px;border-bottom:1px solid var(--line-soft);margin-bottom:4px}
+  .combo-list .cl-cols{display:grid;grid-template-columns:minmax(0,1fr) 80px 74px 86px 64px;gap:8px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);padding:0 0 6px;border-bottom:1px solid var(--line-soft);margin-bottom:4px}
   .combo-list .cl-cols span:not(:first-child){text-align:right}
   @media(max-width:680px){
     .combo-list .cl-cols{display:none}
     .combo-list .pos-row{grid-template-columns:minmax(0,1fr) auto auto;row-gap:1px;
-      grid-template-areas:"name name perf" "date price price"}
+      grid-template-areas:"name name perf" "date price euro"}
+    .combo-list .cl-euro{grid-area:euro;text-align:right}
     .combo-list .cl-name{grid-area:name}
     .combo-list .cl-date{grid-area:date;text-align:left}
     .combo-list .cl-price{grid-area:price;text-align:left;color:var(--txt-faint)}
@@ -699,9 +747,148 @@ function loadCombined(){
     crPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_C[i%PAL_C.length]); groups.push('cr');});
     const liqPct=nCash*wSlot;
     const investedPct=100-liqPct;
+    const pct1=x=>x.toFixed(1).replace('.',',');
+
+    // ── pesi reali: deriva di chi detiene dall'ingresso di ogni posizione
+    //    (mondo senza ribilanciamenti = tetto della concentrazione; il cash non rende) ──
+    const wRealRaw=slices.map(s=>wSlot*(1+((s.pf!=null)?s.pf/100:0)));
+    const totReal=wRealRaw.reduce((a2,b2)=>a2+b2,0)+liqPct;
+    const wRealN=wRealRaw.map(v=>v/totReal*100);
+    const liqRealN=liqPct/totReal*100;
+    window.__pieModes={
+      entry:{data:[...slices.map(()=>wSlot),liqPct],inv:investedPct,
+        note:'ogni slot vale 100/'+TOT+' = '+pct1(wSlot)+'% all\'ingresso · la liquidità occupa gli slot liberi'},
+      real:{data:[...wRealN,liqRealN],inv:100-liqRealN,
+        note:'deriva di chi detiene dall\'ingresso di ogni posizione, senza ribilanciamenti: è il TETTO della concentrazione — con la regola del pozzo (vendite nel patrimonio comune, ingressi a 1/'+TOT+') la deriva effettiva è più contenuta'}};
+    window.__pieInv=investedPct;
+    window.__pieMode='entry';
+    window.__navPts=pts; window.__navQuota=combo;
+    const fmtEur=v=>Math.round(v).toLocaleString('it-IT')+' \u20ac';
+    window.renderComboValues=function(m){
+      const md=window.__pieModes[m]; if(!md)return;
+      const capEl=document.getElementById('nav-cap');
+      let cap=parseFloat(String(capEl?capEl.value:'100000').replace(/\./g,'').replace(',','.'))||100000;
+      const patrimonio=cap*combo/100;
+      const totEl=document.getElementById('nav-tot');
+      if(totEl)totEl.textContent='= '+fmtEur(patrimonio);
+      document.querySelectorAll('.cl-euro').forEach(elv=>{
+        const wi=elv.dataset.wi;
+        const w=(wi==='cash')?md.data[md.data.length-1]:md.data[+wi];
+        elv.textContent=(w!=null)?fmtEur(patrimonio*w/100):'\u2014';
+      });
+    };
+    window.setPieMode=function(m){
+      const md=window.__pieModes[m]; if(!md||!window.__comboPie)return;
+      window.__pieMode=m;
+      window.__comboPie.data.datasets[0].data=md.data;
+      window.__pieInv=md.inv;
+      window.__comboPie.update();
+      document.getElementById('pt-entry').classList.toggle('active',m==='entry');
+      document.getElementById('pt-real').classList.toggle('active',m==='real');
+      document.getElementById('pie-note').textContent=md.note;
+      window.renderComboValues(m);
+    };
+    window.downloadNAV=function(){
+      const rows2=['data;nav'].concat((window.__navPts||[]).map(p=>p.date+';'+p.v.toFixed(4)));
+      const bl=new Blob([rows2.join('\n')],{type:'text/csv'});
+      const a2=document.createElement('a');
+      a2.href=URL.createObjectURL(bl); a2.download='megatrend_nav.csv'; a2.click();
+      URL.revokeObjectURL(a2.href);
+    };
+    // capitale di riferimento: memoria locale + ricalcolo al volo
+    (function(){
+      const capEl=document.getElementById('nav-cap'); if(!capEl)return;
+      const saved=localStorage.getItem('mt_nav_cap');
+      if(saved)capEl.value=saved;
+      capEl.addEventListener('input',()=>{
+        localStorage.setItem('mt_nav_cap',capEl.value);
+        window.renderComboValues(window.__pieMode);
+      });
+    })();
+    window.renderComboValues('entry');
+
+    // ── giornale delle operazioni: prezzo acquisto / vendita / performance ──
+    const VIA=pts[0].date;
+    const moves=[];
+    const fpx=(v,eur)=>v==null?'':((eur?'\u20ac':'')+Number(v).toFixed(v>=1000?0:2));
+    // AZIONI: registro adaptive (prezzi ai listini d'origine)
+    (azAg.operations||[]).forEach(o=>{
+      moves.push({d:o.entry_date,sys:'az',op:'in',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
+        px:fpx(o.entry_price,false),perf:null,why:''});
+      if(o.exit_date){
+        moves.push({d:o.exit_date,sys:'az',op:'out',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
+          px:fpx(o.exit_price,false),perf:o.perf_pct,
+          why:o.exit_reason==='stop_loss'?'stop −20%':''});
+      }
+    });
+    // ETF: storico segnali + prezzi UCITS in EUR dalla simulazione (fallback USD con *)
+    const dIdx={}; simDates.forEach((dd,i)=>{dIdx[dd]=i;});
+    const idxOf=dd=>{if(dIdx[dd]!=null)return dIdx[dd];
+      for(let i=simDates.length-1;i>=0;i--){if(simDates[i]<=dd)return i;} return null;};
+    ((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal!=='INFO').forEach(s=>{
+      const raw=s.ticker_raw||s.ticker;
+      const sec=(sim.sectors||{})[raw]||{};
+      const ei2=s.etfInfo||{};
+      const lab=ei2.ticker_short||s.ticker;
+      const nome=(s.name||s.ticker).slice(0,16);
+      const pe=sec.prices_eur, pu=sec.prices;
+      const at=(arr,i2)=>(arr&&i2!=null&&arr[i2]>0)?arr[i2]:null;
+      (s.opHistory||[]).forEach(pr=>{
+        if(pr.signal!=='IN')return;
+        const i0=idxOf(pr.start_date);
+        const i1=pr.is_current?null:idxOf(pr.end_date);
+        // valuta decisa UNA volta per periodo: EUR solo se disponibile su
+        // tutte le sponde del periodo, altrimenti USD (asterisco) su tutte
+        const eur=at(pe,i0)!=null&&(pr.is_current||at(pe,i1)!=null);
+        const p0=eur?at(pe,i0):at(pu,i0);
+        moves.push({d:pr.start_date,sys:'etf',op:'in',tk:lab,nm:nome,
+          px:p0!=null?fpx(p0,eur)+(eur?'':'*'):'',perf:null,why:''});
+        if(!pr.is_current&&pr.end_date){
+          const p1=eur?at(pe,i1):at(pu,i1);
+          const pf2=(p0!=null&&p1!=null)?(p1/p0-1)*100:pr.perf_sector;
+          moves.push({d:pr.end_date,sys:'etf',op:'out',tk:lab,nm:nome,
+            px:p1!=null?fpx(p1,eur)+(eur?'':'*'):'',perf:pf2,why:''});
+        }
+      });
+    });
+    // CRYPTO: registro dei trade del motore DMI (finestra ultimo anno)
+    Object.entries(cr.assets||{}).forEach(([a3,v])=>{
+      (v.trades||[]).forEach(t=>{
+        moves.push({d:t.entry_date,sys:'cr',op:'in',tk:a3,nm:'',px:fpx(t.entry_price,false),perf:null,why:''});
+        moves.push({d:t.exit_date,sys:'cr',op:'out',tk:a3,nm:'',px:fpx(t.exit_price,false),perf:t.perf,why:''});
+      });
+      if(v.in_position&&v.entry_date){
+        moves.push({d:v.entry_date,sys:'cr',op:'in',tk:a3,nm:'',px:fpx(v.entry_price,false),perf:null,why:''});
+      }
+    });
+    moves.sort((a2,b2)=>b2.d.localeCompare(a2.d)||(a2.op==='out'?-1:1));
+    window.__jrMoves=moves;
+    window.renderJournal=function(range){
+      const list=document.getElementById('jr-list'); if(!list)return;
+      const rows2=moves.filter(m=>range==='all'||m.d>=VIA);
+      const head=`<div class="jr-row jr-head"><span>data</span><span></span><span>operaz.</span><span>asset</span><span class="r">prezzo</span><span class="r">perf</span></div>`;
+      list.innerHTML=head+(rows2.length?rows2.map(m=>`<div class="jr-row">
+        <span class="jr-d">${fmtDM(m.d)}</span>
+        <span class="jr-sys ${m.sys}">${m.sys==='az'?'AZ':(m.sys==='etf'?'ETF':'CR')}</span>
+        <span class="jr-op ${m.op}">${m.op==='in'?'ACQUISTO':'VENDITA'}</span>
+        <span class="jr-asset"><span class="tk2">${m.tk}</span><span class="nm2">${m.nm}</span>${m.why?'<span class="why">'+m.why+'</span>':''}</span>
+        <span class="jr-px">${m.px||'\u2014'}</span>
+        <span class="jr-det">${m.perf!=null?'<span class="'+(m.perf>=0?'pos':'neg')+'">'+sign(m.perf)+'</span>':''}</span>
+      </div>`).join(''):'<div class="jr-row"><span class="jr-d"></span><span></span><span></span><span class="jr-asset nm2">nessun movimento nel periodo</span><span></span><span></span></div>');
+      const note=document.getElementById('jr-note');
+      if(note)note.textContent=(range==='all'
+        ?'Storico completo dei due sistemi azionari: prima del '+fmtDM(VIA)+' i movimenti provengono dalla storia dei sistemi (ETF dal 2009, Azioni dal 2018), non dal tracking live del combinato. '
+        :'Movimenti dal via del NAV ('+fmtDM(VIA)+'). Le posizioni aperte prima del via compaiono nell\'elenco sopra con la loro data d\'ingresso. ')
+        +'Prezzi: azioni ai listini d\'origine, ETF in EUR sugli strumenti UCITS (l\'asterisco indica il ripiego sull\'indice USA), crypto in USD. Performance sulle vendite: dall\'acquisto alla vendita, stessi prezzi mostrati. Le operazioni crypto coprono la finestra del motore (ultimo anno).';
+    };
+    window.setJrRange=function(r){
+      document.getElementById('jr-nav').classList.toggle('active',r==='nav');
+      document.getElementById('jr-all').classList.toggle('active',r==='all');
+      window.renderJournal(r);
+    };
+    window.renderJournal('nav');
 
     // ── markup ──
-    const pct1=x=>x.toFixed(1).replace('.',',');
     // rendimenti mensili composti dalle settimane (mese della data di chiusura settimanale)
     const MESI_N=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
     const months=[];
@@ -719,23 +906,37 @@ function loadCombined(){
       const corso=(m.key===lastMonthKey)?'<span class="cm-t">in corso</span>':'';
       return `<div class="cm-chip ${cls}"><span class="cm-m">${m.lab}</span><span class="cm-v">${(v>=0?'+':'')+v.toFixed(1).replace('.',',')}%</span>${corso}</div>`;
     }).join('');
-    const rowHTML=(p,c)=>`<div class="pos-row">
+    const rowHTML=(p,c,wi)=>`<div class="pos-row">
       <span class="cl-name"><span class="dot2" style="background:${c}"></span><span class="tk">${p.lab}</span><span class="nm">${p.nm}</span></span>
       <span class="cl-val cl-date">${p.dt||'—'}</span>
       <span class="cl-val cl-price">${p.px||'—'}</span>
+      <span class="cl-val cl-euro" data-wi="${wi}">—</span>
       <span class="pf ${p.pf>=0?'pos':'neg'}">${p.pf!=null?sign(p.pf):'—'}${p.tag?' <span style="color:var(--txt-faint);font-weight:400;font-size:9px">YTD</span>':''}</span></div>`;
-    let list=`<div class="cl-cols"><span>asset</span><span>in posizione da</span><span>prezzo acq.</span><span>perf</span></div>`;
+    let list=`<div class="cl-cols"><span>asset</span><span>in posizione da</span><span>prezzo acq.</span><span>valore</span><span>perf</span></div>`;
     list+=`<div class="cl-head">Azioni · ${pct1(wA*100)}% (${NA} asset)</div>`;
-    azPos.forEach((p,i)=>{list+=rowHTML(p,PAL_A[i%PAL_A.length]);});
+    azPos.forEach((p,i)=>{list+=rowHTML(p,PAL_A[i%PAL_A.length],i);});
     list+=`<div class="cl-head">ETF · ${pct1(wE*100)}% (${NE} asset)</div>`;
-    etfPos.forEach((p,i)=>{list+=rowHTML(p,PAL_E[i%PAL_E.length]);});
+    etfPos.forEach((p,i)=>{list+=rowHTML(p,PAL_E[i%PAL_E.length],azPos.length+i);});
     list+=`<div class="cl-head">Crypto · ${pct1(wC*100)}% (${NC} asset)</div>`;
-    crPos.forEach((p,i)=>{list+=rowHTML(p,PAL_C[i%PAL_C.length]);});
+    crPos.forEach((p,i)=>{list+=rowHTML(p,PAL_C[i%PAL_C.length],azPos.length+etfPos.length+i);});
     if(!crPos.length) list+=`<div class="pos-row"><span class="nm">nessuna posizione aperta</span></div>`;
     list+=`<div class="cl-head">Liquidità</div>
-      <div class="pos-row"><span class="cl-name"><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="cl-val cl-date"></span><span class="cl-val cl-price"></span><span class="pf" style="color:var(--cash)">${pct1(liqPct)}%</span></div>`;
+      <div class="pos-row"><span class="cl-name"><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="cl-val cl-date"></span><span class="cl-val cl-price"></span><span class="cl-val cl-euro" data-wi="cash">—</span><span class="pf" style="color:var(--cash)">${pct1(liqPct)}%</span></div>`;
 
     el.innerHTML=`
+      <div class="nav-box">
+        <div class="nav-main">
+          <span class="nav-lab">NAV · valore quota</span>
+          <span class="nav-q">${combo.toFixed(2).replace('.',',')}</span>
+          <span class="nav-meta">al ${fmtDM(pts[pts.length-1].date)} · <span class="${wk>=0?'pos':'neg'}" style="font-weight:700">${sign(wk)}</span> sett. · base 100 al ${fmtDM(pts[0].date)}</span>
+        </div>
+        <div class="nav-side">
+          <label class="nav-cap-w">capitale di riferimento €
+            <input id="nav-cap" type="text" inputmode="numeric" value="100.000"></label>
+          <span class="nav-tot" id="nav-tot">—</span>
+          <button class="nav-csv" onclick="downloadNAV()">storico ⤓</button>
+        </div>
+      </div>
       <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal '+fmtDM(pts[0].date))}</div>
       <div class="combo-chart-wrap"><canvas id="combo-line"></canvas></div>
       <div class="combo-bars"><canvas id="combo-bars"></canvas></div>
@@ -754,7 +955,18 @@ function loadCombined(){
         </div>
         <div class="combo-list">${list}</div>
       </div>
-      <div class="ann-wave-note" style="margin-top:14px">${TOT} asset equipesati (100% / ${TOT} = ${pct1(wSlot)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve. Componente ETF su strumenti UCITS in EUR (effetto cambio incluso); azioni ai prezzi dei rispettivi listini; crypto in USD. Performance accanto agli asset: dalla data d'ingresso.</div>`;
+      <div class="ann-wave-note" style="margin-top:14px">${TOT} asset equipesati (100% / ${TOT} = ${pct1(wSlot)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve. Componente ETF su strumenti UCITS in EUR (effetto cambio incluso); azioni ai prezzi dei rispettivi listini; crypto in USD. Performance accanto agli asset: dalla data d'ingresso. Colonna «valore»: scomposizione del capitale di riferimento al NAV odierno secondo i pesi selezionati (ingresso o reali) — una lente di lettura, non la contabilità storica dei singoli slot.</div>
+      <div style="margin-top:12px">
+        <button class="cm-toggle" onclick="var j=document.getElementById('combo-journal');var open=j.style.display!=='none';j.style.display=open?'none':'block';this.textContent=open?'mostra il giornale delle operazioni ▾':'nascondi il giornale ▴';">mostra il giornale delle operazioni ▾</button>
+      </div>
+      <div id="combo-journal" style="display:none">
+        <div class="jr-tabs">
+          <button class="pt-btn active" id="jr-nav" onclick="setJrRange('nav')">dal via del NAV</button>
+          <button class="pt-btn" id="jr-all" onclick="setJrRange('all')">tutto lo storico</button>
+        </div>
+        <div class="jr-list" id="jr-list"></div>
+        <div class="jr-note" id="jr-note"></div>
+      </div>`;
 
     // ── grafico linea (stile dashboard: percentuale dal via, griglia fine) ──
     if(window.__comboLine){window.__comboLine.destroy();}
@@ -831,27 +1043,6 @@ function loadCombined(){
       ctx.shadowColor='rgba(255,214,90,0.85)'; ctx.shadowBlur=7;
       arc.draw(ctx); ctx.restore();
     }};
-    // ── pesi reali: deriva di chi detiene dall'ingresso di ogni posizione
-    //    (mondo senza ribilanciamenti = tetto della concentrazione; il cash non rende) ──
-    const wRealRaw=slices.map(s=>wSlot*(1+((s.pf!=null)?s.pf/100:0)));
-    const totReal=wRealRaw.reduce((a2,b2)=>a2+b2,0)+liqPct;
-    const wRealN=wRealRaw.map(v=>v/totReal*100);
-    const liqRealN=liqPct/totReal*100;
-    window.__pieModes={
-      entry:{data:[...slices.map(()=>wSlot),liqPct],inv:investedPct,
-        note:'ogni slot vale 100/'+TOT+' = '+pct1(wSlot)+'% all\'ingresso · la liquidità occupa gli slot liberi'},
-      real:{data:[...wRealN,liqRealN],inv:100-liqRealN,
-        note:'deriva di chi detiene dall\'ingresso di ogni posizione, senza ribilanciamenti: è il TETTO della concentrazione — con la regola del pozzo (vendite nel patrimonio comune, ingressi a 1/'+TOT+') la deriva effettiva è più contenuta'}};
-    window.__pieInv=investedPct;
-    window.setPieMode=function(m){
-      const md=window.__pieModes[m]; if(!md||!window.__comboPie)return;
-      window.__comboPie.data.datasets[0].data=md.data;
-      window.__pieInv=md.inv;
-      window.__comboPie.update();
-      document.getElementById('pt-entry').classList.toggle('active',m==='entry');
-      document.getElementById('pt-real').classList.toggle('active',m==='real');
-      document.getElementById('pie-note').textContent=md.note;
-    };
     const ctxP=document.getElementById('combo-pie').getContext('2d');
     window.__comboPie=new Chart(ctxP,{
       type:'doughnut',
