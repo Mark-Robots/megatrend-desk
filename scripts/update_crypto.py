@@ -274,10 +274,10 @@ def run_backtest(klines, asset, dmi_by_time):
         if long_trigger and pos != 'LONG':
             pos = 'LONG'; ep = cl; entry_date = d.strftime('%Y-%m-%d')
         elif lX and pos == 'LONG':
-            trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100))
+            trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100, ep, cl))
             pos = 'FLAT'
         elif sE and pos == 'LONG':
-            trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100))
+            trades.append((entry_date, d.strftime('%Y-%m-%d'), (cl/ep-1)*100, ep, cl))
             pos = 'FLAT'
 
     # dettagli posizione aperta (per la scheda del desk): data ingresso,
@@ -394,6 +394,12 @@ def main():
             'entry_price': open_pos['entry_price'] if open_pos else None,
             'current_price': open_pos['current_price'] if open_pos else None,
             'perf_pos': open_pos['perf_pos'] if open_pos else None,
+            # registro delle operazioni chiuse nella finestra del motore
+            # (ultimo anno): per il giornale del desk
+            'trades': [{'entry_date': t[0], 'exit_date': t[1],
+                        'perf': round(t[2], 2),
+                        'entry_price': round(t[3], 4),
+                        'exit_price': round(t[4], 4)} for t in trades],
         }
         a = per_asset[asset]
         print(f"[{asset}] sett {a['perf_week']}% mese {a['perf_month']}% YTD {a['perf_ytd']}% in_pos={in_pos} ({len(trades)} trade)")
