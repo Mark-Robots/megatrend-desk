@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mark Desk</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisi ciclica · Mark Desk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -409,7 +407,6 @@
 <body>
 <div class="wrap">
   <header>
-    
     <div class="brand">
       <div class="brand-mark">Mark Desk · v1.0</div>
       <div class="brand-row">
@@ -421,919 +418,488 @@
         </h1>
       </div>
     </div>
-    <div class="updated">dati al <b id="upd-date">—</b>
-      <div class="live"><span class="dot"></span>aggiornamento ogni ora</div>
-    </div>
+    
+    <div style="font-size:11px;color:var(--txt-dim);margin-top:10px">Analisi ciclica · pagina dedicata · si aggiorna a ogni run · <a href="index.html" style="color:var(--txt-faint)">&larr; torna al desk</a></div>
   </header>
 
-  <h2 class="sec-title">Portafogli</h2>
-
-  <div class="grid">
-    <div class="card azioni">
-      <div class="card-head"><span class="card-name">Portafoglio Azioni</span><span class="card-tag">Sector rotation</span></div>
-      <div id="az-body"><div class="loading">Carico dati…</div></div>
-    </div>
-    <div class="card etf">
-      <div class="card-head"><span class="card-name">Portafoglio ETF</span><span class="card-tag">Sector rotation</span></div>
-      <div id="etf-body"><div class="loading">Carico dati…</div></div>
-    </div>
-    <div class="card crypto">
-      <div class="card-head"><span class="card-name">Portafoglio Crypto</span><span class="card-tag">DMI · live</span></div>
-      <div id="crypto-body"><p class="crypto-note">Caricamento…</p></div>
-    </div>
+<h2 class="sec-title mt">Analisi ciclica · S&amp;P 500</h2>
+  <div class="card cyclescard">
+    <p class="crypto-note">I cicli temporali annidati dell'indice secondo l'analisi ciclica: per ogni scala — annuale, intermedio, mensile — da quanti giorni dura il ciclo attuale e a che punto siamo rispetto al prossimo minimo atteso.</p>
+    <div id="cycles-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
-  <h2 class="sec-title mt" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-    <span>Mappa dei trend principali</span>
-    <a href="./universo.html" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:400;color:var(--txt-dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 14px;transition:.15s;letter-spacing:.02em" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--txt)'" onmouseout="this.style.borderColor='var(--line)';this.style.color='var(--txt-dim)'">vedi tutti i settori (universo completo) →</a>
-  </h2>
-  <div class="card trendmap">
-    <p class="crypto-note">Quali settori sono attualmente <b>in trend</b> e quali <b>fuori trend</b>. Lo stato si basa sulla posizione RRG e sulla fase di Weinstein.</p>
-    <div id="trendmap-body"><p class="crypto-note">Caricamento…</p></div>
+  <h2 class="sec-title mt">Analisi ciclica · Bitcoin</h2>
+  <div class="card cyclescard">
+    <p class="crypto-note">Gli stessi cicli temporali annidati applicati a Bitcoin (BTC/USDT, dati giornalieri). Bitcoin scambia 7 giorni su 7, quindi le durate sono in giorni di calendario.</p>
+    <div id="cycles-btc-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
-  <h2 class="sec-title mt">Portafoglio combinato</h2>
-  <div class="card combocard">
-    <p class="crypto-note">I tre sistemi fusi in un unico portafoglio con pesi <b>per asset</b>: ogni asset pesa 100% / numero totale, quindi ogni sistema conta in proporzione a quanti asset porta. Base 100 all'avvio del tracciamento comune.</p>
-    <div id="combo-body"><p class="crypto-note">Caricamento…</p></div>
-  </div>
-
-  <h2 class="sec-title mt">La regola del capitale</h2>
-  <div class="card capcard">
-    <div class="cap-rules">
-      <div class="cap-rule"><span class="cap-n">1</span><div><b>La vendita va nel pozzo:</b> tutto il ricavato torna nel patrimonio comune come liquidità.</div></div>
-      <div class="cap-rule"><span class="cap-n">2</span><div><b>L'ingresso è a quota fissa:</b> 1/9 del patrimonio totale del momento (nel combinato: 1/21).</div></div>
-      <div class="cap-rule"><span class="cap-n">3</span><div><b>Il cash aspetta le rotazioni:</b> viene riassorbito dai futuri ingressi, nessuna redistribuzione immediata.</div></div>
-    </div>
-    <div class="cap-ex">
-      <span class="cap-ex-lab">esempio</span>
-      <div class="cap-steps">
-        <div class="cap-step"><span class="cs-t">patrimonio</span><span class="cs-v">900</span><span class="cs-d">9 posizioni</span></div>
-        <span class="cap-arr">→</span>
-        <div class="cap-step"><span class="cs-t">esce un settore</span><span class="cs-v">vale 400</span><span class="cs-d">utile incluso</span></div>
-        <span class="cap-arr">→</span>
-        <div class="cap-step"><span class="cs-t">pozzo</span><span class="cs-v">500 + 400</span><span class="cs-d">investiti + cash</span></div>
-        <span class="cap-arr">→</span>
-        <div class="cap-step"><span class="cs-t">un settore rientra</span><span class="cs-v">entra con 100</span><span class="cs-d">1/9 di 900</span></div>
-        <span class="cap-arr">→</span>
-        <div class="cap-step"><span class="cs-t">cash residuo</span><span class="cs-v">300</span><span class="cs-d">attende le prossime rotazioni</span></div>
-      </div>
-    </div>
-    <div class="cap-note">Verificata su 17 anni (2009–2026): stessa resa, concentrazione massima dimezzata · test rilanciabile dal workflow «Test Sizing».</div>
-  </div>
-
+  
   <div class="disclaimer">
-    <b>Analisi ciclica</b>: ora in una <a href="cicli.html" style="color:var(--txt-dim)">pagina dedicata</a>.<br>
-    <b>Nota.</b> MarkRoboT.S. è un progetto personale di ricerca sul trading algoritmico, condiviso tra appassionati a scopo informativo e didattico. Le performance recenti derivano dai sistemi su dati reali ma <b>non costituiscono garanzia di risultati futuri</b>. Nulla in questa pagina è consulenza finanziaria, raccomandazione di investimento o sollecitazione. Ogni decisione di investimento è a proprio rischio.
+    <b>Nota.</b> Proiezioni cicliche a scopo informativo e didattico: date orientative con margine d'errore dichiarato, non previsioni né consulenza finanziaria.
   </div>
-  <footer><span class="orange">◆</span> MarkRoboT.S. · sistemi quantitativi indipendenti</footer>
 </div>
-
 <script>
-const AZ_URL='./data/adaptive_data.json';        // Adaptio: stessa vista di azioni.html (default 'adaptive')
-const AZ_FALLBACK_URL='./data/stocks_data.json'; // fallback: sistema statico se adaptive non disponibile
-const ETF_URL='./data/sector_data.json';
-const CRYPTO_URL='./data/crypto_data.json';
 const CYCLES_URL='./data/cycles_data.json';
 const CYCLES_BTC_URL='./data/cycles_btc_data.json';
-
-const SECTOR_STOCKS={
-  SOXX:['NVIDIA','AMD','Broadcom','Micron','TSMC'],
-  XLK:['Apple','Microsoft','Alphabet','Oracle','Salesforce'],
-  XLE:['ExxonMobil','Chevron','ConocoPhillips','Valero'],
-  EXH5:['Allianz','AXA','Generali','Zurich'],
-  EXH6:['LVMH','Hermès','L\u2019Oréal','Kering'],
-  EXH1:['Shell','TotalEnergies','BP','Eni'],
-  EXV1:['UniCredit','Intesa Sanpaolo','Santander','BNP Paribas'],
-  XLI:['Caterpillar','Honeywell','GE','Boeing'],
-  IBB:['Amgen','Gilead','Vertex','Regeneron'],
-  XLV:['UnitedHealth','Johnson & Johnson','Eli Lilly','Pfizer'],
-  XLP:['P&G','Coca-Cola','PepsiCo','Walmart'],
-  EXH4:['Siemens','Schneider Electric','ABB','Airbus'],
-  XLF:['JPMorgan','Bank of America','Goldman Sachs','Visa']
-};
-const AZ_SECTORS=9;  // settori operativi Azioni (allineati agli ETF, con Consumi essenziali)
-
-function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');
-  const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];return `${d} ${M[+m-1]} ${y}`;}
-function sign(n){return(n>=0?'+':'')+n.toFixed(Math.abs(n)>=100?0:1)+'%';}
-function cls(n){return n>0.05?'pos':n<-0.05?'neg':'flat';}
-function perfBox(val,label){return `<div class="perf-box"><div class="v ${cls(val)}">${sign(val)}</div><div class="l">${label}</div></div>`;}
-function ytdOf(vals,dates){
-  const yr=String(new Date().getFullYear());
-  let base=0;
-  for(let i=0;i<dates.length;i++){ if(dates[i].slice(0,4)===yr){ base=i>0?i-1:0; break; } }
-  return (vals[vals.length-1]/vals[base]-1)*100;
-}
-function cashBar(inv,accent){const cash=100-inv;return `<div class="cashbar">
-  <div class="track"><div class="fill" style="width:${inv}%"></div></div>
-  <div class="lab"><span>investito ${inv.toFixed(0)}%</span><span class="cash">cash ${cash.toFixed(0)}%</span></div></div>`;}
-
-async function loadAzioni(){
-  const el=document.getElementById('az-body');
+async function loadCycles(url, targetId){
+  const el=document.getElementById(targetId);
+  const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fmtCycDate=s=>{ if(!s) return '—'; const p=s.split('-'); return p.length===3?`${p[2]} ${MESI[+p[1]-1]} ${p[0]}`:s; };
   try{
-    let d;
-    try{
-      const r=await fetch(AZ_URL+'?_='+Date.now());
-      if(!r.ok) throw new Error('adaptive HTTP '+r.status);
-      d=await r.json();
-    }catch(eAd){
-      // adaptive_data.json non disponibile: ripiego sul sistema statico
-      d=await(await fetch(AZ_FALLBACK_URL+'?_='+Date.now())).json();
-    }
-    window.__cmb_az=d;
-    const a=d.modes.aggressive, names=d.stock_names||{}, eq=a.equity_curve.map(e=>e.system);
-    const eqDates=a.equity_curve.map(e=>e.date);
-    const st=a.stats||{};
-    const last=eq[eq.length-1];
-    const wk=st.perf_week!=null?st.perf_week:(last/eq[eq.length-2]-1)*100;
-    const mo=st.perf_month!=null?st.perf_month:(last/eq[eq.length-5]-1)*100;
-    const yt=st.perf_ytd!=null?st.perf_ytd:ytdOf(eq,eqDates);
-    const pos=(a.current_positions||[]);
-    const inv=pos.length/AZ_SECTORS*100;
-    el.innerHTML=`
-      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'mese')}${perfBox(yt,'da inizio anno')}</div>
-      ${cashBar(inv,'var(--orange)')}
-      <div class="positions"><div class="ptitle">portafoglio azioni · ${pos.length}</div>
-        ${pos.map(p=>`<div class="pos-row">
-          <span><span class="tk">${p.ticker}</span><span class="nm">${(names[p.ticker]||p.sector_name||'').slice(0,16)}</span></span>
-          <span class="pf ${p.perf_pct>=0?'pos':'neg'}">${sign(p.perf_pct)}</span></div>`).join('')}
-      </div>
-      <a class="card-link" href="./azioni.html">apri la dashboard <span class="arr">→</span></a>`;
-    return d.last_data_date;
-  }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('Az',e);return null;}
-}
+    const d=await(await fetch(url+'?_='+Date.now())).json();
+    const cyc=d.cycles||[];
+    const phaseClass=p=> p==='rialzista'?'asc' : p==='ribassista'?'desc' : 'low';
+    // direzione dedotta da cosa arriva prima: il prossimo massimo o il prossimo minimo
+    const dirOf=(c)=>{
+      const dl=c.days_to_low_est, dh=c.days_to_high_est;
+      if(dl==null||dh==null) return {key:'—',label:'—'};
+      if(dh<dl) return {key:'rialzista', label:'rialzista'};
+      return {key:'ribassista', label:'ribassista'};
+    };
+    const phaseText=(c)=>{
+      const dir=dirOf(c);
+      if(dir.key==='rialzista')
+        return `in salita verso il prossimo massimo (${fmtCycDate(c.next_high_date_est)})`;
+      if(dir.key==='ribassista')
+        return `in discesa verso il prossimo minimo (${fmtCycDate(c.next_low_date_est)})`;
+      return 'direzione non determinata';
+    };
 
-async function loadETF(){
-  const el=document.getElementById('etf-body');
-  try{
-    const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
-    window.__cmb_etf=d;
-    const pe=d.portfolio_equity, es=pe.equity_system;
-    const esDates=pe.dates||[];
-    const rp=(d.portfolio_simulation&&d.portfolio_simulation.recent_perf)||{};
-    const last=es[es.length-1];
-    const wk=rp.perf_week!=null?rp.perf_week:(last/es[es.length-2]-1)*100;
-    const mo=rp.perf_month!=null?rp.perf_month:(last/es[es.length-5]-1)*100;
-    const yt=rp.perf_ytd!=null?rp.perf_ytd:ytdOf(es,esDates);
-    const N=pe.n_sectors;
-    const inSec=(d.ranking?.ranking||[]).filter(s=>s.opSignal==='IN');
-    const inv=inSec.length/N*100;
-    el.innerHTML=`
-      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'mese')}${perfBox(yt,'da inizio anno')}</div>
-      ${cashBar(inv,'var(--blue)')}
-      <div class="positions"><div class="ptitle">portafoglio ETF · ${inSec.length}</div>
-        ${inSec.map(s=>{const pf=s.opCurrent?.perf_sector;return `<div class="pos-row">
-          <span><span class="tk">${s.ticker}</span><span class="nm">${(s.name||'').slice(0,16)}</span></span>
-          <span class="pf ${pf>=0?'pos':'neg'}">${pf!=null?sign(pf):'—'}</span></div>`;}).join('')}
-      </div>
-      <a class="card-link" href="./cliente.html">apri la dashboard <span class="arr">→</span></a>`;
-    return d.last_data_date;
-  }catch(e){el.innerHTML='<div class="loading">dati non disponibili al momento</div>';console.error('ETF',e);return null;}
-}
-
-async function loadCrypto(){
-  const el=document.getElementById('crypto-body');
-  try{
-    const d=await(await fetch(CRYPTO_URL+'?_='+Date.now())).json();
-    window.__cmb_cr=d;
-    const pf=d.portfolio||{};
-    const assets=d.assets||{};
-    const order=['BTC','ETH','SOL'];
-    const rows=order.filter(a=>assets[a]).map(a=>{
-      const v=assets[a];
-      return `<div class="pos-row">
-        <span><span class="tk">${a}</span><span class="nm">${v.in_position?'in posizione':'flat'}</span></span>
-        <span class="pf ${v.perf_ytd>=0?'pos':'neg'}">${sign(v.perf_ytd)}</span></div>`;
-    }).join('');
-    // barra investito/liquidita': quota di asset in posizione sui 3 del sistema
-    const nTot=order.filter(a=>assets[a]).length||1;
-    const nIn=order.filter(a=>assets[a]&&assets[a].in_position).length;
-    const inv=nIn/nTot*100;
-    el.innerHTML=`
-      <div class="perf-row">${perfBox(pf.perf_week,'settimana')}${perfBox(pf.perf_month,'mese')}${perfBox(pf.perf_ytd,'da inizio anno')}</div>
-      ${cashBar(inv,'var(--green)')}
-      <div class="positions"><div class="ptitle">portafoglio crypto · ${order.filter(a=>assets[a]).length} · media equipesata</div>
-        ${rows}
-      </div>
-      <a class="card-link" href="https://mark-robots.github.io/dmi-sentinel/Earnings_3_0.html">apri il sistema live <span class="arr">→</span></a>`;
-    return d.updated_at?d.updated_at.slice(0,10):null;
-  }catch(e){
-    el.innerHTML=`<p class="crypto-note">Sistema DMI su BTC / ETH / SOL con ottimizzazione walk-forward. Metriche live nell'app.</p>
-      <a class="card-link" href="https://mark-robots.github.io/dmi-sentinel/Earnings_3_0.html">apri il sistema live <span class="arr">→</span></a>`;
-    return null;
-  }
-}
-
-function loadCombined(){
-  const el=document.getElementById('combo-body');
-  try{
-    const az=window.__cmb_az, etf=window.__cmb_etf, cr=window.__cmb_cr;
-    if(!az||!etf||!cr||!cr.weekly||!cr.weekly.length) throw new Error('dati incompleti');
-    const azAg=az.modes.aggressive;
-    const azm={}; (azAg.equity_curve||[]).forEach(e=>{azm[e.date]=e.system;});
-    const pe=etf.portfolio_equity;
-    // Componente ETF ricostruita sugli strumenti UCITS in EUR (stessi segnali
-    // lisciati, stesso algoritmo non ribilanciato del sistema; fallback
-    // sull'indice USA nelle settimane senza prezzo EUR): il combinato include
-    // così l'effetto cambio del portafoglio reale.
-    const sim0=etf.portfolio_simulation||{};
-    const sDates=sim0.dates||[];
-    // solo i 9 settori di SISTEMA (esclusi i solo-analisi presenti nella griglia)
-    const SYS=((etf.ranking&&etf.ranking.ranking)||[])
-      .filter(s=>s.opSignal!=='INFO')
-      .map(s=>s.ticker_raw||s.ticker)
-      .filter(t=>(sim0.sectors||{})[t]);
-    const em={};
-    {
-      const sub={}; SYS.forEach(t=>{sub[t]=100.0/SYS.length;});
-      for(let i=0;i<sDates.length;i++){
-        if(i){
-          for(const t of SYS){
-            const sec=sim0.sectors[t];
-            const sig=sec.signals_by_ts[String(sec.default_ts)]||[];
-            let p0=(sec.prices_eur&&sec.prices_eur[i-1]>0)?sec.prices_eur[i-1]:null;
-            let p1=(sec.prices_eur&&sec.prices_eur[i]!=null&&sec.prices_eur[i]>0)?sec.prices_eur[i]:null;
-            if(p0==null||p1==null){p0=sec.prices[i-1];p1=sec.prices[i];}
-            if(p0&&p1!=null&&sig[i-1]) sub[t]*=p1/p0;
+    // --- onda ciclica sintetica: somma pesata dei 3 cicli ---
+    const waveChart=(cycles, lastDateStr)=>{
+      const lastDate=new Date(lastDateStr+'T00:00:00');
+      const pesi={annuale:3, intermedio:2, mensile:1};
+      const isSP_w = (targetId==='cycles-body');
+      // offset di bias (giorni) per ciclo — solo S&P; su BTC restano 0 (onda invariata)
+      const OFF = isSP_w
+        ? {annuale:{min:21,max:-38}, intermedio:{min:8,max:-4}, mensile:{min:2,max:1}}
+        : {annuale:{min:0,max:0}, intermedio:{min:0,max:0}, mensile:{min:0,max:0}};
+      // onda ANCORATA: i minimi/massimi sono ancorati alle date ATTESE (con bias),
+      // così il picco della curva cade esattamente dove arriva il vero estremo.
+      // ggRaw = giorni dal minimo reale; minimo atteso a k*len+offMin, massimo a k*len+len/2+offMax.
+      function ondaBias(ggRaw, len, off){
+        const k=Math.floor(ggRaw/len);
+        for(let kk=k-1; kk<=k+1; kk++){
+          const minA=kk*len+off.min;
+          const maxA=kk*len+len/2+off.max;
+          const minB=(kk+1)*len+off.min;
+          if(ggRaw>=minA && ggRaw<maxA){ const f=(ggRaw-minA)/(maxA-minA); return -Math.cos(Math.PI*f); }
+          if(ggRaw>=maxA && ggRaw<minB){ const f=(ggRaw-maxA)/(minB-maxA); return Math.cos(Math.PI*f); }
+        }
+        return -Math.cos(2*Math.PI*ggRaw/len); // fallback
+      }
+      const segs=cycles.filter(c=>c.last_low_date).map(c=>({
+        key:c.key,
+        len:c.len_effective||c.len_theoretical,
+        lastLow:new Date(c.last_low_date+'T00:00:00'),
+        peso:pesi[c.key]||1
+      }));
+      if(!segs.length) return '';
+      const DAY=86400000;
+      const onda=(offset)=>{
+        // V1: l'onda è SOLO il ciclo annuale, così il suo picco coincide esattamente
+        // con l'inverso annuale (il massimo del ciclo di fondo). Niente intermedio/mensile.
+        const annSeg=segs.find(s=>s.key==='annuale');
+        if(!annSeg) return 0;
+        const ggRaw=(new Date(lastDate.getTime()+offset*DAY)-annSeg.lastLow)/DAY;
+        return ondaBias(ggRaw, annSeg.len, OFF.annuale||{min:0,max:0});
+      };
+      const G0=-50, G1=300;               // finestra: da -50 a +300 giorni rispetto a oggi
+      const pts=[];
+      for(let g=G0; g<=G1; g++) pts.push([g, onda(g)]);
+      // --- onda del SOLO ciclo annuale, stessa finestra e scala (tendenza di fondo) ---
+      const ann=cycles.find(c=>c.key==='annuale' && c.last_low_date);
+      let annPts=null, annLen=null, annLow=null;
+      if(ann){
+        annLen=ann.len_effective||ann.len_theoretical;
+        annLow=new Date(ann.last_low_date+'T00:00:00');
+        const offA=OFF.annuale||{min:0,max:0};
+        annPts=[];
+        for(let g=G0; g<=G1; g++){
+          const data=new Date(lastDate.getTime()+g*DAY);
+          const ggRaw=(data-annLow)/DAY;
+          annPts.push([g, ondaBias(ggRaw, annLen, offA)]);   // onda annuale ancorata col bias
+        }
+      }
+      // estremi futuri dell'onda aggregata (g>=0)
+      const estremi=[];
+      for(let i=1;i<pts.length-1;i++){
+        const [g,v]=pts[i]; if(g<0) continue;
+        const vp=pts[i-1][1], vn=pts[i+1][1];
+        if(v<vp && v<vn) estremi.push(['min',g,v]);
+        if(v>vp && v>vn) estremi.push(['max',g,v]);
+      }
+      // dimensioni SVG
+      const W=820, H=240, padL=14, padR=14, padT=44, padB=30;
+      const plotW=W-padL-padR, plotH=H-padT-padB;
+      const x=g=> padL + (g-G0)/(G1-G0)*plotW;
+      const y=v=> padT + (1 - (v+1)/2)*plotH;   // v in [-1,1] -> alto=+1
+      // path onda aggregata
+      let dPath='';
+      pts.forEach((p,i)=>{ dPath += (i===0?'M':'L') + x(p[0]).toFixed(1) + ',' + y(p[1]).toFixed(1) + ' '; });
+      // banda di fondo: ciclo annuale, segmenti verde(sale)/rosso(scende), semitrasparenti
+      let annBand='', annMarks='';
+      if(annPts){
+        for(let i=1;i<annPts.length;i++){
+          const [g0,v0]=annPts[i-1], [g1,v1]=annPts[i];
+          const col = v1>=v0 ? 'rgba(34,224,107,0.85)' : 'rgba(255,90,60,0.85)';
+          annBand += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="8" stroke-linecap="round"/>`;
+        }
+        // l'onda è GIÀ spostata col bias, quindi i suoi estremi cadono alle date corrette:
+        // cerchio ed etichetta vanno sull'apice reale dell'onda (posizione g), niente doppio offset
+        const fmtA=(gg)=>{ const dt=new Date(lastDate.getTime()+gg*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+        for(let i=1;i<annPts.length-1;i++){
+          const [g,v]=annPts[i]; if(g<0) continue;
+          const vp=annPts[i-1][1], vn=annPts[i+1][1];
+          let t=null;
+          if(v<vp&&v<vn) t='min'; if(v>vp&&v>vn) t='max';
+          if(t){
+            const col=t==='min'?'#22c55e':'#ef4444';
+            const px=x(g), py=y(v);
+            // triangolo grande (annuale): min ▲ verde sopra, max ▼ rosso sotto
+            const sz=14, w=sz*1.1;
+            const tp = t==='min'
+              ? `${px-w/2},${(py+sz*0.7).toFixed(1)} ${px+w/2},${(py+sz*0.7).toFixed(1)} ${px},${(py-sz*0.6).toFixed(1)}`
+              : `${px-w/2},${(py-sz*0.7).toFixed(1)} ${px+w/2},${(py-sz*0.7).toFixed(1)} ${px},${(py+sz*0.6).toFixed(1)}`;
+            // posizione etichetta: sotto il min / sopra il max, ma se uscirebbe dal bordo la ribalto dentro
+            let ly = t==='min' ? py+34 : py-26;
+            const topLimit = padT+8, botLimit = H-padB-4;
+            if(t==='min' && ly>botLimit) ly = py-22;   // minimo troppo in basso -> etichetta sopra il triangolo
+            if(t==='max' && ly<topLimit) ly = py+30;   // massimo troppo in alto -> etichetta sotto il triangolo
+            annMarks += `<polygon points="${tp}" fill="${col}" stroke="#0a0e14" stroke-width="0.5"/>`;
+            annMarks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="${col}" opacity="0.95" font-weight="700">${t==='min'?'min':'max'} annuale ${fmtA(g)}</text>`;
           }
         }
-        em[sDates[i]]=Object.values(sub).reduce((s,v)=>s+v,0);
       }
-    }
-    const valAt=(m,ds)=>{let best=null;for(const k in m){if(k<=ds&&(best===null||k>best))best=k;}return best!==null?m[best]:null;};
-
-    // pesi per asset: 100% / numero totale di asset dei tre sistemi
-    const NE=pe.n_sectors||9, NA=9, NC=(cr.portfolio&&cr.portfolio.n_assets)||3;
-    const TOT=NE+NA+NC, wE=NE/TOT, wA=NA/TOT, wC=NC/TOT;
-
-    // ── curva combinata: rendimenti settimanali composti ──
-    const d0=new Date(cr.weekly[0].date+'T00:00:00');
-    let prev=cr.weekly_seed||new Date(d0.getTime()-7*86400000).toISOString().slice(0,10);
-    let combo=100,lastR=null;
-    const pts=[{date:prev,v:100,r:0}];
-    for(const w of cr.weekly){
-      const ds=w.date;
-      const e1=valAt(em,ds),e0=valAt(em,prev),a1=valAt(azm,ds),a0=valAt(azm,prev);
-      if(e1==null||e0==null||a1==null||a0==null){prev=ds;continue;}
-      lastR=wE*(e1/e0-1)+wA*(a1/a0-1)+wC*((w.pct||0)/100);
-      combo*=1+lastR;
-      pts.push({date:ds,v:combo,r:lastR*100});
-      prev=ds;
-    }
-    if(pts.length<3) throw new Error('serie troppo corta');
-    const fmtDM=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y.slice(2)}`;};
-    const wk=lastR*100;
-    const mo=pts.length>5?(combo/pts[pts.length-5].v-1)*100:(combo/pts[0].v-1)*100;
-    const tot=combo-100;
-
-    // ── composizione: asset correnti dei tre sistemi ──
-    const names=az.stock_names||{};
-    const fmtIT=s=>{if(!s)return null;const[y,m,d]=s.split('-');return `${d}/${m}/${y}`;};
-    const azPos=(azAg.current_positions||[]).map(p=>({
-      lab:p.ticker, nm:(names[p.ticker]||p.sector_name||'').slice(0,16), pf:p.perf_pct, tag:'',
-      dt:fmtIT(p.entry_date), px:p.entry_price!=null?p.entry_price.toFixed(2):null}));
-    // ETF: strumenti UCITS reali (stesso metodo del pannello Allocazione di cliente.html):
-    // ticker iShares/Lyxor, prezzo EUR alla data d'ingresso e performance sulla stessa
-    // serie (mai mischiare valute); fallback su indice USA marcato con *.
-    const sim=etf.portfolio_simulation||{};
-    const simDates=sim.dates||[];
-    const lastIdx=simDates.length-1;
-    const etfPos=((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal==='IN').map(s=>{
-      const raw=s.ticker_raw||s.ticker;
-      const sec=(sim.sectors||{})[raw];
-      const ei=s.etfInfo||{};
-      let dt=null,px=null,pf=null;
-      if(sec&&sec.signals_by_ts){
-        const sig=sec.signals_by_ts[String(sec.default_ts)]||[];
-        let entry=lastIdx;
-        for(let i=lastIdx;i>0;i--){
-          if(sig[i]&&!sig[i-1]){entry=i;break;}
-          if(i===1&&sig[0])entry=0;
+      // linea oggi
+      const xToday=x(0);
+      const fmtMini=(gg)=>{ const dt=new Date(lastDate.getTime()+gg*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]; };
+      // triangolo direzionale: min = ▲ verde (poi sale), max = ▼ rosso (poi scende)
+      // dimensione diversa per ciclo: annuale grande, intermedio medio
+      function tri(px,py,tipo,size){
+        const col = tipo==='min' ? '#22c55e' : '#ef4444';
+        const h=size, w=size*1.1;
+        // min: punta in alto (sopra il punto); max: punta in basso (sotto il punto)
+        const pts = tipo==='min'
+          ? `${px-w/2},${(py+h*0.6).toFixed(1)} ${px+w/2},${(py+h*0.6).toFixed(1)} ${px},${(py-h*0.5).toFixed(1)}`
+          : `${px-w/2},${(py-h*0.6).toFixed(1)} ${px+w/2},${(py-h*0.6).toFixed(1)} ${px},${(py+h*0.5).toFixed(1)}`;
+        return `<polygon points="${pts}" fill="${col}"/>`;
+      }
+      // estremi attesi (con bias) dei cicli annuale e intermedio, nella finestra
+      function estremiAttesi(s){
+        const off=OFF[s.key]||{min:0,max:0};
+        const ggLow0=(lastDate - s.lastLow)/DAY;
+        const res=[];
+        for(let k=-1;k<=Math.ceil((G1+ggLow0)/s.len)+1;k++){
+          const gMin=k*s.len+off.min-ggLow0, gMax=k*s.len+s.len/2+off.max-ggLow0;
+          if(gMin>=0 && gMin<=G1) res.push({g:Math.round(gMin), tipo:'min'});
+          if(gMax>=0 && gMax<=G1) res.push({g:Math.round(gMax), tipo:'max'});
         }
-        dt=simDates[entry];
-        const pe=sec.prices_eur;
-        let p0=(pe&&pe[entry]>0)?pe[entry]:null, p1=(pe&&pe[lastIdx]>0)?pe[lastIdx]:null, fb=false;
-        if(p0==null||p1==null){p0=sec.prices[entry];p1=sec.prices[lastIdx];fb=true;}
-        if(p0>0&&p1!=null){pf=(p1/p0-1)*100;px=(fb?'':'\u20ac')+Number(p0).toFixed(2)+(fb?'*':'');}
+        return res;
       }
-      return {lab:ei.ticker_short||s.ticker, nm:(s.name||'').slice(0,16), pf:pf, tag:'',
-        dt:fmtIT(dt), px:px};});
-    const crPos=Object.entries(cr.assets||{}).filter(([a,v])=>v.in_position).map(([a,v])=>({
-      lab:a, nm:'in posizione',
-      pf:(v.perf_pos!=null?v.perf_pos:v.perf_ytd),
-      tag:(v.perf_pos!=null?'':'ytd'),
-      dt:fmtIT(v.entry_date), px:v.entry_price!=null?Number(v.entry_price).toFixed(2):null}));
-    const nCash=(NA-azPos.length)+(NE-etfPos.length)+(NC-crPos.length);
-    const wSlot=100/TOT;
-    const PAL_A=['#ff7a18','#ffa14d','#e8564a','#c73e3e','#b07d3a','#d4713b','#ff8f6b','#a85232','#e0763a'];
-    const PAL_E=['#5b9dff','#7fb4ff','#3f7fe0','#2f5fb0','#6fd0e0','#4a8fa8','#8aa8ff','#3568c4','#5cc0d4'];
-    const PAL_C=['#3ddc84','#2fae68','#6fe8a8'];
-    const slices=[], cols=[], groups=[];
-    azPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_A[i%PAL_A.length]); groups.push('az');});
-    etfPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_E[i%PAL_E.length]); groups.push('etf');});
-    crPos.forEach((p,i)=>{slices.push(p); cols.push(PAL_C[i%PAL_C.length]); groups.push('cr');});
-    const liqPct=nCash*wSlot;
-    const investedPct=100-liqPct;
-    const pct1=x=>x.toFixed(1).replace('.',',');
-
-    // ── pesi reali: deriva di chi detiene dall'ingresso di ogni posizione
-    //    (mondo senza ribilanciamenti = tetto della concentrazione; il cash non rende) ──
-    const wRealRaw=slices.map(s=>wSlot*(1+((s.pf!=null)?s.pf/100:0)));
-    const totReal=wRealRaw.reduce((a2,b2)=>a2+b2,0)+liqPct;
-    const wRealN=wRealRaw.map(v=>v/totReal*100);
-    const liqRealN=liqPct/totReal*100;
-    window.__pieModes={
-      entry:{data:[...slices.map(()=>wSlot),liqPct],inv:investedPct,
-        note:'ogni slot vale 100/'+TOT+' = '+pct1(wSlot)+'% all\'ingresso · la liquidità occupa gli slot liberi'},
-      real:{data:[...wRealN,liqRealN],inv:100-liqRealN,
-        note:'deriva di chi detiene dall\'ingresso di ogni posizione, senza ribilanciamenti: è il TETTO della concentrazione — con la regola del pozzo (vendite nel patrimonio comune, ingressi a 1/'+TOT+') la deriva effettiva è più contenuta'}};
-    window.__pieInv=investedPct;
-    window.__pieMode='entry';
-    window.__navPts=pts; window.__navQuota=combo;
-    const fmtEur=v=>Math.round(v).toLocaleString('it-IT')+' \u20ac';
-    window.renderComboValues=function(m){
-      const md=window.__pieModes[m]; if(!md)return;
-      const capEl=document.getElementById('nav-cap');
-      let cap=parseFloat(String(capEl?capEl.value:'100000').replace(/\./g,'').replace(',','.'))||100000;
-      const patrimonio=cap*combo/100;
-      const totEl=document.getElementById('nav-tot');
-      if(totEl)totEl.textContent='= '+fmtEur(patrimonio);
-      document.querySelectorAll('.cl-euro').forEach(elv=>{
-        const wi=elv.dataset.wi;
-        const w=(wi==='cash')?md.data[md.data.length-1]:md.data[+wi];
-        elv.textContent=(w!=null)?fmtEur(patrimonio*w/100):'\u2014';
-      });
-      const cp=document.getElementById('cash-pct');
-      if(cp)cp.textContent=md.data[md.data.length-1].toFixed(1).replace('.',',')+'%';
-    };
-    window.setPieMode=function(m){
-      const md=window.__pieModes[m]; if(!md||!window.__comboPie)return;
-      window.__pieMode=m;
-      window.__comboPie.data.datasets[0].data=md.data;
-      window.__pieInv=md.inv;
-      window.__comboPie.update();
-      document.getElementById('pt-entry').classList.toggle('active',m==='entry');
-      document.getElementById('pt-real').classList.toggle('active',m==='real');
-      document.getElementById('pie-note').textContent=md.note;
-      window.renderComboValues(m);
-    };
-    window.downloadNAV=function(){
-      const rows2=['data;nav'].concat((window.__navPts||[]).map(p=>p.date+';'+p.v.toFixed(4)));
-      const bl=new Blob([rows2.join('\n')],{type:'text/csv'});
-      const a2=document.createElement('a');
-      a2.href=URL.createObjectURL(bl); a2.download='megatrend_nav.csv'; a2.click();
-      URL.revokeObjectURL(a2.href);
-    };
-    // capitale di riferimento: memoria locale + ricalcolo al volo
-    (function(){
-      const capEl=document.getElementById('nav-cap'); if(!capEl)return;
-      const saved=localStorage.getItem('mt_nav_cap');
-      if(saved)capEl.value=saved;
-      capEl.addEventListener('input',()=>{
-        localStorage.setItem('mt_nav_cap',capEl.value);
-        window.renderComboValues(window.__pieMode);
-      });
-    })();
-    window.renderComboValues('entry');
-
-    // ── giornale delle operazioni: prezzo acquisto / vendita / performance ──
-    const VIA=pts[0].date;
-    const moves=[];
-    const fpx=(v,eur)=>v==null?'':((eur?'\u20ac':'')+Number(v).toFixed(v>=1000?0:2));
-    // AZIONI: registro adaptive (prezzi ai listini d'origine)
-    (azAg.operations||[]).forEach(o=>{
-      moves.push({d:o.entry_date,sys:'az',op:'in',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
-        px:fpx(o.entry_price,false),perf:null,why:''});
-      if(o.exit_date){
-        moves.push({d:o.exit_date,sys:'az',op:'out',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
-          px:fpx(o.exit_price,false),perf:o.perf_pct,
-          why:o.exit_reason==='stop_loss'?'stop −20%':''});
-      }
-    });
-    // ETF: storico segnali + prezzi UCITS in EUR dalla simulazione (fallback USD con *)
-    const dIdx={}; simDates.forEach((dd,i)=>{dIdx[dd]=i;});
-    const idxOf=dd=>{if(dIdx[dd]!=null)return dIdx[dd];
-      for(let i=simDates.length-1;i>=0;i--){if(simDates[i]<=dd)return i;} return null;};
-    ((etf.ranking&&etf.ranking.ranking)||[]).filter(s=>s.opSignal!=='INFO').forEach(s=>{
-      const raw=s.ticker_raw||s.ticker;
-      const sec=(sim.sectors||{})[raw]||{};
-      const ei2=s.etfInfo||{};
-      const lab=ei2.ticker_short||s.ticker;
-      const nome=(s.name||s.ticker).slice(0,16);
-      const pe=sec.prices_eur, pu=sec.prices;
-      const at=(arr,i2)=>(arr&&i2!=null&&arr[i2]>0)?arr[i2]:null;
-      (s.opHistory||[]).forEach(pr=>{
-        if(pr.signal!=='IN')return;
-        const i0=idxOf(pr.start_date);
-        const i1=pr.is_current?null:idxOf(pr.end_date);
-        // valuta decisa UNA volta per periodo: EUR solo se disponibile su
-        // tutte le sponde del periodo, altrimenti USD (asterisco) su tutte
-        const eur=at(pe,i0)!=null&&(pr.is_current||at(pe,i1)!=null);
-        const p0=eur?at(pe,i0):at(pu,i0);
-        moves.push({d:pr.start_date,sys:'etf',op:'in',tk:lab,nm:nome,
-          px:p0!=null?fpx(p0,eur)+(eur?'':'*'):'',perf:null,why:''});
-        if(!pr.is_current&&pr.end_date){
-          const p1=eur?at(pe,i1):at(pu,i1);
-          const pf2=(p0!=null&&p1!=null)?(p1/p0-1)*100:pr.perf_sector;
-          moves.push({d:pr.end_date,sys:'etf',op:'out',tk:lab,nm:nome,
-            px:p1!=null?fpx(p1,eur)+(eur?'':'*'):'',perf:pf2,why:''});
+      // valore y dell'onda aggregata in g (per posizionare il marcatore sulla curva)
+      const yOndaAt=(g)=>{ const i=Math.round(g-G0); return (i>=0&&i<pts.length)?pts[i][1]:onda(g); };
+      let marks='';
+      let lastLblXmin=-999, lastLblXmax=-999;
+      const MIN_GAP=42;
+      const segInt=segs.find(s=>s.key==='intermedio'), segAnn=segs.find(s=>s.key==='annuale');
+      // V2: la linea arancione morbida mostra già il ritmo intermedio;
+      // i marcatori a triangolo restano solo per gli estremi ANNUALI (vedi annMarks sopra),
+      // così il grafico è pulito. Niente triangoli intermedi sparsi.
+      // etichette mesi sull'asse x
+      let axis='';
+      let cur=new Date(lastDate.getTime()+G0*DAY);
+      cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      while(true){
+        const g=Math.round((cur-lastDate)/DAY);
+        if(g>G1) break;
+        if(g>=G0){
+          const px=x(g);
+          axis += `<line x1="${px.toFixed(1)}" y1="${padT}" x2="${px.toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>`;
+          axis += `<text x="${px.toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5e6675">${MESI[cur.getMonth()]} ${String(cur.getFullYear()).slice(2)}</text>`;
         }
-      });
-    });
-    // CRYPTO: registro dei trade del motore DMI (finestra ultimo anno)
-    Object.entries(cr.assets||{}).forEach(([a3,v])=>{
-      (v.trades||[]).forEach(t=>{
-        moves.push({d:t.entry_date,sys:'cr',op:'in',tk:a3,nm:'',px:fpx(t.entry_price,false),perf:null,why:''});
-        moves.push({d:t.exit_date,sys:'cr',op:'out',tk:a3,nm:'',px:fpx(t.exit_price,false),perf:t.perf,why:''});
-      });
-      if(v.in_position&&v.entry_date){
-        moves.push({d:v.entry_date,sys:'cr',op:'in',tk:a3,nm:'',px:fpx(v.entry_price,false),perf:null,why:''});
+        cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
       }
-    });
-    moves.sort((a2,b2)=>b2.d.localeCompare(a2.d)||(a2.op==='out'?-1:1));
-    window.__jrMoves=moves;
-    window.renderJournal=function(range){
-      const list=document.getElementById('jr-list'); if(!list)return;
-      const rows2=moves.filter(m=>range==='all'||m.d>=VIA);
-      const head=`<div class="jr-row jr-head"><span>data</span><span></span><span>operaz.</span><span>asset</span><span class="r">prezzo</span><span class="r">perf</span></div>`;
-      list.innerHTML=head+(rows2.length?rows2.map(m=>`<div class="jr-row">
-        <span class="jr-d">${fmtDM(m.d)}</span>
-        <span class="jr-sys ${m.sys}">${m.sys==='az'?'AZ':(m.sys==='etf'?'ETF':'CR')}</span>
-        <span class="jr-op ${m.op}">${m.op==='in'?'ACQUISTO':'VENDITA'}</span>
-        <span class="jr-asset"><span class="tk2">${m.tk}</span><span class="nm2">${m.nm}</span>${m.why?'<span class="why">'+m.why+'</span>':''}</span>
-        <span class="jr-px">${m.px||'\u2014'}</span>
-        <span class="jr-det">${m.perf!=null?'<span class="'+(m.perf>=0?'pos':'neg')+'">'+sign(m.perf)+'</span>':''}</span>
-      </div>`).join(''):'<div class="jr-row"><span class="jr-d"></span><span></span><span></span><span class="jr-asset nm2">nessun movimento nel periodo</span><span></span><span></span></div>');
-      const note=document.getElementById('jr-note');
-      if(note)note.textContent=(range==='all'
-        ?'Storico completo dei due sistemi azionari: prima del '+fmtDM(VIA)+' i movimenti provengono dalla storia dei sistemi (ETF dal 2009, Azioni dal 2018), non dal tracking live del combinato. '
-        :'Movimenti dal via del NAV ('+fmtDM(VIA)+'). Le posizioni aperte prima del via compaiono nell\'elenco sopra con la loro data d\'ingresso. ')
-        +'Prezzi: azioni ai listini d\'origine, ETF in EUR sugli strumenti UCITS (l\'asterisco indica il ripiego sull\'indice USA), crypto in USD. Performance sulle vendite: dall\'acquisto alla vendita, stessi prezzi mostrati. Le operazioni crypto coprono la finestra del motore (ultimo anno).';
-    };
-    window.setJrRange=function(r){
-      document.getElementById('jr-nav').classList.toggle('active',r==='nav');
-      document.getElementById('jr-all').classList.toggle('active',r==='all');
-      window.renderJournal(r);
-    };
-    window.renderJournal('nav');
-
-    // ── markup ──
-    // rendimenti mensili composti dalle settimane (mese della data di chiusura settimanale)
-    const MESI_N=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-    const months=[];
-    for(let i=1;i<pts.length;i++){
-      const dt=new Date(pts[i].date+'T00:00:00');
-      const key=dt.getFullYear()+'-'+dt.getMonth();
-      let m=months[months.length-1];
-      if(!m||m.key!==key){m={key,lab:MESI_N[dt.getMonth()]+' '+String(dt.getFullYear()).slice(2),f:1};months.push(m);}
-      m.f*=1+pts[i].r/100;
-    }
-    const lastMonthKey=months.length?months[months.length-1].key:null;
-    const monthChips=months.map(m=>{
-      const v=(m.f-1)*100;
-      const cls=v>=0?'pos':'neg';
-      const corso=(m.key===lastMonthKey)?'<span class="cm-t">in corso</span>':'';
-      return `<div class="cm-chip ${cls}"><span class="cm-m">${m.lab}</span><span class="cm-v">${(v>=0?'+':'')+v.toFixed(1).replace('.',',')}%</span>${corso}</div>`;
-    }).join('');
-    const rowHTML=(p,c,wi)=>`<div class="pos-row">
-      <span class="cl-name"><span class="dot2" style="background:${c}"></span><span class="tk">${p.lab}</span><span class="nm">${p.nm}</span></span>
-      <span class="cl-val cl-date">${p.dt||'—'}</span>
-      <span class="cl-val cl-price">${p.px||'—'}</span>
-      <span class="cl-val cl-euro" data-wi="${wi}">—</span>
-      <span class="pf ${p.pf>=0?'pos':'neg'}">${p.pf!=null?sign(p.pf):'—'}${p.tag?' <span style="color:var(--txt-faint);font-weight:400;font-size:9px">YTD</span>':''}</span></div>`;
-    let list=`<div class="cl-cols"><span>asset</span><span>in posizione da</span><span>prezzo acq.</span><span>valore</span><span>perf</span></div>`;
-    list+=`<div class="cl-head">Azioni · ${pct1(wA*100)}% (${NA} asset)</div>`;
-    azPos.forEach((p,i)=>{list+=rowHTML(p,PAL_A[i%PAL_A.length],i);});
-    list+=`<div class="cl-head">ETF · ${pct1(wE*100)}% (${NE} asset)</div>`;
-    etfPos.forEach((p,i)=>{list+=rowHTML(p,PAL_E[i%PAL_E.length],azPos.length+i);});
-    list+=`<div class="cl-head">Crypto · ${pct1(wC*100)}% (${NC} asset)</div>`;
-    crPos.forEach((p,i)=>{list+=rowHTML(p,PAL_C[i%PAL_C.length],azPos.length+etfPos.length+i);});
-    if(!crPos.length) list+=`<div class="pos-row"><span class="nm">nessuna posizione aperta</span></div>`;
-    list+=`<div class="cl-head">Liquidità</div>
-      <div class="pos-row"><span class="cl-name"><span class="dot2" style="background:var(--cash)"></span><span class="tk">CASH</span><span class="nm">${nCash} slot liberi</span></span><span class="cl-val cl-date"></span><span class="cl-val cl-price"></span><span class="cl-val cl-euro" data-wi="cash">—</span><span class="pf" style="color:var(--cash)" id="cash-pct">${pct1(liqPct)}%</span></div>`;
-
-    el.innerHTML=`
-      <div class="nav-box">
-        <div class="nav-main">
-          <span class="nav-lab">NAV · valore quota</span>
-          <span class="nav-q">${combo.toFixed(2).replace('.',',')}</span>
-          <span class="nav-meta">al ${fmtDM(pts[pts.length-1].date)} · <span class="${wk>=0?'pos':'neg'}" style="font-weight:700">${sign(wk)}</span> sett. · base 100 al ${fmtDM(pts[0].date)}</span>
-        </div>
-        <div class="nav-side">
-          <label class="nav-cap-w">capitale di riferimento €
-            <input id="nav-cap" type="text" inputmode="numeric" value="100.000"></label>
-          <span class="nav-tot" id="nav-tot">—</span>
-          <button class="nav-csv" onclick="downloadNAV()">storico ⤓</button>
-        </div>
-      </div>
-      <div class="perf-row">${perfBox(wk,'settimana')}${perfBox(mo,'ultime 4 settimane')}${perfBox(tot,'dal '+fmtDM(pts[0].date))}</div>
-      <div class="combo-chart-wrap"><canvas id="combo-line"></canvas></div>
-      <div class="combo-bars"><canvas id="combo-bars"></canvas></div>
-      <div style="margin-top:12px">
-        <button id="combo-months-btn" class="cm-toggle" onclick="var m=document.getElementById('combo-months');var open=m.style.display!=='none';m.style.display=open?'none':'flex';this.textContent=open?'mostra rendimenti mensili ▾':'nascondi rendimenti mensili ▴';">mostra rendimenti mensili ▾</button>
-      </div>
-      <div class="combo-months" id="combo-months" style="display:none">${monthChips}</div>
-      <div class="combo-grid">
-        <div class="combo-donut">
-          <div class="pie-toggle">
-            <button class="pt-btn active" id="pt-entry" onclick="setPieMode('entry')">pesi d'ingresso</button>
-            <button class="pt-btn" id="pt-real" onclick="setPieMode('real')">pesi reali</button>
-          </div>
-          <div class="pie-cv"><canvas id="combo-pie"></canvas></div>
-          <div class="pie-note" id="pie-note">ogni slot vale 100/${TOT} = ${pct1(wSlot)}% all'ingresso · la liquidità occupa gli slot liberi</div>
-        </div>
-        <div class="combo-list">${list}</div>
-      </div>
-      <div class="ann-wave-note" style="margin-top:14px">${TOT} asset equipesati (100% / ${TOT} = ${pct1(wSlot)}% ciascuno) · base 100 al ${fmtDate(pts[0].date)} · rendimenti settimanali composti dei tre sistemi, liquidità inclusa nelle rispettive curve. Componente ETF su strumenti UCITS in EUR (effetto cambio incluso); azioni ai prezzi dei rispettivi listini; crypto in USD. Performance accanto agli asset: dalla data d'ingresso. Colonna «valore»: scomposizione del capitale di riferimento al NAV odierno secondo i pesi selezionati (ingresso o reali) — una lente di lettura, non la contabilità storica dei singoli slot.</div>
-      <div style="margin-top:12px">
-        <button class="cm-toggle" onclick="var j=document.getElementById('combo-journal');var open=j.style.display!=='none';j.style.display=open?'none':'block';this.textContent=open?'mostra il giornale delle operazioni ▾':'nascondi il giornale ▴';">mostra il giornale delle operazioni ▾</button>
-      </div>
-      <div id="combo-journal" style="display:none">
-        <div class="jr-tabs">
-          <button class="pt-btn active" id="jr-nav" onclick="setJrRange('nav')">dal via del NAV</button>
-          <button class="pt-btn" id="jr-all" onclick="setJrRange('all')">tutto lo storico</button>
-        </div>
-        <div class="jr-list" id="jr-list"></div>
-        <div class="jr-note" id="jr-note"></div>
-      </div>`;
-
-    // ── grafico linea (stile dashboard: percentuale dal via, griglia fine) ──
-    if(window.__comboLine){window.__comboLine.destroy();}
-    if(window.__comboBars){window.__comboBars.destroy();}
-    if(window.__comboPie){window.__comboPie.destroy();}
-    const ctxL=document.getElementById('combo-line').getContext('2d');
-    // plugin: linea guida verticale al passaggio del mouse
-    const crosshair={id:'crosshair',afterDraw(c){
-      const a=c.tooltip;if(!a||!a.getActiveElements().length)return;
-      const x=a.getActiveElements()[0].element.x,ar=c.chartArea,ctx=c.ctx;
-      ctx.save();ctx.strokeStyle='rgba(232,237,244,0.25)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
-      ctx.beginPath();ctx.moveTo(x,ar.top);ctx.lineTo(x,ar.bottom);ctx.stroke();ctx.restore();}};
-    // plugin: marcatore finale con pillola del valore
-    const endDot={id:'endDot',afterDatasetsDraw(c){
-      const m=c.getDatasetMeta(0);const el2=m.data[m.data.length-1];if(!el2)return;
-      const ctx=c.ctx,v=(pts[pts.length-1].v/100-1)*100;
-      ctx.save();
-      ctx.beginPath();ctx.arc(el2.x,el2.y,4.5,0,7);ctx.fillStyle='#f5b301';ctx.fill();
-      ctx.strokeStyle='#0a0c10';ctx.lineWidth=2;ctx.stroke();
-      const txt=(v>=0?'+':'')+v.toFixed(1)+'%';
-      ctx.font='800 11px JetBrains Mono';
-      const w2=ctx.measureText(txt).width+14;
-      const bx=Math.min(el2.x+10,c.chartArea.right-w2),by=el2.y-24;
-      ctx.fillStyle='#161b24';ctx.strokeStyle='rgba(245,179,1,.5)';ctx.lineWidth=1;
-      ctx.beginPath();ctx.roundRect(bx,by,w2,19,5);ctx.fill();ctx.stroke();
-      ctx.fillStyle='#f5b301';ctx.textAlign='left';ctx.fillText(txt,bx+7,by+13.5);
-      ctx.restore();}};
-    const grad=ctxL.createLinearGradient(0,0,0,280);
-    grad.addColorStop(0,'rgba(245,179,1,0.22)');grad.addColorStop(1,'rgba(245,179,1,0)');
-    const tt={backgroundColor:'#161b24',borderColor:'#222a35',borderWidth:1,padding:10,
-      titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},displayColors:false};
-    window.__comboLine=new Chart(ctxL,{
-      type:'line',
-      data:{labels:pts.map(p=>fmtDM(p.date)),
-        datasets:[{data:pts.map(p=>(p.v/100-1)*100),
-          borderColor:'#f5b301',borderWidth:2.4,pointRadius:0,pointHoverRadius:5,
-          pointHoverBackgroundColor:'#f5b301',pointHoverBorderColor:'#0a0c10',pointHoverBorderWidth:2,
-          tension:0.3,fill:true,backgroundColor:grad}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        interaction:{mode:'index',intersect:false},
-        plugins:{legend:{display:false},
-          tooltip:{...tt,callbacks:{
-            title:i=>i[0].label,
-            label:i=>{const k=i.dataIndex;return ['cumulato  '+(i.parsed.y>=0?'+':'')+i.parsed.y.toFixed(2)+'%',
-              'settimana '+(pts[k].r>=0?'+':'')+pts[k].r.toFixed(2)+'%'];}}}},
-        scales:{
-          x:{grid:{color:'rgba(255,255,255,0.05)'},border:{color:'rgba(255,255,255,0.1)'},
-             ticks:{color:'#5e6675',font:{family:'JetBrains Mono',size:9},maxTicksLimit:8,maxRotation:0}},
-          y:{grid:{color:'rgba(255,255,255,0.05)'},border:{display:false},
-             ticks:{color:'#8a96a6',font:{family:'JetBrains Mono',size:10},
-               callback:v=>(v>=0?'+':'')+v+'%'}}}},
-      plugins:[crosshair,endDot]
-    });
-    // pannello dei rendimenti settimanali
-    window.__comboBars=new Chart(document.getElementById('combo-bars'),{
-      type:'bar',
-      data:{labels:pts.map(p=>fmtDM(p.date)),
-        datasets:[{data:pts.map(p=>p.r),
-          backgroundColor:pts.map(p=>p.r>=0?'rgba(61,220,132,0.75)':'rgba(255,92,92,0.75)'),
-          borderRadius:2,barPercentage:.65}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},
-          tooltip:{...tt,callbacks:{label:i=>'settimana '+(i.parsed.y>=0?'+':'')+i.parsed.y.toFixed(2)+'%'}}},
-        scales:{x:{display:false},
-          y:{grid:{color:'rgba(255,255,255,0.04)'},border:{display:false},
-             ticks:{color:'#5a6573',font:{family:'JetBrains Mono',size:8},maxTicksLimit:3,callback:v=>(v>=0?'+':'')+v+'%'}}}}
-    });
-
-    // ── torta composizione: uno spicchio per asset + liquidità dorata con alone ──
-    const glowLiq={id:'glowLiq',afterDatasetsDraw(c){
-      const i=c.data.labels.indexOf('Liquidità'); if(i<0)return;
-      const arc=c.getDatasetMeta(0).data[i]; if(!arc)return;
-      const ctx=c.ctx; ctx.save();
-      ctx.shadowColor='rgba(255,214,90,0.85)'; ctx.shadowBlur=7;
-      arc.draw(ctx); ctx.restore();
-    }};
-    const ctxP=document.getElementById('combo-pie').getContext('2d');
-    window.__comboPie=new Chart(ctxP,{
-      type:'doughnut',
-      data:{labels:[...slices.map(s=>s.lab),'Liquidità'],
-        datasets:[{data:[...slices.map(()=>wSlot),liqPct],
-          backgroundColor:[...cols,'#c9a14a'],
-          borderColor:'#11151c',borderWidth:2,hoverOffset:5}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
-        layout:{padding:10},
-        plugins:{legend:{display:false},
-          tooltip:{backgroundColor:'#161b24',borderColor:'#222a35',borderWidth:1,
-            titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},
-            callbacks:{label:c=>' '+c.parsed.toFixed(1).replace('.',',')+'%'}}}},
-      plugins:[glowLiq,{id:'centerTxt',afterDraw(c){
-        const{ctx,chartArea:ar}=c; const cx=(ar.left+ar.right)/2, cy=(ar.top+ar.bottom)/2;
-        ctx.save(); ctx.textAlign='center';
-        ctx.font='500 10px JetBrains Mono'; ctx.fillStyle='#8a96a6';
-        ctx.fillText('investito',cx,cy-6);
-        ctx.font='800 17px JetBrains Mono'; ctx.fillStyle='#e8edf4';
-        ctx.fillText(pct1(window.__pieInv!=null?window.__pieInv:investedPct)+'%',cx,cy+13);
-        ctx.restore();
-      }}]
-    });
-  }catch(e){
-    el.innerHTML='<p class="crypto-note">Dati non ancora sufficienti per il portafoglio combinato.</p>';
-    console.error('Combo',e);
-  }
-}
-
-async function loadTrendMap(){
-  const el=document.getElementById('trendmap-body');
-  try{
-    const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
-    window.__sdFull=d;
-    const r=(d.ranking&&d.ranking.ranking)||[];
-    function starCount(state,stage){
-      const sg=parseInt(stage)||0;
-      if(sg===4) return 0;
-      const s=(state||'').toLowerCase();
-      if(s.includes('leader'))       return sg===2?5:4;
-      if(s.includes('emergente'))    return sg===2?4:3;
-      if(s.includes('rallentamento'))return sg===2?3:2;
-      if(s.includes('debole'))       return 1;
-      return 0;
-    }
-    const cleanName=n=>(n||'').replace(/\s+(USA|EU|Europa)$/i,'').trim();
-    const regionLabel=rg=>rg==='USA'?'USA':'Europa';
-    const verdict=(state,stage)=>{
-      const s=(state||'').toLowerCase();
-      const sg=parseInt(stage)||0;
-      if(sg===4) return 'in declino';
-      if(s.includes('leader'))        return sg===2?'forte, in pieno trend':'forte, in consolidamento';
-      if(s.includes('emergente'))     return sg===2?'in rafforzamento':'in costruzione';
-      if(s.includes('rallentamento')) return sg===2?'trend maturo, slancio in calo':'in raffreddamento';
-      if(s.includes('debole'))        return sg===3?'debole, in distribuzione':'debole, rimbalzo da verificare';
-      return '—';
-    };
-    // quadrante RRG (colore accento) e momentum derivati dai dati live
-    const quadrant=(state,stage)=>{
-      const s=(state||'').toLowerCase(); const sg=parseInt(stage)||0;
-      if(sg===4) return 'lag';
-      if(s.includes('leader'))        return 'lead';   // forte
-      if(s.includes('emergente'))     return 'impr';   // in miglioramento
-      if(s.includes('rallentamento')) return 'weak';   // in indebolimento
-      if(s.includes('debole'))        return sg===3?'weak':'lag';
-      return 'lag';
-    };
-    // Freccia momentum: variazione dello SCORE vs snapshot della settimana precedente
-    // (campo score_change calcolato da update_data.py su ranking_history.json).
-    // ▲ score in aumento · ▼ in calo · ◆ invariato · — confronto non disponibile.
-    const momentum=(s)=>{
-      const d=s.score_change;
-      if(d==null) return null;
-      if(d>0.05)  return 1;
-      if(d<-0.05) return -1;
-      return 0;
-    };
-    const rows=r.map(s=>({
-      name:cleanName(s.name)||s.ticker||'—',
-      ticker:s.ticker||'',
-      raw:s.ticker_raw||s.ticker||'',
-      region:(s.region==='USA')?'USA':'EU',
-      sig:s.opSignal||'',
-      verdict:verdict(s.state,s.stage),
-      n:starCount(s.state,s.stage),
-      q:quadrant(s.state,s.stage),
-      m:momentum(s)
-    }));
-
-    const momHTML=m=> m===null?'<span class="mom-fl" title="confronto non disponibile">&mdash;</span>':m>0?'<span class="mom-up">&#9650;</span>':m<0?'<span class="mom-dn">&#9660;</span>':'<span class="mom-eq" title="score invariato">&#9670;</span>';
-    const tip=tk=>{
-      const list=SECTOR_STOCKS[tk];
-      if(!list||!list.length) return '';
-      return `<div class="sct-tip"><div class="tip-h">titoli rappresentativi</div>${list.map(x=>`<span class="tip-x">${x}</span>`).join('')}</div>`;
-    };
-    const opBadge=d=>{
-      if(d.sig==='IN') return '<span class="tm-badge in">IN</span>';
-      return '';  // OUT o solo-analisi: nessun badge (assente dal portafoglio)
-    };
-    const colHTML=(area)=>{
-      const items=rows.filter(d=>d.region===area).sort((a,b)=>b.n-a.n);
-      return items.map((d,i)=>{
-        const pct=Math.max(6,(d.n/5)*100);
-        const hasTip=SECTOR_STOCKS[d.ticker]?' has-tip':'';
-        const sim=(window.__sdFull&&window.__sdFull.portfolio_simulation)||{};
-        const raw=d.raw||d.ticker;
-        // storico solo per i settori di SISTEMA: sugli informativi i segnali
-        // della griglia non muovono capitale e sarebbero fuorvianti
-        const canOpen=(sim.sectors&&sim.sectors[raw]&&d.sig!=='INFO')?' openable':'';
-        return `<div class="tm-row${hasTip}${canOpen}" data-tk="${raw}">
-          <div class="tm-rank">${i+1}</div>
-          <div class="tm-name"><span class="tm-acc q-${d.q}"></span><span class="tm-label">${d.name}</span>${opBadge(d)}${tip(d.ticker)}</div>
-          <div class="tm-track"><div class="tm-fill q-${d.q}" style="width:${pct}%"></div></div>
-          <div class="tm-mom">${momHTML(d.m)}</div>
-        </div>`;
-      }).join('');
+      const yMid=y(0);
+      return `<svg viewBox="0 0 ${W} ${H}" class="wave-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waveFill-${targetId}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,122,24,0.18)"/>
+            <stop offset="100%" stop-color="rgba(255,122,24,0)"/>
+          </linearGradient>
+        </defs>
+        ${axis}
+        <line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W-padR}" y2="${yMid.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3 4"/>
+        ${annBand}
+        ${annMarks}
+        <line x1="${xToday.toFixed(1)}" y1="${padT-8}" x2="${xToday.toFixed(1)}" y2="${H-padB}" stroke="#e8eaed" stroke-width="1.5" opacity="0.7"/>
+        <text x="${xToday.toFixed(1)}" y="${padT-12}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#e8eaed">oggi</text>
+        ${marks}
+      </svg>`;
     };
 
-    el.innerHTML=`<div class="tm-grid">
-        <div class="tm-col"><div class="tm-colhead"><span class="tm-area">USA</span><span class="tm-areasub">S&amp;P 500</span></div>${colHTML('USA')}</div>
-        <div class="tm-col"><div class="tm-colhead"><span class="tm-area">Europa</span><span class="tm-areasub">STOXX 600</span></div>${colHTML('EU')}</div>
-      </div>
-      <div class="tm-foot">
-        <span class="tm-leg"><span class="tm-badge in">IN</span>in portafoglio ETF</span>
-        <span class="tm-leg"><span class="tm-dot q-impr"></span>In rafforzamento</span>
-        <span class="tm-leg"><span class="tm-dot q-lead"></span>Leader</span>
-        <span class="tm-leg"><span class="tm-dot q-weak"></span>In indebolimento</span>
-        <span class="tm-leg"><span class="tm-dot q-lag"></span>Debole</span>
-        <span class="tm-leg tm-sp" style="color:var(--green)">&#9650; score in aumento</span>
-        <span class="tm-leg" style="color:var(--red)">&#9660; in calo</span>
-        <span class="tm-leg" style="color:#f5b301">&#9670; invariato</span>
-      </div>
-      <div class="trend-legend">Il badge <b>IN</b> è il segnale operativo del sistema (lo stesso della card Portafoglio ETF): entra e esce con la conferma di 4 settimane, quindi può differire dalla fotografia RRG istantanea. Un settore <b>IN</b> ma colorato in rosso è in portafoglio ma si sta raffreddando; un settore verde/blu senza badge non è (ancora) operativo.<span class="legend-hint">Passa il mouse su un settore per i titoli rappresentativi · clicca per lo storico completo con i periodi in posizione.</span></div>`;
-
-    // ── overlay a tutta pagina: storico del settore con bande IN/OUT ──
-    const openSectorHistory=(raw)=>{
-      const full=window.__sdFull||{};
-      const sim=full.portfolio_simulation||{};
-      const sec=(sim.sectors||{})[raw];
-      if(!sec||!sec.prices)return;
-      const dts=sim.dates||[];
-      const sig=(sec.signals_by_ts&&sec.signals_by_ts[String(sec.default_ts)])||[];
-      // punti validi
+    // --- onda del SOLO ciclo annuale, colorata per direzione (verde sale / rosso scende) ---
+    const annualWave=(cycles, lastDateStr)=>{
+      const ann=cycles.find(c=>c.key==='annuale' && c.last_low_date);
+      if(!ann) return '';
+      const lastDate=new Date(lastDateStr+'T00:00:00');
+      const DAY=86400000;
+      const len=ann.len_effective||ann.len_theoretical;
+      const lastLow=new Date(ann.last_low_date+'T00:00:00');
+      const onda=(offset)=>{
+        const data=new Date(lastDate.getTime()+offset*DAY);
+        const gg=Math.round((data-lastLow)/DAY);
+        return -Math.cos(2*Math.PI*gg/len);   // -1 minimo, +1 massimo
+      };
+      const G0=-Math.round(len*0.7), G1=Math.round(len*1.1);  // ~un ciclo e mezzo intorno a oggi
       const pts=[];
-      for(let i=0;i<dts.length;i++){
-        if(sec.prices[i]!=null&&sec.prices[i]>0)pts.push({i,d:dts[i],v:sec.prices[i],s:!!sig[i]});
+      for(let g=G0; g<=G1; g++) pts.push([g, onda(g)]);
+      const W=820, H=200, padL=14, padR=14, padT=40, padB=30;
+      const plotW=W-padL-padR, plotH=H-padT-padB;
+      const x=g=> padL + (g-G0)/(G1-G0)*plotW;
+      const y=v=> padT + (1-(v+1)/2)*plotH;
+      // segmento per segmento, colore per pendenza (sale=verde, scende=rosso)
+      let segPaths='';
+      for(let i=1;i<pts.length;i++){
+        const [g0,v0]=pts[i-1], [g1,v1]=pts[i];
+        const sale = v1>=v0;
+        const col = sale ? '#22e06b' : '#ff5a3c';
+        segPaths += `<line x1="${x(g0).toFixed(1)}" y1="${y(v0).toFixed(1)}" x2="${x(g1).toFixed(1)}" y2="${y(v1).toFixed(1)}" stroke="${col}" stroke-width="3" stroke-linecap="round"/>`;
       }
-      if(pts.length<20)return;
-      // bande = tratti consecutivi con segnale attivo
-      const bands=[];let s0=null;
-      pts.forEach((p,k)=>{
-        if(p.s&&s0===null)s0=k;
-        if((!p.s||k===pts.length-1)&&s0!==null){bands.push([s0,p.s?k:k-1]);s0=null;}
-      });
-      // statistiche oneste dalla serie
-      const wIn=pts.filter(p=>p.s).length;
-      const anni=((pts.length)/52).toFixed(0);
-      // scala log
-      const W=1000,H=430,padL=58,padR=14,padT=16,padB=34;
-      const X=k=>padL+k/(pts.length-1)*(W-padL-padR);
-      const lg=Math.log;
-      let mn=Infinity,mx=-Infinity;
-      pts.forEach(p=>{mn=Math.min(mn,p.v);mx=Math.max(mx,p.v);});
-      const lmn=lg(mn*0.96),lmx=lg(mx*1.04);
-      const Y=v=>padT+(1-(lg(v)-lmn)/(lmx-lmn))*(H-padT-padB);
-      const path=pts.map((p,k)=>(k?'L':'M')+X(k).toFixed(1)+','+Y(p.v).toFixed(1)).join(' ');
-      const rects=bands.map(([a2,b2])=>`<rect x="${X(a2).toFixed(1)}" y="${padT}" width="${Math.max(1,(X(b2)-X(a2))).toFixed(1)}" height="${H-padT-padB}" fill="rgba(61,220,132,0.13)"/>`).join('');
-      // assi: anni + livelli log
-      let ax='',lastY=-1;
-      pts.forEach((p,k)=>{
-        const y=+p.d.slice(0,4);
-        if(y!==lastY&&y%2===0){lastY=y;
-          ax+=`<line x1="${X(k).toFixed(1)}" y1="${padT}" x2="${X(k).toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>
-               <text x="${X(k).toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="#5e6675">${y}</text>`;}
-        else if(y!==lastY){lastY=y;}
-      });
-      let ylab='';
-      for(let f=0;f<=3;f++){
-        const v=Math.exp(lmn+(lmx-lmn)*f/3);
-        ylab+=`<text x="${padL-8}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" font-family="JetBrains Mono,monospace" fill="#5e6675">${v>=100?Math.round(v):v.toFixed(1)}</text>
-               <line x1="${padL}" y1="${Y(v).toFixed(1)}" x2="${W-padR}" y2="${Y(v).toFixed(1)}" stroke="rgba(255,255,255,0.04)"/>`;
+      // estremi (prossimi min/max) con data
+      const fmtMini=(g)=>{ const dt=new Date(lastDate.getTime()+g*DAY); return dt.getDate()+' '+MESI[dt.getMonth()]+' '+String(dt.getFullYear()).slice(2); };
+      let marks='';
+      for(let i=1;i<pts.length-1;i++){
+        const [g,v]=pts[i]; if(g<0) continue;
+        const vp=pts[i-1][1], vn=pts[i+1][1];
+        let tipo=null;
+        if(v<vp&&v<vn) tipo='min';
+        if(v>vp&&v>vn) tipo='max';
+        if(tipo){
+          const col=tipo==='min'?'#5b9dff':'#f5b301';
+          const sym=tipo==='min'?'▼ min':'▲ max';
+          const px=x(g), py=y(v);
+          const ly=tipo==='min'?py+20:py-12;
+          marks += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4.5" fill="${col}"/>`;
+          marks += `<text x="${px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" fill="${col}"><tspan font-weight="700">${sym}</tspan> ${fmtMini(g)}</text>`;
+        }
       }
-      const row=(window.__tmAll||[]).find(x=>(x.raw||x.ticker)===raw)||{};
-      const ov=document.createElement('div');
-      ov.className='sec-overlay';
-      ov.innerHTML=`<div class="sec-modal">
-        <button class="sec-close">✕ chiudi</button>
-        <div class="sec-mtitle">${row.name||raw}</div>
-        <div class="sec-msub">storico completo · ${pts[0].d.slice(0,4)} → ${pts[pts.length-1].d.slice(0,4)} · segnale lisciato 4 settimane</div>
-        <div class="sec-mstats">
-          <div class="sec-mstat">tempo in posizione<b>${(wIn/pts.length*100).toFixed(0)}%</b></div>
-          <div class="sec-mstat">periodi IN<b>${bands.length}</b></div>
-          <div class="sec-mstat">anni osservati<b>${anni}</b></div>
-        </div>
-        <div class="sec-mchart"><svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-          ${rects}${ylab}${ax}
-          <path d="${path}" fill="none" stroke="#5b9dff" stroke-width="1.7" stroke-linejoin="round"/>
-        </svg></div>
-        <div class="sec-mnote">bande verdi = sistema in posizione sul settore · sfondo scuro = fuori, in liquidità · prezzo in scala logaritmica. Le bande sono il segnale operativo (stato+fase con conferma a 4 settimane) applicato a tutta la storia disponibile.</div>
+      // marcatore ultimo minimo passato (l'ancora del ciclo)
+      const gAnchor=Math.round((lastLow-lastDate)/DAY);
+      let anchor='';
+      if(gAnchor>=G0){
+        anchor=`<circle cx="${x(gAnchor).toFixed(1)}" cy="${y(-1).toFixed(1)}" r="4" fill="none" stroke="#5b9dff" stroke-width="1.5"/><text x="${x(gAnchor).toFixed(1)}" y="${(y(-1)+18).toFixed(1)}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5b9dff">minimo ${fmtMini(gAnchor)}</text>`;
+      }
+      // asse mesi
+      let axis='';
+      let cur=new Date(lastDate.getTime()+G0*DAY);
+      cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      while(true){
+        const g=Math.round((cur-lastDate)/DAY);
+        if(g>G1) break;
+        if(g>=G0){
+          const px=x(g);
+          axis += `<line x1="${px.toFixed(1)}" y1="${padT}" x2="${px.toFixed(1)}" y2="${H-padB}" stroke="rgba(255,255,255,0.05)"/>`;
+          axis += `<text x="${px.toFixed(1)}" y="${H-padB+16}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#5e6675">${MESI[cur.getMonth()]} ${String(cur.getFullYear()).slice(2)}</text>`;
+        }
+        cur=new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+      }
+      const xToday=x(0), yMid=y(0);
+      return `<svg viewBox="0 0 ${W} ${H}" class="wave-svg" xmlns="http://www.w3.org/2000/svg">
+        ${axis}
+        <line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W-padR}" y2="${yMid.toFixed(1)}" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3 4"/>
+        ${segPaths}
+        <line x1="${xToday.toFixed(1)}" y1="${padT-8}" x2="${xToday.toFixed(1)}" y2="${H-padB}" stroke="#e8eaed" stroke-width="1.5" opacity="0.7"/>
+        <text x="${xToday.toFixed(1)}" y="${padT-12}" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="#e8eaed">oggi</text>
+        ${anchor}${marks}
+      </svg>`;
+    };
+
+    // riga compatta con la direzione di ciascun ciclo
+    // affidabilità da backtest storico SPX (regolarità = errore in % durata; timing = errore in gg)
+    const AFFID={
+      mensile:    {reg:'bassa', regCls:'b', tim:'fine',  timTxt:'±8gg'},
+      intermedio: {reg:'media', regCls:'m', tim:'medio', timTxt:'±32gg'},
+      annuale:    {reg:'media', regCls:'m', tim:'ampio', timTxt:'±49gg'},
+      biennale:   {reg:'media', regCls:'m', tim:'molto ampio', timTxt:'±mesi'},
+      quadriennale:{reg:'media',regCls:'m', tim:'molto ampio', timTxt:'±mesi'}
+    };
+    // ordine crescente di durata
+    const ORDER={mensile:1, intermedio:2, annuale:3, biennale:4, quadriennale:5};
+    const fineCiclo=(c,dir)=>{
+      const data = dir.key==='rialzista' ? c.next_high_date_est
+                 : dir.key==='ribassista' ? c.next_low_date_est : null;
+      if(!data) return '';
+      const cls = dir.key==='rialzista' ? 'up' : 'dn';
+      return `<span class="cyc-end ${cls}">${fmtCycDate(data)}</span>`;
+    };
+    const momArrow=(dir)=> dir.key==='rialzista' ? '<span class="cyc-arrow up">&#9650;</span>'
+                          : dir.key==='ribassista' ? '<span class="cyc-arrow dn">&#9660;</span>'
+                          : '<span class="cyc-arrow fl">&mdash;</span>';
+    const ordered = cyc.filter(c=>c.progress_pct!=null).sort((a,b)=>(ORDER[a.key]||99)-(ORDER[b.key]||99));
+    // durata massima per scalare la barra (la barra mostra la durata relativa del ciclo)
+    const maxLen = Math.max(...ordered.map(c=>c.len_theoretical||c.len_effective||1));
+    const cycSummary = ordered.map((c,i)=>{
+      const dir=dirOf(c);
+      const af=AFFID[c.key];
+      const len=c.len_theoretical||c.len_effective||1;
+      const pct=Math.max(8, Math.round(Math.sqrt(len/maxLen)*100)); // radice: comprime il range enorme (22gg..1000gg)
+      const barCls = dir.key==='rialzista' ? 'up' : dir.key==='ribassista' ? 'dn' : 'fl';
+      const nome=c.label.replace('Ciclo ','');
+      let badges = af ? `<span class="aff-badge ${af.regCls}" title="quanto il ciclo è puntuale rispetto alla sua durata">affidabilità ${af.reg}</span>` : '';
+      // verifica storica walk-forward: proiezione fatta PRIMA dell'evento vs data reale
+      if(c.track_mae_low!=null||c.track_mae_high!=null){
+        const fmtE=t=>`att ${fmtCycDate(t.attesa)} \u2192 reale ${fmtCycDate(t.reale)} (${t.err_gg>=0?'+':''}${t.err_gg}g)`;
+        const det=[...(c.track_lows||[]).map(t=>'min: '+fmtE(t)),...(c.track_highs||[]).map(t=>'max: '+fmtE(t))].join('\u000A');
+        const lbl=[c.track_mae_low!=null?`minimi \u00b1${c.track_mae_low}g`:null,
+                   c.track_mae_high!=null?`massimi \u00b1${c.track_mae_high}g`:null].filter(Boolean).join(' \u00b7 ');
+        badges+=`<span class="aff-badge t" title="Ultime proiezioni verificate (fatte prima dell'evento, stessa regola del live):\u000A${det}">verifica storica: ${lbl}</span>`;
+      }
+      return `<div class="cyc-row">
+        <div class="cyc-rank">${i+1}</div>
+        <div class="cyc-rname"><span class="cyc-racc ${barCls}"></span><span class="cyc-rlabel">${nome}</span></div>
+        <div class="cyc-rtrack"><div class="cyc-rfill ${barCls}" style="width:${pct}%"></div></div>
+        <div class="cyc-rmom">${momArrow(dir)}</div>
+        <div class="cyc-rend">${fineCiclo(c,dir)}</div>
+        <div class="cyc-rbadges">${badges}</div>
       </div>`;
-      const close=()=>{ov.remove();document.removeEventListener('keydown',esc);};
-      const esc=e=>{if(e.key==='Escape')close();};
-      ov.addEventListener('click',e=>{if(e.target===ov)close();});
-      ov.querySelector('.sec-close').addEventListener('click',close);
-      document.addEventListener('keydown',esc);
-      document.body.appendChild(ov);
-    };
-    window.__tmAll=rows;
-    el.querySelectorAll('.tm-row.openable').forEach(rw=>{
-      rw.addEventListener('click',()=>openSectorHistory(rw.dataset.tk));
-    });
+    }).join('');
+
+    const chart=waveChart(cyc, d.last_date);
+
+    // ── LETTURA AUTOMATICA: commento in prosa generato dai dati, si riscrive a ogni run ──
+    const cyComment=(()=>{try{
+      const G=k=>cyc.find(c=>c.key===k)||{};
+      const an=G('annuale'), im=G('intermedio'), me=G('mensile'), bi=G('biennale');
+      const Fd=s=>{if(!s)return null;const p=s.split('-');return `${+p[2]} ${MESI[+p[1]-1]}`;};
+      const anUp=(an.last_low_date||'')>(an.last_high_date||'');
+      const frasi=[];
+      // 1) dove siamo (fase annuale)
+      if(anUp){
+        frasi.push(`Il ciclo annuale è ripartito dal minimo del <b>${Fd(an.last_low_date)}</b> e sale verso il massimo atteso intorno al ${Fd(an.next_high_date_est)}.`);
+      }else{
+        frasi.push(`Il massimo annuale in carica è del <b>${Fd(an.last_high_date)}</b>: da lì è in corso la fase correttiva verso il minimo atteso intorno al <b>${Fd(an.next_low_date_est)}</b>.`);
+      }
+      // 2) la mappa breve (mensile + intermedio, in ordine temporale)
+      const eventi=[];
+      const push=(giorni,txt)=>{if(giorni!=null&&giorni>=0)eventi.push([giorni,txt]);};
+      push(me.days_to_high_est, `massimo mensile ~${Fd(me.next_high_date_est)}`);
+      push(me.days_to_low_est,  `minimo mensile ~${Fd(me.next_low_date_est)}`);
+      push(im.days_to_high_est, `massimo intermedio ~${Fd(im.next_high_date_est)}`);
+      push(im.days_to_low_est,  `minimo intermedio ~${Fd(im.next_low_date_est)}`);
+      eventi.sort((x,y)=>x[0]-y[0]);
+      if(eventi.length) frasi.push(`Prossime tappe: ${eventi.slice(0,3).map(e=>e[1]).join(', poi ')}.`);
+      // 3) sincronia col biennale se i minimi maggiori sono vicini (<60 giorni)
+      if(!anUp&&bi.days_to_low_est!=null&&an.days_to_low_est!=null&&Math.abs(bi.days_to_low_est-an.days_to_low_est)<60){
+        frasi.push(`Il minimo annuale cadrebbe in sincronia con quello biennale: appuntamento di grado superiore.`);
+      }
+      // 3bis) riancoraggio in corso: un ciclo superiore ha gia' confermato un
+      // massimo piu' recente di quello annuale -> la linea di controllo risulta
+      // di fatto superata e l'annuale sta per aggiornare la sua ancora
+      const riancoraggio=(!anUp&&bi.last_high_date&&an.last_high_date&&bi.last_high_date>an.last_high_date);
+      if(riancoraggio){
+        frasi.push(`<b>Nota</b>: il ciclo biennale ha già confermato un massimo più recente (${Fd(bi.last_high_date)}): la linea di controllo risulta superata e il massimo annuale è in corso di riancoraggio — le proiezioni si aggiorneranno ai prossimi run.`);
+      }
+      // 4) linea di controllo (falsificazione)
+      if(anUp){
+        frasi.push(`Linea di controllo: il minimo del ${Fd(an.last_low_date)} — una violazione riscriverebbe lo scenario al ribasso.`);
+      }else if(!riancoraggio){
+        frasi.push(`Linea di controllo: i massimi del ${Fd(an.last_high_date)} — un superamento riscriverebbe lo scenario al rialzo (traslazione a destra).`);
+      }
+      // 5) margini misurati dal track record
+      const mae=c=>{const v=[c.track_mae_low,c.track_mae_high].filter(x=>x!=null);return v.length?Math.round(v.reduce((s,x)=>s+x,0)/v.length):null;};
+      const mm=mae(me), mi=mae(im), ma=mae(an);
+      const parts=[];
+      if(mm!=null)parts.push(`mensile ±${mm}g`);
+      if(mi!=null)parts.push(`intermedio ±${mi}g`);
+      if(ma!=null)parts.push(`annuale ±${ma}g`);
+      if(parts.length) frasi.push(`Margini misurati sugli ultimi estremi: ${parts.join(' · ')} — le date sono stagioni, la sequenza è l'informazione.`);
+      return `<div class="cyc-ai"><span class="ai-tag">◆ lettura automatica · generata dai dati · si aggiorna a ogni run</span>${frasi.join(' ')}</div>`;
+    }catch(_e){return '';}})();
+
+    el.innerHTML=`<div class="wave-wrap">${chart}</div>`
+      + `<div class="wave-legend"><span class="lg-item"><span class="lg-line green"></span> tendenza di fondo in salita (verso il massimo)</span><span class="lg-item"><span class="lg-line red"></span> tendenza di fondo in discesa (verso il minimo)</span><span class="lg-item"><span class="lg-tri up"></span> minimo annuale</span><span class="lg-item"><span class="lg-tri dn"></span> massimo annuale</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
+      + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. ${targetId==='cycles-body' ? "Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza)." : "Le date sono grezze (la calibrazione del bias è specifica per l'S&P; per Bitcoin servono statistiche proprie, non ancora applicate)."} I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
+      + `<div class="cyc-rows">${cycSummary}</div>`
+      + cyComment
+      + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
+
   }catch(e){
-    el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
+    el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
   }
 }
 
-async function loadCycle(){
-  const el=document.getElementById('cycle-body');
-  const CICLICI=['Semiconduttori','Tecnologia USA','Banche','Finanziari USA','Beni personali'];
-  const MATERIE=['Energia USA','Energia','Industriali USA','Industriali'];
-  const DIFENSIVI=['Sanità USA','Beni di consumo difensivi','Assicurazioni','Biotech'];
-  const phases=[
-    {key:'ripresa',name:'Ripresa',asset:'Azioni · settori ciclici',color:'#22e06b',start:270},
-    {key:'espansione',name:'Espansione',asset:'Materie prime · energia',color:'#ffc400',start:0},
-    {key:'rallentamento',name:'Rallentamento',asset:'Difensivi · obbligazioni',color:'#ff7a18',start:90},
-    {key:'recessione',name:'Recessione',asset:'Obbligazioni · liquidità',color:'#ff3b3b',start:180}
-  ];
-  const nextKey={ripresa:'espansione',espansione:'rallentamento',rallentamento:'recessione',recessione:'ripresa'};
-  try{
-    const d=await(await fetch(ETF_URL+'?_='+Date.now())).json();
-    const r=(d.ranking&&d.ranking.ranking)||[];
-    const inseg=r.filter(s=>s.opSignal==='IN').sort((a,b)=>(a.rank||99)-(b.rank||99));
-    const catStrength=set=>{let t=0;inseg.forEach((s,i)=>{if(set.includes(s.name))t+=Math.max(1,6-i);});return t;};
-    const strength={
-      ripresa:catStrength(CICLICI),
-      espansione:catStrength(MATERIE),
-      rallentamento:catStrength(DIFENSIVI),
-      recessione:0
-    };
-    if(!inseg.length) strength.recessione=1;
-    let cur='espansione',best=-1;
-    for(const k in strength){if(strength[k]>best){best=strength[k];cur=k;}}
-    const curPhase=phases.find(p=>p.key===cur)||phases[1];
-    window.__cicloEco={fase:curPhase.name, key:cur};
-    // progresso 0..1 dentro la fase: quanto emerge la fase successiva
-    const fc=strength[cur], fn=strength[nextKey[cur]]||0;
-    let prog = (fc+fn)>0 ? fn/(fc+fn) : 0.5;
-    prog = Math.max(0.08, Math.min(0.92, prog)); // tieni il punto dentro l'arco, non sui bordi
+function sintesiHTML(stato){
+  const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fmt=s=>{ if(!s) return '—'; const p=s.split('-'); return p.length===3?`${p[2]} ${MESI[+p[1]-1]} ${p[0]}`:s; };
+  const {lungo,medio,breve}=stato;
+  const dirs=[lungo,medio,breve];
+  const nRib=dirs.filter(x=>x==='ribassista').length;
+  const nRial=dirs.filter(x=>x==='rialzista').length;
 
-    // SVG donut: anello spesso a 4 archi colorati, centro vuoto, punto sull'anello
-    const cx=180,cy=180,R=120,SW=30;
-    const toXY=(ang,rad)=>{const a=(ang-90)*Math.PI/180;return [cx+rad*Math.cos(a),cy+rad*Math.sin(a)];};
-    const arc=(startAng,sweep,color,op)=>{
-      const [x1,y1]=toXY(startAng,R),[x2,y2]=toXY(startAng+sweep,R);
-      const large=sweep>180?1:0;
-      return `<path d="M${x1},${y1} A${R},${R} 0 ${large},1 ${x2},${y2}" fill="none" stroke="${color}" stroke-width="${SW}" opacity="${op}" stroke-linecap="butt"/>`;
-    };
-    let svg=`<svg class="cycle-svg" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">`;
-    // archi delle 4 fasi (gap di 2° tra uno e l'altro per separazione netta)
-    phases.forEach(p=>{
-      const active=p.key===cur;
-      svg+=arc(p.start+2, 86, p.color, active?1:0.5);
-    });
-    // etichette fasi (fuori dall'anello, al centro dell'arco)
-    phases.forEach(p=>{
-      const [lx,ly]=toXY(p.start+45,R+34);
-      const active=p.key===cur;
-      svg+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="12.5" font-weight="${active?'700':'500'}" fill="${active?p.color:'#9aa6b5'}" font-family="JetBrains Mono,monospace">${p.name}</text>`;
-    });
-    // punto "dove siamo": sull'anello, all'angolo start + progresso*90
-    const dotAng=curPhase.start + prog*90;
-    const [px,py]=toXY(dotAng,R);
-    svg+=`<circle cx="${px}" cy="${py}" r="15" fill="${curPhase.color}" opacity="0.28"/>`;
-    svg+=`<circle cx="${px}" cy="${py}" r="8" fill="${curPhase.color}" stroke="#0a0e14" stroke-width="3"/>`;
-    svg+=`</svg>`;
+  let tempo;
+  if(nRib===3)
+    tempo=`Tutti e tre i cicli puntano verso il basso: pressione ribassista coordinata su breve, medio e lungo, in cerca di un minimo (atteso intorno a ${fmt(stato.next_low)}).`;
+  else if(nRial===3)
+    tempo=`Tutti e tre i cicli puntano verso l'alto: spinta rialzista coordinata su breve, medio e lungo.`;
+  else if(lungo==='ribassista' && breve==='rialzista')
+    tempo=`La tendenza di fondo resta in discesa verso il minimo atteso intorno a ${fmt(stato.next_low)}, ma il ciclo breve prova a rimbalzare: possibile rimbalzo dentro una correzione più ampia.`;
+  else if(lungo==='rialzista' && breve==='ribassista')
+    tempo=`La tendenza di fondo è costruttiva, con una correzione di breve in corso: possibile pausa dentro un movimento al rialzo.`;
+  else if(lungo==='rialzista')
+    tempo=`Tendenza di fondo orientata al rialzo; i cicli minori danno qualche oscillazione lungo il percorso.`;
+  else
+    tempo=`Tendenza di fondo orientata al ribasso verso il minimo di ${fmt(stato.next_low)}; i cicli minori alternano alti e bassi lungo la discesa.`;
 
-    const legend=phases.map(p=>`
-      <div class="pl-row ${p.key===cur?'active':''}">
-        <span class="pl-dot" style="background:${p.color}"></span>
-        <span class="pl-txt"><div class="pl-name">${p.name}</div><div class="pl-asset">${p.asset}</div></span>
-      </div>`).join('');
+  let allineamento;
+  if(nRib===3 || nRial===3)
+    allineamento=`I tre orizzonti temporali sono allineati nella stessa direzione: segnale ciclico più nitido, da seguire comunque con la prudenza dovuta a una lettura probabilistica.`;
+  else if(lungo===medio && medio!==breve)
+    allineamento=`Lungo e medio periodo concordano, mentre il breve va in controtendenza: tipico di un'oscillazione minore dentro un movimento più ampio.`;
+  else
+    allineamento=`Gli orizzonti non sono del tutto allineati: utile distinguere il breve (più rumoroso) dal medio-lungo, che definisce la tendenza prevalente.`;
 
-    const stage = prog<0.34 ? 'fase iniziale' : prog<0.67 ? 'fase centrale' : 'fase avanzata';
-    el.innerHTML=`<div class="cycle-wrap">
-      <div>${svg}<div class="cycle-now">Lettura attuale: <span class="ph">${curPhase.name}</span> (${stage}) — favoriti ${curPhase.asset.toLowerCase()}.</div></div>
-      <div class="phase-legend">${legend}</div>
+  const finoAl=(dir,data)=>{
+    if(!data) return '';
+    const verso = dir==='ribassista' ? 'fino al min del' : dir==='rialzista' ? 'fino al max del' : 'fino al';
+    return `<span class="sv-date">${verso} ${fmt(data)}</span>`;
+  };
+  return `
+    <div class="sin-grid">
+      <div class="sin-pill"><span class="sl">Lungo · annuale</span><span class="sv ${lungo}">${lungo}</span>${finoAl(lungo,stato.dataLungo)}</div>
+      <div class="sin-pill"><span class="sl">Medio · intermedio</span><span class="sv ${medio}">${medio}</span>${finoAl(medio,stato.dataMedio)}</div>
+      <div class="sin-pill"><span class="sl">Breve · mensile</span><span class="sv ${breve}">${breve}</span>${finoAl(breve,stato.dataBreve)}</div>
+    </div>
+    <p class="sin-text">${tempo}</p>
+    <p class="sin-text">${allineamento}</p>
+    <p class="sin-note">Lettura sintetica generata automaticamente dall'analisi ciclica dei minimi e massimi storici. È un quadro indicativo a scopo informativo, non una previsione né una raccomandazione operativa.</p>`;
+}
+
+function cicliLunghiHTML(lunghi){
+  const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  const fmt=s=>{ if(!s) return '—'; const p=s.split('-'); return p.length===3?`${p[2]} ${MESI[+p[1]-1]} ${p[0]}`:s; };
+  const rows = lunghi.map(c=>{
+    const nome = c.label.replace('Ciclo ','');
+    return `<div class="long-row">
+      <span class="long-name">${nome}</span>
+      <span class="long-dates">minimo atteso <b>${fmt(c.next_low_date_est)}</b> · massimo atteso <b>${fmt(c.next_high_date_est)}</b></span>
     </div>`;
-  }catch(e){
-    el.innerHTML='<p class="crypto-note">Dati non disponibili al momento.</p>';
-  }
+  }).join('');
+  return `<div class="cicli-lunghi">
+    <div class="long-head">Cicli lunghi · contesto di sfondo</div>
+    ${rows}
+    <div class="long-warn">⚠ Date puramente orientative, con margine d'errore molto ampio (nell'ordine di <b>diversi mesi</b>). I cicli lunghi si ripetono poche volte nella storia disponibile, quindi la loro precisione è bassa: vanno letti come "stagioni molto larghe", non come appuntamenti. Date grezze, non corrette per il bias.</div>
+  </div>`;
 }
 
-async function refresh(){
-  const[d1,d2,d3]=await Promise.all([loadAzioni(),loadETF(),loadCrypto()]);
-  loadCombined();
-  loadTrendMap();
-  const latest=[d1,d2,d3].filter(Boolean).sort().pop();
-  document.getElementById('upd-date').textContent=fmtDate(latest);
+
+function refreshCicli(){
+  loadCycles(CYCLES_URL, 'cycles-body');
+  loadCycles(CYCLES_BTC_URL, 'cycles-btc-body');
 }
-refresh();
-setInterval(refresh, 3600*1000); // ricarica ogni ora
+refreshCicli();
+setInterval(refreshCicli, 3600*1000);
 </script>
 </body>
 </html>
