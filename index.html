@@ -249,7 +249,25 @@
     font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;cursor:pointer}
   .nav-csv:hover{border-color:rgba(245,179,1,.55);color:var(--gold,#f5b301)}
   .jr-tabs{display:flex;gap:8px;margin:12px 0 10px}
-  .jr-list{max-height:400px;overflow-y:auto;max-width:700px}
+  .jr-wrap{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;align-items:start}
+  .jr-stats{border-right:1px solid var(--line-soft);padding-right:24px}
+  .st-sec{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-faint);
+    padding-bottom:6px;border-bottom:1px solid var(--line-soft);margin-bottom:11px}
+  .st-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px 16px;margin-bottom:18px}
+  .st-l{display:block;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:3px}
+  .st-v{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--txt)}
+  .st-v.pos{color:var(--green)}
+  .st-v.neg{color:var(--red)}
+  .st-v small{font-size:9px;color:var(--txt-faint);font-weight:400}
+  .st-wl{margin:-4px 0 18px}
+  .st-wl-lab{display:flex;justify-content:space-between;font-size:9.5px;font-weight:700;margin-bottom:5px}
+  .st-bar{height:5px;border-radius:3px;background:rgba(255,92,92,.4);overflow:hidden}
+  .st-bar i{display:block;height:100%;background:var(--green)}
+  @media(max-width:900px){
+    .jr-wrap{grid-template-columns:1fr}
+    .jr-stats{border-right:none;padding-right:0}
+  }
+  .jr-list{max-height:400px;overflow-y:auto}
   .jr-row{display:grid;grid-template-columns:30px minmax(0,1fr) 80px 66px 80px 66px 28px 56px;gap:8px;align-items:center;
     padding:4px 0;font-size:12px}
   .jr-head{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);
@@ -761,6 +779,22 @@ function loadCombined(){
     const fpx=(v,eur)=>v==null?'':((eur?'€':'')+Number(v).toFixed(v>=1000?0:2));
     const fmtGMA=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y}`;};
     const ggHeld=(a2,b2)=>Math.round((new Date(b2+'T00:00:00')-new Date(a2+'T00:00:00'))/86400000);
+    // indicatori sulla curva NAV settimanale (base 100 dal via) — non dipendono dal filtro
+    const navStats=(()=>{try{
+      const rs=pts.slice(1).map(p=>p.r/100);
+      if(rs.length<2)return null;
+      const roi=(pts[pts.length-1].v/100-1)*100;
+      let peak=-1e9,mdd=0;
+      pts.forEach(p=>{peak=Math.max(peak,p.v);mdd=Math.max(mdd,(peak-p.v)/peak*100);});
+      const mu=rs.reduce((x,y)=>x+y,0)/rs.length;
+      const sd=Math.sqrt(rs.reduce((x,y)=>x+(y-mu)*(y-mu),0)/(rs.length-1));
+      const dn=rs.filter(x=>x<0);
+      const dsd=dn.length?Math.sqrt(dn.reduce((x,y)=>x+y*y,0)/rs.length):0;
+      const ann=Math.sqrt(52);
+      return {roi,mdd,vol:sd*ann*100,
+        sharpe:sd>0?mu/sd*ann:null,
+        sortino:dsd>0?mu/dsd*ann:null};
+    }catch(_e){return null;}})();
     // AZIONI: registro adaptive (prezzi ai listini d'origine)
     (azAg.operations||[]).forEach(o=>{
       if(!o.exit_date)return;
@@ -818,11 +852,54 @@ function loadCombined(){
         <span class="jr-px jr-gg">${ggHeld(m.d0,m.d1)}</span>
         <span class="jr-det">${m.perf!=null?'<span class="'+(m.perf>=0?'pos':'neg')+'">'+sign(m.perf)+'</span>':''}</span>
       </div>`).join(''):'<div class="jr-row"><span></span><span class="jr-asset nm2">nessuna operazione completata nel periodo</span></div>');
+      // ── pannello indicatori di trading (colonna sinistra) ──
+      const st2=document.getElementById('jr-stats');
+      if(st2){
+        const P=rows2.map(m=>m.perf).filter(x=>x!=null);
+        const W=P.filter(x=>x>0), L=P.filter(x=>x<=0);
+        const avg=a4=>a4.length?a4.reduce((x,y)=>x+y,0)/a4.length:null;
+        const sumW=W.reduce((x,y)=>x+y,0), sumL=Math.abs(L.reduce((x,y)=>x+y,0));
+        const pf3=sumL>0?sumW/sumL:null;
+        const wr=P.length?W.length/P.length*100:null;
+        const aw=avg(W), al=avg(L);
+        const payoff=(aw!=null&&al!=null&&al!==0)?Math.abs(aw/al):null;
+        const best=P.length?Math.max(...P):null, worst=P.length?Math.min(...P):null;
+        const dd2=rows2.map(m=>ggHeld(m.d0,m.d1));
+        const avgD=dd2.length?Math.round(avg(dd2)):null;
+        const avgP=avg(P);
+        const it=(l4,v4,cls)=>`<div class="st-it"><span class="st-l">${l4}</span><span class="st-v ${cls||''}">${v4}</span></div>`;
+        let h2=`<div class="st-sec">operazioni chiuse · ${range==='all'?'tutto lo storico':'dal via del NAV'}</div>`;
+        h2+=`<div class="st-grid">`
+          + it('operazioni',P.length)
+          + it('win rate',wr!=null?wr.toFixed(1)+'%':'—')
+          + it('pnl medio / trade',avgP!=null?sign(avgP):'—',avgP!=null?(avgP>=0?'pos':'neg'):'')
+          + it('profit factor',pf3!=null?pf3.toFixed(2):'—')
+          + it('media vincenti',aw!=null?sign(aw):'—','pos')
+          + it('media perdenti',al!=null?sign(al):'—','neg')
+          + it('miglior trade',best!=null?sign(best):'—','pos')
+          + it('peggior trade',worst!=null?sign(worst):'—','neg')
+          + it('payoff (w / l)',payoff!=null?payoff.toFixed(2)+' : 1':'—')
+          + it('detenzione media',avgD!=null?avgD+' <small>gg</small>':'—')
+          + `</div>`;
+        if(P.length&&wr!=null){
+          h2+=`<div class="st-wl"><div class="st-wl-lab"><span style="color:var(--green)">win ${W.length} (${wr.toFixed(0)}%)</span><span style="color:var(--red)">lose ${L.length} (${(100-wr).toFixed(0)}%)</span></div><div class="st-bar"><i style="width:${wr}%"></i></div></div>`;
+        }
+        if(navStats){
+          h2+=`<div class="st-sec">curva nav · dal via · dati settimanali</div><div class="st-grid">`
+            + it('roi',sign(navStats.roi),navStats.roi>=0?'pos':'neg')
+            + it('max drawdown',navStats.mdd.toFixed(2)+'%')
+            + it('volatilità ann.',navStats.vol.toFixed(2)+'%')
+            + it('sharpe ratio',navStats.sharpe!=null?navStats.sharpe.toFixed(2):'—')
+            + it('sortino ratio',navStats.sortino!=null?navStats.sortino.toFixed(2):'—')
+            + `</div>`;
+        }
+        st2.innerHTML=h2;
+      }
       const note=document.getElementById('jr-note');
       if(note)note.textContent=(range==='all'
         ?'Storico completo delle operazioni chiuse: ETF dal 2009, Azioni dal 2018, crypto sulla finestra del motore (ultimo anno). '
         :'Operazioni chiuse dal via del NAV ('+fmtDM(VIA)+'). ')
-        +'Le posizioni ancora aperte sono nella tabella del portafoglio sopra, con data e prezzo d’ingresso. Prezzi: azioni ai listini d’origine, ETF in EUR sugli strumenti UCITS (l’asterisco indica il ripiego sull’indice USA), crypto in USD. Perf: dall’acquisto alla vendita, stessi prezzi mostrati; gg = giorni di detenzione.';
+        +'Le posizioni ancora aperte sono nella tabella del portafoglio sopra, con data e prezzo d’ingresso. Prezzi: azioni ai listini d’origine, ETF in EUR sugli strumenti UCITS (l’asterisco indica il ripiego sull’indice USA), crypto in USD. Perf: dall’acquisto alla vendita, stessi prezzi mostrati; gg = giorni di detenzione. Indicatori a sinistra: metriche sulle operazioni chiuse del periodo selezionato; ROI, max drawdown, volatilità, Sharpe e Sortino sono calcolati sulla curva NAV settimanale dal via (annualizzati, risk-free 0).';
     };
     window.setJrRange=function(r){
       document.getElementById('jr-nav').classList.toggle('active',r==='nav');
@@ -907,7 +984,10 @@ function loadCombined(){
           <button class="pt-btn active" id="jr-nav" onclick="setJrRange('nav')">dal via del NAV</button>
           <button class="pt-btn" id="jr-all" onclick="setJrRange('all')">tutto lo storico</button>
         </div>
-        <div class="jr-list" id="jr-list"></div>
+        <div class="jr-wrap">
+          <div class="jr-stats" id="jr-stats"></div>
+          <div class="jr-list" id="jr-list"></div>
+        </div>
         <div class="jr-note" id="jr-note"></div>
       </div>`;
 
