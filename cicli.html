@@ -402,6 +402,18 @@
   .tm-foot{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--txt-dim)}
   .tm-leg{display:flex;align-items:center;gap:7px}
   .tm-sp{margin-left:auto}
+  /* ===== Scomposizione armonica ===== */
+  .dz-mode{display:flex;gap:8px;margin:4px 0 14px;flex-wrap:wrap}
+  .dz-mb{background:transparent;border:1px solid var(--line);border-radius:7px;color:var(--txt-dim);
+    font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 13px;cursor:pointer}
+  .dz-mb.active{border-color:rgba(245,179,1,.55);color:#f5b301;background:rgba(245,179,1,.06)}
+  .dz-ct{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:14px 0 2px}
+  .dz-cs{font-size:9.5px;color:var(--txt-faint);margin-bottom:10px;line-height:1.6}
+  .dz-wrap svg{width:100%;height:auto;display:block}
+  .dz-leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:10px;color:var(--txt-dim)}
+  .dz-leg span{display:inline-flex;align-items:center;gap:6px}
+  .dz-leg i{width:18px;height:3px;border-radius:2px;display:inline-block}
+  .dz-note{margin-top:12px;font-size:9.5px;color:var(--txt-faint);line-height:1.7}
 </style>
 </head>
 <body>
@@ -428,10 +440,22 @@
     <div id="cycles-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
+  <h2 class="sec-title mt">Scomposizione armonica · S&amp;P 500</h2>
+  <div class="card cyclescard">
+    <p class="crypto-note">I tre cicli disegnati come onde annidate: la somma in alto (ciò che vede il mercato), le componenti sotto con le date degli estremi. Ancore e date lette dal motore a ogni run.</p>
+    <div id="dz-spx" class="dz-wrap"><p class="crypto-note">Caricamento…</p></div>
+  </div>
+
   <h2 class="sec-title mt">Analisi ciclica · Bitcoin</h2>
   <div class="card cyclescard">
     <p class="crypto-note">Gli stessi cicli temporali annidati applicati a Bitcoin (BTC/USDT, dati giornalieri). Bitcoin scambia 7 giorni su 7, quindi le durate sono in giorni di calendario.</p>
     <div id="cycles-btc-body"><p class="crypto-note">Caricamento…</p></div>
+  </div>
+
+  <h2 class="sec-title mt">Scomposizione armonica · Bitcoin</h2>
+  <div class="card cyclescard">
+    <p class="crypto-note">Le stesse onde annidate su Bitcoin (giorni di calendario). Date grezze, senza correzione del bias.</p>
+    <div id="dz-btc" class="dz-wrap"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
   
@@ -894,9 +918,182 @@ function cicliLunghiHTML(lunghi){
 }
 
 
+// ════════ SCOMPOSIZIONE ARMONICA ════════
+// Onde-coseno annidate: ancora = ultimo minimo confermato di ogni ciclo,
+// confluenza = minimo annuale atteso dal motore. Annidamento a cascata:
+// tra due minimi del ciclo superiore stanno un numero intero di cicli del
+// ciclo inferiore. Le ampiezze sono convenzionali (la ciclica stima QUANDO,
+// non quanto). Modalità "libere": periodi medi fissi, senza annidamento.
+const DZ={};
+const DZ_STYLE={annuale:{sig:'A',lab:'ANNUALE',color:'#5b9dff',amp:1.00,maxLbl:9},
+  intermedio:{sig:'I',lab:'INTERMEDIO',color:'#56c8d8',amp:0.42,maxLbl:8},
+  mensile:{sig:'M',lab:'MENSILE',color:'#3ddc84',amp:0.18,maxLbl:3}};
+const DZ_MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+
+async function dzInit(id,url){
+  const el=document.getElementById(id);
+  if(!el)return;
+  try{
+    const d=await(await fetch(url+'?_='+Date.now())).json();
+    const cyc={};
+    (d.cycles||[]).forEach(c=>{cyc[c.key]=c;});
+    const cycles=['annuale','intermedio','mensile'].map(k=>{
+      const c=cyc[k]; if(!c||!c.last_low_date||!c.len_effective)return null;
+      return {...DZ_STYLE[k],key:k,len:c.len_effective,lastLow:c.last_low_date};
+    }).filter(Boolean);
+    const conf=(cyc.annuale&&(cyc.annuale.next_low_date_est||cyc.annuale.next_low_date_est_raw))||null;
+    if(cycles.length<2||!conf)throw new Error('dati ciclici incompleti');
+    DZ[id]={cycles,conf,mode:(DZ[id]&&DZ[id].mode)||'sync'};
+    dzRender(id);
+  }catch(e){
+    el.innerHTML='<p class="crypto-note">Scomposizione non disponibile: '+e.message+'</p>';
+  }
+}
+window.dzSetMode=function(id,m){ if(DZ[id]){DZ[id].mode=m; dzRender(id);} };
+
+function dzRender(id){
+  const st=DZ[id], MODE=st.mode;
+  const _n=new Date();
+  const TODAY=new Date(_n.getFullYear(),_n.getMonth(),_n.getDate());
+  const D0=-60,D1=270,N=(D1-D0)+1;
+  const dayDiff=(d1,d2)=>Math.round((d1-d2)/86400000);
+  const day=d=>new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()+Math.round(d));
+  const fd=dt=>dt.getDate()+' '+DZ_MESI[dt.getMonth()];
+  const offOf=iso=>dayDiff(new Date(iso+'T00:00:00'),TODAY);
+  const CY=st.cycles;
+  const AL=offOf(st.conf);
+
+  function buildChain(anchorOff,len,parentLows){
+    const lows=[]; let cur=anchorOff;
+    while(cur>D0-60){cur-=len;lows.unshift(cur);}
+    lows.push(anchorOff); cur=anchorOff;
+    if(MODE==='sync'&&parentLows){
+      for(const p of parentLows.filter(p=>p>anchorOff+0.1)){
+        const gap=p-cur,n=Math.max(1,Math.round(gap/len));
+        for(let k=1;k<=n;k++)lows.push(cur+gap*k/n);
+        cur=p; if(cur>D1+60)break;
+      }
+    }
+    while(cur<D1+60){cur+=len;lows.push(cur);}
+    return lows;
+  }
+  CY[0].lows=buildChain(offOf(CY[0].lastLow),CY[0].len,[AL]);
+  for(let i=1;i<CY.length;i++)
+    CY[i].lows=buildChain(offOf(CY[i].lastLow),CY[i].len,CY[i-1].lows);
+
+  const val=(c,d)=>{
+    const L=c.lows; let i=0; while(i<L.length-2&&L[i+1]<d)i++;
+    return -Math.cos(2*Math.PI*(d-L[i])/(L[i+1]-L[i]))*c.amp;
+  };
+  const sum=d=>CY.reduce((a,c)=>a+val(c,d),0);
+  const extremesOf=c=>{
+    const out=[],L=c.lows;
+    for(let i=0;i<L.length-1;i++){
+      if(L[i]>=D0&&L[i]<=D1)out.push({d:L[i],tipo:'min'});
+      const m=(L[i]+L[i+1])/2;
+      if(m>=D0&&m<=D1)out.push({d:m,tipo:'max'});
+    }
+    return out;
+  };
+  const monthGrid=(padL,padT,plotW,plotH,labels)=>{
+    let g='';
+    for(let d=D0;d<=D1;d++){
+      const dt=day(d);
+      if(dt.getDate()===1){
+        const x=padL+(d-D0)/(N-1)*plotW;
+        g+=`<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT+plotH}" stroke="rgba(255,255,255,.05)"/>`;
+        if(labels&&dt.getMonth()%2===0)
+          g+=`<text x="${x}" y="${padT+plotH+14}" text-anchor="middle" font-size="9" fill="#5a6573" font-family="JetBrains Mono">${DZ_MESI[dt.getMonth()]} ${String(dt.getFullYear()).slice(2)}</text>`;
+      }
+    }
+    return g;
+  };
+
+  // ── somma ──
+  const W=960,padL=14,plotW=W-28;
+  let padT=26,plotH=210,H=padT+plotH+30;
+  const ymax=1.7;
+  let sumSvg=`<svg viewBox="0 0 ${W} ${H}">`;
+  sumSvg+=`<line x1="${padL}" y1="${padT+plotH/2}" x2="${padL+plotW}" y2="${padT+plotH/2}" stroke="rgba(255,255,255,.1)"/>`;
+  sumSvg+=monthGrid(padL,padT,plotW,plotH,true);
+  let pA='';
+  for(let i=0;i<N;i++){const d=D0+i,x=padL+i/(N-1)*plotW,y=padT+plotH/2-(val(CY[0],d)/ymax)*(plotH/2*0.88);pA+=(i?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}
+  sumSvg+=`<path d="${pA}" fill="none" stroke="rgba(91,157,255,.55)" stroke-width="1.6" stroke-dasharray="5,4"/>`;
+  let pS='';
+  for(let i=0;i<N;i++){const d=D0+i,x=padL+i/(N-1)*plotW,y=padT+plotH/2-(sum(d)/ymax)*(plotH/2*0.88);pS+=(i?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}
+  sumSvg+=`<path d="${pS} L${padL+plotW},${padT+plotH/2} L${padL},${padT+plotH/2} Z" fill="#f5b301" opacity=".07"/>`;
+  sumSvg+=`<path d="${pS}" fill="none" stroke="#f5b301" stroke-width="2.6"/>`;
+  const xT=padL+(0-D0)/(N-1)*plotW;
+  sumSvg+=`<line x1="${xT}" y1="${padT-4}" x2="${xT}" y2="${padT+plotH}" stroke="#e8edf4" stroke-width="1.2" stroke-dasharray="4,3" opacity=".55"/>
+  <text x="${xT}" y="${padT+plotH+14}" text-anchor="middle" font-size="9" font-weight="700" fill="#e8edf4" font-family="JetBrains Mono">OGGI · ${fd(TODAY)}</text>`;
+  sumSvg+='</svg>';
+
+  // ── componenti ──
+  const rowH=170,gap=26;
+  const compH=30+CY.length*(rowH+gap);
+  let compSvg=`<svg viewBox="0 0 ${W} ${compH}">`;
+  CY.forEach((c,i)=>{
+    const pT=60+i*(rowH+gap),pH=rowH-90;
+    compSvg+=`<text x="${padL}" y="${pT-36}" font-size="9.5" font-weight="700" letter-spacing="2" fill="${c.color}" font-family="JetBrains Mono">${c.sig} · ${c.lab} · ${c.len}g nominale${MODE==='sync'?' · annidato':''}</text>`;
+    compSvg+=`<line x1="${padL}" y1="${pT+pH/2}" x2="${padL+plotW}" y2="${pT+pH/2}" stroke="rgba(255,255,255,.08)"/>`;
+    compSvg+=monthGrid(padL,pT,plotW,pH,false);
+    let p='';
+    for(let k=0;k<N;k++){
+      const d=D0+k,x=padL+k/(N-1)*plotW;
+      const y=pT+pH/2-(val(c,d)/c.amp)*(pH/2*0.8);
+      p+=(k?'L':'M')+x.toFixed(1)+','+y.toFixed(1);
+    }
+    compSvg+=`<path d="${p}" fill="none" stroke="${c.color}" stroke-width="1.8"/>`;
+    const yMin=pT+pH/2+(pH/2*0.8), yMax=pT+pH/2-(pH/2*0.8);
+    const fitto=c.len<40;
+    let nMin=0,nMax=0,kMin=0,kMax=0;
+    extremesOf(c).forEach(e=>{
+      const x=padL+(e.d-D0)/(N-1)*plotW;
+      const past=e.d<-0.5;
+      const col=past?'#5a6573':c.color;
+      const labelOk=past?!fitto:(e.tipo==='min'?nMin<c.maxLbl:nMax<c.maxLbl);
+      if(e.tipo==='min'){
+        compSvg+=`<circle cx="${x}" cy="${yMin}" r="3.4" fill="#0a0c10" stroke="${col}" stroke-width="1.8"/>`;
+        if(labelOk){if(!past)nMin++;
+          const dy=fitto?16+(kMin%2)*13:16; kMin++;
+          compSvg+=`<text x="${x}" y="${yMin+dy}" text-anchor="middle" font-size="8.5"${past?'':' font-weight="700"'} fill="${col}" font-family="JetBrains Mono">${c.sig}▼ ${fd(day(e.d))}</text>`;}
+      }else{
+        compSvg+=`<circle cx="${x}" cy="${yMax}" r="3.4" fill="#0a0c10" stroke="${col}" stroke-width="1.8"/>`;
+        if(labelOk){if(!past)nMax++;
+          const dy=fitto?10+(kMax%2)*13:10; kMax++;
+          compSvg+=`<text x="${x}" y="${yMax-dy}" text-anchor="middle" font-size="8.5"${past?'':' font-weight="700"'} fill="${col}" font-family="JetBrains Mono">${c.sig}▲ ${fd(day(e.d))}</text>`;}
+      }
+    });
+    const xT2=padL+(0-D0)/(N-1)*plotW;
+    compSvg+=`<line x1="${xT2}" y1="${pT}" x2="${xT2}" y2="${pT+pH}" stroke="#e8edf4" stroke-width="1" stroke-dasharray="3,3" opacity=".45"/>`;
+  });
+  compSvg+='</svg>';
+
+  const fdC=fd(new Date(st.conf+'T00:00:00'));
+  document.getElementById(id).innerHTML=`
+    <div class="dz-mode">
+      <button class="dz-mb${MODE==='sync'?' active':''}" onclick="dzSetMode('${id}','sync')">annidate · ogni ciclo confluisce nel superiore</button>
+      <button class="dz-mb${MODE==='free'?' active':''}" onclick="dzSetMode('${id}','free')">onde libere · periodi medi fissi</button>
+    </div>
+    <div class="dz-ct" style="color:#f5b301">La somma · ciò che vede il mercato</div>
+    <div class="dz-cs">linea oro = i tre cicli sovrapposti · tratteggio = componente annuale · le date degli estremi sono nei pannelli sotto</div>
+    ${sumSvg}
+    <div class="dz-leg">
+      <span><i style="background:#f5b301"></i>somma dei tre</span>
+      <span><i style="background:rgba(91,157,255,.55)"></i>annuale (componente)</span>
+      <span><i style="background:#e8edf4;opacity:.5"></i>oggi</span>
+    </div>
+    <div class="dz-ct" style="color:#5b9dff;margin-top:20px">Le componenti · ogni ciclo da solo</div>
+    <div class="dz-cs">date nel colore del ciclo, con sigla: ▼ minimi sotto, ▲ massimi (inverso) sopra · in grigio gli estremi già passati (sul mensile: solo punti)</div>
+    ${compSvg}
+    <div class="dz-note">Onde ideali ancorate agli <b style="color:#e8edf4">ultimi minimi confermati</b> dal motore; periodi = durate effettive misurate. Annidamento armonico: tra due minimi del ciclo superiore stanno un numero intero di cicli del ciclo inferiore, e al minimo annuale atteso (<b style="color:#e8edf4">${fdC}</b>) confluiscono tutti. Ampiezze convenzionali: la ciclica temporale stima <b style="color:#e8edf4">quando</b>, non quanto. Ancore e date si aggiornano a ogni run del motore.</div>`;
+}
+
 function refreshCicli(){
   loadCycles(CYCLES_URL, 'cycles-body');
   loadCycles(CYCLES_BTC_URL, 'cycles-btc-body');
+  dzInit('dz-spx', CYCLES_URL);
+  dzInit('dz-btc', CYCLES_BTC_URL);
 }
 refreshCicli();
 setInterval(refreshCicli, 3600*1000);
