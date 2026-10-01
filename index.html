@@ -249,22 +249,19 @@
     font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;cursor:pointer}
   .nav-csv:hover{border-color:rgba(245,179,1,.55);color:var(--gold,#f5b301)}
   .jr-tabs{display:flex;gap:8px;margin:12px 0 10px}
-  .jr-list{max-height:400px;overflow-y:auto;max-width:560px}
-  .jr-row{display:grid;grid-template-columns:58px 30px 66px minmax(0,1fr) 80px 58px;gap:8px;align-items:center;
+  .jr-list{max-height:400px;overflow-y:auto;max-width:700px}
+  .jr-row{display:grid;grid-template-columns:30px minmax(0,1fr) 80px 66px 80px 66px 28px 56px;gap:8px;align-items:center;
     padding:4px 0;font-size:12px}
   .jr-head{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);
     border-bottom:1px solid var(--line-soft);padding:0 0 6px;margin-bottom:4px;position:sticky;top:0;background:var(--panel)}
   .jr-head span{text-align:left}
   .jr-head .r{text-align:right}
   .jr-px{text-align:right;font-variant-numeric:tabular-nums;font-size:11px;color:var(--txt-dim)}
-  .jr-d{color:var(--txt-dim);font-size:11px;font-variant-numeric:tabular-nums}
+  .jr-d{color:var(--txt-dim);font-size:11px;font-variant-numeric:tabular-nums;text-align:right}
   .jr-sys{font-size:9px;letter-spacing:.08em;font-weight:800;text-align:left}
   .jr-sys.az{color:#ff9a56}
   .jr-sys.etf{color:#7fb4ff}
   .jr-sys.cr{color:#6fe8a8}
-  .jr-op{font-size:9px;letter-spacing:.06em;font-weight:800;text-align:left}
-  .jr-op.in{color:var(--green)}
-  .jr-op.out{color:var(--red)}
   .jr-asset{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .jr-asset .tk2{font-weight:800;color:var(--txt)}
   .jr-asset .nm2{color:var(--txt-dim);font-size:10px;margin-left:6px}
@@ -275,8 +272,8 @@
   .jr-det .px2{color:var(--txt-dim)}
   .jr-note{font-size:9.5px;color:var(--txt-faint);line-height:1.6;margin-top:10px}
   @media(max-width:680px){
-    .jr-row{grid-template-columns:52px 58px 1fr 70px 60px;font-size:10.5px;gap:6px}
-    .jr-sys{display:none}
+    .jr-row{grid-template-columns:26px minmax(0,1fr) 72px 60px 52px;font-size:10.5px;gap:6px}
+    .jr-ap,.jr-gg{display:none}
     .jr-asset .nm2{display:none}
   }
   .combo-list{width:100%;max-width:520px;margin-left:auto}
@@ -756,21 +753,22 @@ function loadCombined(){
     })();
     window.renderComboValues('entry');
 
-    // ── giornale delle operazioni: prezzo acquisto / vendita / performance ──
+    // ── giornale delle operazioni: una riga per operazione COMPLETATA,
+    //    con apertura e chiusura affiancate (stile registro trade).
+    //    Le posizioni aperte restano nella tabella del portafoglio sopra. ──
     const VIA=pts[0].date;
-    const moves=[];
-    const fpx=(v,eur)=>v==null?'':((eur?'\u20ac':'')+Number(v).toFixed(v>=1000?0:2));
+    const trades=[];
+    const fpx=(v,eur)=>v==null?'':((eur?'€':'')+Number(v).toFixed(v>=1000?0:2));
+    const fmtGMA=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y}`;};
+    const ggHeld=(a2,b2)=>Math.round((new Date(b2+'T00:00:00')-new Date(a2+'T00:00:00'))/86400000);
     // AZIONI: registro adaptive (prezzi ai listini d'origine)
     (azAg.operations||[]).forEach(o=>{
-      moves.push({d:o.entry_date,sys:'az',op:'in',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
-        px:fpx(o.entry_price,false),perf:null,why:''});
-      if(o.exit_date){
-        moves.push({d:o.exit_date,sys:'az',op:'out',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
-          px:fpx(o.exit_price,false),perf:o.perf_pct,
-          why:o.exit_reason==='stop_loss'?'stop −20%':''});
-      }
+      if(!o.exit_date)return;
+      trades.push({sys:'az',tk:o.ticker,nm:(o.sector_name||'').slice(0,16),
+        d0:o.entry_date,p0:fpx(o.entry_price,false),d1:o.exit_date,p1:fpx(o.exit_price,false),
+        perf:o.perf_pct,why:o.exit_reason==='stop_loss'?'stop −20%':''});
     });
-    // ETF: storico segnali + prezzi UCITS in EUR dalla simulazione (fallback USD con *)
+    // ETF: periodi IN chiusi + prezzi UCITS in EUR dalla simulazione (fallback USD con *)
     const dIdx={}; simDates.forEach((dd,i)=>{dIdx[dd]=i;});
     const idxOf=dd=>{if(dIdx[dd]!=null)return dIdx[dd];
       for(let i=simDates.length-1;i>=0;i--){if(simDates[i]<=dd)return i;} return null;};
@@ -783,52 +781,48 @@ function loadCombined(){
       const pe=sec.prices_eur, pu=sec.prices;
       const at=(arr,i2)=>(arr&&i2!=null&&arr[i2]>0)?arr[i2]:null;
       (s.opHistory||[]).forEach(pr=>{
-        if(pr.signal!=='IN')return;
-        const i0=idxOf(pr.start_date);
-        const i1=pr.is_current?null:idxOf(pr.end_date);
+        if(pr.signal!=='IN'||pr.is_current||!pr.end_date)return;
+        const i0=idxOf(pr.start_date), i1=idxOf(pr.end_date);
         // valuta decisa UNA volta per periodo: EUR solo se disponibile su
         // tutte le sponde del periodo, altrimenti USD (asterisco) su tutte
-        const eur=at(pe,i0)!=null&&(pr.is_current||at(pe,i1)!=null);
+        const eur=at(pe,i0)!=null&&at(pe,i1)!=null;
         const p0=eur?at(pe,i0):at(pu,i0);
-        moves.push({d:pr.start_date,sys:'etf',op:'in',tk:lab,nm:nome,
-          px:p0!=null?fpx(p0,eur)+(eur?'':'*'):'',perf:null,why:''});
-        if(!pr.is_current&&pr.end_date){
-          const p1=eur?at(pe,i1):at(pu,i1);
-          const pf2=(p0!=null&&p1!=null)?(p1/p0-1)*100:pr.perf_sector;
-          moves.push({d:pr.end_date,sys:'etf',op:'out',tk:lab,nm:nome,
-            px:p1!=null?fpx(p1,eur)+(eur?'':'*'):'',perf:pf2,why:''});
-        }
+        const p1=eur?at(pe,i1):at(pu,i1);
+        const pf2=(p0!=null&&p1!=null)?(p1/p0-1)*100:pr.perf_sector;
+        trades.push({sys:'etf',tk:lab,nm:nome,
+          d0:pr.start_date,p0:p0!=null?fpx(p0,eur)+(eur?'':'*'):'',
+          d1:pr.end_date,p1:p1!=null?fpx(p1,eur)+(eur?'':'*'):'',
+          perf:pf2,why:''});
       });
     });
-    // CRYPTO: registro dei trade del motore DMI (finestra ultimo anno)
+    // CRYPTO: registro dei trade chiusi del motore DMI (finestra ultimo anno)
     Object.entries(cr.assets||{}).forEach(([a3,v])=>{
       (v.trades||[]).forEach(t=>{
-        moves.push({d:t.entry_date,sys:'cr',op:'in',tk:a3,nm:'',px:fpx(t.entry_price,false),perf:null,why:''});
-        moves.push({d:t.exit_date,sys:'cr',op:'out',tk:a3,nm:'',px:fpx(t.exit_price,false),perf:t.perf,why:''});
+        trades.push({sys:'cr',tk:a3,nm:'',d0:t.entry_date,p0:fpx(t.entry_price,false),
+          d1:t.exit_date,p1:fpx(t.exit_price,false),perf:t.perf,why:''});
       });
-      if(v.in_position&&v.entry_date){
-        moves.push({d:v.entry_date,sys:'cr',op:'in',tk:a3,nm:'',px:fpx(v.entry_price,false),perf:null,why:''});
-      }
     });
-    moves.sort((a2,b2)=>b2.d.localeCompare(a2.d)||(a2.op==='out'?-1:1));
-    window.__jrMoves=moves;
+    trades.sort((a2,b2)=>b2.d1.localeCompare(a2.d1)||b2.d0.localeCompare(a2.d0));
+    window.__jrTrades=trades;
     window.renderJournal=function(range){
       const list=document.getElementById('jr-list'); if(!list)return;
-      const rows2=moves.filter(m=>range==='all'||m.d>=VIA);
-      const head=`<div class="jr-row jr-head"><span>data</span><span></span><span>operaz.</span><span>asset</span><span class="r">prezzo</span><span class="r">perf</span></div>`;
+      const rows2=trades.filter(m=>range==='all'||m.d1>=VIA);
+      const head=`<div class="jr-row jr-head"><span></span><span>asset</span><span class="r jr-ap">apertura</span><span class="r jr-ap">acquisto</span><span class="r">chiusura</span><span class="r">vendita</span><span class="r jr-gg">gg</span><span class="r">perf</span></div>`;
       list.innerHTML=head+(rows2.length?rows2.map(m=>`<div class="jr-row">
-        <span class="jr-d">${fmtDM(m.d)}</span>
         <span class="jr-sys ${m.sys}">${m.sys==='az'?'AZ':(m.sys==='etf'?'ETF':'CR')}</span>
-        <span class="jr-op ${m.op}">${m.op==='in'?'ACQUISTO':'VENDITA'}</span>
         <span class="jr-asset"><span class="tk2">${m.tk}</span><span class="nm2">${m.nm}</span>${m.why?'<span class="why">'+m.why+'</span>':''}</span>
-        <span class="jr-px">${m.px||'\u2014'}</span>
+        <span class="jr-d jr-ap">${fmtGMA(m.d0)}</span>
+        <span class="jr-px jr-ap">${m.p0||'—'}</span>
+        <span class="jr-d">${fmtGMA(m.d1)}</span>
+        <span class="jr-px">${m.p1||'—'}</span>
+        <span class="jr-px jr-gg">${ggHeld(m.d0,m.d1)}</span>
         <span class="jr-det">${m.perf!=null?'<span class="'+(m.perf>=0?'pos':'neg')+'">'+sign(m.perf)+'</span>':''}</span>
-      </div>`).join(''):'<div class="jr-row"><span class="jr-d"></span><span></span><span></span><span class="jr-asset nm2">nessun movimento nel periodo</span><span></span><span></span></div>');
+      </div>`).join(''):'<div class="jr-row"><span></span><span class="jr-asset nm2">nessuna operazione completata nel periodo</span></div>');
       const note=document.getElementById('jr-note');
       if(note)note.textContent=(range==='all'
-        ?'Storico completo dei due sistemi azionari: prima del '+fmtDM(VIA)+' i movimenti provengono dalla storia dei sistemi (ETF dal 2009, Azioni dal 2018), non dal tracking live del combinato. '
-        :'Movimenti dal via del NAV ('+fmtDM(VIA)+'). Le posizioni aperte prima del via compaiono nell\'elenco sopra con la loro data d\'ingresso. ')
-        +'Prezzi: azioni ai listini d\'origine, ETF in EUR sugli strumenti UCITS (l\'asterisco indica il ripiego sull\'indice USA), crypto in USD. Performance sulle vendite: dall\'acquisto alla vendita, stessi prezzi mostrati. Le operazioni crypto coprono la finestra del motore (ultimo anno).';
+        ?'Storico completo delle operazioni chiuse: ETF dal 2009, Azioni dal 2018, crypto sulla finestra del motore (ultimo anno). '
+        :'Operazioni chiuse dal via del NAV ('+fmtDM(VIA)+'). ')
+        +'Le posizioni ancora aperte sono nella tabella del portafoglio sopra, con data e prezzo d’ingresso. Prezzi: azioni ai listini d’origine, ETF in EUR sugli strumenti UCITS (l’asterisco indica il ripiego sull’indice USA), crypto in USD. Perf: dall’acquisto alla vendita, stessi prezzi mostrati; gg = giorni di detenzione.';
     };
     window.setJrRange=function(r){
       document.getElementById('jr-nav').classList.toggle('active',r==='nav');
