@@ -1081,6 +1081,35 @@ function dzRender(id){
   compSvg+='</svg>';
 
   const fdC=fd(new Date(st.conf+'T00:00:00'));
+
+  // ── lettura automatica in parole semplici, generata dalle catene ──
+  const lettura=(function(){
+    try{
+      const short=CY[CY.length-1], mid=CY.length>2?CY[1]:CY[0];
+      const futM=c=>c.exts.filter(e=>e.tipo==='min'&&e.d>0.5);
+      const futX=c=>c.exts.filter(e=>e.tipo==='max'&&e.d>0.5);
+      const mMins=futM(short), iMins=futM(mid), iMaxs=futX(mid);
+      const near=(x,y)=>Math.abs(x-y)<=3;
+      const giu=sum(3)<sum(0);
+      const frasi=[];
+      frasi.push(giu
+        ?`In questo momento l'insieme dei cicli sta <b>scendendo</b>: la fase favorisce prudenza e pazienza, non gli acquisti di slancio.`
+        :`In questo momento l'insieme dei cicli sta <b>salendo</b>: la fase è favorevole, con le pause fisiologiche lungo la strada.`);
+      // tappe brevi (primi 2 minimi del ciclo corto, esclusa la confluenza)
+      const tappe=mMins.filter(e=>!near(e.d,AL)).slice(0,2).map(e=>fd(day(e.d)));
+      if(tappe.length)frasi.push(`Le prossime pause di breve respiro sono attese intorno al <b>${tappe.join('</b> e al <b>')}</b>: fermate normali, non cambi di scenario.`);
+      // appoggio intermedio, se non coincide con la confluenza
+      const iM=iMins.length?iMins[0]:null;
+      if(iM&&!near(iM.d,AL))frasi.push(`Un appoggio più importante è atteso verso il <b>${fd(day(iM.d))}</b>.`);
+      // massimo di periodo prima della confluenza
+      const iX=iMaxs.length?iMaxs[0]:null;
+      if(iX&&iX.d<AL)frasi.push(`Prima, un massimo di periodo è atteso verso il <b>${fd(day(iX.d))}</b>.`);
+      // la confluenza
+      if(AL>0.5)frasi.push(`L'appuntamento principale è il <b>${fdC}</b>: lì tutti i cicli puntano in basso insieme, ed è la zona dove storicamente nascono i minimi che contano — e da cui ripartono i rialzi migliori.`);
+      frasi.push(`Le date sono stagioni, non appuntamenti al minuto: conta la sequenza, non il giorno esatto.`);
+      return `<div class="cyc-ai" style="margin-top:14px"><span class="ai-tag">◆ lettura automatica · in parole semplici · si aggiorna a ogni run</span>${frasi.join(' ')}</div>`;
+    }catch(_e){return '';}
+  })();
   document.getElementById(id).innerHTML=`
     <div class="dz-mode">
       <button class="dz-mb${MODE==='sync'?' active':''}" onclick="dzSetMode('${id}','sync')">annidate · ogni ciclo confluisce nel superiore</button>
@@ -1094,6 +1123,7 @@ function dzRender(id){
       <span><i style="background:rgba(91,157,255,.55)"></i>annuale (componente)</span>
       <span><i style="background:#e8edf4;opacity:.5"></i>oggi</span>
     </div>
+    ${lettura}
     <div class="dz-ct" style="color:#5b9dff;margin-top:20px">Le componenti · ogni ciclo da solo</div>
     <div class="dz-cs">date nel colore del ciclo, con sigla: ▼ minimi sotto, ▲ massimi (l'inverso, ancorati alla catena dei massimi del motore) sopra · in grigio gli estremi già passati (sul mensile: solo punti) · un massimo fuori centro è traslazione: a sinistra debolezza, a destra forza</div>
     ${compSvg}
