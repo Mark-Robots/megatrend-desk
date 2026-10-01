@@ -768,7 +768,7 @@ async function loadCycles(url, targetId){
                    c.track_mae_high!=null?`massimi \u00b1${c.track_mae_high}g`:null].filter(Boolean).join(' \u00b7 ');
         badges+=`<span class="aff-badge t" title="Ultime proiezioni verificate (fatte prima dell'evento, stessa regola del live):\u000A${det}">verifica storica: ${lbl}</span>`;
       }
-      return `<div class="cyc-row">
+      return `<div class="cyc-row" data-cyc="${c.key}" data-dir="${dir.key}">
         <div class="cyc-rank">${i+1}</div>
         <div class="cyc-rname"><span class="cyc-racc ${barCls}"></span><span class="cyc-rlabel">${nome}</span></div>
         <div class="cyc-rtrack"><div class="cyc-rfill ${barCls}" style="width:${pct}%"></div></div>
@@ -780,59 +780,8 @@ async function loadCycles(url, targetId){
 
     const chart=waveChart(cyc, d.last_date);
 
-    // ── LETTURA AUTOMATICA: commento in prosa generato dai dati, si riscrive a ogni run ──
-    const cyComment=(()=>{try{
-      const G=k=>cyc.find(c=>c.key===k)||{};
-      const an=G('annuale'), im=G('intermedio'), me=G('mensile'), bi=G('biennale');
-      const Fd=s=>{if(!s)return null;const p=s.split('-');return `${+p[2]} ${MESI[+p[1]-1]}`;};
-      const anUp=(an.last_low_date||'')>(an.last_high_date||'');
-      const frasi=[];
-      // 1) dove siamo (fase annuale)
-      if(anUp){
-        frasi.push(`Il ciclo annuale è ripartito dal minimo del <b>${Fd(an.last_low_date)}</b> e sale verso il massimo atteso intorno al ${Fd(an.next_high_date_est)}.`);
-      }else{
-        frasi.push(`Il massimo annuale in carica è del <b>${Fd(an.last_high_date)}</b>: da lì è in corso la fase correttiva verso il minimo atteso intorno al <b>${Fd(an.next_low_date_est)}</b>.`);
-      }
-      // 2) la mappa breve (mensile + intermedio, in ordine temporale)
-      const eventi=[];
-      const push=(giorni,txt)=>{if(giorni!=null&&giorni>=0)eventi.push([giorni,txt]);};
-      push(me.days_to_high_est, `massimo mensile ~${Fd(me.next_high_date_est)}`);
-      push(me.days_to_low_est,  `minimo mensile ~${Fd(me.next_low_date_est)}`);
-      push(im.days_to_high_est, `massimo intermedio ~${Fd(im.next_high_date_est)}`);
-      push(im.days_to_low_est,  `minimo intermedio ~${Fd(im.next_low_date_est)}`);
-      eventi.sort((x,y)=>x[0]-y[0]);
-      if(eventi.length) frasi.push(`Prossime tappe: ${eventi.slice(0,3).map(e=>e[1]).join(', poi ')}.`);
-      // 3) sincronia col biennale se i minimi maggiori sono vicini (<60 giorni)
-      if(!anUp&&bi.days_to_low_est!=null&&an.days_to_low_est!=null&&Math.abs(bi.days_to_low_est-an.days_to_low_est)<60){
-        frasi.push(`Il minimo annuale cadrebbe in sincronia con quello biennale: appuntamento di grado superiore.`);
-      }
-      // 3bis) riancoraggio in corso: un ciclo superiore ha gia' confermato un
-      // massimo piu' recente di quello annuale -> la linea di controllo risulta
-      // di fatto superata e l'annuale sta per aggiornare la sua ancora
-      const riancoraggio=(!anUp&&bi.last_high_date&&an.last_high_date&&bi.last_high_date>an.last_high_date);
-      if(riancoraggio){
-        frasi.push(`<b>Nota</b>: il ciclo biennale ha già confermato un massimo più recente (${Fd(bi.last_high_date)}): la linea di controllo risulta superata e il massimo annuale è in corso di riancoraggio — le proiezioni si aggiorneranno ai prossimi run.`);
-      }
-      // 4) linea di controllo (falsificazione)
-      if(anUp){
-        frasi.push(`Linea di controllo: il minimo del ${Fd(an.last_low_date)} — una violazione riscriverebbe lo scenario al ribasso.`);
-      }else if(!riancoraggio){
-        frasi.push(`Linea di controllo: i massimi del ${Fd(an.last_high_date)} — un superamento riscriverebbe lo scenario al rialzo (traslazione a destra).`);
-      }
-      // 5) margini misurati dal track record
-      const mae=c=>{const v=[c.track_mae_low,c.track_mae_high].filter(x=>x!=null);return v.length?Math.round(v.reduce((s,x)=>s+x,0)/v.length):null;};
-      const mm=mae(me), mi=mae(im), ma=mae(an);
-      const parts=[];
-      if(mm!=null)parts.push(`mensile ±${mm}g`);
-      if(mi!=null)parts.push(`intermedio ±${mi}g`);
-      if(ma!=null)parts.push(`annuale ±${ma}g`);
-      if(parts.length) frasi.push(`Margini misurati sugli ultimi estremi: ${parts.join(' · ')} — le date sono stagioni, la sequenza è l'informazione.`);
-      return `<div class="cyc-ai"><span class="ai-tag">◆ lettura automatica · generata dai dati · si aggiorna a ogni run</span>${frasi.join(' ')}</div>`;
-    }catch(_e){return '';}})();
-
     el.innerHTML=`<div id="dz-${targetId}" class="dz-wrap"><p class="crypto-note">Caricamento scomposizione…</p></div>`
       + `<div class="cyc-rows">${cycSummary}</div>`
-      + cyComment
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
     dzInit('dz-'+targetId, url);
@@ -997,6 +946,28 @@ function dzRender(id){
     ex.push({d:c.lows[c.lows.length-1],tipo:'min'});
     c.exts=ex;
   });
+
+  // ── sincronizza le barre riassuntive: le date mostrate nelle righe
+  //    mensile/intermedio/annuale sono le STESSE del grafico (prima
+  //    scadenza futura della catena annidata), non più la stima grezza ──
+  try{
+    const wrapEl=document.getElementById(id);
+    const rowsEl=wrapEl&&wrapEl.parentElement?wrapEl.parentElement.querySelector('.cyc-rows'):null;
+    if(rowsEl){
+      const fdY=dt=>String(dt.getDate()).padStart(2,'0')+' '+DZ_MESI[dt.getMonth()]+' '+dt.getFullYear();
+      CY.forEach(c=>{
+        const row=rowsEl.querySelector('.cyc-row[data-cyc="'+c.key+'"]');
+        if(!row)return;
+        const dirKey=row.getAttribute('data-dir');
+        const tipo=dirKey==='rialzista'?'max':dirKey==='ribassista'?'min':null;
+        if(!tipo)return;
+        const e=c.exts.find(x=>x.tipo===tipo&&x.d>0.5);
+        if(!e)return;
+        const cell=row.querySelector('.cyc-rend');
+        if(cell)cell.innerHTML='<span class="cyc-end '+(tipo==='max'?'up':'dn')+'">'+fdY(day(e.d))+'</span>';
+      });
+    }
+  }catch(_e){}
 
   const val=(c,d)=>{
     const E=c.exts; let i=0; while(i<E.length-2&&E[i+1].d<d)i++;
