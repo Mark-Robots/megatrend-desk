@@ -440,22 +440,10 @@
     <div id="cycles-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
-  <h2 class="sec-title mt">Scomposizione armonica · S&amp;P 500</h2>
-  <div class="card cyclescard">
-    <p class="crypto-note">I tre cicli disegnati come onde annidate: la somma in alto (ciò che vede il mercato), le componenti sotto con le date degli estremi. Ancore e date lette dal motore a ogni run.</p>
-    <div id="dz-spx" class="dz-wrap"><p class="crypto-note">Caricamento…</p></div>
-  </div>
-
   <h2 class="sec-title mt">Analisi ciclica · Bitcoin</h2>
   <div class="card cyclescard">
     <p class="crypto-note">Gli stessi cicli temporali annidati applicati a Bitcoin (BTC/USDT, dati giornalieri). Bitcoin scambia 7 giorni su 7, quindi le durate sono in giorni di calendario.</p>
     <div id="cycles-btc-body"><p class="crypto-note">Caricamento…</p></div>
-  </div>
-
-  <h2 class="sec-title mt">Scomposizione armonica · Bitcoin</h2>
-  <div class="card cyclescard">
-    <p class="crypto-note">Le stesse onde annidate su Bitcoin (giorni di calendario). Date grezze, senza correzione del bias.</p>
-    <div id="dz-btc" class="dz-wrap"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
   
@@ -842,12 +830,12 @@ async function loadCycles(url, targetId){
       return `<div class="cyc-ai"><span class="ai-tag">◆ lettura automatica · generata dai dati · si aggiorna a ogni run</span>${frasi.join(' ')}</div>`;
     }catch(_e){return '';}})();
 
-    el.innerHTML=`<div class="wave-wrap">${chart}</div>`
-      + `<div class="wave-legend"><span class="lg-item"><span class="lg-line green"></span> tendenza di fondo in salita (verso il massimo)</span><span class="lg-item"><span class="lg-line red"></span> tendenza di fondo in discesa (verso il minimo)</span><span class="lg-item"><span class="lg-tri up"></span> minimo annuale</span><span class="lg-item"><span class="lg-tri dn"></span> massimo annuale</span><span class="lg-item"><span class="lg-line white"></span> oggi</span></div>`
-      + `<div class="ann-wave-note">La banda spessa di fondo è il solo ciclo annuale (la tendenza di fondo): verde quando sale verso il massimo (rialzo non ancora finito), rossa quando scende verso il minimo. La linea arancione sottile è la somma dei tre cicli, per il timing fine. ${targetId==='cycles-body' ? "Le date sono corrette per l'anticipo/ritardo storico misurato sul backtest (i minimi tendono ad arrivare un po' dopo, i massimi un po' prima della proiezione grezza)." : "Le date sono grezze (la calibrazione del bias è specifica per l'S&P; per Bitcoin servono statistiche proprie, non ancora applicate)."} I cerchietti vuoti sono i min/max annuali (meno precisi: leggili come stagione).</div>`
+    el.innerHTML=`<div id="dz-${targetId}" class="dz-wrap"><p class="crypto-note">Caricamento scomposizione…</p></div>`
       + `<div class="cyc-rows">${cycSummary}</div>`
       + cyComment
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
+
+    dzInit('dz-'+targetId, url);
 
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
@@ -939,11 +927,13 @@ async function dzInit(id,url){
     (d.cycles||[]).forEach(c=>{cyc[c.key]=c;});
     const cycles=['annuale','intermedio','mensile'].map(k=>{
       const c=cyc[k]; if(!c||!c.last_low_date||!c.len_effective)return null;
-      return {...DZ_STYLE[k],key:k,len:c.len_effective,lastLow:c.last_low_date};
+      return {...DZ_STYLE[k],key:k,len:c.len_effective,lastLow:c.last_low_date,
+        lenH:c.len_effective_high||c.len_effective,lastHigh:c.last_high_date||null};
     }).filter(Boolean);
     const conf=(cyc.annuale&&(cyc.annuale.next_low_date_est||cyc.annuale.next_low_date_est_raw))||null;
+    const confH=(cyc.annuale&&(cyc.annuale.next_high_date_est||cyc.annuale.next_high_date_est_raw))||null;
     if(cycles.length<2||!conf)throw new Error('dati ciclici incompleti');
-    DZ[id]={cycles,conf,mode:(DZ[id]&&DZ[id].mode)||'sync'};
+    DZ[id]={cycles,conf,confH,mode:(DZ[id]&&DZ[id].mode)||'sync'};
     dzRender(id);
   }catch(e){
     el.innerHTML='<p class="crypto-note">Scomposizione non disponibile: '+e.message+'</p>';
@@ -981,20 +971,41 @@ function dzRender(id){
   for(let i=1;i<CY.length;i++)
     CY[i].lows=buildChain(offOf(CY[i].lastLow),CY[i].len,CY[i-1].lows);
 
+  // catena dei MASSIMI (l'inverso): stessa logica, ancorata agli ultimi
+  // massimi confermati; confluenza = massimo annuale atteso dal motore
+  const AH=st.confH?offOf(st.confH):null;
+  if(CY[0].lastHigh&&AH!=null){
+    CY[0].highs=buildChain(offOf(CY[0].lastHigh),CY[0].lenH,[AH]);
+    for(let i=1;i<CY.length;i++)
+      CY[i].highs=(CY[i].lastHigh)?buildChain(offOf(CY[i].lastHigh),CY[i].lenH,CY[i-1].highs):null;
+  }
+  // sequenza alternata min→max→min: per ogni coppia di minimi consecutivi
+  // si sceglie il massimo della catena che vi cade dentro (il più vicino al
+  // centro se più d'uno); se la catena non ne offre, ripiego sul punto medio
+  CY.forEach(c=>{
+    const ex=[];
+    for(let i=0;i<c.lows.length-1;i++){
+      const a2=c.lows[i],b2=c.lows[i+1],mid=(a2+b2)/2;
+      ex.push({d:a2,tipo:'min'});
+      let h=null;
+      if(c.highs){
+        const cand=c.highs.filter(x=>x>a2+0.5&&x<b2-0.5);
+        if(cand.length)h=cand.reduce((p,q)=>Math.abs(q-mid)<Math.abs(p-mid)?q:p);
+      }
+      ex.push({d:h!=null?h:mid,tipo:'max',anchored:h!=null});
+    }
+    ex.push({d:c.lows[c.lows.length-1],tipo:'min'});
+    c.exts=ex;
+  });
+
   const val=(c,d)=>{
-    const L=c.lows; let i=0; while(i<L.length-2&&L[i+1]<d)i++;
-    return -Math.cos(2*Math.PI*(d-L[i])/(L[i+1]-L[i]))*c.amp;
+    const E=c.exts; let i=0; while(i<E.length-2&&E[i+1].d<d)i++;
+    const t=(d-E[i].d)/(E[i+1].d-E[i].d);
+    // mezzo coseno: salita se il segmento parte da un minimo, discesa se da un massimo
+    return (E[i].tipo==='min'?-1:1)*Math.cos(Math.PI*t)*c.amp;
   };
   const sum=d=>CY.reduce((a,c)=>a+val(c,d),0);
-  const extremesOf=c=>{
-    const out=[],L=c.lows;
-    for(let i=0;i<L.length-1;i++){
-      if(L[i]>=D0&&L[i]<=D1)out.push({d:L[i],tipo:'min'});
-      const m=(L[i]+L[i+1])/2;
-      if(m>=D0&&m<=D1)out.push({d:m,tipo:'max'});
-    }
-    return out;
-  };
+  const extremesOf=c=>c.exts.filter(e=>e.d>=D0&&e.d<=D1);
   const monthGrid=(padL,padT,plotW,plotH,labels)=>{
     let g='';
     for(let d=D0;d<=D1;d++){
@@ -1084,16 +1095,14 @@ function dzRender(id){
       <span><i style="background:#e8edf4;opacity:.5"></i>oggi</span>
     </div>
     <div class="dz-ct" style="color:#5b9dff;margin-top:20px">Le componenti · ogni ciclo da solo</div>
-    <div class="dz-cs">date nel colore del ciclo, con sigla: ▼ minimi sotto, ▲ massimi (inverso) sopra · in grigio gli estremi già passati (sul mensile: solo punti)</div>
+    <div class="dz-cs">date nel colore del ciclo, con sigla: ▼ minimi sotto, ▲ massimi (l'inverso, ancorati alla catena dei massimi del motore) sopra · in grigio gli estremi già passati (sul mensile: solo punti) · un massimo fuori centro è traslazione: a sinistra debolezza, a destra forza</div>
     ${compSvg}
-    <div class="dz-note">Onde ideali ancorate agli <b style="color:#e8edf4">ultimi minimi confermati</b> dal motore; periodi = durate effettive misurate. Annidamento armonico: tra due minimi del ciclo superiore stanno un numero intero di cicli del ciclo inferiore, e al minimo annuale atteso (<b style="color:#e8edf4">${fdC}</b>) confluiscono tutti. Ampiezze convenzionali: la ciclica temporale stima <b style="color:#e8edf4">quando</b>, non quanto. Ancore e date si aggiornano a ogni run del motore.</div>`;
+    <div class="dz-note">Onde ideali ancorate agli <b style="color:#e8edf4">ultimi minimi confermati</b> dal motore; periodi = durate effettive misurate. Annidamento armonico: tra due minimi del ciclo superiore stanno un numero intero di cicli del ciclo inferiore, e al minimo annuale atteso (<b style="color:#e8edf4">${fdC}</b>) confluiscono tutti. I massimi sono ancorati alla catena dei massimi del motore (l'inverso${st.confH?', confluenza al '+fd(new Date(st.confH+'T00:00:00')):''}): quando un massimo cade prima del centro del ciclo l'onda è traslata a sinistra (debolezza), dopo il centro a destra (forza). Ampiezze convenzionali: la ciclica temporale stima <b style="color:#e8edf4">quando</b>, non quanto. Ancore e date si aggiornano a ogni run del motore.</div>`;
 }
 
 function refreshCicli(){
   loadCycles(CYCLES_URL, 'cycles-body');
   loadCycles(CYCLES_BTC_URL, 'cycles-btc-body');
-  dzInit('dz-spx', CYCLES_URL);
-  dzInit('dz-btc', CYCLES_BTC_URL);
 }
 refreshCicli();
 setInterval(refreshCicli, 3600*1000);
