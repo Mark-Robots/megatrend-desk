@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-10-01T11:59:46Z",
+  "updated_at": "2026-10-02T11:31:19Z",
   "mode": "long_only_dmi_d1d2",
   "assets": {
     "BTC": {
-      "perf_week": -0.22,
-      "perf_month": 4.12,
-      "perf_ytd": 27.67,
-      "in_position": false,
+      "perf_week": -1.44,
+      "perf_month": 5.8,
+      "perf_ytd": 27.41,
+      "in_position": true,
       "n_trades": 9,
-      "entry_date": null,
-      "entry_price": null,
-      "current_price": null,
-      "perf_pos": null,
+      "entry_date": "2026-10-02",
+      "entry_price": 86652.12,
+      "current_price": 86479.0,
+      "perf_pos": -0.2,
       "trades": [
         {
           "entry_date": "2025-10-26",
@@ -83,19 +83,12 @@
       "perf_month": -1.63,
       "perf_ytd": 22.21,
       "in_position": false,
-      "n_trades": 15,
+      "n_trades": 14,
       "entry_date": null,
       "entry_price": null,
       "current_price": null,
       "perf_pos": null,
       "trades": [
-        {
-          "entry_date": "2025-10-02",
-          "exit_date": "2025-10-10",
-          "perf": -5.35,
-          "entry_price": 4335.15,
-          "exit_price": 4103.11
-        },
         {
           "entry_date": "2025-10-26",
           "exit_date": "2025-10-28",
@@ -197,23 +190,16 @@
       ]
     },
     "SOL": {
-      "perf_week": -1.37,
-      "perf_month": -5.57,
+      "perf_week": -1.31,
+      "perf_month": -3.36,
       "perf_ytd": 25.11,
       "in_position": false,
-      "n_trades": 17,
+      "n_trades": 16,
       "entry_date": null,
       "entry_price": null,
       "current_price": null,
       "perf_pos": null,
       "trades": [
-        {
-          "entry_date": "2025-10-01",
-          "exit_date": "2025-10-09",
-          "perf": -2.17,
-          "entry_price": 222.04,
-          "exit_price": 217.22
-        },
         {
           "entry_date": "2025-10-26",
           "exit_date": "2025-10-28",
@@ -330,9 +316,9 @@
     }
   },
   "portfolio": {
-    "perf_week": -0.53,
-    "perf_month": -1.03,
-    "perf_ytd": 25.0,
+    "perf_week": -0.92,
+    "perf_month": 0.27,
+    "perf_ytd": 24.91,
     "n_assets": 3
   },
   "weekly_seed": "2026-05-01",
