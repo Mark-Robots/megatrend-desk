@@ -349,7 +349,13 @@
   .card-link .arr{transition:transform .2s} .card-link:hover .arr{transform:translateX(3px)}
   .crypto-note{font-size:12px;color:var(--txt-dim);line-height:1.6;margin:6px 0 2px}
   .loading{color:var(--txt-faint);font-size:12px;padding:20px 0}
-  .disclaimer{margin-top:40px;padding:20px 22px;background:var(--panel);border:1px solid var(--line-soft);
+  .cicli-cta{display:flex;justify-content:center;margin-top:36px}
+  .cicli-cta a{display:inline-flex;align-items:center;gap:10px;padding:13px 26px;border:1px solid rgba(245,179,1,.5);
+    border-radius:10px;background:rgba(245,179,1,.06);color:var(--gold,#f5b301);font-family:'JetBrains Mono',monospace;
+    font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:all .15s}
+  .cicli-cta a:hover{background:rgba(245,179,1,.14);border-color:var(--gold,#f5b301)}
+  .cicli-cta a span{font-size:9px;font-weight:400;letter-spacing:.04em;text-transform:none;color:var(--txt-dim)}
+  .disclaimer{margin-top:28px;padding:20px 22px;background:var(--panel);border:1px solid var(--line-soft);
     border-radius:12px;font-size:11px;color:var(--txt-faint);line-height:1.7}
   .disclaimer b{color:var(--txt-dim);font-weight:700}
   footer{margin-top:28px;text-align:center;font-size:11px;color:var(--txt-faint);letter-spacing:.08em}
@@ -456,8 +462,11 @@
     <div id="combo-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
+  <div class="cicli-cta">
+    <a href="cicli.html">◆ Analisi ciclica <span>· S&amp;P 500 e Bitcoin · vista 2020→2028</span></a>
+  </div>
+
   <div class="disclaimer">
-    <b>Analisi ciclica</b>: ora in una <a href="cicli.html" style="color:var(--txt-dim)">pagina dedicata</a>.<br>
     <b>Nota.</b> MarkRoboT.S. è un progetto personale di ricerca sul trading algoritmico, condiviso tra appassionati a scopo informativo e didattico. Le performance recenti derivano dai sistemi su dati reali ma <b>non costituiscono garanzia di risultati futuri</b>. Nulla in questa pagina è consulenza finanziaria, raccomandazione di investimento o sollecitazione. Ogni decisione di investimento è a proprio rischio.
   </div>
   <footer><span class="orange">◆</span> MarkRoboT.S. · sistemi quantitativi indipendenti</footer>
