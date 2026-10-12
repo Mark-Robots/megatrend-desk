@@ -782,9 +782,11 @@ async function loadCycles(url, targetId){
 
     el.innerHTML=`<div id="dz-${targetId}" class="dz-wrap"><p class="crypto-note">Caricamento scomposizione…</p></div>`
       + `<div class="cyc-rows">${cycSummary}</div>`
+      + `<div id="dq-${targetId}" class="dz-wrap"></div>`
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
     dzInit('dz-'+targetId, url);
+    dqRender('dq-'+targetId, d);
 
   }catch(e){
     el.innerHTML='<p class="crypto-note">Dati ciclici non ancora disponibili. La sezione si popola dopo il primo aggiornamento del workflow.</p>';
@@ -1099,6 +1101,317 @@ function dzRender(id){
     <div class="dz-cs">date nel colore del ciclo, con sigla: ▼ minimi sotto, ▲ massimi (l'inverso, ancorati alla catena dei massimi del motore) sopra · in grigio gli estremi già passati (sul mensile: solo punti) · un massimo fuori centro è traslazione: a sinistra debolezza, a destra forza</div>
     ${compSvg}
     <div class="dz-note">Onde ideali ancorate agli <b style="color:#e8edf4">ultimi minimi confermati</b> dal motore; periodi = durate effettive misurate. Annidamento armonico: tra due minimi del ciclo superiore stanno un numero intero di cicli del ciclo inferiore, e al minimo annuale atteso (<b style="color:#e8edf4">${fdC}</b>) confluiscono tutti. I massimi sono ancorati alla catena dei massimi del motore (l'inverso${st.confH?', confluenza al '+fd(new Date(st.confH+'T00:00:00')):''}): quando un massimo cade prima del centro del ciclo l'onda è traslata a sinistra (debolezza), dopo il centro a destra (forza). Ampiezze convenzionali: la ciclica temporale stima <b style="color:#e8edf4">quando</b>, non quanto. Ancore e date si aggiornano a ogni run del motore.</div>`;
+}
+
+// ── CICLI LUNGHI · annuale + biennale + quadriennale · storia reale dal 2020 ──
+// Il passato usa gli estremi REALI confermati dal motore (lows_dates / highs_dates),
+// il futuro la stima del motore e poi il passo effettivo misurato.
+const DQ_STYLE=[
+  {key:'quadriennale',sig:'Q',lab:'QUADRIENNALE',color:'#b07cff',amp:1.00},
+  {key:'biennale',sig:'B',lab:'BIENNALE',color:'#56c8d8',amp:0.45},
+  {key:'annuale',sig:'A',lab:'ANNUALE',color:'#5b9dff',amp:0.22}
+];
+const DQD={}, DQMODE={};
+window.dqSetMode=function(id,m){ if(DQD[id]){DQMODE[id]=m; dqRender(id,DQD[id]);} };
+function dqRender(id,data){
+ const el=document.getElementById(id);
+ try{
+  if(!el)return;
+  DQD[id]=data; const MODE=DQMODE[id]||'sync';
+  const cyc={}; (data.cycles||[]).forEach(c=>{cyc[c.key]=c;});
+  const _n=new Date(); const TODAY=new Date(_n.getFullYear(),_n.getMonth(),_n.getDate());
+  const T0=new Date(2020,0,1);
+  const dayDiff=(a,b)=>Math.round((a-b)/86400000);
+  const D1=dayDiff(new Date(2028,5,30),T0);
+  const OGGI=dayDiff(TODAY,T0);
+  const off=iso=>dayDiff(new Date(iso+'T00:00:00'),T0);
+  const day=o=>new Date(2020,0,1+Math.round(o));
+  const fd2=o=>{const dt=day(o);const p2=x2=>String(x2).padStart(2,'0');return p2(dt.getDate())+'/'+p2(dt.getMonth()+1)+'/'+String(dt.getFullYear()).slice(2);};
+  const CY=DQ_STYLE.map(s=>{
+    const c=cyc[s.key];
+    if(!c||!(c.lows_dates||[]).length||!c.len_effective)return null;
+    return {...s,len:c.len_effective,lenH:c.len_effective_high||c.len_effective,
+      rl:(c.lows_dates||[]).map(off),rh:(c.highs_dates||[]).map(off),
+      nl:c.next_low_date_est?off(c.next_low_date_est):null,
+      nh:c.next_high_date_est?off(c.next_high_date_est):null};
+  }).filter(Boolean);
+  if(CY.length<2){el.innerHTML='';return;}
+  // ── futuro: catene annidate (sincronicità: il ciclo inferiore confluisce
+  //    nei minimi del superiore; idem le catene dei massimi, l'inverso) o libere ──
+  const chainF=(est,last,len,parents)=>{
+    // catena futura: parte dalla STIMA DEL MOTORE (stesse date della vista
+    // breve), poi avanza al passo effettivo; se c'e' un minimo del ciclo
+    // superiore vicino (entro 0.4 cicli) il battito viene attirato li' --
+    // la confluenza emerge senza riscrivere le date del motore
+    const out=[]; let cur=last;
+    let candidate=(est!=null&&est>last+len*0.3)?est:last+len;
+    for(let g2=0;g2<14&&candidate<D1+len*1.2;g2++){
+      if(parents&&parents.length){
+        let best=null;
+        parents.forEach(p=>{
+          if(p>cur+len*0.4&&(best==null||Math.abs(p-candidate)<Math.abs(best-candidate)))best=p;
+        });
+        if(best!=null&&Math.abs(best-candidate)<=len*0.4)candidate=best;
+      }
+      if(candidate<=cur+len*0.4)candidate=cur+len;
+      out.push(candidate); cur=candidate; candidate=cur+len;
+    }
+    return out;
+  };
+  // ── sincronicità anche nel PASSATO ──
+  // 1) eredità: un estremo reale del grado superiore è anche estremo dei gradi
+  //    inferiori; 2) declassamento: due estremi consecutivi dello stesso grado
+  //    troppo vicini (<0.9 cicli) e SENZA un estremo del grado inferiore in
+  //    mezzo non possono essere entrambi di quel grado — il doppione scende di
+  //    grado (resta una data reale, al livello giusto)
+  CY.forEach((c,ci)=>{
+    c.RL=c.rl.slice(); c.RH=c.rh.slice();
+    const supL=new Set(), supH=new Set();
+    if(ci>0){
+      CY[ci-1].RL.forEach(p=>{
+        const near=c.RL.find(x=>Math.abs(x-p)<c.len*0.25);
+        if(near==null)c.RL.push(p);
+        supL.add(Math.round(near!=null?near:p));
+      });
+      CY[ci-1].RH.forEach(p=>{
+        const near=c.RH.find(x=>Math.abs(x-p)<c.lenH*0.25);
+        if(near==null)c.RH.push(p);
+        supH.add(Math.round(near!=null?near:p));
+      });
+    }
+    c.RL.sort((a2,b2)=>a2-b2); c.RH.sort((a2,b2)=>a2-b2);
+    const inf=CY[ci+1];
+    if(inf){
+      const prune=(arr,len,infArr,infLen,supSet)=>{
+        if(arr.length<2)return arr;
+        const kept=[arr[0]];
+        for(let i=1;i<arr.length;i++){
+          const prev=kept[kept.length-1], x=arr[i], gap=x-prev;
+          const tol=infLen*0.25;
+          const between=infArr.some(v=>v>prev+tol&&v<x-tol);
+          if(gap<len*0.9&&!between){
+            let dem;
+            if(supSet.has(Math.round(x))&&!supSet.has(Math.round(prev))){dem=kept.pop();kept.push(x);}
+            else dem=x;
+            if(!infArr.some(v=>Math.abs(v-dem)<infLen*0.2)){infArr.push(dem);infArr.sort((a2,b2)=>a2-b2);}
+          } else kept.push(x);
+        }
+        return kept;
+      };
+      c.RL=prune(c.RL,c.len,inf.rl,inf.len,supL);
+      c.RH=prune(c.RH,c.lenH,inf.rh,inf.lenH,supH);
+    }
+  });
+  // estremi alternati: passato reale (ereditato e declassato), futuro per catene
+  CY.forEach((c,ci)=>{
+    const lastL=c.RL[c.RL.length-1];
+    const lastH=c.RH.length?c.RH[c.RH.length-1]:null;
+    if(ci===0||MODE==='free'){
+      c.fl=chainF(c.nl,lastL,c.len,null);
+      c.fh=(lastH!=null)?chainF(c.nh,lastH,c.lenH,null):[];
+    }else{
+      c.fl=chainF(c.nl,lastL,c.len,CY[ci-1].fl);
+      c.fh=(lastH!=null)?chainF(c.nh,lastH,c.lenH,CY[ci-1].fh):[];
+    }
+    let lows=c.RL.concat(c.fl), highs=c.RH.concat(c.fh);
+    // prima del primo estremo REALE: prolungamento all'indietro, solo forma
+    let b0=Math.min.apply(null,lows);
+    while(b0>-c.len*1.3){b0-=c.len;lows.push(b0);}
+    if(highs.length){let h0=Math.min.apply(null,highs);while(h0>-c.lenH*1.3){h0-=c.lenH;highs.push(h0);}}
+    lows=lows.filter(x=>x>-c.len*1.6&&x<D1+c.len*1.6).sort((a2,b2)=>a2-b2)
+             .filter((x,i2,arr)=>i2===0||x-arr[i2-1]>2);
+    highs=highs.sort((a2,b2)=>a2-b2).filter((x,i2,arr)=>i2===0||x-arr[i2-1]>2);
+    // battiti mancanti: se tra due minimi c'è spazio per più di un ciclo,
+    // l'onda li percorre comunque (punti senza data)
+    const filled=[];
+    for(let i=0;i<lows.length;i++){
+      filled.push(lows[i]);
+      if(i<lows.length-1){
+        const gap=lows[i+1]-lows[i];
+        const n=Math.round(gap/c.len);
+        if(n>1&&gap>c.len*1.6){for(let k=1;k<n;k++)filled.push(lows[i]+gap*k/n);}
+      }
+    }
+    lows=filled.sort((a2,b2)=>a2-b2);
+    // aggancio: un battito ricostruito nel passato si appoggia al minimo REALE
+    // del grado inferiore più vicino (è lì che il ciclo è passato davvero)
+    const RLset=new Set(c.RL.map(Math.round));
+    const infRL=(CY[ci+1]&&CY[ci+1].RL)?CY[ci+1].RL:(CY[ci+1]?CY[ci+1].rl:null);
+    if(infRL&&infRL.length){
+      lows=lows.map(x=>{
+        if(x>OGGI||RLset.has(Math.round(x)))return x;
+        let best=null;
+        infRL.forEach(v=>{if(v<=OGGI&&(best==null||Math.abs(v-x)<Math.abs(best-x)))best=v;});
+        return (best!=null&&Math.abs(best-x)<c.len*0.3)?best:x;
+      }).sort((a2,b2)=>a2-b2).filter((x,i2,arr)=>i2===0||x-arr[i2-1]>2);
+    }
+    const ex=[];
+    for(let i=0;i<lows.length-1;i++){
+      const a2=lows[i],b2=lows[i+1],mid=(a2+b2)/2;
+      ex.push({d:a2,tipo:'min'});
+      const cand=highs.filter(x=>x>a2+0.5&&x<b2-0.5);
+      ex.push({d:cand.length?cand.reduce((p,q)=>Math.abs(q-mid)<Math.abs(p-mid)?q:p):mid,tipo:'max'});
+    }
+    ex.push({d:lows[lows.length-1],tipo:'min'});
+    c.exts=ex;
+    c.RLr=new Set(c.RL.map(Math.round));
+    c.RHr=new Set(c.RH.map(Math.round));
+  });
+  const val=(c,d)=>{
+    const E=c.exts; let i=0; while(i<E.length-2&&E[i+1].d<d)i++;
+    const t=(d-E[i].d)/(E[i+1].d-E[i].d);
+    return (E[i].tipo==='min'?-1:1)*Math.cos(Math.PI*t)*c.amp;
+  };
+  const sum2=d=>CY.reduce((a,c)=>a+val(c,d),0);
+  const W=960,padL=14,plotW=W-28;
+  const yearGrid=(pT2,pH2,labelY)=>{
+    let g='';
+    for(let y2=2020;y2<=2028;y2++){
+      const o=dayDiff(new Date(y2,0,1),T0);
+      if(o<0||o>D1)continue;
+      const x=padL+o/D1*plotW;
+      g+=`<line x1="${x}" y1="${pT2}" x2="${x}" y2="${pT2+pH2}" stroke="rgba(255,255,255,.06)"/>`;
+      if(labelY)g+=`<text x="${x+4}" y="${labelY}" font-size="9" fill="#5a6573" font-family="JetBrains Mono">${y2}</text>`;
+    }
+    return g;
+  };
+  // ── somma grande: curva pulita + calendario a tre righe (una per grado) ──
+  const padT=36,plotH=230;
+  const railTop=padT+plotH+40, railGap=54;
+  const H=railTop+railGap*2+42+20;
+  const ymax=1.7, STEP=7, NP=Math.floor(D1/STEP)+1;
+  const xT=padL+OGGI/D1*plotW;
+  let s2=`<svg viewBox="0 0 ${W} ${H}">`;
+  // regione futura leggermente evidenziata, su grafico e calendario
+  s2+=`<rect x="${xT}" y="${padT-4}" width="${padL+plotW-xT}" height="${railTop+railGap*2+24-(padT-4)}" fill="rgba(245,179,1,.03)"/>`;
+  s2+=`<line x1="${padL}" y1="${padT+plotH/2}" x2="${padL+plotW}" y2="${padT+plotH/2}" stroke="rgba(255,255,255,.1)"/>`;
+  s2+=yearGrid(padT,plotH,null);
+  s2+=yearGrid(railTop-18,railGap*2+40,H-6);
+  // componente quadriennale (tratteggio) e somma (oro)
+  let pQ='';
+  for(let i=0;i<NP;i++){const d=i*STEP,x=padL+d/D1*plotW,y=padT+plotH/2-(val(CY[0],d)/ymax)*(plotH/2*0.88);pQ+=(i?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}
+  s2+=`<path d="${pQ}" fill="none" stroke="rgba(176,124,255,.4)" stroke-width="1.4" stroke-dasharray="5,4"/>`;
+  let pS2='';
+  for(let i=0;i<NP;i++){const d=i*STEP,x=padL+d/D1*plotW,y=padT+plotH/2-(sum2(d)/ymax)*(plotH/2*0.88);pS2+=(i?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}
+  s2+=`<path d="${pS2} L${padL+plotW},${padT+plotH/2} L${padL},${padT+plotH/2} Z" fill="#f5b301" opacity=".06"/>`;
+  s2+=`<path d="${pS2}" fill="none" stroke="#f5b301" stroke-width="2.2"/>`;
+  // tutti gli estremi: punto sulla curva nel colore del grado, SENZA testo
+  // (le date vivono nel calendario sotto); il reale vince sul ricostruito,
+  // alle confluenze il grado superiore assorbe il punto
+  const pts2=[];
+  CY.forEach(c=>{
+    c.exts.filter(e=>e.d>=0&&e.d<=D1).forEach(e=>{
+      const isReal=e.tipo==='min'?c.RLr.has(Math.round(e.d)):c.RHr.has(Math.round(e.d));
+      const near=pts2.find(p=>Math.abs(p.d-e.d)<=3);
+      if(near){
+        if(isReal&&!near.isReal){near.d=e.d;near.tipo=e.tipo;near.c=c;near.isReal=true;}
+        return;
+      }
+      pts2.push({d:e.d,tipo:e.tipo,c,isReal});
+    });
+  });
+  pts2.sort((a2,b2)=>a2.d-b2.d);
+  pts2.forEach(p=>{
+    const x=padL+p.d/D1*plotW;
+    const y=padT+plotH/2-(sum2(p.d)/ymax)*(plotH/2*0.88);
+    const past=p.d<OGGI-0.5, ric=past&&!p.isReal;
+    s2+=ric
+      ?`<circle cx="${x}" cy="${y}" r="2.8" fill="#0a0c10" stroke="${p.c.color}" stroke-width="1.5" opacity=".45"/>`
+      :`<circle cx="${x}" cy="${y}" r="3.4" fill="${p.c.color}" stroke="#0a0c10" stroke-width="1.4" opacity="${past?'.75':'1'}"/>`;
+  });
+  // ── il calendario: tre righe orizzontali, una per grado ──
+  CY.forEach((c,ri)=>{
+    const ry=railTop+ri*railGap;
+    s2+=`<text x="${padL}" y="${ry-22}" font-size="8.5" font-weight="700" letter-spacing="2" fill="${c.color}" font-family="JetBrains Mono">${c.sig} · ${c.lab}</text>`;
+    s2+=`<line x1="${padL}" y1="${ry}" x2="${padL+plotW}" y2="${ry}" stroke="${c.color}" opacity=".22"/>`;
+  });
+  const lastUp={},lastDn={};
+  pts2.forEach(p=>{
+    const ri=CY.indexOf(p.c), ry=railTop+ri*railGap;
+    const x=padL+p.d/D1*plotW;
+    const past=p.d<OGGI-0.5, ric=past&&!p.isReal;
+    const op=ric?'.4':(past?'.62':'1');
+    const fw=past?'':' font-weight="700"';
+    // futuro: filo verticale dal punto sulla curva alla sua riga
+    if(!past){
+      const yc=padT+plotH/2-(sum2(p.d)/ymax)*(plotH/2*0.88);
+      s2+=`<line x1="${x}" y1="${yc}" x2="${x}" y2="${ry}" stroke="${p.c.color}" stroke-width="1" opacity=".18"/>`;
+    }
+    // marcatore: minimo = punto pieno, massimo = cerchio vuoto
+    s2+= p.tipo==='min'
+      ?`<circle cx="${x}" cy="${ry}" r="${ric?2.4:3.4}" fill="${ric?'#0a0c10':p.c.color}" stroke="${p.c.color}" stroke-width="1.4" opacity="${op}"/>`
+      :`<circle cx="${x}" cy="${ry}" r="${ric?2.4:3.4}" fill="#0a0c10" stroke="${p.c.color}" stroke-width="1.6" opacity="${op}"/>`;
+    const txt=(ric?'~':'')+(p.tipo==='min'?'▼':'▲')+' '+fd2(p.d);
+    if(p.tipo==='min'){
+      const row=(x-(lastDn[ri]!=null?lastDn[ri]:-999)<60)?1:0; lastDn[ri]=x;
+      s2+=`<text x="${x}" y="${ry+14+row*10}" text-anchor="middle" font-size="7.4"${fw} fill="${p.c.color}" opacity="${op}" font-family="JetBrains Mono">${txt}</text>`;
+    }else{
+      const row=(x-(lastUp[ri]!=null?lastUp[ri]:-999)<60)?1:0; lastUp[ri]=x;
+      s2+=`<text x="${x}" y="${ry-9-row*10}" text-anchor="middle" font-size="7.4"${fw} fill="${p.c.color}" opacity="${op}" font-family="JetBrains Mono">${txt}</text>`;
+    }
+  });
+  // OGGI attraversa grafico e calendario
+  s2+=`<line x1="${xT}" y1="${padT-4}" x2="${xT}" y2="${railTop+railGap*2+24}" stroke="#e8edf4" stroke-width="1.2" stroke-dasharray="4,3" opacity=".55"/>
+  <text x="${xT}" y="${padT-10}" text-anchor="middle" font-size="9" font-weight="700" fill="#e8edf4" font-family="JetBrains Mono">OGGI · ${fd2(OGGI)}</text>`;
+  s2+='</svg>';
+  // ── componenti ──
+  const rowH2=175,gap2=30;
+  const compH=40+CY.length*(rowH2+gap2);
+  let c2=`<svg viewBox="0 0 ${W} ${compH}">`;
+  CY.forEach((c,i)=>{
+    const pT2=66+i*(rowH2+gap2),pH2=rowH2-96;
+    c2+=`<text x="${padL}" y="${pT2-42}" font-size="9.5" font-weight="700" letter-spacing="2" fill="${c.color}" font-family="JetBrains Mono">${c.sig} · ${c.lab} · ${c.len}g effettivi${MODE==='sync'&&i>0?' · annidato':''}</text>`;
+    c2+=`<line x1="${padL}" y1="${pT2+pH2/2}" x2="${padL+plotW}" y2="${pT2+pH2/2}" stroke="rgba(255,255,255,.08)"/>`;
+    c2+=yearGrid(pT2,pH2,false);
+    let p='';
+    for(let k=0;k<NP;k++){const d=k*STEP,x=padL+d/D1*plotW,y=pT2+pH2/2-(val(c,d)/c.amp)*(pH2/2*0.8);p+=(k?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}
+    c2+=`<path d="${p}" fill="none" stroke="${c.color}" stroke-width="1.8"/>`;
+    const yMn=pT2+pH2/2+(pH2/2*0.8), yMx=pT2+pH2/2-(pH2/2*0.8);
+    let kMin=0,kMax=0;
+    c.exts.filter(e=>e.d>=-5&&e.d<=D1+5).forEach(e=>{
+      const x=padL+e.d/D1*plotW;
+      const past=e.d<OGGI-0.5;
+      const isReal=e.tipo==='min'?c.RLr.has(Math.round(e.d)):c.RHr.has(Math.round(e.d));
+      // nel passato, data solo sugli estremi REALI del motore (propri o
+      // ereditati dal grado superiore); i battiti ricostruiti restano puntini
+      if(past&&!isReal){
+        const ys=e.tipo==='min'?yMn:yMx;
+        c2+=`<circle cx="${x}" cy="${ys}" r="2" fill="#0a0c10" stroke="#3a4350" stroke-width="1.4"/>`;
+        return;
+      }
+      const col=past?'#5a6573':c.color;
+      if(e.tipo==='min'){
+        c2+=`<circle cx="${x}" cy="${yMn}" r="3.2" fill="#0a0c10" stroke="${col}" stroke-width="1.8"/>`;
+        const dy=15+(kMin%2)*12; kMin++;
+        c2+=`<text x="${x}" y="${yMn+dy}" text-anchor="middle" font-size="8"${past?'':' font-weight="700"'} fill="${col}" font-family="JetBrains Mono">${c.sig}▼ ${fd2(e.d)}</text>`;
+      }else{
+        c2+=`<circle cx="${x}" cy="${yMx}" r="3.2" fill="#0a0c10" stroke="${col}" stroke-width="1.8"/>`;
+        const dy=9+(kMax%2)*12; kMax++;
+        c2+=`<text x="${x}" y="${yMx-dy}" text-anchor="middle" font-size="8"${past?'':' font-weight="700"'} fill="${col}" font-family="JetBrains Mono">${c.sig}▲ ${fd2(e.d)}</text>`;
+      }
+    });
+    const xo=padL+OGGI/D1*plotW;
+    c2+=`<line x1="${xo}" y1="${pT2}" x2="${xo}" y2="${pT2+pH2}" stroke="#e8edf4" stroke-width="1" stroke-dasharray="3,3" opacity=".45"/>`;
+  });
+  c2+='</svg>';
+  el.innerHTML=`
+    <div class="dz-ct" style="color:#b07cff;margin-top:26px">La vista lunga · annuale + biennale + quadriennale · dal 2020</div>
+    <div class="dz-cs">curva oro = i tre cicli sovrapposti · i punti colorati sono gli estremi (viola quadriennale, azzurro biennale, blu annuale) · le date sono nel <b style="color:#e8edf4">calendario a tre righe sotto la curva</b>, una riga per ciclo: punto pieno = minimo, cerchio vuoto = massimo, ~ = battito ricostruito · la zona evidenziata a destra di OGGI è il futuro · le confluenze si vedono come allineamenti verticali tra le righe</div>
+    <div class="dz-mode">
+      <button class="dz-mb${MODE==='sync'?' active':''}" onclick="dqSetMode('${id}','sync')">annidate · ogni ciclo confluisce nel superiore</button>
+      <button class="dz-mb${MODE==='free'?' active':''}" onclick="dqSetMode('${id}','free')">libere · stima del motore per ciascun ciclo</button>
+    </div>
+    ${s2}
+    <div class="dz-leg">
+      <span><i style="background:#f5b301"></i>somma dei tre</span>
+      <span><i style="background:#b07cff"></i>Q quadriennale</span>
+      <span><i style="background:#56c8d8"></i>B biennale</span>
+      <span><i style="background:#5b9dff"></i>A annuale</span>
+      <span><i style="background:#e8edf4;opacity:.5"></i>pieno=minimo / vuoto=massimo / ~=ricostruito / grassetto=futuro</span>
+    </div>
+    ${c2}
+    <div class="dz-note">Finestra 2020 → metà 2028. Il passato non è un'onda teorica: passa per i minimi e massimi <b style="color:#e8edf4">realmente registrati</b> dal motore, quindi mostra come il metodo ha letto davvero la storia (comprese le irregolarità). La sincronicità vale anche all'indietro, nei due sensi: un minimo (o massimo) reale del ciclo superiore è contato anche come minimo dei gradi inferiori, che lo ereditano; e quando due estremi dello stesso grado distano meno di un ciclo senza un estremo del grado inferiore in mezzo, il doppione viene <b style="color:#e8edf4">declassato di un grado</b> (la data resta reale, al livello giusto). Dove il rilevatore ha saltato un battito, l'onda percorre comunque i cicli mancanti appoggiandosi ai minimi reali del grado inferiore, ma quei punti restano <b style="color:#e8edf4">puntini senza data</b>: le date compaiono solo sugli estremi confermati al grado giusto. Nel futuro ogni ciclo parte dalla stima del motore (le stesse date della scomposizione breve) e avanza al suo passo effettivo; in modalità <b style="color:#e8edf4">annidate</b> un battito che arriva vicino a un minimo del ciclo superiore viene attirato lì (sincronicità): è così che nasce la confluenza, senza stravolgere le date. Le catene dei massimi — l'inverso — seguono la stessa regola tra loro. In modalità <b style="color:#e8edf4">libere</b> ogni ciclo segue la stima del motore e il suo passo effettivo (${CY.map(c=>c.sig+' '+c.len+'g').join(' · ')}) — sono le stesse date delle barre e della scomposizione qui sopra; le piccole differenze tra le due modalità misurano quanto le stime indipendenti già concordano tra loro. Ampiezze convenzionali: la ciclica stima <b style="color:#e8edf4">quando</b>, non quanto.</div>`;
+ }catch(_e){ if(el)el.innerHTML=''; }
 }
 
 function refreshCicli(){
