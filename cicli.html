@@ -436,13 +436,13 @@
 
 <h2 class="sec-title mt">Analisi ciclica · S&amp;P 500</h2>
   <div class="card cyclescard">
-    <p class="crypto-note">I cicli temporali annidati dell'indice secondo l'analisi ciclica: per ogni scala — annuale, intermedio, mensile — da quanti giorni dura il ciclo attuale e a che punto siamo rispetto al prossimo minimo atteso.</p>
+    <p class="crypto-note">L'analisi ciclica dell'indice: le barre riassumono ogni scala — dal mensile al quadriennale — con la prossima scadenza attesa e l'affidabilità misurata; sotto, la vista lunga mostra annuale, biennale e quadriennale dal 2020, con la storia reale e le proiezioni.</p>
     <div id="cycles-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
   <h2 class="sec-title mt">Analisi ciclica · Bitcoin</h2>
   <div class="card cyclescard">
-    <p class="crypto-note">Gli stessi cicli temporali annidati applicati a Bitcoin (BTC/USDT, dati giornalieri). Bitcoin scambia 7 giorni su 7, quindi le durate sono in giorni di calendario.</p>
+    <p class="crypto-note">La stessa analisi ciclica applicata a Bitcoin (BTC/USDT, dati giornalieri). Bitcoin scambia 7 giorni su 7, quindi le durate sono in giorni di calendario.</p>
     <div id="cycles-btc-body"><p class="crypto-note">Caricamento…</p></div>
   </div>
 
@@ -780,12 +780,10 @@ async function loadCycles(url, targetId){
 
     const chart=waveChart(cyc, d.last_date);
 
-    el.innerHTML=`<div id="dz-${targetId}" class="dz-wrap"><p class="crypto-note">Caricamento scomposizione…</p></div>`
-      + `<div class="cyc-rows">${cycSummary}</div>`
+    el.innerHTML=`<div class="cyc-rows">${cycSummary}</div>`
       + `<div id="dq-${targetId}" class="dz-wrap"></div>`
       + `<div class="cyc-foot">${d.instrument} · ultimo dato ${fmtCycDate(d.last_date)} · chiusura ${d.last_close}. Onda teorica derivata dal passo ciclico reale osservato (auto-calibrato sui minimi/massimi storici), non dal prezzo. ${d.disclaimer||''}</div>`;
 
-    dzInit('dz-'+targetId, url);
     dqRender('dq-'+targetId, d);
 
   }catch(e){
@@ -1395,7 +1393,7 @@ function dqRender(id,data){
   });
   c2+='</svg>';
   el.innerHTML=`
-    <div class="dz-ct" style="color:#b07cff;margin-top:26px">La vista lunga · annuale + biennale + quadriennale · dal 2020</div>
+    <div class="dz-ct" style="color:#b07cff;margin-top:18px">La vista lunga · annuale + biennale + quadriennale · dal 2020</div>
     <div class="dz-cs">curva oro = i tre cicli sovrapposti · i punti colorati sono gli estremi (viola quadriennale, azzurro biennale, blu annuale) · le date sono nel <b style="color:#e8edf4">calendario a tre righe sotto la curva</b>, una riga per ciclo: punto pieno = minimo, cerchio vuoto = massimo, ~ = battito ricostruito · la zona evidenziata a destra di OGGI è il futuro · le confluenze si vedono come allineamenti verticali tra le righe</div>
     <div class="dz-mode">
       <button class="dz-mb${MODE==='sync'?' active':''}" onclick="dqSetMode('${id}','sync')">annidate · ogni ciclo confluisce nel superiore</button>
