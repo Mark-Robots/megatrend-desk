@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-10-12T13:47:45Z",
+  "updated_at": "2026-10-13T13:06:26Z",
   "mode": "long_only_dmi_d1d2",
   "assets": {
     "BTC": {
-      "perf_week": -2.82,
-      "perf_month": 0.07,
-      "perf_ytd": 22.63,
-      "in_position": true,
-      "n_trades": 10,
-      "entry_date": "2026-10-11",
-      "entry_price": 83908.89,
-      "current_price": 82755.59,
-      "perf_pos": -1.37,
+      "perf_week": -4.07,
+      "perf_month": -0.13,
+      "perf_ytd": 22.39,
+      "in_position": false,
+      "n_trades": 11,
+      "entry_date": null,
+      "entry_price": null,
+      "current_price": null,
+      "perf_pos": null,
       "trades": [
         {
           "entry_date": "2025-10-26",
@@ -82,6 +82,13 @@
           "perf": -2.61,
           "entry_price": 86652.12,
           "exit_price": 84391.56
+        },
+        {
+          "entry_date": "2026-10-11",
+          "exit_date": "2026-10-12",
+          "perf": -1.57,
+          "entry_price": 83908.89,
+          "exit_price": 82592.01
         }
       ]
     },
@@ -330,9 +337,9 @@
     }
   },
   "portfolio": {
-    "perf_week": -0.94,
-    "perf_month": -0.46,
-    "perf_ytd": 23.28,
+    "perf_week": -1.36,
+    "perf_month": -0.52,
+    "perf_ytd": 23.2,
     "n_assets": 3
   },
   "weekly_seed": "2026-05-01",
