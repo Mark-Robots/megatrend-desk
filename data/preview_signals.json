@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-16T16:31:22.145744+00:00",
+ "updated_at": "2026-10-16T18:31:12.781133+00:00",
  "last_bar": "2026-10-16",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -23,13 +23,13 @@
      "borderline": false,
      "state": "In rallentamento",
      "stage": "1",
-     "ticker": "MU",
-     "ticker_name": "Micron",
+     "ticker": "AMD",
+     "ticker_name": "AMD",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": -8.31,
-     "roc13": 9.71,
-     "score": 150.1,
+     "roc4": -4.59,
+     "roc13": 7.74,
+     "score": 56.3,
      "tag": "premium_ok"
     },
     {
@@ -45,9 +45,9 @@
      "ticker_name": "AMD",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": -3.05,
-     "roc13": 9.48,
-     "score": 58.8,
+     "roc4": -4.59,
+     "roc13": 7.74,
+     "score": 56.3,
      "tag": "premium_ok"
     },
     {
@@ -63,9 +63,9 @@
      "ticker_name": "Citigroup",
      "held_ticker": "BAC",
      "held_name": "Bank of America",
-     "roc4": -5.02,
-     "roc13": -2.75,
-     "score": 11.0,
+     "roc4": -6.19,
+     "roc13": -3.96,
+     "score": 9.6,
      "tag": "stagnant"
     },
     {
@@ -81,9 +81,9 @@
      "ticker_name": "Merck",
      "held_ticker": "MRK",
      "held_name": "Merck",
-     "roc4": -0.03,
-     "roc13": 15.83,
-     "score": 40.8,
+     "roc4": -0.18,
+     "roc13": 15.66,
+     "score": 40.6,
      "tag": "premium_ok"
     },
     {
@@ -99,9 +99,9 @@
      "ticker_name": "John Deere",
      "held_ticker": null,
      "held_name": null,
-     "roc4": -6.04,
-     "roc13": 7.61,
-     "score": 21.1,
+     "roc4": -6.39,
+     "roc13": 7.21,
+     "score": 20.7,
      "tag": "premium_ok"
     },
     {
@@ -117,9 +117,9 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 5.67,
-     "roc13": 15.02,
-     "score": 25.0,
+     "roc4": 5.27,
+     "roc13": 14.58,
+     "score": 24.5,
      "tag": "premium_ok"
     },
     {
@@ -135,9 +135,9 @@
      "ticker_name": "Valero Energy",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 7.97,
-     "roc13": 44.66,
-     "score": 102.3,
+     "roc4": 8.04,
+     "roc13": 44.76,
+     "score": 102.5,
      "tag": "top_momentum"
     },
     {
@@ -204,9 +204,9 @@
      "ticker_name": "Analog Devices",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": 8.35,
-     "roc13": 8.78,
-     "score": 8.5,
+     "roc4": 5.98,
+     "roc13": 6.4,
+     "score": 6.1,
      "tag": "premium_ok"
     },
     {
@@ -222,9 +222,9 @@
      "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 7.11,
-     "roc13": 34.55,
-     "score": 15.3,
+     "roc4": 6.56,
+     "roc13": 33.86,
+     "score": 14.8,
      "tag": "top_momentum"
     },
     {
@@ -240,9 +240,9 @@
      "ticker_name": "American Express",
      "held_ticker": "BX",
      "held_name": "Blackstone",
-     "roc4": 1.59,
-     "roc13": -10.93,
-     "score": -2.2,
+     "roc4": 0.66,
+     "roc13": -11.75,
+     "score": -3.1,
      "tag": null
     },
     {
@@ -258,9 +258,9 @@
      "ticker_name": "Intuitive Surgical",
      "held_ticker": "TMO",
      "held_name": "Thermo Fisher",
-     "roc4": 9.45,
-     "roc13": 24.63,
-     "score": 14.0,
+     "roc4": 8.8,
+     "roc13": 23.9,
+     "score": 13.3,
      "tag": "value_momentum"
     },
     {
@@ -276,9 +276,9 @@
      "ticker_name": "Lockheed Martin",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 2.22,
-     "roc13": 7.82,
-     "score": 3.9,
+     "roc4": 2.64,
+     "roc13": 8.27,
+     "score": 4.3,
      "tag": "stagnant"
     },
     {
@@ -290,13 +290,13 @@
      "borderline": false,
      "state": "Debole",
      "stage": "3",
-     "ticker": "KO",
-     "ticker_name": "Coca-Cola",
+     "ticker": "PM",
+     "ticker_name": "Philip Morris",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 5.67,
-     "roc13": 15.02,
-     "score": 8.5,
+     "roc4": 9.08,
+     "roc13": 6.61,
+     "score": 8.3,
      "tag": "premium_ok"
     },
     {
@@ -312,8 +312,8 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 12.44,
-     "roc13": 53.25,
+     "roc4": 12.46,
+     "roc13": 53.27,
      "score": 24.7,
      "tag": "top_momentum"
     },
