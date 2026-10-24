@@ -18,17 +18,17 @@
     },
     {
       "date": "2026-05-08",
-      "value": 103.8915,
-      "weekly_pct": 3.8915,
+      "value": 103.8916,
+      "weekly_pct": 3.8916,
       "parts": {
-        "etf": 5.5592,
+        "etf": 5.5594,
         "azioni": 3.3271,
         "crypto": 2.7883
       }
     },
     {
       "date": "2026-05-15",
-      "value": 102.1957,
+      "value": 102.1958,
       "weekly_pct": -1.6323,
       "parts": {
         "etf": -0.5594,
@@ -39,9 +39,9 @@
     {
       "date": "2026-05-22",
       "value": 103.7913,
-      "weekly_pct": 1.5613,
+      "weekly_pct": 1.5612,
       "parts": {
-        "etf": 3.1087,
+        "etf": 3.1085,
         "azioni": 2.5495,
         "crypto": -0.9744
       }
@@ -59,9 +59,9 @@
     {
       "date": "2026-06-05",
       "value": 103.8302,
-      "weekly_pct": -1.6219,
+      "weekly_pct": -1.6218,
       "parts": {
-        "etf": -2.9518,
+        "etf": -2.9516,
         "azioni": -1.914,
         "crypto": 0.0
       }
@@ -81,7 +81,7 @@
       "value": 106.704,
       "weekly_pct": 0.874,
       "parts": {
-        "etf": 3.7713,
+        "etf": 3.7711,
         "azioni": -1.1492,
         "crypto": 0.0
       }
@@ -118,8 +118,8 @@
     },
     {
       "date": "2026-07-17",
-      "value": 102.4571,
-      "weekly_pct": -2.3447,
+      "value": 102.4572,
+      "weekly_pct": -2.3446,
       "parts": {
         "etf": -4.8937,
         "azioni": -2.9765,
@@ -142,7 +142,7 @@
       "weekly_pct": -0.4746,
       "parts": {
         "etf": -1.524,
-        "azioni": 0.0795,
+        "azioni": 0.0794,
         "crypto": 0.0208
       }
     },
@@ -159,7 +159,7 @@
     {
       "date": "2026-08-14",
       "value": 106.8272,
-      "weekly_pct": 0.7176,
+      "weekly_pct": 0.7175,
       "parts": {
         "etf": 1.0638,
         "azioni": 2.4393,
@@ -218,10 +218,10 @@
     },
     {
       "date": "2026-09-25",
-      "value": 114.5773,
-      "weekly_pct": 1.2661,
+      "value": 114.5774,
+      "weekly_pct": 1.2662,
       "parts": {
-        "etf": 3.1148,
+        "etf": 3.115,
         "azioni": 0.2397,
         "crypto": 0.4438
       }
@@ -231,33 +231,43 @@
       "value": 113.1415,
       "weekly_pct": -1.2532,
       "parts": {
-        "etf": 0.8041,
+        "etf": 0.8039,
         "azioni": -2.6631,
         "crypto": -1.9004
       }
     },
     {
       "date": "2026-10-09",
-      "value": 112.1135,
-      "weekly_pct": -0.9086,
+      "value": 112.1136,
+      "weekly_pct": -0.9085,
       "parts": {
-        "etf": -1.7744,
+        "etf": -1.7742,
         "azioni": -0.8714,
         "crypto": -0.08
       }
     },
     {
       "date": "2026-10-16",
-      "value": 110.1471,
-      "weekly_pct": -1.7539,
+      "value": 109.4166,
+      "weekly_pct": -2.4056,
       "parts": {
-        "etf": -4.3862,
-        "azioni": -0.3525,
+        "etf": -5.5578,
+        "azioni": -1.136,
         "crypto": -0.5231
+      }
+    },
+    {
+      "date": "2026-10-23",
+      "value": 108.8083,
+      "weekly_pct": -0.5559,
+      "parts": {
+        "etf": -1.1281,
+        "azioni": -0.5396,
+        "crypto": 0.0
       }
     }
   ],
-  "updated_at": "2026-10-17T11:20:08.627178+00:00",
-  "last_value": 110.1471,
-  "last_date": "2026-10-16"
+  "updated_at": "2026-10-24T11:49:43.420531+00:00",
+  "last_value": 108.8083,
+  "last_date": "2026-10-23"
 }
