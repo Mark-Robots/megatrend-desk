@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T18:31:26.442759+00:00",
+ "updated_at": "2026-10-26T15:31:29.828685+00:00",
  "last_bar": "2026-10-23",
  "note": "Anteprima alle quotazioni correnti: il segnale ufficiale si forma alla chiusura di venerdi'.",
  "modes": {
@@ -27,9 +27,9 @@
      "ticker_name": "Analog Devices",
      "held_ticker": "AVGO",
      "held_name": "Broadcom",
-     "roc4": -0.88,
-     "roc13": 5.24,
-     "score": 29.5,
+     "roc4": -0.64,
+     "roc13": 5.49,
+     "score": 29.8,
      "tag": "premium_ok"
     },
     {
@@ -45,9 +45,9 @@
      "ticker_name": "Microsoft",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 1.55,
-     "roc13": 37.59,
-     "score": 22.9,
+     "roc4": 1.62,
+     "roc13": 37.67,
+     "score": 23.0,
      "tag": "top_momentum"
     },
     {
@@ -63,9 +63,9 @@
      "ticker_name": "Citigroup",
      "held_ticker": "BAC",
      "held_name": "Bank of America",
-     "roc4": -9.88,
-     "roc13": -7.99,
-     "score": 5.2,
+     "roc4": -10.17,
+     "roc13": -8.29,
+     "score": 4.9,
      "tag": "stagnant"
     },
     {
@@ -81,9 +81,9 @@
      "ticker_name": "Merck",
      "held_ticker": "MRK",
      "held_name": "Merck",
-     "roc4": -2.67,
-     "roc13": 11.14,
-     "score": 34.8,
+     "roc4": -2.36,
+     "roc13": 11.49,
+     "score": 35.3,
      "tag": "premium_ok"
     },
     {
@@ -99,9 +99,9 @@
      "ticker_name": "John Deere",
      "held_ticker": null,
      "held_name": null,
-     "roc4": -6.33,
-     "roc13": 2.96,
-     "score": 17.0,
+     "roc4": -6.19,
+     "roc13": 3.11,
+     "score": 17.2,
      "tag": "stagnant"
     },
     {
@@ -117,9 +117,9 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 5.72,
-     "roc13": 13.54,
-     "score": 22.8,
+     "roc4": 5.58,
+     "roc13": 13.39,
+     "score": 22.6,
      "tag": "premium_ok"
     },
     {
@@ -135,9 +135,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "VLO",
      "held_name": "Valero Energy",
-     "roc4": 15.93,
-     "roc13": 47.93,
-     "score": 83.3,
+     "roc4": 16.19,
+     "roc13": 48.26,
+     "score": 83.7,
      "tag": "top_momentum"
     },
     {
@@ -204,9 +204,9 @@
      "ticker_name": "Analog Devices",
      "held_ticker": "AMD",
      "held_name": "AMD",
-     "roc4": -0.88,
-     "roc13": 5.24,
-     "score": 1.0,
+     "roc4": -0.64,
+     "roc13": 5.49,
+     "score": 1.2,
      "tag": "premium_ok"
     },
     {
@@ -222,8 +222,8 @@
      "ticker_name": "IBM",
      "held_ticker": "ORCL",
      "held_name": "Oracle",
-     "roc4": 12.5,
-     "roc13": 19.29,
+     "roc4": 12.44,
+     "roc13": 19.23,
      "score": 14.5,
      "tag": "value_momentum"
     },
@@ -240,9 +240,9 @@
      "ticker_name": "S&P Global",
      "held_ticker": "BX",
      "held_name": "Blackstone",
-     "roc4": 11.44,
-     "roc13": 5.64,
-     "score": 9.7,
+     "roc4": 11.66,
+     "roc13": 5.84,
+     "score": 9.9,
      "tag": "stagnant"
     },
     {
@@ -258,8 +258,8 @@
      "ticker_name": "Intuitive Surgical",
      "held_ticker": "TMO",
      "held_name": "Thermo Fisher",
-     "roc4": 11.58,
-     "roc13": 33.96,
+     "roc4": 11.63,
+     "roc13": 34.01,
      "score": 18.3,
      "tag": "top_momentum"
     },
@@ -276,9 +276,9 @@
      "ticker_name": "Lockheed Martin",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 16.49,
-     "roc13": 4.53,
-     "score": 12.9,
+     "roc4": 16.29,
+     "roc13": 4.35,
+     "score": 12.7,
      "tag": "stagnant"
     },
     {
@@ -294,9 +294,9 @@
      "ticker_name": "Coca-Cola",
      "held_ticker": null,
      "held_name": null,
-     "roc4": 5.72,
-     "roc13": 13.54,
-     "score": 8.1,
+     "roc4": 5.58,
+     "roc13": 13.39,
+     "score": 7.9,
      "tag": "premium_ok"
     },
     {
@@ -312,9 +312,9 @@
      "ticker_name": "Marathon Petroleum",
      "held_ticker": "SLB",
      "held_name": "Schlumberger",
-     "roc4": 15.93,
-     "roc13": 47.93,
-     "score": 25.5,
+     "roc4": 16.19,
+     "roc13": 48.26,
+     "score": 25.8,
      "tag": "top_momentum"
     },
     {
