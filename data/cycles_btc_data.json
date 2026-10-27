@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-24T00:52:11.831331+00:00",
+  "updated_at": "2026-10-27T01:36:38.676998+00:00",
   "instrument": "Bitcoin",
-  "last_date": "2026-10-24",
-  "last_close": 80728.0,
-  "n_days": 3356,
+  "last_date": "2026-10-27",
+  "last_close": 80186.0,
+  "n_days": 3359,
   "cycles": [
     {
       "key": "annuale",
@@ -34,9 +34,9 @@
       "gap_avg": 247,
       "gap_min": 145,
       "gap_max": 354,
-      "elapsed_days": 116,
+      "elapsed_days": 119,
       "last_low_date": "2026-06-30",
-      "progress_pct": 46.0,
+      "progress_pct": 48.0,
       "len_effective": 247,
       "track_lows": [
         {
@@ -63,7 +63,7 @@
       "track_mae_low": 71.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 131,
+      "days_to_low_est": 128,
       "next_low_date_est_raw": "2027-03-04",
       "next_low_date_est": "2027-03-04",
       "n_highs": 13,
@@ -78,7 +78,7 @@
         "2026-10-04"
       ],
       "high_gap_avg": 267.8,
-      "elapsed_from_high": 20,
+      "elapsed_from_high": 23,
       "last_high_date": "2026-10-04",
       "len_effective_high": 268,
       "track_highs": [
@@ -104,8 +104,8 @@
         }
       ],
       "track_mae_high": 54.0,
-      "progress_high_pct": 7.0,
-      "days_to_high_est": 248,
+      "progress_high_pct": 9.0,
+      "days_to_high_est": 245,
       "next_high_date_est_raw": "2027-06-29",
       "next_high_date_est": "2027-06-29",
       "inv_phase": "post-top",
@@ -125,7 +125,7 @@
         3094,
         3239,
         3286,
-        3355
+        3358
       ],
       "lows_dates": [
         "2025-04-08",
@@ -135,13 +135,13 @@
         "2026-02-05",
         "2026-06-30",
         "2026-08-16",
-        "2026-10-24"
+        "2026-10-27"
       ],
-      "gap_avg": 79.2,
+      "gap_avg": 79.3,
       "gap_min": 43,
       "gap_max": 168,
       "elapsed_days": 0,
-      "last_low_date": "2026-10-24",
+      "last_low_date": "2026-10-27",
       "progress_pct": 0.0,
       "len_effective": 79,
       "track_lows": [
@@ -162,16 +162,16 @@
         },
         {
           "attesa": "2026-11-03",
-          "reale": "2026-10-24",
-          "err_gg": -10
+          "reale": "2026-10-27",
+          "err_gg": -7
         }
       ],
       "track_mae_low": 28.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
       "days_to_low_est": 79,
-      "next_low_date_est_raw": "2027-01-11",
-      "next_low_date_est": "2027-01-11",
+      "next_low_date_est_raw": "2027-01-14",
+      "next_low_date_est": "2027-01-14",
       "n_highs": 40,
       "highs_dates": [
         "2024-11-22",
@@ -184,7 +184,7 @@
         "2026-09-21"
       ],
       "high_gap_avg": 84.8,
-      "elapsed_from_high": 33,
+      "elapsed_from_high": 36,
       "last_high_date": "2026-09-21",
       "len_effective_high": 85,
       "track_highs": [
@@ -210,10 +210,10 @@
         }
       ],
       "track_mae_high": 32.0,
-      "progress_high_pct": 39.0,
+      "progress_high_pct": 42.0,
       "days_to_high_est": 45,
       "next_high_date_est_raw": "2026-12-15",
-      "next_high_date_est": "2026-12-08",
+      "next_high_date_est": "2026-12-11",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -231,7 +231,7 @@
         3286,
         3316,
         3339,
-        3355
+        3358
       ],
       "lows_dates": [
         "2026-06-05",
@@ -241,13 +241,13 @@
         "2026-08-16",
         "2026-09-15",
         "2026-10-08",
-        "2026-10-24"
+        "2026-10-27"
       ],
-      "gap_avg": 20.4,
+      "gap_avg": 20.5,
       "gap_min": 11,
       "gap_max": 47,
       "elapsed_days": 0,
-      "last_low_date": "2026-10-24",
+      "last_low_date": "2026-10-27",
       "progress_pct": 0.0,
       "len_effective": 20,
       "track_lows": [
@@ -268,16 +268,16 @@
         },
         {
           "attesa": "2026-10-28",
-          "reale": "2026-10-24",
-          "err_gg": -4
+          "reale": "2026-10-27",
+          "err_gg": -1
         }
       ],
-      "track_mae_low": 5.0,
+      "track_mae_low": 4.0,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
       "days_to_low_est": 20,
-      "next_low_date_est_raw": "2026-11-13",
-      "next_low_date_est": "2026-11-13",
+      "next_low_date_est_raw": "2026-11-16",
+      "next_low_date_est": "2026-11-16",
       "n_highs": 158,
       "highs_dates": [
         "2026-06-15",
@@ -290,7 +290,7 @@
         "2026-10-21"
       ],
       "high_gap_avg": 21.4,
-      "elapsed_from_high": 3,
+      "elapsed_from_high": 6,
       "last_high_date": "2026-10-21",
       "len_effective_high": 21,
       "track_highs": [
@@ -316,10 +316,10 @@
         }
       ],
       "track_mae_high": 7.0,
-      "progress_high_pct": 14.0,
+      "progress_high_pct": 29.0,
       "days_to_high_est": 12,
       "next_high_date_est_raw": "2026-11-11",
-      "next_high_date_est": "2026-11-05",
+      "next_high_date_est": "2026-11-08",
       "inv_phase": "post-top",
       "inv_note": "dopo un massimo ciclico, possibile correzione"
     },
@@ -352,9 +352,9 @@
       "gap_avg": 438,
       "gap_min": 287,
       "gap_max": 661,
-      "elapsed_days": 261,
+      "elapsed_days": 264,
       "last_low_date": "2026-02-05",
-      "progress_pct": 52.0,
+      "progress_pct": 53.0,
       "len_effective": 438,
       "track_lows": [
         {
@@ -381,7 +381,7 @@
       "track_mae_low": 98,
       "phase": "discendente",
       "phase_note": "verso il prossimo minimo, forze in indebolimento",
-      "days_to_low_est": 177,
+      "days_to_low_est": 174,
       "next_low_date_est_raw": "2027-04-19",
       "next_low_date_est": "2027-04-19",
       "n_highs": 8,
@@ -396,7 +396,7 @@
         "2026-10-04"
       ],
       "high_gap_avg": 459.1,
-      "elapsed_from_high": 20,
+      "elapsed_from_high": 23,
       "last_high_date": "2026-10-04",
       "len_effective_high": 459,
       "track_highs": [
@@ -422,8 +422,8 @@
         }
       ],
       "track_mae_high": 234.0,
-      "progress_high_pct": 4.0,
-      "days_to_high_est": 439,
+      "progress_high_pct": 5.0,
+      "days_to_high_est": 436,
       "next_high_date_est_raw": "2028-01-06",
       "next_high_date_est": "2028-01-06",
       "inv_phase": "post-top",
@@ -450,7 +450,7 @@
       "gap_avg": 1070.3,
       "gap_min": 789,
       "gap_max": 1317,
-      "elapsed_days": 116,
+      "elapsed_days": 119,
       "last_low_date": "2026-06-30",
       "progress_pct": 12.0,
       "len_effective": 1070,
@@ -469,7 +469,7 @@
       "track_mae_low": 343,
       "phase": "ascendente",
       "phase_note": "forze rialziste dopo il minimo",
-      "days_to_low_est": 954,
+      "days_to_low_est": 951,
       "next_low_date_est_raw": "2029-06-04",
       "next_low_date_est": "2029-06-04",
       "n_highs": 4,
@@ -480,7 +480,7 @@
         "2025-08-13"
       ],
       "high_gap_avg": 932.3,
-      "elapsed_from_high": 437,
+      "elapsed_from_high": 440,
       "last_high_date": "2025-08-13",
       "len_effective_high": 932,
       "track_highs": [
@@ -497,7 +497,7 @@
       ],
       "track_mae_high": 464,
       "progress_high_pct": 47.0,
-      "days_to_high_est": 495,
+      "days_to_high_est": 492,
       "next_high_date_est_raw": "2028-03-02",
       "next_high_date_est": "2028-03-02",
       "inv_phase": "post-top",
