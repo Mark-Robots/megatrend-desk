@@ -1,32 +1,18 @@
 {
-  "updated_at": "2026-10-26T11:47:19Z",
+  "updated_at": "2026-10-27T11:12:51Z",
   "mode": "long_only_dmi_d1d2",
   "assets": {
     "BTC": {
       "perf_week": 0.0,
-      "perf_month": -4.86,
+      "perf_month": -5.7,
       "perf_ytd": 22.39,
       "in_position": false,
-      "n_trades": 11,
+      "n_trades": 9,
       "entry_date": null,
       "entry_price": null,
       "current_price": null,
       "perf_pos": null,
       "trades": [
-        {
-          "entry_date": "2025-10-26",
-          "exit_date": "2025-10-27",
-          "perf": 0.07,
-          "entry_price": 114681.33,
-          "exit_price": 114767.29
-        },
-        {
-          "entry_date": "2025-10-27",
-          "exit_date": "2025-10-28",
-          "perf": -1.69,
-          "entry_price": 115556.57,
-          "exit_price": 113605.31
-        },
         {
           "entry_date": "2025-12-29",
           "exit_date": "2026-01-20",
@@ -97,19 +83,12 @@
       "perf_month": 0.0,
       "perf_ytd": 22.21,
       "in_position": false,
-      "n_trades": 14,
+      "n_trades": 13,
       "entry_date": null,
       "entry_price": null,
       "current_price": null,
       "perf_pos": null,
       "trades": [
-        {
-          "entry_date": "2025-10-26",
-          "exit_date": "2025-10-28",
-          "perf": -4.36,
-          "entry_price": 4160.65,
-          "exit_price": 3979.28
-        },
         {
           "entry_date": "2025-12-09",
           "exit_date": "2025-12-11",
@@ -205,22 +184,15 @@
     },
     "SOL": {
       "perf_week": 0.0,
-      "perf_month": -1.67,
+      "perf_month": -3.5,
       "perf_ytd": 25.0,
       "in_position": false,
-      "n_trades": 17,
+      "n_trades": 16,
       "entry_date": null,
       "entry_price": null,
       "current_price": null,
       "perf_pos": null,
       "trades": [
-        {
-          "entry_date": "2025-10-26",
-          "exit_date": "2025-10-28",
-          "perf": -3.86,
-          "entry_price": 200.2,
-          "exit_price": 192.48
-        },
         {
           "entry_date": "2025-12-31",
           "exit_date": "2026-01-14",
@@ -338,7 +310,7 @@
   },
   "portfolio": {
     "perf_week": 0.0,
-    "perf_month": -2.18,
+    "perf_month": -3.07,
     "perf_ytd": 23.2,
     "n_assets": 3
   },
